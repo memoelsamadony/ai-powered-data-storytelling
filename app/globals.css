@@ -1,26 +1,198 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ */
+/*  AI-Powered Data Storytelling — design tokens                       */
+/*  Brand palette sampled from the project logo; tone axis added for   */
+/*  the alarmist (warm) ↔ calibrated (teal) narrative encoding.        */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* Brand core */
+  --color-navy: #0d1b5c;
+  --color-deep-navy: #071a3b;
+  --color-brand-blue: #1e66b8;
+  --color-bright-blue: #2b78c6;
+  --color-teal: #20c4b0;
+  --color-deep-teal: #0e8f86;
+
+  /* Surfaces & neutrals */
+  --color-canvas: #f7fafc;
+  --color-surface: #ffffff;
+  --color-surface-soft: #eef4f8;
+  --color-ink: #0f172a;
+  --color-muted: #526173;
+  --color-faint: #8493a5;
+  --color-hairline: #d9dfe7;
+
+  /* Tone axis — the heart of the project */
+  --color-alarm: #e0392b;
+  --color-alarm-soft: #fbe7e2;
+  --color-alarm-ink: #8f1d12;
+  --color-calm: #0e8f86;
+  --color-calm-soft: #dcf3ef;
+  --color-calm-ink: #0a5f59;
+
+  /* Typography */
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+
+* {
+  border-color: var(--color-hairline);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv05", "ss01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-teal);
+  color: var(--color-deep-navy);
+}
+
+/* Headlines use the editorial serif by default */
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.015em;
+}
+
+/* Eyebrow / kicker label — mono, tracked, small-caps energy */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Decorative utilities                                               */
+/* ------------------------------------------------------------------ */
+
+/* Fine engineering grid — research-lab texture */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-navy) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-navy) 6%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-grid-dark {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Soft radial glow for dark data bands */
+.glow-teal {
+  background:
+    radial-gradient(60% 60% at 80% 0%, color-mix(in srgb, var(--color-teal) 22%, transparent) 0%, transparent 70%),
+    radial-gradient(50% 50% at 0% 100%, color-mix(in srgb, var(--color-brand-blue) 28%, transparent) 0%, transparent 70%);
+}
+
+.brand-gradient-text {
+  background: linear-gradient(110deg, var(--color-brand-blue) 0%, var(--color-teal) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Subtle grain for atmosphere on dark sections */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Hairline divider with a center node, used between sections */
+.rule-node {
+  position: relative;
+  height: 1px;
+  background: var(--color-hairline);
+}
+.rule-node::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  background: var(--color-teal);
+}
+
+/* Animated dashed line drawing (pipeline connectors) */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+.dash-flow {
+  stroke-dasharray: 6 6;
+  animation: dash-flow 0.9s linear infinite;
+}
+
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.5ch;
+  height: 1.05em;
+  margin-left: 1px;
+  translate: 0 0.15em;
+  background: var(--color-teal);
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+/* Custom scrollbar for scrollable story panels */
+.scroll-slim::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-slim::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: 9999px;
+}
+.scroll-slim::-webkit-scrollbar-track {
+  background: transparent;
 }
