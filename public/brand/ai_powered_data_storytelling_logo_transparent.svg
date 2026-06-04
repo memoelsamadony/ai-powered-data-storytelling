@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2B78C6"/>
+      <stop offset="100%" stop-color="#1B5FB6"/>
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#20C0B0"/>
+      <stop offset="100%" stop-color="#23D2B1"/>
+    </linearGradient>
+    <marker id="arrowHead" markerWidth="14" markerHeight="14" refX="10" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L14,7 L0,14 Z" fill="url(#tealGrad)"/>
+    </marker>
+  </defs>
+
+  <g transform="translate(320,70)">
+    <path d="M140 20 H390 Q450 20 490 60 Q530 100 530 160 V390 Q530 450 490 490 Q450 530 390 530 H250 L170 600 V530 H160 Q100 530 60 490 Q20 450 20 390 V140 Q20 80 60 50 Q95 20 140 20 Z"
+          fill="none" stroke="url(#blueGrad)" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M95 175 L145 125" fill="none" stroke="#236CC4" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="150" cy="120" r="16" fill="none" stroke="#236CC4" stroke-width="10"/>
+    <path d="M120 70 L210 70" fill="none" stroke="#27C4B0" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="215" cy="70" r="16" fill="none" stroke="#27C4B0" stroke-width="10"/>
+    <path d="M430 340 L465 305" fill="none" stroke="#236CC4" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="470" cy="300" r="16" fill="none" stroke="#236CC4" stroke-width="10"/>
+    <path d="M370 410 L370 355" fill="none" stroke="#27C4B0" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="370" cy="420" r="16" fill="none" stroke="#27C4B0" stroke-width="10"/>
+    <rect x="125" y="205" width="56" height="150" rx="28" fill="#0D1B5C"/>
+    <rect x="225" y="145" width="56" height="210" rx="28" fill="#0D1B5C"/>
+    <rect x="325" y="95" width="56" height="260" rx="28" fill="#0D1B5C"/>
+    <path d="M120 380 C170 330, 195 280, 255 285 C315 290, 340 380, 395 340 C435 310, 455 275, 490 240"
+          fill="none" stroke="white" stroke-width="72" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M95 405 C140 355, 180 310, 225 285 C260 265, 295 265, 330 305 C365 345, 400 330, 440 290 C463 266, 478 248, 500 225"
+          fill="none" stroke="url(#tealGrad)" stroke-width="48" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+  </g>
+
+  <g text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif">
+    <text x="600" y="670" font-size="104" font-weight="800" fill="#0C1F63" letter-spacing="1">AI-POWERED</text>
+    <text x="600" y="755" font-size="68" font-weight="800" fill="#236CC4" letter-spacing="1">DATA STORYTELLING</text>
+  </g>
+</svg>
