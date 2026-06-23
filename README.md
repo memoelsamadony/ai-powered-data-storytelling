@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Data Storytelling — Web Interface
 
-## Getting Started
+> An agentic approach to moderating the **emotional tone** of data narratives.
+> CMS Team Project · Chair of Multimedia Technology · TU Dresden · SoSe 2026.
 
-First, run the development server:
+A general LLM **generates** a data story, an agentic LLM **moderates its emotional tone**
+(pulling alarmism down without losing real urgency), and a lightweight **factual check**
+keeps the numbers honest. The interface lets you pick a dataset, write a human baseline,
+run the pipeline, and compare the human and LLM-moderated stories with metrics.
+
+This is the **front-end** for the project. It runs entirely on realistic **mock data** so it
+is fully interactive with no API keys — the Python pipeline plugs in later behind one file
+(`lib/api.ts`).
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install      # first time only
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build / serve a production bundle:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Pages
 
-## Learn More
+| Route | What it is |
+| --- | --- |
+| `/` | Home — hero, the "same numbers, two tones" toggle, pipeline overview, key stats |
+| `/generate` | The studio — dataset → human story → animated pipeline → comparison + metrics |
+| `/how-it-works` | The generate → moderate → fact-check pipeline, the gap, the two-sided tone problem |
+| `/results` | Faithfulness, per-operation accuracy, the novel tone-calibration metric, user study |
+| `/datasets` | Measles × vaccination (alarmism) and WHO child-mortality (over-optimism) |
+| `/about` | Project summary, literature survey, the team, supervisors, links |
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+app/                     Routes (App Router) — one folder per page
+components/              UI: layout, charts, the tone toggle, the generate studio
+  generate/             The 4-step studio (picker, editor, pipeline runner, comparison)
+  charts/               Recharts wrappers
+lib/
+  api.ts                ← swap-in point for the real Python backend
+  data/                 Typed mock content (datasets, stories, metrics, literature, team)
+public/brand/           Logo assets
+source-materials/       Original brief, report, presentations, palette
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Wiring in the Python backend (future work)
 
-## Deploy on Vercel
+Every piece of displayed content flows through `lib/api.ts`. The functions there currently
+return mock data with simulated latency. To go live, change their bodies to `fetch('/api/…')`
+calls against the Python pipeline — no component needs to change:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `getDatasets()` / `getDatasetById(id)`
+- `generateStory(datasetId)` → `{ raw, moderated, factualCheck }`
+- `compareStories(datasetId)` → metrics (BLEU/ROUGE/METEOR, alarmism before/after, …)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech
+
+Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Recharts · Framer Motion ·
+Newsreader + IBM Plex Sans/Mono. Brand palette sampled from the project logo, with a
+tone axis added: **alarmist = warm red, calibrated = teal**.
+
+## Team
+
+Mahmoud Elsamadony · Ahmed Okasha · Ahmed Elsaadani · Ahmed Ramadan
+Supervisors: Susmita Khadse, Julián Méndez · Chair: Prof. Dr. Raimund Dachselt (IMLD).
+Code & data: https://github.com/memoelsamadony/ai-powered-data-storytelling
