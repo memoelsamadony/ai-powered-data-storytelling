@@ -1,0 +1,58 @@
+{
+  "n_generated": 30,
+  "n_judged": 30,
+  "style_bleu4": 1.54,
+  "bleu_precisions": [
+    14.2,
+    2.0,
+    0.7,
+    0.3
+  ],
+  "factuality": {
+    "numeric_claims_total": 262,
+    "numeric_correct": 178,
+    "numeric_accuracy_pct": 67.9
+  },
+  "per_operation_accuracy": {
+    "lookup": {
+      "correct": 69,
+      "total": 80,
+      "pct": 86.2
+    },
+    "comparison": {
+      "correct": 66,
+      "total": 89,
+      "pct": 74.2
+    },
+    "subtraction": {
+      "correct": 13,
+      "total": 28,
+      "pct": 46.4
+    },
+    "rate_of_change": {
+      "correct": 13,
+      "total": 30,
+      "pct": 43.3
+    },
+    "trend": {
+      "correct": 17,
+      "total": 42,
+      "pct": 40.5
+    },
+    "causal": {
+      "correct": 0,
+      "total": 13,
+      "pct": 0.0
+    },
+    "predictive": {
+      "correct": 0,
+      "total": 1,
+      "pct": 0.0
+    }
+  },
+  "insightfulness_proxy": {
+    "avg_impact": 2.77,
+    "avg_significance": 2.33,
+    "scale": "1-5 (Opus 4.7 proxy, not human)"
+  }
+}

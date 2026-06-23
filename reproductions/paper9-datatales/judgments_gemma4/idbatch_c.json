@@ -1,0 +1,171 @@
+[
+  {
+    "id": "investrade_2023-01-19",
+    "numeric_claims": [
+      {"text": "The S&P 500 fell to 3,898.85", "correct": true, "note": "S&P 500 close 2023-01-19 = 3,898.85"},
+      {"text": "the latter closing at 11,295.67", "correct": true, "note": "Nasdaq 100 close = 11,295.67"},
+      {"text": "The Dow Jones Industrial Average slipped to 33,044.56", "correct": true, "note": "DJIA close = 33,044.56"},
+      {"text": "the Russell 2000 retreated to 1,836.35", "correct": true, "note": "Russell 2000 close = 1,836.35"},
+      {"text": "Nvidia (NVDA) fell to 167.65", "correct": true, "note": "Nvidia close = 167.65"},
+      {"text": "Microsoft (MSFT) dipped to 231.93", "correct": true, "note": "Microsoft close = 231.93"},
+      {"text": "Apple (AAPL) remained relatively flat at 135.27", "correct": true, "note": "Apple close = 135.27, prior close 135.21, essentially flat"},
+      {"text": "Meta Platforms (META) bucked the broader trend by rising to 136.15", "correct": true, "note": "Meta close = 136.15, up from 133.02"},
+      {"text": "Alphabet (GOOGL) climbed to 93.05", "correct": true, "note": "Alphabet close = 93.05, up from 91.12"},
+      {"text": "The PHLX Semiconductor index fell to 2,710.40", "correct": true, "note": "PHLX close = 2,710.40"},
+      {"text": "the CBOE Volatility Index (VIX) edged higher to 20.52", "correct": true, "note": "VIX close = 20.52, up from 20.34"}
+    ],
+    "operations": [
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "causal", "correct": false}
+    ],
+    "insightfulness": {"impact": 3, "significance": 3}
+  },
+  {
+    "id": "investrade_2023-01-20",
+    "numeric_claims": [
+      {"text": "The Nasdaq Composite climbed to 11,140.43", "correct": true, "note": "Nasdaq Composite close = 11,140.43"},
+      {"text": "the Nasdaq 100 rose significantly to finish at 11,619.03", "correct": true, "note": "Nasdaq 100 close = 11,619.03"},
+      {"text": "The S&P 500 also advanced, closing at 3,922.94", "correct": false, "note": "Contradiction: actual S&P 500 close 2023-01-20 = 3,972.61, not 3,922.94"},
+      {"text": "the Dow Jones Industrial Average gained ground to end the session at 33,375.49", "correct": true, "note": "DJIA close = 33,375.49"},
+      {"text": "Nvidia surged to 178.39 on heavy volume", "correct": true, "note": "Nvidia close = 178.39, volume 56,496,700 (up from prior)"},
+      {"text": "Meta Platforms rose to 139.37", "correct": true, "note": "Meta close = 139.37"},
+      {"text": "Alphabet climbed to 98.02", "correct": true, "note": "Alphabet close = 98.02"},
+      {"text": "the CBOE Volatility Index (VIX) retreated to 19.85", "correct": true, "note": "VIX close = 19.85, down from 20.52"}
+    ],
+    "operations": [
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": false},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "causal", "correct": false}
+    ],
+    "insightfulness": {"impact": 3, "significance": 3}
+  },
+  {
+    "id": "investrade_2023-01-23",
+    "numeric_claims": [
+      {"text": "The Nasdaq Composite led the rally, climbing to 11,364.41", "correct": true, "note": "Nasdaq Composite close = 11,364.41"},
+      {"text": "the S&P 500 rose to 4,019.81", "correct": true, "note": "S&P 500 close = 4,019.81"},
+      {"text": "the Dow Jones Industrial Average climbed to 33,629.56", "correct": true, "note": "DJIA close = 33,629.56"},
+      {"text": "the Nasdaq 100 reaching 11,872.54", "correct": true, "note": "Nasdaq 100 close = 11,872.54"},
+      {"text": "the PHLX Semiconductor index jumping significantly to 2,934.80", "correct": true, "note": "PHLX close = 2,934.80, up from 2,794.70"},
+      {"text": "Nvidia surged to 191.93 on high volume", "correct": true, "note": "Nvidia close = 191.93, volume 65,516,200"},
+      {"text": "Meta Platforms rose to 143.27", "correct": true, "note": "Meta close = 143.27"},
+      {"text": "Alphabet climbed to 99.79", "correct": true, "note": "Alphabet close = 99.79"},
+      {"text": "the Russell 2000 also advanced to 1,890.77", "correct": true, "note": "Russell 2000 close = 1,890.77"},
+      {"text": "the CBOE Volatility Index (VIX) remained stable, edging down slightly to 19.81", "correct": true, "note": "VIX close = 19.81, down from 19.85"}
+    ],
+    "operations": [
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "rate_of_change", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true}
+    ],
+    "insightfulness": {"impact": 3, "significance": 3}
+  },
+  {
+    "id": "investrade_2023-01-24",
+    "numeric_claims": [
+      {"text": "The S&P 500 edged higher to close at 4,019.81", "correct": false, "note": "Contradiction: actual S&P 500 close 2023-01-24 = 4,016.95 (slightly lower than prior 4,019.81); 4,019.81 is the prior day close"},
+      {"text": "the Nasdaq Composite climbed to 11,334.27", "correct": true, "note": "Nasdaq Composite close = 11,334.27"},
+      {"text": "The Dow Jones Industrial Average also advanced, finishing at 33,733.96", "correct": true, "note": "DJIA close = 33,733.96, up from 33,629.56"},
+      {"text": "Nvidia (NVDA) rose to 192.65", "correct": true, "note": "Nvidia close = 192.65"},
+      {"text": "Meta Platforms (META) held steady at 143.14", "correct": true, "note": "Meta close = 143.14, prior 143.27, steady"},
+      {"text": "Apple (AAPL) climbed to 142.53", "correct": true, "note": "Apple close = 142.53"},
+      {"text": "The PHLX Semiconductor index gained ground to finish at 2,913.70", "correct": true, "note": "PHLX close = 2,913.70 (note: down from 2,934.80, not a gain, but value correct)"},
+      {"text": "the CBOE Volatility Index (VIX) retreated to 19.20", "correct": true, "note": "VIX close = 19.20, down from 19.81"},
+      {"text": "Alphabet (GOOGL) was among the laggards, closing lower at 97.70", "correct": true, "note": "Alphabet close = 97.70, down from 99.79"}
+    ],
+    "operations": [
+      {"type": "trend", "correct": false},
+      {"type": "comparison", "correct": false},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": false},
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "causal", "correct": false}
+    ],
+    "insightfulness": {"impact": 3, "significance": 3}
+  },
+  {
+    "id": "investrade_2023-01-25",
+    "numeric_claims": [
+      {"text": "the Dow Jones Industrial Average edged higher to close at 33,743.84", "correct": true, "note": "DJIA close = 33,743.84, up from 33,733.96"},
+      {"text": "The Russell 2000 climbed to 1,890.32", "correct": true, "note": "Russell 2000 close = 1,890.32"},
+      {"text": "the PHLX Semiconductor Index rose slightly to 2,919.00", "correct": true, "note": "PHLX close = 2,919.00, up from 2,913.70"},
+      {"text": "Nvidia (NVDA) outperformed with a gain to 193.23", "correct": true, "note": "Nvidia close = 193.23, up from 192.65"},
+      {"text": "Microsoft (MSFT) recovered from a lower open to finish at 240.61", "correct": true, "note": "Microsoft close = 240.61, open 234.48 lower than prior close 242.04"},
+      {"text": "Amazon (AMZN) saw significant volatility, surging to 97.18 after hitting a low of 91.52", "correct": true, "note": "Amazon close = 97.18, low = 91.52"},
+      {"text": "Alphabet (GOOGL) finished lower at 95.22", "correct": true, "note": "Alphabet close = 95.22, down from 97.70"},
+      {"text": "Meta Platforms (META) remained relatively flat, closing at 141.50", "correct": true, "note": "Meta close = 141.50, prior 143.14"},
+      {"text": "The CBOE Volatility Index (VIX) eased slightly to 19.08", "correct": true, "note": "VIX close = 19.08, down from 19.20"}
+    ],
+    "operations": [
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "causal", "correct": false}
+    ],
+    "insightfulness": {"impact": 3, "significance": 4}
+  },
+  {
+    "id": "investrade_2023-01-26",
+    "numeric_claims": [
+      {"text": "The S&P 500 rose to 4,060.43", "correct": true, "note": "S&P 500 close = 4,060.43"},
+      {"text": "the Nasdaq Composite climbed to 11,512.41", "correct": true, "note": "Nasdaq Composite close = 11,512.41"},
+      {"text": "The Dow Jones Industrial Average also advanced to 33,949.41", "correct": true, "note": "DJIA close = 33,949.41"},
+      {"text": "the Russell 2000 gained ground to finish at 1,903.06", "correct": true, "note": "Russell 2000 close = 1,903.06"},
+      {"text": "Nvidia climbing to 198.02", "correct": true, "note": "Nvidia close = 198.02"},
+      {"text": "Meta Platforms rising to 147.30", "correct": true, "note": "Meta close = 147.30"},
+      {"text": "Microsoft reaching 248.00", "correct": true, "note": "Microsoft close = 248.00"},
+      {"text": "the PHLX Semiconductor index surged to 2,966.60", "correct": true, "note": "PHLX close = 2,966.60"},
+      {"text": "the CBOE Volatility Index (VIX) retreated to 18.73", "correct": true, "note": "VIX close = 18.73, down from 19.08"}
+    ],
+    "operations": [
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "causal", "correct": false}
+    ],
+    "insightfulness": {"impact": 3, "significance": 3}
+  }
+]

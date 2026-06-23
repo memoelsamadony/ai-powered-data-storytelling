@@ -1,0 +1,133 @@
+[
+  {
+    "table_idx": 0,
+    "errors": []
+  },
+  {
+    "table_idx": 1,
+    "errors": [
+      {
+        "reason": "Contradicts the data: the home team scored in the first (1) and second (1) periods, not entirely in the third period",
+        "text": "occurred entirely in the third period",
+        "type": 0
+      },
+      {
+        "reason": "Contradicts the data: the home team scored two goals in the third period, but one each in the first and second, not two",
+        "text": "added two goals to their previous two goals from the first and second periods respectively",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 2,
+    "errors": [
+      {
+        "reason": "Cumulative score after the second period was 4-0, not 4-1; TPS did not score until the third period",
+        "text": "4-1",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 3,
+    "errors": []
+  },
+  {
+    "table_idx": 4,
+    "errors": []
+  },
+  {
+    "table_idx": 5,
+    "errors": []
+  },
+  {
+    "table_idx": 6,
+    "errors": []
+  },
+  {
+    "table_idx": 7,
+    "errors": []
+  },
+  {
+    "table_idx": 8,
+    "errors": [
+      {
+        "reason": "Cumulative score after the second period was 2-2, not 1-1 (each team scored in the first and second periods)",
+        "text": "tied at 1-1 after the second period",
+        "type": 0
+      },
+      {
+        "reason": "The deciding goal was scored in a penalty shootout (penalties=1), not in an overtime period; no overtime is present in the data",
+        "text": "via a penalty goal during the overtime period",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 9,
+    "errors": []
+  },
+  {
+    "table_idx": 10,
+    "errors": []
+  },
+  {
+    "table_idx": 11,
+    "errors": []
+  },
+  {
+    "table_idx": 12,
+    "errors": []
+  },
+  {
+    "table_idx": 13,
+    "errors": [
+      {
+        "reason": "After the first period the score was 2-0, not 2-1; Orlando scored 0 in the first period",
+        "text": "took a 2-1 lead into the second period",
+        "type": 0
+      },
+      {
+        "reason": "After the first period Orlando's score was 0 (awayScore.period1=0), not 1 (verification pass).",
+        "text": "the Solar Bears remained trailing with a score of 1",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 14,
+    "errors": [
+      {
+        "reason": "Misleading: the Hurricanes already led 1-0 after the first period, so the lead was not taken in the second period",
+        "text": "took a lead in the second period with two goals",
+        "type": 2
+      }
+    ]
+  },
+  {
+    "table_idx": 15,
+    "errors": []
+  },
+  {
+    "table_idx": 16,
+    "errors": [
+      {
+        "reason": "Contradicts the data: in the second period the home team scored only one goal (not two), while the away team scored two",
+        "text": "both teams scoring two goals in each frame",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 17,
+    "errors": []
+  },
+  {
+    "table_idx": 18,
+    "errors": []
+  },
+  {
+    "table_idx": 19,
+    "errors": []
+  }
+]

@@ -1,0 +1,20 @@
+================ STORY A — qwen3.5:4b (generator) ================
+**The Measles Paradox: High Coverage, Rising Cases?**
+
+Global vaccination rates have climbed steadily since 2000, reaching an impressive **86%** in 2019—the same year cases skyrocketed to nearly **874,000**. Yet, as coverage dipped slightly to the low **80s** by 2023 and 2024, total infections surged again. This "high-coverage spike" reveals a dangerous flaw: achieving herd immunity requires roughly **95%** of people vaccinated, yet we have operated safely below that threshold for over a decade at only **~83%**.
+
+While Germany boasts near-perfect rates (**96–98%**), its recent case count exploded from 10 to **645** in three years. In stark contrast, Nigeria's coverage hovers around the dangerous low of **57%**, driving cases up by over a million compared to historical lows despite better global averages. The data tells us that simply increasing shots isn't enough; we need widespread protection across every nation to stop measles from returning with full force.
+
+================ gemma4:12b (emotional moderation) ================
+ISSUES:
+- **Exaggerated/Alarmist Language:** Terms like "skyrocketed," "dangerously low," and "exploded" are used to describe fluctuations that may be influenced by reporting variables or standard epidemiological cycles.
+- **Overstated Causation:** The original text implies a direct causal link between the specific 2019 coverage level and the spike, rather than acknowledging the complexity of transmission dynamics.
+- **Misleading Comparison/Context:** Comparing Germany's increase from 10 to 645 cases as an "explosion" ignores the scale difference; while it is a significant local increase, the phrasing leans into alarmism.
+- **Emotional Manipulation:** Phrases like "dangerously low" and "returning with full force" use emotive adjectives rather than letting the data (the gap between 83% and 95%) speak for itself.
+
+MODERATED STORY:
+**Measles Trends and Vaccination Coverage Levels**
+
+Global measles cases have fluctuated significantly over the last two decades while MCV1 coverage has remained relatively stable in the 80% range. In 2019, reported cases reached 873,373 despite an 86% vaccination rate. While global coverage has hovered between 81% and 86% since 2010, it remains below the 95% threshold generally cited for herd immunity.
+
+Regional data highlights varying outcomes based on local coverage levels. Germany maintained high MCV1 rates (96–98%) but saw a rise in cases from 10 in 2021 to 645 in 2024. In contrast, Nigeria reported 14,999 cases in 2024 with an MCV1 coverage of 57%. These figures illustrate the ongoing challenge of maintaining high vaccination coverage across different regions to manage and contain measles transmission effectively.

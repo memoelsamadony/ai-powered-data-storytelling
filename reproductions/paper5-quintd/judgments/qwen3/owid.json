@@ -1,0 +1,160 @@
+[
+  {
+    "table_idx": 0,
+    "errors": [
+      {
+        "reason": "The data ends on 2022-05-11 with the value flat at 66.88; there is no June data and no decline. A gradual decline toward the end of June is not supported and contradicts the flat/plateauing end of the series.",
+        "text": "before gradually declining slightly toward the end of that month",
+        "type": 0
+      },
+      {
+        "reason": "The series ends on 2022-05-11. There is no data extending into early June 2022, so fluctuations through early June cannot be derived.",
+        "text": "between late April and early June 2022",
+        "type": 1
+      }
+    ]
+  },
+  {
+    "table_idx": 1,
+    "errors": [
+      {
+        "reason": "The global maximum R is exactly 2.38 (reached 2020-08-26), so the rate does not exceed 2.38; it equals it.",
+        "text": "peak levels exceeding 2.38",
+        "type": 0
+      },
+      {
+        "reason": "The series ends on 2023-01-01 with value 0.83. There is no data for the rest of January 2023, so 'by the end of January 2023' is not supported (the value is from the very start of the month).",
+        "text": "stabilize around 0.83 by the end of January 2023",
+        "type": 1
+      }
+    ]
+  },
+  {
+    "table_idx": 2,
+    "errors": []
+  },
+  {
+    "table_idx": 3,
+    "errors": [
+      {
+        "reason": "The unit is people per hundred. The value around October 2021 is 0.78 (i.e. 0.78 per hundred / 0.78%), not 78%. Stating 78% overstates the value by roughly 100x.",
+        "text": "reach 78% by October 2021",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 4,
+    "errors": [
+      {
+        "reason": "The maximum life expectancy is 82.9961, reached in 2019, not 2014 (2014 value is 82.21). The peak year is wrong.",
+        "text": "its peak of roughly 83 years in 2014",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 5,
+    "errors": [
+      {
+        "reason": "In early February 2021 the values are roughly 2.68 to 6.25 per hundred, nowhere near 45%. The claim of reaching over 45% in early February contradicts the data.",
+        "text": "early February (reaching over 45%)",
+        "type": 0
+      },
+      {
+        "reason": "April 2021 values range from about 11.7 to 21.5 per hundred, not over 60%. The claim of surpassing 60% in April contradicts the data.",
+        "text": "April (surpassing 60%)",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 6,
+    "errors": []
+  },
+  {
+    "table_idx": 7,
+    "errors": []
+  },
+  {
+    "table_idx": 8,
+    "errors": []
+  },
+  {
+    "table_idx": 9,
+    "errors": []
+  },
+  {
+    "table_idx": 10,
+    "errors": []
+  },
+  {
+    "table_idx": 11,
+    "errors": [
+      {
+        "reason": "The value 24.0 (the minimum) occurs in 1920, not 1930 (the 1930 value is 28.0). The year for the low is wrong.",
+        "text": "a low of 24.0 years in 1930",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 12,
+    "errors": []
+  },
+  {
+    "table_idx": 13,
+    "errors": []
+  },
+  {
+    "table_idx": 14,
+    "errors": []
+  },
+  {
+    "table_idx": 15,
+    "errors": []
+  },
+  {
+    "table_idx": 16,
+    "errors": [
+      {
+        "reason": "In mid-June 2021 the share is about 12.8 to 14.2 per hundred, not over 50. The claim of reaching over 50 per hundred by mid-June contradicts the data.",
+        "text": "reaching over 50 people per hundred by mid-June",
+        "type": 0
+      },
+      {
+        "reason": "The vaccine brands involved in any campaign cannot be derived from the time-series data.",
+        "text": "due to a mass vaccination campaign involving Pfizer and AstraZeneca vaccines",
+        "type": 1
+      },
+      {
+        "reason": "The series ends on 2023-01-17 (value 55.98). There is no data for late May 2023, so this date/value claim is not derivable.",
+        "text": "between late May 2023 at roughly 56%",
+        "type": 1
+      }
+    ]
+  },
+  {
+    "table_idx": 17,
+    "errors": [
+      {
+        "reason": "The value on 2022-03-26 is 0.48, not 0.4, and this is not the low point of the series; the actual minimum is 0.19 (reached 2022-06-24). Calling 0.4 on this date the low point is incorrect.",
+        "text": "reach a low point of 0.4 by March 26, 2022",
+        "type": 0
+      },
+      {
+        "reason": "The sentence is cut off / incomplete, ending mid-clause with no completion.",
+        "text": "with minor upward.",
+        "type": 3
+      }
+    ]
+  },
+  {
+    "table_idx": 18,
+    "errors": []
+  },
+  {
+    "table_idx": 19,
+    "errors": []
+  }
+]

@@ -1,0 +1,165 @@
+[
+  {
+    "id": "investrade_2023-01-09",
+    "numeric_claims": [
+      {"text": "S&P 500 slipped slightly to close at 3,892.09", "correct": true, "note": "Matches close 3,892.09 on 2023-01-09."},
+      {"text": "following an intraday high near 3,950", "correct": true, "note": "High was 3,950.57."},
+      {"text": "Nasdaq Composite ... posted modest declines from their respective session highs", "correct": false, "note": "Nasdaq Composite close 10,635.65 > prior 10,569.29; it actually rose vs prior session, though it did close below its own intraday high of 10,807.26. Statement framing as decline is misleading."},
+      {"text": "Dow Jones Industrial Average posted modest declines from their respective session highs", "correct": true, "note": "Dow close 33,517.65 < prior 33,630.61 and below high 33,935.11; a decline."},
+      {"text": "the S&P 500 advanced roughly 7% YTD", "correct": false, "note": "Not derivable from two-session table; fabricated YTD figure."},
+      {"text": "the Nasdaq rose approximately 28%", "correct": false, "note": "Not derivable from table and implausibly large; fabricated."},
+      {"text": "Nvidia (NVDA) ... surging over $7 per share", "correct": true, "note": "156.28 - 148.59 = 7.69."},
+      {"text": "PHLX Semiconductor index ... closing at 2,686.80", "correct": true, "note": "Matches close."},
+      {"text": "after reaching an intraday peak of nearly 2,746", "correct": true, "note": "High 2,745.90."},
+      {"text": "Russell 2000 remained relatively flat near its year-end levels", "correct": true, "note": "1,795.91 vs prior 1,792.80, roughly flat."},
+      {"text": "CBOE VIX edged up to 21.97 from a low of roughly 21 on January 6", "correct": true, "note": "VIX close 21.97; Jan 6 low was 21.00."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": false},
+      {"type": "rate_of_change", "correct": false},
+      {"type": "subtraction", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "causal", "correct": false}
+    ],
+    "insightfulness": {"impact": 2, "significance": 2}
+  },
+  {
+    "id": "investrade_2023-01-10",
+    "numeric_claims": [
+      {"text": "Nasdaq Composite surged to set another all-time record high", "correct": false, "note": "Nasdaq close 10,742.63; no record high derivable, and this was far below 2021 highs. Fabricated."},
+      {"text": "Apple, Amazon, Alphabet, Meta Platforms, Microsoft, and Nvidia all posted significant advances", "correct": true, "note": "All closed higher: AAPL 130.73>130.15, AMZN 89.87>87.36, GOOGL 88.42>88.02, META 132.99>129.47, MSFT 228.85>227.12, NVDA 159.09>156.28. 'Significant' overstates some small moves."},
+      {"text": "Russell 2000 advanced for its second consecutive day", "correct": false, "note": "Not derivable; table shows only 2023-01-09 (1,795.91) and 2023-01-10 (1,822.65). Only one up-day shown; 'second consecutive' is unsupported."},
+      {"text": "small caps outperformed ... closing higher than both the S&P 500 and Dow", "correct": false, "note": "Cannot compare index levels directly across different indices; Russell rose ~1.5% vs S&P ~0.7%; outperformance in % is true but the 'closing higher than' phrasing is meaningless/incorrect comparison."},
+      {"text": "VIX dipped slightly to end at 20.58 ... compared to the previous session's close of 21.97", "correct": true, "note": "VIX 20.58 vs prior 21.97; a notable drop, 'slightly' understates."}
+    ],
+    "operations": [
+      {"type": "trend", "correct": false},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": false},
+      {"type": "comparison", "correct": false},
+      {"type": "comparison", "correct": true},
+      {"type": "predictive", "correct": false}
+    ],
+    "insightfulness": {"impact": 2, "significance": 1}
+  },
+  {
+    "id": "investrade_2023-01-11",
+    "numeric_claims": [
+      {"text": "S&P 500 advanced to close at 3,969.61", "correct": true, "note": "Matches close."},
+      {"text": "Nasdaq Composite surged past 10,931.67", "correct": true, "note": "Close 10,931.67 (it closed at, not past, but value correct)."},
+      {"text": "Dow Jones Industrial Average reached a new peak above 33,973", "correct": true, "note": "Close 33,973.01; high 33,974.69. Within table this is the highest level shown."},
+      {"text": "Russell 2000 climbing to 1,844.05", "correct": true, "note": "Matches close."},
+      {"text": "PHLX Semiconductor index hit 2,756.50", "correct": true, "note": "That is the intraday high; close was 2,755.40. Value present in table."},
+      {"text": "Nasdaq 100 closed at 11,402.52", "correct": true, "note": "Matches close."},
+      {"text": "VIX dipped to 21.09 from its prior session's low of 20.58", "correct": false, "note": "VIX rose from prior close 20.58 to 21.09; 'dipped' is wrong direction. 20.58 was prior close (and prior low), so 21.09 is higher, not a dip."},
+      {"text": "Nvidia reaching a high of $160.28 and closing at $160.01", "correct": true, "note": "High 160.28, close 160.01."},
+      {"text": "Microsoft, Apple, Amazon, Alphabet, and Meta Platforms all finishing higher on increased trading volumes", "correct": false, "note": "All closed higher (true), but volumes not uniformly increased: MSFT vol 28,669,300>27,033,800 up; META 25,423,000<28,684,400 down. Volume claim partly false."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "rate_of_change", "correct": false},
+      {"type": "trend", "correct": false},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": false}
+    ],
+    "insightfulness": {"impact": 3, "significance": 3}
+  },
+  {
+    "id": "investrade_2023-01-12",
+    "numeric_claims": [
+      {"text": "S&P 500 advanced to close at 3,983.17", "correct": true, "note": "Matches close."},
+      {"text": "after a volatile open that saw it dip below its opening price on Friday", "correct": false, "note": "2023-01-12 was Thursday, not Friday; date error. Open 3,977.57, low 3,937.56 dipped below open (true) but 'Friday' is wrong."},
+      {"text": "Dow Jones Industrial Average rose to 34,189.97", "correct": true, "note": "Matches close."},
+      {"text": "Nasdaq Composite climbed to an intraday high of 11,027.75 before settling at 11,001.10", "correct": true, "note": "High 11,027.75, close 11,001.10."},
+      {"text": "Russell 2000 reaching a new session close of 1,876.06", "correct": true, "note": "Matches close (and high 1,876.06)."},
+      {"text": "semiconductor shares surging on the PHLX to end near 2,790", "correct": true, "note": "Close 2,789.70."},
+      {"text": "VIX retreated significantly from Friday's peak to close at 18.83", "correct": true, "note": "VIX close 18.83 vs prior 21.09; significant drop. 'Friday' date label wrong but numeric correct."},
+      {"text": "Apple, Amazon, Alphabet, and Meta Platforms all closed lower or flat relative to their highs", "correct": true, "note": "Trivially true (closes always <= high). AAPL/GOOGL closed lower vs prior day; AMZN/META up. Vague but defensible."},
+      {"text": "Nvidia posted a notable gain of over $5", "correct": true, "note": "165.11 - 160.01 = 5.10."},
+      {"text": "record-breaking session high before the market opened Friday", "correct": false, "note": "Incoherent/illogical (a session high cannot occur before market open), and 'Friday' date wrong."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": false},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "subtraction", "correct": true},
+      {"type": "trend", "correct": false}
+    ],
+    "insightfulness": {"impact": 3, "significance": 2}
+  },
+  {
+    "id": "investrade_2023-01-13",
+    "numeric_claims": [
+      {"text": "S&P 500 advanced to close near its previous day's high at 3,999.09", "correct": true, "note": "Close 3,999.09; prior day high 3,997.76, so indeed near it."},
+      {"text": "Nasdaq Composite surged past 11,079.16", "correct": true, "note": "Close 11,079.16."},
+      {"text": "Dow Jones Industrial Average also posted gains to reach 34,302.61", "correct": true, "note": "Close 34,302.61 vs prior 34,189.97."},
+      {"text": "Russell 2000 index which climbed to 1,887.03", "correct": true, "note": "Matches close."},
+      {"text": "PHLX Semiconductor Index rising to 2,800.70", "correct": true, "note": "Matches close."},
+      {"text": "CBOE Volatility Index (VIX) fell significantly from its prior session's close of 18.83 to 18.35", "correct": false, "note": "VIX 18.83 to 18.35 is a small decline (-0.48), not 'significant'; magnitude mischaracterized."},
+      {"text": "Apple (AAPL), Amazon (AMZN), Alphabet (GOOGL), Meta Platforms (META), Microsoft (MSFT), and Nvidia (NVDA) ... strong rally", "correct": true, "note": "All closed higher: AAPL 134.76>133.41, AMZN 98.12>95.27, GOOGL 92.12>91.13, META 136.98>136.71, MSFT 239.23>238.51, NVDA 168.99>165.11."}
+    ],
+    "operations": [
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "trend", "correct": false},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true}
+    ],
+    "insightfulness": {"impact": 3, "significance": 3}
+  },
+  {
+    "id": "investrade_2023-01-17",
+    "numeric_claims": [
+      {"text": "S&P 500 slipped to close at 3,990.97", "correct": true, "note": "Close 3,990.97 vs prior 3,999.09; a slip."},
+      {"text": "after reaching an intraday high of 4,015.39", "correct": true, "note": "High 4,015.39."},
+      {"text": "Nasdaq Composite ... posted gains, closing at 11,095.11", "correct": true, "note": "Close 11,095.11 vs prior 11,079.16; gain."},
+      {"text": "Dow Jones Industrial Average posted gains, closing at ... 33,910.85", "correct": false, "note": "Dow close 33,910.85 < prior 34,302.61; it DECLINED, not gained. Value correct, direction wrong."},
+      {"text": "both hitting lower lows during trading sessions", "correct": true, "note": "Nasdaq low 11,024.72 < prior low 10,902.24? No, prior low was 10,902.24, so 11,024.72 is higher. Dow low 33,860.67 < prior low 33,915.49 (lower). Mixed/vague but partly supported."},
+      {"text": "Russell 2000 remained relatively flat near its opening levels of 1,886.64", "correct": true, "note": "Open 1,886.64, close 1,884.29; roughly flat."},
+      {"text": "PHLX Semiconductor index advanced to close at 2,807.50", "correct": true, "note": "Close 2,807.50 vs prior 2,800.70."},
+      {"text": "following a session high of 2,830.90", "correct": true, "note": "High 2,830.90."},
+      {"text": "CBOE VIX edged up slightly from 18.35 on January 16 to 19.36", "correct": true, "note": "Prior VIX 18.35 (table dated 2023-01-16), current 19.36."},
+      {"text": "touched an intraday peak of 20.22", "correct": true, "note": "VIX high 20.22."},
+      {"text": "Nvidia led gains ... closing at 177.02 after hitting a session high of 177.28", "correct": true, "note": "Close 177.02, high 177.28; up from 168.99."},
+      {"text": "Apple and Amazon also finished higher", "correct": false, "note": "AAPL 135.94>134.76 higher (true); AMZN 96.05<98.12 LOWER. Amazon claim is false."},
+      {"text": "Alphabet declined to close at 91.29 from an opening price of 92.06 as it touched a low of 90.05", "correct": true, "note": "Open 92.06, close 91.29, low 90.05; all match."}
+    ],
+    "operations": [
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": false},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "rate_of_change", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": false},
+      {"type": "subtraction", "correct": true}
+    ],
+    "insightfulness": {"impact": 3, "significance": 2}
+  }
+]

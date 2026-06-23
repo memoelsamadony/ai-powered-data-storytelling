@@ -1,0 +1,22 @@
+[
+  {"table_idx": 0, "errors": []},
+  {"table_idx": 1, "errors": []},
+  {"table_idx": 2, "errors": []},
+  {"table_idx": 3, "errors": []},
+  {"table_idx": 4, "errors": []},
+  {"table_idx": 5, "errors": []},
+  {"table_idx": 6, "errors": []},
+  {"table_idx": 7, "errors": []},
+  {"table_idx": 8, "errors": []},
+  {"table_idx": 9, "errors": []},
+  {"table_idx": 10, "errors": []},
+  {"table_idx": 11, "errors": []},
+  {"table_idx": 12, "errors": []},
+  {"table_idx": 13, "errors": [{"reason": "The product name in the data is 'REVVL 6 Pro' (T-Mobile REVVL 6 Pro), but the text misspells it as 'REVL'", "text": "REVL", "type": 0}]},
+  {"table_idx": 14, "errors": []},
+  {"table_idx": 15, "errors": []},
+  {"table_idx": 16, "errors": []},
+  {"table_idx": 17, "errors": []},
+  {"table_idx": 18, "errors": []},
+  {"table_idx": 19, "errors": []}
+]

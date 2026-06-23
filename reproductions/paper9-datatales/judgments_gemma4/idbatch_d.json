@@ -1,0 +1,179 @@
+[
+  {
+    "id": "investrade_2023-02-06",
+    "numeric_claims": [
+      {"text": "The S&P 500 declined to 4,111.08", "correct": true, "note": "Table S&P 500 close 2023-02-06 = 4,111.08; down from 4,136.48."},
+      {"text": "the Nasdaq Composite fell to 11,887.45", "correct": true, "note": "Table Nasdaq Composite close 2023-02-06 = 11,887.45; down from 12,006.95."},
+      {"text": "the Nasdaq 100 slipped to 12,464.51", "correct": true, "note": "Table Nasdaq 100 close 2023-02-06 = 12,464.51; down from 12,573.36."},
+      {"text": "the Dow Jones Industrial Average also edged lower, closing at 33,891.02", "correct": true, "note": "Table DJIA close 2023-02-06 = 33,891.02; down from 33,926.01."},
+      {"text": "the CBOE Volatility Index (VIX) rose to 19.43", "correct": true, "note": "Table VIX close 2023-02-06 = 19.43; up from 18.33."},
+      {"text": "Nvidia remained relatively stable, closing at 210.89", "correct": true, "note": "Table Nvidia close 2023-02-06 = 210.89; down slightly from 211.00."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true}
+    ],
+    "insightfulness": {"impact": 2, "significance": 2}
+  },
+  {
+    "id": "investrade_2023-02-07",
+    "numeric_claims": [
+      {"text": "The Nasdaq Composite climbed to 12,113.79", "correct": true, "note": "Table Nasdaq Composite close 2023-02-07 = 12,113.79; up from 11,887.45."},
+      {"text": "the S&P 500 rose to 4,164.00", "correct": true, "note": "Table S&P 500 close 2023-02-07 = 4,164.00; up from 4,111.08."},
+      {"text": "the Dow Jones Industrial Average advanced to 33,156.69", "correct": false, "note": "Table DJIA close 2023-02-07 = 34,156.69, not 33,156.69. Fabricated/typo value."},
+      {"text": "the Nasdaq 100 reaching 12,728.27", "correct": true, "note": "Table Nasdaq 100 close 2023-02-07 = 12,728.27; up from 12,464.51."},
+      {"text": "the PHLX Semiconductor Index climbing to 3,124.10", "correct": true, "note": "Table PHLX Semiconductor close 2023-02-07 = 3,124.10; up from 3,029.70."},
+      {"text": "Nvidia (NVDA) saw significant gains, closing at 221.73", "correct": true, "note": "Table Nvidia close 2023-02-07 = 221.73; up from 210.89."},
+      {"text": "Meta Platforms (META) and Alphabet (GOOGL) also posted strong performances, finishing at 191.62 and 107.64 respectively", "correct": true, "note": "Table Meta close = 191.62, Alphabet close = 107.64; both up."},
+      {"text": "the VIX index retreated to 18.66", "correct": true, "note": "Table VIX close 2023-02-07 = 18.66; down from 19.43."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": false},
+      {"type": "comparison", "correct": false},
+      {"type": "lookup", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true}
+    ],
+    "insightfulness": {"impact": 3, "significance": 2}
+  },
+  {
+    "id": "investrade_2023-02-08",
+    "numeric_claims": [
+      {"text": "The S&P 500 fell to 4,117.86", "correct": true, "note": "Table S&P 500 close 2023-02-08 = 4,117.86; down from 4,164.00."},
+      {"text": "the latter dropping below its opening price of 12,680.03", "correct": true, "note": "Table Nasdaq 100 open 2023-02-08 = 12,680.03, close 12,495.38 < open."},
+      {"text": "The Dow Jones Industrial Average also retreated to 33,949.01", "correct": true, "note": "Table DJIA close 2023-02-08 = 33,949.01; down from 34,156.69."},
+      {"text": "the Russell 2000 slipped to 1,942.60", "correct": true, "note": "Table Russell 2000 close 2023-02-08 = 1,942.60; down from 1,972.61."},
+      {"text": "The PHLX Semiconductor index fell to 3,055.60", "correct": true, "note": "Table PHLX Semiconductor close 2023-02-08 = 3,055.60; down from 3,124.10."},
+      {"text": "the CBOE Volatility Index (VIX) climbed to 19.63", "correct": true, "note": "Table VIX close 2023-02-08 = 19.63; up from 18.66."},
+      {"text": "Nvidia (NVDA) remained relatively flat despite a slight decrease in trading volume", "correct": false, "note": "Nvidia close 222.05 vs 221.73 (roughly flat OK), BUT volume rose from prior? Prior 2023-02-07 vol=66,414,900, 2023-02-08 vol=55,965,100, so volume DID decrease. Volume claim correct; however flat claim correct too. Reclassify: volume decreased is true. Marking correct."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": true}
+    ],
+    "insightfulness": {"impact": 2, "significance": 2}
+  },
+  {
+    "id": "investrade_2023-02-09",
+    "numeric_claims": [
+      {"text": "The S&P 500 fell to 4,081.50 from its previous session's close", "correct": true, "note": "Table S&P 500 close 2023-02-09 = 4,081.50; down from 4,117.86."},
+      {"text": "the latter dropping significantly to 12,381.17", "correct": true, "note": "Table Nasdaq 100 close 2023-02-09 = 12,381.17; down from 12,495.38."},
+      {"text": "The Dow Jones Industrial Average saw a notable decline, closing at 33,699.88 after hitting a high of 34,252.57 during the session", "correct": true, "note": "Table DJIA close 2023-02-09 = 33,699.88, high 34,252.57. Correct."},
+      {"text": "the CBOE Volatility Index (VIX), which climbed to 20.71", "correct": true, "note": "Table VIX close 2023-02-09 = 20.71; up from 19.63."},
+      {"text": "Nvidia remained relatively resilient despite broader market weakness, closing at 223.37", "correct": true, "note": "Table Nvidia close 2023-02-09 = 223.37; up from 222.05."},
+      {"text": "The Russell 2000 also retreated, ending the session at 1,915.34", "correct": true, "note": "Table Russell 2000 close 2023-02-09 = 1,915.34; down from 1,942.60."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "trend", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true}
+    ],
+    "insightfulness": {"impact": 3, "significance": 2}
+  },
+  {
+    "id": "investrade_2023-02-10",
+    "numeric_claims": [
+      {"text": "the S&P 500 and Dow Jones Industrial Average edged higher while the Nasdaq Composite and Nasdaq 100 saw modest gains", "correct": false, "note": "S&P up (4,090.46>4,081.50) OK, Dow up (33,869.27>33,699.88) OK, Nasdaq Composite up (11,718.12>11,789.58? NO: 11,718.12<11,789.58, it DECLINED). Nasdaq 100 12,304.92<12,381.17 also DECLINED. Claim of gains for Nasdaqs is incorrect."},
+      {"text": "The S&P 500 rose to 4,090.46", "correct": true, "note": "Table S&P 500 close 2023-02-10 = 4,090.46; up from 4,081.50."},
+      {"text": "the Dow climbed to 33,869.27", "correct": true, "note": "Table DJIA close 2023-02-10 = 33,869.27; up from 33,699.88."},
+      {"text": "the VIX, which eased slightly to 20.53", "correct": true, "note": "Table VIX close 2023-02-10 = 20.53; down from 20.71."},
+      {"text": "Apple (AAPL) saw a modest gain to 151.01", "correct": true, "note": "Table Apple close 2023-02-10 = 151.01; up from 150.87."},
+      {"text": "Microsoft (MSFT) remained steady at 263.10", "correct": true, "note": "Table Microsoft close 2023-02-10 = 263.10; ~flat from 263.62."},
+      {"text": "Nvidia (NVDA) falling to 212.65", "correct": true, "note": "Table Nvidia close 2023-02-10 = 212.65; down from 223.37."},
+      {"text": "the PHLX Semiconductor index declining to 3,011.20", "correct": true, "note": "Table PHLX Semiconductor close 2023-02-10 = 3,011.20; down from 3,059.60."},
+      {"text": "The Russell 2000 also edged higher to 1,918.81", "correct": true, "note": "Table Russell 2000 close 2023-02-10 = 1,918.81; up from 1,915.34."},
+      {"text": "Amazon (AMZN) and Alphabet (GOOGL) traded in a tight range at 97.61 and 94.57, respectively", "correct": true, "note": "Table Amazon close = 97.61, Alphabet close = 94.57. Correct."}
+    ],
+    "operations": [
+      {"type": "comparison", "correct": false},
+      {"type": "trend", "correct": false},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true}
+    ],
+    "insightfulness": {"impact": 2, "significance": 2}
+  },
+  {
+    "id": "investrade_2023-02-13",
+    "numeric_claims": [
+      {"text": "the S&P 500 rose to close at 4,137.29", "correct": true, "note": "Table S&P 500 close 2023-02-13 = 4,137.29; up from 4,090.46."},
+      {"text": "the latter climbing over 1.9% in a single session to finish at 12,502.31", "correct": false, "note": "Nasdaq 100 12,502.31 close is correct, but change = (12,502.31-12,304.92)/12,304.92 = +1.60%, not over 1.9%. Rate_of_change incorrect."},
+      {"text": "Microsoft, which surged to 271.32", "correct": true, "note": "Table Microsoft close 2023-02-13 = 271.32; up from 263.10."},
+      {"text": "Meta Platforms, which climbed to 179.43", "correct": true, "note": "Table Meta close 2023-02-13 = 179.43; up from 174.15."},
+      {"text": "the Russell 2000 also advanced to 1,941.14", "correct": true, "note": "Table Russell 2000 close 2023-02-13 = 1,941.14; up from 1,918.81."},
+      {"text": "the PHLX Semiconductor index saw a more modest gain to 3,057.30", "correct": true, "note": "Table PHLX Semiconductor close 2023-02-13 = 3,057.30; up from 3,011.20."},
+      {"text": "the VIX eased slightly to 20.34", "correct": true, "note": "Table VIX close 2023-02-13 = 20.34; down from 20.53."},
+      {"text": "high-volume movers like Apple and Nvidia finished higher than their previous session's closes", "correct": true, "note": "Apple 153.85>151.01, Nvidia 217.88>212.65; both higher. Correct."}
+    ],
+    "operations": [
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "rate_of_change", "correct": false},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "lookup", "correct": true},
+      {"type": "comparison", "correct": true},
+      {"type": "comparison", "correct": true}
+    ],
+    "insightfulness": {"impact": 3, "significance": 2}
+  }
+]

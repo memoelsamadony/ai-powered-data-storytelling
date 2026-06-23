@@ -1,0 +1,88 @@
+[
+  {
+    "table_idx": 0,
+    "errors": [
+      {"reason": "The data lists German as the original language, but the claim that the film is available only in German is an added, ungrounded assertion not supported by any property.", "text": "remains available only in its original German language", "type": 2}
+    ]
+  },
+  {
+    "table_idx": 1,
+    "errors": []
+  },
+  {
+    "table_idx": 2,
+    "errors": []
+  },
+  {
+    "table_idx": 3,
+    "errors": [
+      {"reason": "Clive Barker is the executive producer per the data, not the author of the source work 'Father of Frankenstein'; attaching 'by Clive Barker' to the source misleadingly implies he authored it.", "text": "by Clive Barker as executive producer", "type": 2}
+    ]
+  },
+  {
+    "table_idx": 4,
+    "errors": []
+  },
+  {
+    "table_idx": 5,
+    "errors": []
+  },
+  {
+    "table_idx": 6,
+    "errors": []
+  },
+  {
+    "table_idx": 7,
+    "errors": []
+  },
+  {
+    "table_idx": 8,
+    "errors": []
+  },
+  {
+    "table_idx": 9,
+    "errors": []
+  },
+  {
+    "table_idx": 10,
+    "errors": []
+  },
+  {
+    "table_idx": 11,
+    "errors": []
+  },
+  {
+    "table_idx": 12,
+    "errors": []
+  },
+  {
+    "table_idx": 13,
+    "errors": []
+  },
+  {
+    "table_idx": 14,
+    "errors": []
+  },
+  {
+    "table_idx": 15,
+    "errors": []
+  },
+  {
+    "table_idx": 16,
+    "errors": [
+      {"reason": "Awkward, ungrammatical phrasing; a person does not 'serve as an occupation of' a role.", "text": "serves as an occupation of", "type": 3}
+    ]
+  },
+  {
+    "table_idx": 17,
+    "errors": []
+  },
+  {
+    "table_idx": 18,
+    "errors": []
+  },
+  {
+    "table_idx": 19,
+    "errors": []
+  }
+]

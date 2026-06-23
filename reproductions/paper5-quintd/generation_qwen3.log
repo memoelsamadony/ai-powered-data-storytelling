@@ -1,0 +1,106 @@
+2026-06-17 20:59:05,823 INFO Generating: model=qwen3.5:4b n=20 split=test domains=['openweather', 'gsmarena', 'ice_hockey', 'owid', 'wikidata']
+2026-06-17 20:59:10,822 INFO [openweather] 1/20 (4.9s): Del Gallego is expected to experience a mix of cloudy conditions and precipitation over the next five days, with tempera
+2026-06-17 20:59:15,550 INFO [openweather] 2/20 (4.7s): Milford is expected to experience a fluctuating winter week beginning with scattered clouds at 2.6°C on January 3rd befo
+2026-06-17 20:59:21,299 INFO [openweather] 3/20 (5.7s): Wanmao experienced a cold spell over the first four days of January 2024, with temperatures dropping to lows between -10
+2026-06-17 20:59:26,272 INFO [openweather] 4/20 (5.0s): Theale is expected to experience a period of cloudy conditions with temperatures ranging between 9°C at night on January
+2026-06-17 20:59:30,936 INFO [openweather] 5/20 (4.7s): Wurzbach is expected to experience a transition from rainy conditions on January 3rd and early morning hours of January 
+2026-06-17 20:59:37,342 INFO [openweather] 6/20 (6.4s): In Srostki, Russia, cold conditions with temperatures ranging between -15°C and -7°C are expected over a five-day period
+2026-06-17 20:59:41,887 INFO [openweather] 7/20 (4.5s): Steenvoorde is expected to experience a period of light rain accompanied by overcast clouds throughout the first half of
+2026-06-17 20:59:47,476 INFO [openweather] 8/20 (5.6s): Lenauheim is expected to experience a fluctuating winter climate over the next five days, characterized by persistent cl
+2026-06-17 20:59:52,930 INFO [openweather] 9/20 (5.5s): Nazareno is expected to experience clear skies throughout the first two days of January 2024, with temperatures rising f
+2026-06-17 20:59:57,822 INFO [openweather] 10/20 (4.9s): Busalla is expected to experience a fluctuating winter week beginning with scattered clouds at 10.75°C on January 3rd, f
+2026-06-17 21:00:04,102 INFO [openweather] 11/20 (6.3s): Snagov experienced a transition over five days beginning with clear skies on January 3rd at night, followed by generally
+2026-06-17 21:00:10,806 INFO [openweather] 12/20 (6.7s): Chongqing experienced a series of cloudy conditions over the first four days of January 2024, with temperatures ranging 
+2026-06-17 21:00:16,714 INFO [openweather] 13/20 (5.9s): Laborie is expected to experience a generally cloudy period with temperatures ranging between 26°C and 34°C over the nex
+2026-06-17 21:00:22,735 INFO [openweather] 14/20 (6.0s): Sisophon is expected to experience a warm but variable week beginning with scattered clouds at 24°C on January 4th and r
+2026-06-17 21:00:27,701 INFO [openweather] 15/20 (5.0s): In Sëlva, Italy, the week began with clear skies on January 4th as temperatures rose to a high of 1.35°C before dropping
+2026-06-17 21:00:33,289 INFO [openweather] 16/20 (5.6s): Hof is expected to experience a transition from rainy conditions on January 3rd into clear skies by late Friday morning,
+2026-06-17 21:00:38,711 INFO [openweather] 17/20 (5.4s): San Julian is expected to experience a mix of rain and clouds over the next five days, with temperatures fluctuating bet
+2026-06-17 21:00:44,597 INFO [openweather] 18/20 (5.9s): Goulding is expected to experience a transition from cold, rainy conditions on January 3rd with moderate rain reaching u
+2026-06-17 21:00:49,895 INFO [openweather] 19/20 (5.3s): Albeştii Pământeni experienced a transition to colder conditions over five days, starting with temperatures around 4°C u
+2026-06-17 21:00:55,586 INFO [openweather] 20/20 (5.7s): El Copey is expected to experience hot conditions throughout January 3rd through early January 8th, with daytime tempera
+2026-06-17 21:00:55,589 INFO [openweather] wrote 20 outputs -> /media/mahmoud/Shared Data1/General/TU Dresden/Semester SoSe 26/AI story telling/data-downloads/paper5-quintd/data/quintd-1/outputs/test/openweather/direct/qwen3.json
+2026-06-17 21:01:03,157 INFO [gsmarena] 1/20 (7.6s): The vivo iQOO 12 Pro is a premium smartphone featuring a 6.78-inch AMOLED display with a resolution of 1440 x 3200 pixel
+2026-06-17 21:01:09,155 INFO [gsmarena] 2/20 (6.0s): The Emporia Elegance is a discontinued GSM mobile phone announced in 2012 featuring an Infineon PMB7880 chipset and supp
+2026-06-17 21:01:14,976 INFO [gsmarena] 3/20 (5.8s): The XOLO Era is a discontinued smartphone featuring a 5.0-inch IPS LCD display with a resolution of 480 x 854 pixels and
+2026-06-17 21:01:21,916 INFO [gsmarena] 4/20 (6.9s): The NEC e636 is a discontinued smartphone announced in February 2006 featuring a removable Li-Ion battery with up to 900
+2026-06-17 21:01:29,629 INFO [gsmarena] 5/20 (7.7s): The Sony Xperia 10 V is a compact smartphone featuring a 6.1-inch OLED display with a resolution of 1080 x 2520 pixels a
+2026-06-17 21:01:38,110 INFO [gsmarena] 6/20 (8.5s): The Plum Ram 8 is a compact smartphone announced in December 2018 featuring a TFT display with 256K colors and a resolut
+2026-06-17 21:01:44,878 INFO [gsmarena] 7/20 (6.8s): The Amazon Fire HD 8 Plus (2022), announced on September 21, 2022, is an Android-based tablet featuring a large IPS LCD 
+2026-06-17 21:01:52,215 INFO [gsmarena] 8/20 (7.3s): The Ulefone Armor X12 Pro is a rugged smartphone announced in August 2023 featuring an IPS LCD display with a 5.45-inch 
+2026-06-17 21:02:00,692 INFO [gsmarena] 9/20 (8.5s): The Sony Ericsson Live with Walkman is a discontinued smartphone announced in August 2011 and released in October of the
+2026-06-17 21:02:05,697 INFO [gsmarena] 10/20 (5.0s): The Ericsson T20e is a discontinued monochrome graphic phone announced in 2001 with dimensions of 101 x 54 x 28 mm and a
+2026-06-17 21:02:13,338 INFO [gsmarena] 11/20 (7.6s): The Lava Blaze 2 is a smartphone announced on April 10, 2023, featuring a 6.5-inch IPS LCD display with a resolution of 
+2026-06-17 21:02:19,783 INFO [gsmarena] 12/20 (6.4s): The Unnecto Quattro S is a discontinued smartphone announced in May 2016 and released in July of the same year, featurin
+2026-06-17 21:02:26,893 INFO [gsmarena] 13/20 (7.1s): The Ulefone Armor X12 is a rugged smartphone announced in September 2023 featuring an IPS LCD display with a 5.45-inch s
+2026-06-17 21:02:34,858 INFO [gsmarena] 14/20 (8.0s): The T-Mobile REVVL 6 Pro is a splash-resistant smartphone featuring a large 6.82-inch IPS LCD display with a resolution 
+2026-06-17 21:02:41,849 INFO [gsmarena] 15/20 (7.0s): The Infinix Note 30i is a mid-range smartphone announced on May 16, 2023, and available as of June 2023, featuring an AM
+2026-06-17 21:02:48,713 INFO [gsmarena] 16/20 (6.9s): The Parla Sonic 3.5S is a discontinued smartphone featuring a compact TFT display with a 3.5-inch size and 320 x 480 pix
+2026-06-17 21:02:53,317 INFO [gsmarena] 17/20 (4.6s): The Orange Sydney is a discontinued GSM mobile phone featuring a 3.2-inch TFT resistive touchscreen with a resolution of
+2026-06-17 21:02:59,863 INFO [gsmarena] 18/20 (6.5s): The Alcatel 1V (2021) is a budget-friendly smartphone announced in February 2021 and released in April of that year, fea
+2026-06-17 21:03:06,180 INFO [gsmarena] 19/20 (6.3s): The HP 7 Plus is a discontinued Android tablet featuring a 7-inch IPS LCD display with a resolution of 600 x 1024 pixels
+2026-06-17 21:03:14,475 INFO [gsmarena] 20/20 (8.3s): The Motorola Razr 40 Ultra is a foldable smartphone featuring a main display with a 6.9-inch LTPO AMOLED panel offering 
+2026-06-17 21:03:14,476 INFO [gsmarena] wrote 20 outputs -> /media/mahmoud/Shared Data1/General/TU Dresden/Semester SoSe 26/AI story telling/data-downloads/paper5-quintd/data/quintd-1/outputs/test/gsmarena/direct/qwen3.json
+2026-06-17 21:03:17,279 INFO [ice_hockey] 1/20 (2.8s): In an ice hockey match during the Liiga 23/24 season on November 29, 2023, Tappara Tampere defeated Oulun Kärpät with a 
+2026-06-17 21:03:19,081 INFO [ice_hockey] 2/20 (1.8s): In a VHL 23/24 match played on November 29, 2023, Zvezda Moscow defeated Omskie Kryliya with a final score of 4–0 in nor
+2026-06-17 21:03:21,596 INFO [ice_hockey] 3/20 (2.5s): In an Liiga 23/24 match played on November 28, 2023, at 17:30, HPK Hämeenlinna defeated TPS Turku with a final score of 
+2026-06-17 21:03:23,825 INFO [ice_hockey] 4/20 (2.2s): In an ice hockey match during the 1. Liga 23/24 season on November 29, 2023, SC Kolin hosted HC Slavia Praha in a game t
+2026-06-17 21:03:26,966 INFO [ice_hockey] 5/20 (3.1s): In an MHL 23/24 match played on November 29, 2023, at a start time of 17:00 UTC (timestamp 1701273600), the Russkiye Vit
+2026-06-17 21:03:28,920 INFO [ice_hockey] 6/20 (2.0s): In an ICE Hockey League 23/24 match played on November 28, 2023, Graz 99ers defeated HC Asiago with a final score of 2–1
+2026-06-17 21:03:31,423 INFO [ice_hockey] 7/20 (2.5s): In a Czech Republic 1. Liga match during the 23/24 season on November 29, 2023, HC Frýdek-Místek defeated HC RT Torax Po
+2026-06-17 21:03:33,507 INFO [ice_hockey] 8/20 (2.1s): In an MHL 23/24 match played on November 29, 2023, Omskie Yastreby defeated Tolpar UFA with a final score of 3 to 2 in n
+2026-06-17 21:03:36,582 INFO [ice_hockey] 9/20 (3.1s): In an Extraliga 23/24 match played on November 28, 2023, at a start time of 17:00 UTC (timestamp 1701187200), the Belaru
+2026-06-17 21:03:38,874 INFO [ice_hockey] 10/20 (2.3s): In an ice hockey match during the HockeyEttan 23/24 season on November 29, 2023, Piteå HC defeated Clemensnäs HC with a 
+2026-06-17 21:03:41,495 INFO [ice_hockey] 11/20 (2.6s): In an Extraliga 23/24 match played on November 28, 2023, at a start time of 18:00:00, HK Dukla Michalovce defeated HC 19
+2026-06-17 21:03:43,832 INFO [ice_hockey] 12/20 (2.3s): In a match during the HockeyEttan 23/24 season on November 29, 2023, Halmstad Hammers HC defeated Mörrum Gois IK with a 
+2026-06-17 21:03:46,631 INFO [ice_hockey] 13/20 (2.8s): In a Coupe de France 23/24 match held on November 28, 2023, Amiens Hockey Élite secured a decisive victory over Aigles d
+2026-06-17 21:03:49,195 INFO [ice_hockey] 14/20 (2.6s): In an ECHL 23/24 matchup on November 30, 2023, the Jacksonville Icemen secured a decisive victory over the Orlando Solar
+2026-06-17 21:03:51,772 INFO [ice_hockey] 15/20 (2.6s): In a WHL 23/24 matchup on November 30, 2023, the Lethbridge Hurricanes defeated the Calgary Hitmen with a final score of
+2026-06-17 21:03:54,814 INFO [ice_hockey] 16/20 (3.0s): In an KHL 23/24 match played on November 28, 2023, at a start time of 13:30 UTC (timestamp 1701174600), Severstal Cherep
+2026-06-17 21:03:56,799 INFO [ice_hockey] 17/20 (2.0s): In a Mestis 23/24 match played on November 28, 2023, Kiekko-Vantaa defeated Forssan Palloseura with a final score of 4–3
+2026-06-17 21:03:58,823 INFO [ice_hockey] 18/20 (2.0s): In an NHL 23/24 matchup between the Winnipeg Jets of Canada and the Dallas Stars of the USA held on November 29, 2023, t
+2026-06-17 21:04:01,389 INFO [ice_hockey] 19/20 (2.6s): In an AHL 23/24 matchup on November 30, 2023, at Wilkes Barre-Scranton's home arena, the Hershey Bears defeated the Wilk
+2026-06-17 21:04:04,656 INFO [ice_hockey] 20/20 (3.3s): In an Allsvenskan 23/24 match played on November 29, 2023, Mora IK hosted AIK at a venue where the game saw significant 
+2026-06-17 21:04:04,665 INFO [ice_hockey] wrote 20 outputs -> /media/mahmoud/Shared Data1/General/TU Dresden/Semester SoSe 26/AI story telling/data-downloads/paper5-quintd/data/quintd-1/outputs/test/ice_hockey/direct/qwen3.json
+2026-06-17 21:04:09,209 INFO [owid] 1/20 (4.5s): In Mongolia, the share of the population receiving a first dose of the COVID-19 vaccine increased steadily from 0.09% on
+2026-06-17 21:04:15,930 INFO [owid] 2/20 (6.7s): The effective reproduction rate (R) of COVID-19 in Myanmar fluctuated significantly between April 2020 and January 2023,
+2026-06-17 21:04:22,148 INFO [owid] 3/20 (6.2s): The seven-day rolling average positive rate of COVID-19 tests in Estonia fluctuated significantly between March 2020 and
+2026-06-17 21:04:25,381 INFO [owid] 4/20 (3.2s): In South Sudan, the share of the population receiving a first dose of the COVID-19 vaccine began at 0% on April 5, 2021,
+2026-06-17 21:04:28,579 INFO [owid] 5/20 (3.2s): Life expectancy at birth for French Polynesia has shown a consistent upward trend since 1950 when it stood at approximat
+2026-06-17 21:04:32,652 INFO [owid] 6/20 (4.1s): In Denmark, the share of the population receiving a first dose of a COVID-19 vaccine began at 0% on December 25, 2020, a
+2026-06-17 21:04:36,535 INFO [owid] 7/20 (3.9s): Daily new confirmed COVID-19 cases per million people in Qatar, represented as a 7-day rolling average, remained at zero
+2026-06-17 21:04:39,940 INFO [owid] 8/20 (3.4s): In Nicaragua, daily new COVID-19 tests per 1,000 people, calculated as a seven-day rolling average, began at approximate
+2026-06-17 21:04:42,959 INFO [owid] 9/20 (3.0s): In Mali, the share of the population receiving a first dose of a COVID-19 vaccine began at 0% on March 30 and April 2, 2
+2026-06-17 21:04:46,090 INFO [owid] 10/20 (3.1s): Life expectancy at birth for Trinidad and Tobago has shown a consistent upward trend over time, rising sharply from 38.8
+2026-06-17 21:04:48,416 INFO [owid] 11/20 (2.3s): Life expectancy at birth for Andorra has fluctuated over time since 1950, starting at a low of approximately 64 years an
+2026-06-17 21:04:52,306 INFO [owid] 12/20 (3.9s): Life expectancy at birth in Nicaragua has fluctuated significantly over time, ranging from a low of 24.0 years in 1930 t
+2026-06-17 21:04:55,685 INFO [owid] 13/20 (3.4s): Life expectancy at birth for Saint Kitts and Nevis has shown a consistent upward trend over time, rising from 54.43 year
+2026-06-17 21:04:58,299 INFO [owid] 14/20 (2.6s): Life expectancy at birth for Marshall Islands increased steadily from 52.06 years in 1950 to a peak of 65.27 years in 20
+2026-06-17 21:05:00,972 INFO [owid] 15/20 (2.7s): Life expectancy at birth for Tonga has shown a consistent upward trend over time, rising from 54.0267 years in 1950 to i
+2026-06-17 21:05:04,180 INFO [owid] 16/20 (3.2s): Life expectancy at birth for Libya has shown a consistent upward trend since 1950 when it stood at approximately 33.6 ye
+2026-06-17 21:05:10,665 INFO [owid] 17/20 (6.5s): From January 31 to December 26, 2021, Kazakhstan's share of the population receiving a first dose of a COVID-19 vaccine 
+2026-06-17 21:05:16,622 INFO [owid] 18/20 (6.0s): The effective reproduction rate (R) of COVID-19 in Paraguay began at 1.03 on April 5, 2020, and generally increased thro
+2026-06-17 21:05:22,560 INFO [owid] 19/20 (5.9s): The seven-day rolling average positive rate of COVID-19 tests for Armenia began at 0% through mid-March but rose sharply
+2026-06-17 21:05:26,539 INFO [owid] 20/20 (4.0s): Daily new confirmed COVID-19 cases per million people in Burundi, presented as a 7-day rolling average, remained at zero
+2026-06-17 21:05:26,540 INFO [owid] wrote 20 outputs -> /media/mahmoud/Shared Data1/General/TU Dresden/Semester SoSe 26/AI story telling/data-downloads/paper5-quintd/data/quintd-1/outputs/test/owid/direct/qwen3.json
+2026-06-17 21:05:28,492 INFO [wikidata] 1/20 (2.0s): Hundertwasser's Rainy Day" is a German-language short documentary film directed by Peter Schamoni with music composed by
+2026-06-17 21:05:30,507 INFO [wikidata] 2/20 (2.0s): The Catalan Republic is an instance of a state with limited recognition and a historical country located on the Iberian 
+2026-06-17 21:05:31,818 INFO [wikidata] 3/20 (1.3s): Ratlam State was a historical country and a princely state of the British Raj located within the administrative territor
+2026-06-17 21:05:33,367 INFO [wikidata] 4/20 (1.5s): The film "Gods and Monsters," based on Frankenstein's Father by Clive Barker as executive producer and written by Bill C
+2026-06-17 21:05:34,741 INFO [wikidata] 5/20 (1.4s): Plavi 9 is a Croatian drama film originating from Yugoslavia that centers on association football and was directed by An
+2026-06-17 21:05:36,804 INFO [wikidata] 6/20 (2.1s): Afghanistan is an instance of a country where Southern Uzbek is used as a language and which contains administrative ter
+2026-06-17 21:05:37,805 INFO [wikidata] 7/20 (1.0s): The Qin dynasty was an absolute monarchy located on the continent of Asia with its capital at Xianyang; it is classified
+2026-06-17 21:05:38,659 INFO [wikidata] 8/20 (0.9s): Comores Aviation International is an airline headquartered in Moroni, Comoros, with its operational hub located at Princ
+2026-06-17 21:05:39,805 INFO [wikidata] 9/20 (1.1s): Sotiris Gioulekas is a male Greek basketball player born in Larissa who competes as a small forward for the sports team 
+2026-06-17 21:05:41,097 INFO [wikidata] 10/20 (1.3s): Gandhara is a historical country located on the continent of Asia, as described by sources including the Brockhaus and E
+2026-06-17 21:05:41,707 INFO [wikidata] 11/20 (0.6s): Frequency Therapeutics is a business located in the United States of America.
+2026-06-17 21:05:42,581 INFO [wikidata] 12/20 (0.9s): Niyaz Mohammad Amiri is a male Afghan politician born in Ghazni who serves as a Member of the House of the People.
+2026-06-17 21:05:43,654 INFO [wikidata] 13/20 (1.1s): Vamsa Vilakku is an Indian color film originally produced in Tamil with a cast featuring Prabhu Ganesan and Sivaji Ganes
+2026-06-17 21:05:44,637 INFO [wikidata] 14/20 (1.0s): Ionis Pharmaceuticals is an American public pharmaceutical company headquartered in Carlsbad within the biotechnology in
+2026-06-17 21:05:46,050 INFO [wikidata] 15/20 (1.4s): La Femme que j'ai le plus aimée is a film featuring an ensemble cast including Raymond Aimos, Bernard Blier, Michèle Alf
+2026-06-17 21:05:47,484 INFO [wikidata] 16/20 (1.4s): Viaggi di nozze is an Italian color film originating from Italy with its narrative set there as well; it was produced by
+2026-06-17 21:05:48,534 INFO [wikidata] 17/20 (1.1s): Vincent Vaughan is a male human who serves as an occupation of Gaelic football player and currently plays for the Tipper
+2026-06-17 21:05:49,173 INFO [wikidata] 18/20 (0.6s): Dangerous Night is an Indian horror film composed by Bappi Lahiri.
+2026-06-17 21:05:49,936 INFO [wikidata] 19/20 (0.8s): Scoopler is an instance of a business that participated in Y Combinator Summer 2008.
+2026-06-17 21:05:51,433 INFO [wikidata] 20/20 (1.5s): The Beylik of Tunis was a historical country located on the continent of Africa with its capital at Tunis. It operated u
+2026-06-17 21:05:51,434 INFO [wikidata] wrote 20 outputs -> /media/mahmoud/Shared Data1/General/TU Dresden/Semester SoSe 26/AI story telling/data-downloads/paper5-quintd/data/quintd-1/outputs/test/wikidata/direct/qwen3.json

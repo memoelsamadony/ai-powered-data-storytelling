@@ -1,0 +1,90 @@
+[
+  {
+    "table_idx": 0,
+    "errors": []
+  },
+  {
+    "table_idx": 1,
+    "errors": [
+      {"reason": "The data ends at 2024-01-08 07:00 (morning), where the feels_like value of -7°C occurs; there is no evening forecast for January 8th in the data, so attributing the low to the evening is incorrect", "text": "the forecast concludes on the evening of January 8th", "type": 0}
+    ]
+  },
+  {
+    "table_idx": 2,
+    "errors": []
+  },
+  {
+    "table_idx": 3,
+    "errors": []
+  },
+  {
+    "table_idx": 4,
+    "errors": []
+  },
+  {
+    "table_idx": 5,
+    "errors": []
+  },
+  {
+    "table_idx": 6,
+    "errors": []
+  },
+  {
+    "table_idx": 7,
+    "errors": []
+  },
+  {
+    "table_idx": 8,
+    "errors": []
+  },
+  {
+    "table_idx": 9,
+    "errors": [
+      {"reason": "The overcast skies and light rain on January 5th occur during the night and morning (01:00 overcast, 07:00 light rain), not the evening", "text": "overcast skies and light rain are expected to move in by the evening of the 5th", "type": 0}
+    ]
+  },
+  {
+    "table_idx": 10,
+    "errors": [
+      {"reason": "On the morning of January 5th the data shows clear skies (02:00 and 08:00 both clear sky), not light rain; the light rain occurred only on the evening of the 4th", "text": "throughout the morning of the 5th", "type": 0}
+    ]
+  },
+  {
+    "table_idx": 11,
+    "errors": []
+  },
+  {
+    "table_idx": 12,
+    "errors": []
+  },
+  {
+    "table_idx": 13,
+    "errors": []
+  },
+  {
+    "table_idx": 14,
+    "errors": []
+  },
+  {
+    "table_idx": 15,
+    "errors": [
+      {"reason": "The data never shows clear skies; the forecast remains overcast (including the final timestamp at 87% cloud cover), so a transition to clearer skies is not supported by the data", "text": "and then clearer skies", "type": 0}
+    ]
+  },
+  {
+    "table_idx": 16,
+    "errors": []
+  },
+  {
+    "table_idx": 17,
+    "errors": []
+  },
+  {
+    "table_idx": 18,
+    "errors": []
+  },
+  {
+    "table_idx": 19,
+    "errors": []
+  }
+]

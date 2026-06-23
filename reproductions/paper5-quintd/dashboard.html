@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Red Pen — Quintd reproduction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#e9edf1; --surface:#fbfcfd; --surface-2:#f3f6f9;
+    --ink:#16202e; --ink-soft:#566273; --hair:#d2dae2;
+    --vermilion:#d23a2f; --vermilion-wash:rgba(210,58,47,.10);
+    --teal:#0f7a63; --teal-wash:rgba(15,122,99,.10);
+    --amber:#b3760f; --amber-wash:rgba(214,150,30,.14);
+    --shadow:0 1px 0 var(--hair), 0 18px 40px -28px rgba(22,32,46,.45);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  a{color:inherit}
+
+  /* ---- masthead ---- */
+  header.mast{border-bottom:2px solid var(--ink); margin-top:34px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--ink-soft); display:flex; gap:14px; flex-wrap:wrap;
+    align-items:center; padding-bottom:18px}
+  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--vermilion)}
+  h1{font-family:"Fraunces",serif; font-weight:900; font-size:clamp(42px,7.5vw,86px);
+    line-height:.96; letter-spacing:-.015em; margin:.18em 0 .12em}
+  h1 em{font-style:italic; font-weight:400}
+  .deck{font-size:clamp(18px,2.2vw,23px); color:var(--ink-soft); max-width:60ch;
+    margin:0 0 26px; line-height:1.45}
+  .deck b{color:var(--ink); font-weight:500}
+  .deck .v{color:var(--vermilion); font-weight:500}
+  .deck .g{color:var(--teal); font-weight:500}
+
+  /* ---- explorer ---- */
+  section{margin:52px 0}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:18px}
+  .sec-num{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--vermilion);
+    letter-spacing:.18em}
+  .sec-title{font-family:"Fraunces",serif; font-weight:600; font-size:26px; letter-spacing:-.01em}
+  .sec-note{margin-left:auto; font-size:13px; color:var(--ink-soft); font-family:"IBM Plex Mono",monospace}
+
+  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:18px}
+  .tabs{display:flex; gap:6px; flex-wrap:wrap}
+  .tab{font-family:"IBM Plex Mono",monospace; font-size:13px; letter-spacing:.02em;
+    background:var(--surface); border:1px solid var(--hair); color:var(--ink-soft);
+    padding:9px 14px; border-radius:999px; cursor:pointer; transition:all .15s}
+  .tab .ic{margin-right:7px; opacity:.7}
+  .tab:hover{border-color:var(--ink-soft); color:var(--ink)}
+  .tab[aria-selected="true"]{background:var(--ink); color:#fff; border-color:var(--ink)}
+  .tab[aria-selected="true"] .ic{opacity:1}
+  .spacer{flex:1 1 30px}
+  .nav{display:flex; align-items:center; gap:4px; background:var(--surface);
+    border:1px solid var(--hair); border-radius:999px; padding:4px}
+  .nav button{font-family:"IBM Plex Mono",monospace; border:0; background:transparent;
+    color:var(--ink); width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:16px}
+  .nav button:hover{background:var(--surface-2)}
+  .nav .pos{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-soft);
+    min-width:96px; text-align:center}
+  .run-hint{font-size:12px; color:var(--ink-soft); letter-spacing:.04em}
+  .livebtn{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11.5px;
+    letter-spacing:.04em; background:var(--amber-wash); color:var(--amber);
+    border:1px solid var(--amber); padding:6px 12px; border-radius:999px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:7px; transition:all .15s; white-space:nowrap}
+  .livebtn:hover{background:var(--amber); color:#fff}
+  .livebtn[disabled]{opacity:.55; cursor:wait}
+
+  /* data slip */
+  details.data{background:var(--ink); color:#cfd8e3; border-radius:10px; margin-bottom:22px;
+    box-shadow:var(--shadow); overflow:hidden}
+  details.data summary{cursor:pointer; list-style:none; padding:13px 18px;
+    font-family:"IBM Plex Mono",monospace; font-size:12.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:#8aa0b8; display:flex; align-items:center; gap:10px}
+  details.data summary::-webkit-details-marker{display:none}
+  details.data summary .chev{margin-left:auto; transition:transform .2s}
+  details.data[open] summary .chev{transform:rotate(90deg)}
+  details.data .body{padding:0 18px 16px; font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px; line-height:1.7; white-space:pre-wrap; word-break:break-word;
+    max-height:240px; overflow:auto; color:#dde6f0}
+
+  /* the drafts */
+  .drafts{display:grid; grid-template-columns:repeat(2,1fr); gap:20px}
+  .drafts.cols-3{grid-template-columns:repeat(3,1fr)}
+  .drafts .story{font-size:17px}
+  .drafts.cols-3 .story{font-size:15.5px; line-height:1.55}
+  .draft{background:var(--surface); border:1px solid var(--hair); border-radius:12px;
+    box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden}
+  .draft.win{border-color:var(--teal)}
+  .draft-top{display:flex; align-items:center; gap:12px; padding:16px 20px;
+    border-bottom:1px solid var(--hair)}
+  .who{display:flex; flex-direction:column}
+  .who .name{font-family:"Fraunces",serif; font-weight:600; font-size:19px}
+  .who .when{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-soft)}
+  .verdict{margin-left:auto; font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+    font-weight:600; padding:6px 11px; border-radius:999px; white-space:nowrap;
+    background:var(--amber-wash); color:var(--amber)}
+  .verdict.bad{background:var(--vermilion-wash); color:var(--vermilion)}
+  .verdict.good{background:var(--teal-wash); color:var(--teal)}
+  .story{padding:22px 22px 18px; font-size:18.5px; line-height:1.62; flex:1}
+  .story.fresh{background:repeating-linear-gradient(135deg,transparent,transparent 11px,var(--amber-wash) 11px,var(--amber-wash) 12px)}
+  mark.err{background:transparent; color:inherit; text-decoration:underline wavy var(--vermilion);
+    text-underline-offset:4px; text-decoration-thickness:1.6px; padding:0 1px; cursor:help}
+  mark.err sup{font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--vermilion);
+    font-weight:600; padding-left:1px}
+  .notes{border-top:1px dashed var(--hair); margin:0; padding:14px 22px 20px;
+    display:flex; flex-direction:column; gap:9px}
+  .notes:empty{display:none}
+  .note{display:flex; gap:10px; font-size:14px; line-height:1.4; color:var(--ink-soft)}
+  .note .n{font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+    color:var(--vermilion); flex:none; margin-top:2px}
+  .note .tag{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.06em;
+    text-transform:uppercase; background:var(--vermilion-wash); color:var(--vermilion);
+    padding:1px 6px; border-radius:4px; flex:none; margin-top:1px}
+  .clean{padding:14px 22px 20px; font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+    letter-spacing:.04em; color:var(--teal); border-top:1px dashed var(--hair)}
+
+  /* scoreboard */
+  .board{background:var(--surface); border:1px solid var(--hair); border-radius:12px;
+    box-shadow:var(--shadow); padding:8px 24px}
+  .brow{display:grid; grid-template-columns:130px 1fr; gap:18px; align-items:center;
+    padding:16px 0; border-bottom:1px solid var(--hair)}
+  .brow:last-child{border-bottom:0}
+  .brow.tot{padding:20px 0}
+  .blabel{font-family:"Fraunces",serif; font-size:17px; font-weight:600; display:flex;
+    align-items:center; gap:9px}
+  .blabel .ic{color:var(--ink-soft)}
+  .brow.tot .blabel{font-size:20px; font-weight:900}
+  .bars{display:flex; flex-direction:column; gap:8px}
+  .bar{display:grid; grid-template-columns:78px 1fr 54px; gap:12px; align-items:center;
+    font-family:"IBM Plex Mono",monospace; font-size:12px}
+  .bar .who2{color:var(--ink-soft); letter-spacing:.04em}
+  .track{height:14px; background:var(--surface-2); border-radius:7px; overflow:hidden;
+    border:1px solid var(--hair)}
+  .fill{height:100%; border-radius:7px 0 0 7px; width:0; transition:width .9s cubic-bezier(.2,.8,.2,1)}
+  .fill.g{background:var(--teal)}
+  .fill.z{background:var(--vermilion)}
+  .fill.q{background:var(--amber)}
+  .bar .pct{text-align:right; font-weight:600}
+  .bar .pct.g{color:var(--teal)} .bar .pct.z{color:var(--vermilion)} .bar .pct.q{color:var(--amber)}
+  .legend{display:flex; gap:20px; flex-wrap:wrap; margin-top:14px; font-family:"IBM Plex Mono",monospace;
+    font-size:12px; color:var(--ink-soft)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+  .foot{border-top:2px solid var(--ink); margin:60px 0 40px; padding-top:18px;
+    font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-soft);
+    display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+
+  .skel{color:var(--ink-soft); font-family:"IBM Plex Mono",monospace; font-size:13px; padding:30px 0}
+
+  @media (max-width:1020px){ .drafts.cols-3{grid-template-columns:1fr} }
+  @media (max-width:820px){
+    .drafts, .drafts.cols-3{grid-template-columns:1fr}
+    .brow{grid-template-columns:1fr; gap:10px}
+    .sec-note{display:none}
+  }
+  :focus-visible{outline:2.5px solid var(--amber); outline-offset:2px; border-radius:4px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">
+      <span class="dot"></span>Reproducibility study
+      <span>·</span>Paper 5 — Quintd
+      <span>·</span>Kasner &amp; Dušek, ACL 2024
+      <span>·</span>gemma4:12b vs Zephyr-7B
+    </div>
+    <h1>The red pen <em>doesn't lie.</em></h1>
+    <p class="deck">Same data, same prompt, two years apart. We re-ran the paper's
+      data-to-text test with a 2026 open model and fact-checked every story against
+      its source. Zephyr-7B — the paper's <span class="v">best</span> 2023 model — slipped on
+      <b>87%</b> of these. <span class="g">gemma4:12b</span> slips on <b>18%</b>.
+      Pick a story and see for yourself.</p>
+  </header>
+
+  <section id="explorer">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">Two drafts, one source</span>
+      <span class="sec-note" id="task-note"></span>
+    </div>
+
+    <div class="controls">
+      <div class="tabs" id="tabs" role="tablist" aria-label="Domain"></div>
+      <span class="spacer"></span>
+      <div class="nav">
+        <button id="prev" aria-label="Previous example">‹</button>
+        <span class="pos mono" id="pos">—</span>
+        <button id="next" aria-label="Next example">›</button>
+      </div>
+      <span class="run-hint mono">↻ run either model live →</span>
+    </div>
+
+    <details class="data">
+      <summary>The source data<span class="chev">›</span></summary>
+      <div class="body mono" id="data">—</div>
+    </details>
+
+    <div class="drafts" id="drafts"><div class="skel">Loading…</div></div>
+  </section>
+
+  <section id="scoreboard">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-title">The scoreboard</span>
+      <span class="sec-note">stories with ≥1 semantic error · same 20/domain</span>
+    </div>
+    <div class="board" id="board"><div class="skel">Loading…</div></div>
+    <div class="legend">
+      <span><i style="background:var(--vermilion)"></i> Zephyr-7B · 2023 (paper's best open model)</span>
+      <span><i style="background:var(--amber)"></i> qwen3.5:4b · 2026 (thinking off)</span>
+      <span><i style="background:var(--teal)"></i> gemma4:12b · 2026</span>
+      <span>Paper's full-test open-model range: 76–94%, &gt;2 errors/story</span>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>Quintd-1 inputs · gemma4 via Ollama · Opus 4.7 as referee (paper's GPT-4 metric for Zephyr)</span>
+    <span>error spans = proofreader's marks · hover for the reason</span>
+  </div>
+</div>
+
+<script>
+const DOMAINS = [
+  {id:"openweather", ic:"☁", label:"Weather"},
+  {id:"gsmarena",    ic:"▣", label:"Product"},
+  {id:"ice_hockey",  ic:"◉", label:"Hockey"},
+  {id:"owid",        ic:"≈", label:"Health"},
+  {id:"wikidata",    ic:"◈", label:"Facts"},
+];
+let state = {domain:"ice_hockey", idx:2, n:20, cur:null};
+
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+// build text with error spans -> HTML (handles non-overlapping, clips overlaps)
+function markup(text, spans){
+  if(!spans || !spans.length) return esc(text);
+  spans = spans.slice().sort((a,b)=>a.start-b.start);
+  let out="", pos=0, n=1;
+  for(const s of spans){
+    if(s.start < pos) continue;            // skip overlap
+    out += esc(text.slice(pos, s.start));
+    const frag = esc(text.slice(s.start, s.end));
+    out += `<mark class="err" title="${esc(s.reason)}">${frag}<sup>${n}</sup></mark>`;
+    pos = s.end; n++;
+  }
+  out += esc(text.slice(pos));
+  return out;
+}
+function notesHTML(spans){
+  if(!spans || !spans.length) return "";
+  return spans.map((s,i)=>`<div class="note"><span class="n">${i+1}</span>
+    <span class="tag">${esc(s.type_name)}</span><span>${esc(s.reason)}</span></div>`).join("");
+}
+function draftCard(who, when, d, win, modelKey){
+  const n = d.spans.length;
+  const verdict = d.fresh
+    ? `<span class="verdict">↻ fresh</span>`
+    : n===0 ? `<span class="verdict good">✓ faithful</span>`
+            : `<span class="verdict bad">✗ ${n} error${n>1?"s":""}</span>`;
+  const live = `<button class="livebtn" data-model="${modelKey}"
+      title="Regenerate this story live via Ollama">↻ live</button>`;
+  const body = d.fresh
+    ? `<div class="story fresh">${esc(d.text)}</div><div class="clean">↻ just generated live via Ollama — not yet fact-checked</div>`
+    : `<div class="story">${markup(d.text, d.spans)}</div>` +
+      (n? `<div class="notes">${notesHTML(d.spans)}</div>` : `<div class="clean">✓ every claim traces back to the data</div>`);
+  return `<article class="draft ${win?'win':''}">
+    <div class="draft-top"><div class="who"><span class="name">${who}</span>
+      <span class="when">${when}</span></div>${verdict}${live}</div>${body}</article>`;
+}
+function renderExample(ex){
+  state.cur = ex; state.n = ex.n;
+  $("#task-note").textContent = `${ex.meta.icon}  ${ex.meta.task}`;
+  $("#pos").textContent = `#${ex.idx+1} of ${ex.n}`;
+  $("#data").textContent = ex.data;
+  const cards = [
+    {who:"Zephyr-7B",  when:"2023 · 7B · paper's best open model", d:ex.zephyr, key:"zephyr"},
+    ...(ex.qwen3 ? [{who:"qwen3.5:4b", when:"2026 · 4B · this study", d:ex.qwen3, key:"qwen3"}] : []),
+    {who:"gemma4:12b", when:"2026 · 12B · this study", d:ex.gemma, key:"gemma4"},
+  ];
+  const minErr = Math.min(...cards.map(c => c.d.fresh ? 99 : c.d.spans.length));
+  const drafts = $("#drafts");
+  drafts.className = "drafts cols-" + cards.length;
+  drafts.innerHTML = cards.map(c =>
+    draftCard(c.who, c.when, c.d, !c.d.fresh && c.d.spans.length===minErr, c.key)).join("");
+}
+async function loadExample(){
+  $("#drafts").innerHTML = `<div class="skel">Fact-checking…</div>`;
+  const r = await fetch(`/api/example?domain=${state.domain}&idx=${state.idx}`);
+  renderExample(await r.json());
+}
+async function runLive(modelKey, btn){
+  btn.disabled = true; const old = btn.innerHTML; btn.innerHTML = `◌ writing…`;
+  try{
+    const r = await fetch("/api/run", {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({domain:state.domain, idx:state.idx, model:modelKey})});
+    const j = await r.json();
+    if(j.error) throw new Error(j.error);
+    const side = modelKey === "gemma4" ? "gemma" : "zephyr";
+    const ex = state.cur;
+    const stored = (ex[side].text||"").trim();
+    const fresh = (j.text||"").trim();
+    // if the live output matches the fact-checked one, keep the marks; else show fresh
+    ex[side] = fresh === stored ? ex[side] : {text:fresh, spans:[], fresh:true};
+    renderExample(ex);
+  }catch(e){
+    alert("Live run failed: " + e.message + "\nIs Ollama running with this model pulled?");
+    btn.disabled = false; btn.innerHTML = old;
+  }
+}
+function buildTabs(){
+  $("#tabs").innerHTML = DOMAINS.map(d =>
+    `<button class="tab" role="tab" data-id="${d.id}" aria-selected="${d.id===state.domain}">
+      <span class="ic">${d.ic}</span>${d.label}</button>`).join("");
+  $("#tabs").querySelectorAll(".tab").forEach(t => t.onclick = () => {
+    state.domain = t.dataset.id; state.idx = 0;
+    $("#tabs").querySelectorAll(".tab").forEach(x =>
+      x.setAttribute("aria-selected", x.dataset.id===state.domain));
+    loadExample();
+  });
+}
+async function loadBoard(){
+  const s = await fetch("/api/summary").then(r=>r.json());
+  const bar = (cls,who,v)=>`<div class="bar"><span class="who2">${who}</span>
+    <div class="track"><div class="fill ${cls}" data-w="${v}"></div></div>
+    <span class="pct ${cls}">${v}%</span></div>`;
+  const q = (v) => v==null ? '' : bar('q','qwen3 ’26 4B', v);
+  const row = r => `<div class="brow"><div class="blabel"><span class="ic">${r.icon}</span>${r.label}</div>
+    <div class="bars">${bar('z','Zephyr ’23 7B',r.zephyr)}${q(r.qwen3)}${bar('g','gemma4 ’26 12B',r.gemma)}</div></div>`;
+  const o = s.overall;
+  $("#board").innerHTML = s.rows.map(row).join("") +
+    `<div class="brow tot"><div class="blabel">Overall</div>
+      <div class="bars">${bar('z','Zephyr ’23 7B',o.zephyr)}${q(o.qwen3)}${bar('g','gemma4 ’26 12B',o.gemma)}</div></div>`;
+  // animate fills after layout
+  requestAnimationFrame(()=> $("#board").querySelectorAll(".fill").forEach(f=> f.style.width = f.dataset.w + "%"));
+}
+$("#prev").onclick = () => { state.idx = (state.idx-1+state.n)%state.n; loadExample(); };
+$("#next").onclick = () => { state.idx = (state.idx+1)%state.n; loadExample(); };
+$("#drafts").addEventListener("click", e => {
+  const b = e.target.closest(".livebtn");
+  if(b) runLive(b.dataset.model, b);
+});
+buildTabs(); loadExample(); loadBoard();
+</script>
+</body>
+</html>

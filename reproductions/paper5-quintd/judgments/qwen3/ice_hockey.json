@@ -1,0 +1,252 @@
+[
+  {
+    "table_idx": 0,
+    "errors": []
+  },
+  {
+    "table_idx": 1,
+    "errors": []
+  },
+  {
+    "table_idx": 2,
+    "errors": [
+      {
+        "reason": "After two periods the away team HPK led 4-0 (P1 0-2, P2 0-2); the game was not tied.",
+        "text": "the game was tied after two periods",
+        "type": 0
+      },
+      {
+        "reason": "TPS scored 0 in the first two periods (P1 0, P2 0); they did not score twice.",
+        "text": "both teams scored twice each",
+        "type": 0
+      },
+      {
+        "reason": "TPS was not leading; after P1 the score was TPS 0, HPK 2.",
+        "text": "TPS leading 1–0",
+        "type": 0
+      },
+      {
+        "reason": "HPK scored 0 goals in the third period (P3 home 1, away 0); they did not score three goals in P3.",
+        "text": "HPK secured victory by scoring three goals during the third period",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 3,
+    "errors": [
+      {
+        "reason": "Slavia Praha scored only 1 goal total (away display 1), not two; final was 2-1.",
+        "text": "both teams scored two goals each across three periods",
+        "type": 0
+      },
+      {
+        "reason": "SC Kolin won 2-1; Slavia did not secure victory.",
+        "text": "Slavia managed to secure victory",
+        "type": 0
+      },
+      {
+        "reason": "Slavia scored only one goal total; there was no second goal.",
+        "text": "netting their second goal during the third period",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 4,
+    "errors": [
+      {
+        "reason": "Atlanty scored 2 goals in the third period (home P3 2), they were not held to one.",
+        "text": "Atlanty remained goalless until taking one point in the third",
+        "type": 0
+      },
+      {
+        "reason": "Timezone of the timestamp is not given in the data.",
+        "text": "UTC",
+        "type": 1
+      },
+      {
+        "reason": "The data shows overtime 0 and a penalty (shootout) decided the game (away penalties 1), not an overtime goal.",
+        "text": "secured their victory with a penalty shot in overtime",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 5,
+    "errors": [
+      {
+        "reason": "The game was decided in overtime (Graz normaltime 1, overtime 1); it was not won in normal time, which ended 1-1.",
+        "text": "with a final score of 2–1 in normal time",
+        "type": 0
+      },
+      {
+        "reason": "Whether the start time is local time is not verifiable from the data.",
+        "text": "local time",
+        "type": 1
+      }
+    ]
+  },
+  {
+    "table_idx": 6,
+    "errors": [
+      {
+        "reason": "Ice hockey has no halftime, and after two periods Frydek led 2-1 (P2 0-0); they did not fall behind.",
+        "text": "before falling behind at halftime",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 7,
+    "errors": [
+      {
+        "reason": "After the first period the score was 1-0 (home P1 1, away P1 0), not tied.",
+        "text": "the game was tied at one goal each after the first period",
+        "type": 0
+      },
+      {
+        "reason": "Tolpar scored 2 goals across the second and third periods (P2 1, P3 1), not one.",
+        "text": "compared to their opponents' single goal",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 8,
+    "errors": [
+      {
+        "reason": "The second period was 1-1 (home P2 1, away P2 1), not 1-0.",
+        "text": "scores of 1-1 and then 1-0",
+        "type": 0
+      },
+      {
+        "reason": "The data shows overtime 0; the game was decided by a penalty shootout (away penalties 1), not after overtime.",
+        "text": "the match concluded after overtime when Mogilev secured victory through a decisive penalty shot",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 9,
+    "errors": [
+      {
+        "reason": "After two periods Piteo led... actually trailed by only one: Piteå 3 (1+2), Clemensnäs 4 (0+4); they trailed by one goal, not four.",
+        "text": "before trailing by four goals after two periods",
+        "type": 0
+      },
+      {
+        "reason": "Ice hockey has three periods; the data lists period3, not a fourth period.",
+        "text": "fourth-period performance",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 10,
+    "errors": []
+  },
+  {
+    "table_idx": 11,
+    "errors": [
+      {
+        "reason": "The third period was not goalless; the away team scored (home P3 0, away P3 1).",
+        "text": "the third ended goalless",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 12,
+    "errors": [
+      {
+        "reason": "Aigles de Nice scored 2 goals total (away display 2), both in the first period, not a single goal.",
+        "text": "who managed only a single goal during the entire contest",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 13,
+    "errors": []
+  },
+  {
+    "table_idx": 14,
+    "errors": [
+      {
+        "reason": "The final score was 4-1, a comfortable rather than narrow victory; framing it as narrow is misleading.",
+        "text": "a narrow victory for the Hurricanes",
+        "type": 2
+      }
+    ]
+  },
+  {
+    "table_idx": 15,
+    "errors": [
+      {
+        "reason": "The home team Sibir did not lead in the first period; the away team Severstal led 1-0 (home P1 0, away P1 1).",
+        "text": "the home team take an early lead in the first period",
+        "type": 0
+      },
+      {
+        "reason": "Timezone of the timestamp is not given in the data.",
+        "text": "UTC",
+        "type": 1
+      }
+    ]
+  },
+  {
+    "table_idx": 16,
+    "errors": [
+      {
+        "reason": "The second period was 1-2, so after two periods it was 3-4, not level.",
+        "text": "remained level through the second period",
+        "type": 0
+      },
+      {
+        "reason": "Forssan Palloseura lost 3-4 and never led; they did not take a lead.",
+        "text": "Forssan took an early lead to close out regulation",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 17,
+    "errors": []
+  },
+  {
+    "table_idx": 18,
+    "errors": [
+      {
+        "reason": "Hershey's goals are fully accounted for by periods (1+4+2=7); there was no extra goal during normal time.",
+        "text": "and one additional goal during normal time play",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 19,
+    "errors": [
+      {
+        "reason": "Mora scored 0 goals in the first period (home P1 0); AIK led 2-0 after P1.",
+        "text": "Mora took an early lead with two goals in the first period",
+        "type": 0
+      },
+      {
+        "reason": "Ice hockey has no halftime, and Mora had only 2 goals after two periods (0+2), not four.",
+        "text": "added one more to reach four by halftime",
+        "type": 0
+      },
+      {
+        "reason": "AIK scored 4 goals in regulation (P1 2, P2 2, P3 0), not three; and 2 in the second period, not one.",
+        "text": "scoring three times during regular time (two in the opening period and one in the second)",
+        "type": 0
+      },
+      {
+        "reason": "Mora's goals came in the second and third periods (0, 2, 2), not the first two periods.",
+        "text": "all of their points which came from the first two periods",
+        "type": 0
+      }
+    ]
+  }
+]

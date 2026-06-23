@@ -1,0 +1,100 @@
+[
+  {
+    "table_idx": 0,
+    "errors": []
+  },
+  {
+    "table_idx": 1,
+    "errors": []
+  },
+  {
+    "table_idx": 2,
+    "errors": []
+  },
+  {
+    "table_idx": 3,
+    "errors": [
+      {
+        "reason": "The data lists 'based on: Father of Frankenstein' but does not state it is a novel",
+        "text": "novel",
+        "type": 1
+      }
+    ]
+  },
+  {
+    "table_idx": 4,
+    "errors": [
+      {
+        "reason": "The entity name is 'Plavi 9', not 'Plavi'; the title is rendered incorrectly",
+        "text": "Plavi is",
+        "type": 0
+      }
+    ]
+  },
+  {
+    "table_idx": 5,
+    "errors": []
+  },
+  {
+    "table_idx": 6,
+    "errors": []
+  },
+  {
+    "table_idx": 7,
+    "errors": []
+  },
+  {
+    "table_idx": 8,
+    "errors": []
+  },
+  {
+    "table_idx": 9,
+    "errors": []
+  },
+  {
+    "table_idx": 10,
+    "errors": []
+  },
+  {
+    "table_idx": 11,
+    "errors": []
+  },
+  {
+    "table_idx": 12,
+    "errors": []
+  },
+  {
+    "table_idx": 13,
+    "errors": []
+  },
+  {
+    "table_idx": 14,
+    "errors": []
+  },
+  {
+    "table_idx": 15,
+    "errors": []
+  },
+  {
+    "table_idx": 16,
+    "errors": []
+  },
+  {
+    "table_idx": 17,
+    "errors": []
+  },
+  {
+    "table_idx": 18,
+    "errors": []
+  },
+  {
+    "table_idx": 19,
+    "errors": [
+      {
+        "reason": "The data lists 'official language: Turkish' and 'language used: Northern Berber languages'; describing Northern Berber as 'also used' is correct, but stating Turkish was 'the official language used' conflates official language with language used",
+        "text": "official language used",
+        "type": 2
+      }
+    ]
+  }
+]
