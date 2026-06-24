@@ -36,7 +36,7 @@ export default function HowItWorksPage() {
       <Section>
         <Container>
           <Reveal>
-            <Card className="relative overflow-hidden border-navy/10 bg-navy p-8 text-white sm:p-12">
+            <Card className="relative overflow-hidden border-navy/10 bg-navy! p-8 text-white sm:p-12">
               <div className="glow-teal pointer-events-none absolute inset-0 opacity-70" />
               <div className="relative max-w-3xl">
                 <Kicker tone="light">The gap we fill</Kicker>
