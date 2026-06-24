@@ -14,6 +14,8 @@ is fully interactive with no API keys — the Python pipeline plugs in later beh
 
 ## Getting started
 
+> **Prerequisites:** Node.js 20+ and npm. No API keys or backend needed — the app runs on mock data.
+
 ```bash
 npm install      # first time only
 npm run dev      # http://localhost:3000
@@ -57,9 +59,9 @@ Every piece of displayed content flows through `lib/api.ts`. The functions there
 return mock data with simulated latency. To go live, change their bodies to `fetch('/api/…')`
 calls against the Python pipeline — no component needs to change:
 
-- `getDatasets()` / `getDatasetById(id)`
-- `generateStory(datasetId)` → `{ raw, moderated, factualCheck }`
-- `compareStories(datasetId)` → metrics (BLEU/ROUGE/METEOR, alarmism before/after, …)
+- `getDatasets()` / `getDatasetById(id)` → the available datasets
+- `generateStory(datasetId)` → `{ dataset, story }` (the story set: human baseline, raw LLM, moderated LLM, factual check, emotive spans)
+- `compareStories(datasetId)` → metrics (text similarity BLEU/ROUGE-L/METEOR, alarmism before/after, emotive spans removed, facts preserved)
 
 ## Tech
 
