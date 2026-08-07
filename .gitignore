@@ -45,3 +45,17 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 .venv/
+
+# Generated research artifacts (kept locally, not versioned)
+/emotional-tone-moderation/outputs/
+/reproductions/paper5-quintd/judge_inputs/
+/reproductions/paper5-quintd/judgments/
+/reproductions/paper9-datatales/judgments/
+/reproductions/paper9-datatales/judgments_gemma4/
+/reproductions/paper5-quintd/*.log
+/reproductions/paper9-datatales/*.log
+/reproductions/paper5-quintd/dashboard.html
+/reproductions/paper9-datatales/eval_inputs.json
+/reproductions/paper9-datatales/generations*.json
+/reproductions/paper9-datatales/metrics*.json
+/reproductions/paper9-datatales/factuality_*.json
