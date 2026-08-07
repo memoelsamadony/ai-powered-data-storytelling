@@ -59,3 +59,6 @@ __pycache__/
 /reproductions/paper9-datatales/generations*.json
 /reproductions/paper9-datatales/metrics*.json
 /reproductions/paper9-datatales/factuality_*.json
+
+# Django backend (.venv/ and __pycache__/ are already covered above)
+backend/db.sqlite3

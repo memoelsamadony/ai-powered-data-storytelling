@@ -1,0 +1,224 @@
+"""HTTP surface. Mirrors ``lib/api.ts`` on the frontend.
+
+Design note - why three stage endpoints instead of one "generate story" call
+---------------------------------------------------------------------------
+``components/generate/pipeline-runner.tsx`` drives a
+``generate -> moderate -> factcheck -> done`` state machine on hardcoded timers
+(2200 ms, 1900 ms) over text that has already arrived. A real run is 30 s to
+several minutes, so that animation would be a lie and a single blocking call
+would freeze the wizard.
+
+Each stage here is one Ollama call and one endpoint. The frontend awaits each in
+turn, so every beat of the animation ends exactly when the real work does - with
+plain request/response, no SSE and no job polling. Streaming can be layered on
+later for token-level typewriter output without changing this shape.
+
+All calls are synchronous by design: only one model can be resident at a time on
+this hardware (see ollama_client), so parallelism would thrash, not help.
+"""
+
+from __future__ import annotations
+
+import logging
+
+from django.shortcuts import get_object_or_404
+from ninja import NinjaAPI, Query
+from ninja.errors import HttpError
+
+from . import datasets as ds
+from . import ollama_client as oc
+from . import services
+from .models import Run, RunStatus
+from .schemas import (
+    ComparisonMetrics,
+    CompareIn,
+    Dataset,
+    FactCheckItem,
+    GenerateIn,
+    HealthOut,
+    HumanStoryIn,
+    ModelInfo,
+    RunRef,
+    StorySet,
+    TierInfo,
+    ToneVariant,
+)
+
+log = logging.getLogger(__name__)
+
+api = NinjaAPI(title="AI-Powered Data Storytelling", version="0.1.0", docs_url="/docs")
+
+
+# django-ninja resolves its own `by_alias` as `by_alias or False`, which silently
+# overrides the `serialize_by_alias=True` in schemas.Schema and emits snake_case.
+# These wrappers pin it on, so the camelCase contract with the TypeScript types is
+# enforced in one place instead of on every decorator, where it is easy to forget.
+def get(path: str, **kwargs):
+    return api.get(path, by_alias=True, **kwargs)
+
+
+def post(path: str, **kwargs):
+    return api.post(path, by_alias=True, **kwargs)
+
+
+@api.exception_handler(oc.OllamaError)
+def on_ollama_error(request, exc):
+    # Surface model/JSON failures as a real error instead of a plausible-looking
+    # empty story. A silent fallback here would be indistinguishable from success.
+    log.error("ollama failure: %s", exc)
+    return api.create_response(request, {"detail": str(exc)}, status=502)
+
+
+# --------------------------------------------------------------------------
+# Capability
+# --------------------------------------------------------------------------
+
+
+@get("/health", response=HealthOut)
+def health(request):
+    """What this machine can actually run right now.
+
+    The frontend can use this to disable tiers that are not pulled, instead of
+    offering a run that will fail 40 seconds in.
+    """
+    tiers: list[TierInfo] = []
+    for tier in oc.TIERS.values():
+        plan = oc.tier_plan(tier)
+        tiers.append(
+            TierInfo(
+                id=tier.id,
+                label=tier.label,
+                description=tier.description,
+                runnable=plan["runnable"],
+                peak_resident_gb=plan["peak_resident_gb"],
+                sequential=plan["sequential"],
+                models=[
+                    ModelInfo(
+                        role=role,
+                        model=name,
+                        available=name in plan["installed"],
+                        size_gb=plan["sizes"].get(name),
+                    )
+                    for role, name in tier.models.items()
+                ],
+            )
+        )
+    return HealthOut(
+        ollama_up=oc.is_up(),
+        total_ram_gb=oc.TOTAL_RAM_GB,
+        gpu_wired_limit_gb=oc.gpu_wired_limit_gb(),
+        tiers=tiers,
+    )
+
+
+# --------------------------------------------------------------------------
+# Datasets
+# --------------------------------------------------------------------------
+
+
+@get("/datasets", response=list[Dataset])
+def list_datasets(request):
+    return ds.list_datasets()
+
+
+@get("/datasets/{dataset_id}", response=Dataset)
+def get_dataset(request, dataset_id: str):
+    if dataset_id not in ds.SPECS:
+        raise HttpError(404, f"Unknown dataset '{dataset_id}'")
+    if not ds.is_available(ds.SPECS[dataset_id]):
+        raise HttpError(404, f"Dataset '{dataset_id}' has no data file yet")
+    return ds.get_dataset(dataset_id)
+
+
+# --------------------------------------------------------------------------
+# Pipeline stages
+# --------------------------------------------------------------------------
+
+
+@post("/runs", response=RunRef)
+def create_run(request, payload: GenerateIn):
+    if payload.dataset_id not in ds.SPECS:
+        raise HttpError(404, f"Unknown dataset '{payload.dataset_id}'")
+    plan = oc.tier_plan(oc.resolve_tier(payload.tier))
+    if not plan["runnable"]:
+        missing = [m for m in oc.resolve_tier(payload.tier).distinct_models
+                   if m not in plan["installed"]]
+        raise HttpError(409, f"Tier '{payload.tier}' needs models not pulled: {', '.join(missing)}")
+    run = services.start_run(payload.dataset_id, payload.tier)
+    return RunRef(run_id=str(run.id), dataset_id=run.dataset_id, tier=run.tier, status=run.status)
+
+
+@post("/runs/{run_id}/generate", response=ToneVariant)
+def stage_generate(request, run_id: str):
+    run = services.do_generate(get_object_or_404(Run, id=run_id))
+    return services.to_story_set(run).ai_raw
+
+
+@post("/runs/{run_id}/moderate", response=StorySet)
+def stage_moderate(request, run_id: str):
+    run = get_object_or_404(Run, id=run_id)
+    if not run.raw_paragraphs:
+        raise HttpError(409, "Run has no generated story yet - call /generate first")
+    return services.to_story_set(services.do_moderate(run))
+
+
+@post("/runs/{run_id}/factcheck", response=list[FactCheckItem])
+def stage_factcheck(request, run_id: str):
+    run = get_object_or_404(Run, id=run_id)
+    if not run.raw_paragraphs:
+        raise HttpError(409, "Run has no story to check yet")
+    run = services.do_factcheck(run)
+    return services.to_story_set(run).factual_check
+
+
+@get("/runs/{run_id}", response=StorySet)
+def get_run(request, run_id: str):
+    return services.to_story_set(get_object_or_404(Run, id=run_id))
+
+
+@get("/runs", response=list[RunRef])
+def list_runs(request, dataset_id: str = Query(None), tier: str = Query(None),
+              completed_only: bool = Query(True)):
+    """Cached runs. This is what the demo serves when Ollama is not on hand."""
+    qs = Run.objects.all()
+    if dataset_id:
+        qs = qs.filter(dataset_id=dataset_id)
+    if tier:
+        qs = qs.filter(tier=tier)
+    if completed_only:
+        qs = qs.filter(status=RunStatus.DONE)
+    return [RunRef(run_id=str(r.id), dataset_id=r.dataset_id, tier=r.tier, status=r.status)
+            for r in qs[:50]]
+
+
+# --------------------------------------------------------------------------
+# Human baseline + comparison
+# --------------------------------------------------------------------------
+
+
+@post("/runs/{run_id}/human", response=RunRef)
+def save_human_story(request, run_id: str, payload: HumanStoryIn):
+    """Persist the human baseline written in the interface (report task (c)).
+
+    Without this the human story lives only in React state and can never be
+    scored against the LLM output.
+    """
+    run = get_object_or_404(Run, id=run_id)
+    run.human_text = payload.human_text
+    run.human_title = payload.human_title
+    run.save(update_fields=["human_text", "human_title"])
+    return RunRef(run_id=str(run.id), dataset_id=run.dataset_id, tier=run.tier, status=run.status)
+
+
+@post("/compare", response=ComparisonMetrics)
+def compare(request, payload: CompareIn):
+    """NOTE: deviates from lib/api.ts, which signs this as compareStories(datasetId).
+
+    Real similarity scoring needs the human baseline text, which datasetId alone
+    cannot supply. See backend/README.md, "Contract deviations".
+    """
+    run = get_object_or_404(Run, id=payload.run_id)
+    if payload.human_text:
+        run.human_text = payload.human_text
+        run.save(update_fields=["human_text"])
+    return services.compare(run, payload.human_text)
