@@ -1,0 +1,23 @@
+/* AI-Powered Data Storytelling landing page palette */
+
+:root {
+  /* Core brand colors sampled from the provided logo */
+  --primary-navy: #0D1B5C;
+  --deep-navy: #071A3B;
+  --brand-blue: #1E66B8;
+  --bright-blue: #2B78C6;
+  --accent-teal: #20C4B0;
+  --deep-teal: #0E8F86;
+
+  /* Landing page neutrals */
+  --background: #F7FAFC;
+  --surface: #FFFFFF;
+  --surface-soft: #EEF4F8;
+  --text-primary: #0F172A;
+  --text-secondary: #526173;
+  --border: #D9DFE7;
+
+  /* Suggested gradients */
+  --brand-gradient: linear-gradient(135deg, #1E66B8 0%, #20C4B0 100%);
+  --hero-gradient: radial-gradient(circle at top, #FFFFFF 0%, #F7FAFC 70%);
+}

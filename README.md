@@ -1,63 +1,87 @@
-# AI-Powered Data Storytelling
+# AI-Powered Data Storytelling — Web Interface
 
-**TU Dresden — CMS Team Project, Summer Term 2026**
-Faculty of Computer Science · Chair of Multimedia Technology (Interactive Media Lab Dresden)
+> An agentic approach to moderating the **emotional tone** of data narratives.
+> CMS Team Project · Chair of Multimedia Technology · TU Dresden · SoSe 2026.
 
-This project studies how large language models (LLMs) and agentic systems turn structured data into
-written narratives, and contributes a capability the current literature does not yet address: an
-**emotional-tone moderation agent** that calibrates the affective tone of a generated data story while
-keeping it faithful to the underlying numbers.
+A general LLM **generates** a data story, an agentic LLM **moderates its emotional tone**
+(pulling alarmism down without losing real urgency), and a lightweight **factual check**
+keeps the numbers honest. The interface lets you pick a dataset, write a human baseline,
+run the pipeline, and compare the human and LLM-moderated stories with metrics.
 
-## The gap we target
-Existing agentic data-storytelling systems verify **facts**; none moderate the **emotional tone** of the
-narrative. Yet framing — including emotional framing — measurably changes how an audience interprets data.
-Our contribution is an agent that detects alarmist, manipulative, or numbing tone and rewrites for a
-calibrated, faithful narration.
+This is the **front-end** for the project. It runs entirely on realistic **mock data** so it
+is fully interactive with no API keys — the Python pipeline plugs in later behind one file
+(`lib/api.ts`).
 
-## Repository layout
-```
-papers/                       key papers (foundational + the two we reproduced)
-reproductions/                our partial reproductions of two data-to-text papers
-  paper5-quintd/              faithfulness of open LLMs at data-to-text
-  paper9-datatales/           per-operation narration evaluation
-emotional-tone-moderation/    our own pipeline + our own merged dataset
+## Getting started
+
+> **Prerequisites:** Node.js 20+ and npm. No API keys or backend needed — the app runs on mock data.
+
+```bash
+npm install      # first time only
+npm run dev      # http://localhost:3000
 ```
 
-## Papers
-- **`papers/1-DataNarrative_EMNLP2024.pdf`** — DataNarrative (Islam et al., EMNLP 2024). The two-agent
-  *generate + verify* architecture our design builds on; we replace its factual verifier with an
-  emotional-tone moderator.
-- **`papers/5-KasnerDusek_ACL2024.pdf`** — Kasner & Dušek (ACL 2024). Faithfulness of open LLMs on
-  data-to-text. *(reproduced — see below)*
-- **`papers/9-DataTales.pdf`** — DataTales. Table-to-narrative with per-operation evaluation.
-  *(reproduced — see below)*
+Build / serve a production bundle:
 
-## Reproductions (summary)
+```bash
+npm run build
+npm run start
+```
 
-### Paper 5 — Kasner & Dušek (Quintd) → `reproductions/paper5-quintd/`
-We re-ran the data-to-text faithfulness study offline on the released Quintd-1 inputs: generator =
-`gemma4:12b` via Ollama; reference-free error judge = **Opus 4.7** applying the paper's exact
-`gpt4_metric.yaml` taxonomy. **The headline did not reproduce** — gemma4:12b had **≈18%** of outputs with
-≥1 semantic error vs the paper's **>80%**. Three-way comparison: **Zephyr-7B 87% · qwen3.5:4b 52% ·
-gemma4:12b 18%**. We also built "The Red Pen" review dashboard. **Takeaway:** modern open LLMs are far more
-faithful at data-to-text than the 2023 models — which is exactly why our novelty targets *tone* moderation
-rather than another factual checker.
+## Pages
 
-### Paper 9 — DataTales → `reproductions/paper9-datatales/`
-We evaluated `qwen3.5:4b` and `gemma4:12b` on DataTales-style equity-market narration (BLEU, numeric
-factuality, per-operation accuracy, insightfulness proxy). We found a **per-operation accuracy gradient**
-with the **causal operation at 0%** for both models. On the paper's **masked-number factuality** metric
-both score **under 30%** (gemma 12.2, qwen 0.9); a simpler "% of stated numbers correct" check is much
-higher — a reminder that the metric definition drives the headline.
+| Route | What it is |
+| --- | --- |
+| `/` | Home — hero, the "same numbers, two tones" toggle, pipeline overview, key stats |
+| `/generate` | The studio — dataset → human story → animated pipeline → comparison + metrics |
+| `/how-it-works` | The generate → moderate → fact-check pipeline, the gap, the two-sided tone problem |
+| `/results` | Faithfulness, per-operation accuracy, the novel tone-calibration metric, user study |
+| `/datasets` | Measles × vaccination (alarmism) and WHO child-mortality (over-optimism) |
+| `/about` | Project summary, literature survey, the team, supervisors, links |
 
-## Our own work — emotional-tone moderation → `emotional-tone-moderation/`
-A working pipeline on our own dataset (global measles cases × MCV1 vaccination coverage):
-**`qwen3.5:4b` generates** a data story → **`gemma4:12b` moderates** its emotional tone → **Opus 4.7
-judges** faithfulness and tone. See that folder's README for the architecture, our data, and how to run it.
+## Project structure
 
-## Requirements
-- Python 3 with `requests` and `pandas`
-- [Ollama](https://ollama.com) with `qwen3.5:4b` and `gemma4:12b` pulled
+```
+app/                     Routes (App Router) — one folder per page
+components/              UI: layout, charts, the tone toggle, the generate studio
+  generate/             The 4-step studio (picker, editor, pipeline runner, comparison)
+  charts/               Recharts wrappers
+lib/
+  api.ts                ← swap-in point for the real Python backend
+  data/                 Typed mock content (datasets, stories, metrics, literature, team)
+public/brand/           Logo assets
+source-materials/       Original brief, report, presentations, palette
+```
 
----
-*Course project. The paper PDFs are included for the team's reference under their respective licenses.*
+## Wiring in the Python backend (future work)
+
+Every piece of displayed content flows through `lib/api.ts`. The functions there currently
+return mock data with simulated latency. To go live, change their bodies to `fetch('/api/…')`
+calls against the Python pipeline — no component needs to change:
+
+- `getDatasets()` / `getDatasetById(id)` → the available datasets
+- `generateStory(datasetId)` → `{ dataset, story }` (the story set: human baseline, raw LLM, moderated LLM, factual check, emotive spans)
+- `compareStories(datasetId)` → metrics (text similarity BLEU/ROUGE-L/METEOR, alarmism before/after, emotive spans removed, facts preserved)
+
+## Tech
+
+Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Recharts · Framer Motion ·
+Newsreader + IBM Plex Sans/Mono. Brand palette sampled from the project logo, with a
+tone axis added: **alarmist = warm red, calibrated = teal**.
+
+## Team
+
+Mahmoud Elsamadony · Ahmed Okasha · Ahmed Elsaadani · Ahmed Ramadan
+Supervisors: Susmita Khadse, Julián Méndez · Chair: Prof. Dr. Raimund Dachselt (IMLD).
+Code & data: https://github.com/memoelsamadony/ai-powered-data-storytelling
+
+## Research pipeline and reproductions
+
+The repository also includes the working emotional-tone moderation pipeline in
+`emotional-tone-moderation/`: `qwen3.5:4b` generates a data story, `gemma4:12b` calibrates its tone,
+and Opus judges faithfulness and tone. It uses a global-measles × MCV1-vaccination dataset.
+
+The research materials in `papers/` and `reproductions/` cover partial reproductions of Quintd and
+DataTales. The consolidated findings are in `reproductions/REPRODUCTIONS_SUMMARY.md`; detailed code,
+outputs, and reports remain in each paper folder. The Python pipeline requires Python 3, `requests`,
+`pandas`, and Ollama with the two listed models.
