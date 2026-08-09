@@ -14,7 +14,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import type { StorySet, FactStatus } from "@/lib/data/stories";
-import { pipelineStages } from "@/lib/data/pipeline";
+import { pipelineStages, type StageId } from "@/lib/data/pipeline";
 import { Typewriter } from "@/components/generate/typewriter";
 import { AlarmismMeter } from "@/components/alarmism-meter";
 import { cn } from "@/lib/utils";
@@ -31,16 +31,35 @@ const factTone: Record<FactStatus, { className: string; icon: typeof Check; labe
 
 export function PipelineRunner({
   story,
+  stages,
+  models,
   onComplete,
   onReset,
 }: {
   story: StorySet;
+  /**
+   * When supplied, each stage is awaited against the real backend and the phase
+   * advances when that stage actually finishes. Without it the component keeps
+   * its original timed behaviour over mock data.
+   */
+  stages?: {
+    generate: () => Promise<StorySet>;
+    moderate: () => Promise<StorySet>;
+    factcheck: () => Promise<StorySet>;
+  };
+  /** Actual model per stage, from the backend tier. Falls back to the static copy. */
+  models?: Partial<Record<StageId, string>>;
   onComplete: () => void;
   onReset?: () => void;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
+  const [live, setLive] = useState<StorySet | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const isLive = !!stages;
 
-  const rawBody = story.aiRaw.paragraphs.join("\n\n");
+  // Render whatever the backend has produced so far; fall back to the mock.
+  const view = live ?? story;
+  const rawBody = view.aiRaw.paragraphs.join("\n\n");
 
   const stageState = (id: keyof typeof stageIcons): "pending" | "running" | "done" => {
     const order: Phase[] = ["idle", "generate", "moderate", "factcheck", "done"];
@@ -51,8 +70,10 @@ export function PipelineRunner({
     return "pending";
   };
 
-  // Advance moderate → factcheck → done with timed beats.
+  // Advance moderate → factcheck → done with timed beats (mock mode only; in
+  // live mode the awaited stage calls drive the phase instead).
   useEffect(() => {
+    if (isLive) return;
     if (phase === "moderate") {
       const t = setTimeout(() => setPhase("factcheck"), 2200);
       return () => clearTimeout(t);
@@ -67,9 +88,32 @@ export function PipelineRunner({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  const run = () => setPhase("generate");
+  const run = async () => {
+    setError(null);
+    if (!stages) {
+      setPhase("generate");
+      return;
+    }
+    try {
+      setPhase("generate");
+      setLive(await stages.generate());
+      setPhase("moderate");
+      setLive(await stages.moderate());
+      setPhase("factcheck");
+      setLive(await stages.factcheck());
+      setPhase("done");
+      onComplete();
+    } catch (err) {
+      // Surface it. A silent failure here is indistinguishable from a slow model.
+      setError(err instanceof Error ? err.message : String(err));
+      setPhase("idle");
+    }
+  };
+
   const reset = () => {
     setPhase("idle");
+    setLive(null);
+    setError(null);
     onReset?.();
   };
 
@@ -106,12 +150,30 @@ export function PipelineRunner({
               </span>
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-navy">{stage.name}</p>
-                <p className="truncate font-mono text-[0.66rem] text-faint">{stage.model}</p>
+                <p className="truncate font-mono text-[0.66rem] text-faint">
+                  {models?.[stage.id] ?? stage.model}
+                </p>
               </div>
             </div>
           );
         })}
       </div>
+
+      {error && (
+        <div
+          data-testid="pipeline-error"
+          className="rounded-xl border border-alarm/40 bg-alarm-soft/50 px-4 py-3 text-sm text-alarm"
+        >
+          Pipeline failed: {error}
+        </div>
+      )}
+
+      {isLive && phase !== "idle" && phase !== "done" && !live && (
+        <div className="flex items-center gap-3 rounded-xl border border-hairline bg-surface-soft/40 px-4 py-3 text-sm text-muted">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Running {phase} on a local model. Large models take minutes.
+        </div>
+      )}
 
       {/* Idle: run button */}
       {phase === "idle" && (
@@ -131,24 +193,24 @@ export function PipelineRunner({
       )}
 
       {/* Generation output */}
-      {phase !== "idle" && (
+      {phase !== "idle" && (!isLive || live) && (
         <OutputCard
           accent="alarm"
           icon={PenLine}
           label="Stage 1 — General LLM"
-          author={story.aiRaw.author}
+          author={view.aiRaw.author}
         >
-          <h3 className="font-serif text-xl text-navy">{story.aiRaw.title}</h3>
+          <h3 className="font-serif text-xl text-navy">{view.aiRaw.title}</h3>
           <Typewriter
             text={rawBody}
-            running={phase === "generate"}
+            running={!isLive && phase === "generate"}
             duration={2600}
             className="mt-3 space-y-3 text-[0.975rem]"
-            onDone={() => setPhase("moderate")}
+            onDone={isLive ? undefined : () => setPhase("moderate")}
           />
           {phase !== "generate" && (
             <div className="mt-5 border-t border-hairline pt-4">
-              <AlarmismMeter value={story.aiRaw.alarmismRating} size="sm" />
+              <AlarmismMeter value={view.aiRaw.alarmismRating} size="sm" />
             </div>
           )}
         </OutputCard>
@@ -166,11 +228,11 @@ export function PipelineRunner({
               accent="calm"
               icon={Scale}
               label="Stage 2 — Tone moderator"
-              author={story.aiModerated.author}
+              author={view.aiModerated.author}
             >
-              <h3 className="font-serif text-xl text-navy">{story.aiModerated.title}</h3>
+              <h3 className="font-serif text-xl text-navy">{view.aiModerated.title}</h3>
               <div className="mt-3 space-y-3">
-                {story.aiModerated.paragraphs.map((p, i) => (
+                {view.aiModerated.paragraphs.map((p, i) => (
                   <p key={i} className="font-serif text-[0.975rem] leading-relaxed text-ink/85">
                     {p}
                   </p>
@@ -179,10 +241,10 @@ export function PipelineRunner({
 
               <div className="mt-5 rounded-xl border border-hairline bg-surface-soft/50 p-4">
                 <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                  {story.emotiveSpans.length} emotive spans rebalanced
+                  {view.emotiveSpans.length} emotive spans rebalanced
                 </p>
                 <ul className="mt-3 space-y-2">
-                  {story.emotiveSpans.slice(0, 4).map((s, i) => (
+                  {view.emotiveSpans.slice(0, 4).map((s, i) => (
                     <motion.li
                       key={i}
                       initial={{ opacity: 0, x: -8 }}
@@ -199,7 +261,7 @@ export function PipelineRunner({
               </div>
 
               <div className="mt-5 border-t border-hairline pt-4">
-                <AlarmismMeter value={story.aiModerated.alarmismRating} size="sm" />
+                <AlarmismMeter value={view.aiModerated.alarmismRating} size="sm" />
               </div>
             </OutputCard>
           </motion.div>
@@ -220,7 +282,7 @@ export function PipelineRunner({
                 hallucinated number without flagging it — so a separate pass audits every claim.
               </p>
               <ul className="mt-4 space-y-3">
-                {story.factualCheck.map((f, i) => {
+                {view.factualCheck.map((f, i) => {
                   const t = factTone[f.status];
                   const Icon = t.icon;
                   return (

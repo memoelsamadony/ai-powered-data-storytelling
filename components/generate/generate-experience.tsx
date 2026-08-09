@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { datasets } from "@/lib/data/datasets";
-import { getStorySet } from "@/lib/data/stories";
+import { datasets as mockDatasets, type Dataset } from "@/lib/data/datasets";
+import { getStorySet, type StorySet } from "@/lib/data/stories";
+import * as api from "@/lib/api";
 import { Stepper } from "@/components/generate/stepper";
 import { DatasetPicker } from "@/components/generate/dataset-picker";
 import { HumanStoryEditor } from "@/components/generate/human-story-editor";
@@ -25,14 +26,84 @@ export function GenerateExperience() {
   const [humanText, setHumanText] = useState("");
   const [generated, setGenerated] = useState(false);
 
-  const story = useMemo(() => (datasetId ? getStorySet(datasetId) : null), [datasetId]);
-  const sampleText = story ? story.human.paragraphs.join("\n\n") : "";
+  // Backend state. `tier` is the first tier this machine can actually run;
+  // `null` health means no backend, so everything stays on mock data.
+  const [datasets, setDatasets] = useState<Dataset[]>(mockDatasets);
+  const [health, setHealth] = useState<api.Health | null>(null);
+  const [backendChecked, setBackendChecked] = useState(false);
+  const [liveStory, setLiveStory] = useState<StorySet | null>(null);
+  const runIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const [h, ds] = await Promise.all([api.getHealth(), api.getDatasets()]);
+      if (cancelled) return;
+      setHealth(h);
+      setDatasets(ds);
+      setBackendChecked(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const tier = useMemo(
+    () => health?.tiers.find((t) => t.runnable)?.id ?? null,
+    [health],
+  );
+  const isLive = !!health?.ollamaUp && !!tier;
+
+  /** Map the running tier's models onto the pipeline stages for display. */
+  const stageModels = useMemo(() => {
+    const t = health?.tiers.find((x) => x.id === tier);
+    if (!t) return undefined;
+    const by = (role: string) => t.models.find((m) => m.role === role)?.model;
+    return {
+      generate: by("generator"),
+      moderate: by("moderator"),
+      factcheck: by("moderator"),
+    };
+  }, [health, tier]);
+
+  const mockStory = useMemo(() => (datasetId ? getStorySet(datasetId) : null), [datasetId]);
+  const story = liveStory ?? mockStory;
+  const sampleText = mockStory ? mockStory.human.paragraphs.join("\n\n") : "";
 
   const selectDataset = (id: string) => {
     setDatasetId(id);
     setHumanText(getStorySet(id).human.paragraphs.join("\n\n"));
     setGenerated(false);
+    setLiveStory(null);
+    runIdRef.current = null;
   };
+
+  /** Real backend stages. Undefined when there is no runnable backend. */
+  const stages = useMemo(() => {
+    if (!isLive || !datasetId || !tier) return undefined;
+    return {
+      generate: async () => {
+        const run = await api.createRun(datasetId, tier);
+        runIdRef.current = run.runId;
+        if (humanText.trim()) {
+          await api.saveHumanStory(run.runId, humanText);
+        }
+        const s = await api.stageGenerate(run.runId);
+        setLiveStory(s);
+        return s;
+      },
+      moderate: async () => {
+        const s = await api.stageModerate(runIdRef.current!);
+        setLiveStory(s);
+        return s;
+      },
+      factcheck: async () => {
+        const s = await api.stageFactcheck(runIdRef.current!);
+        setLiveStory(s);
+        return s;
+      },
+    };
+  }, [isLive, datasetId, tier, humanText]);
 
   const go = (next: number) => {
     setStep(next);
@@ -49,6 +120,18 @@ export function GenerateExperience() {
       <div className="rounded-2xl border border-hairline bg-surface/70 p-4 backdrop-blur sm:p-5">
         <Stepper current={step} maxReached={maxReached} onSelect={go} />
       </div>
+
+      {backendChecked && (
+        <p
+          data-testid="backend-status"
+          data-live={isLive ? "true" : "false"}
+          className="mt-3 font-mono text-[0.7rem] uppercase tracking-wider text-faint"
+        >
+          {isLive
+            ? `Live backend - tier ${tier}`
+            : "Mock data - backend unavailable"}
+        </p>
+      )}
 
       <div className="mt-8">
         <div className="flex items-baseline gap-3">
@@ -68,6 +151,8 @@ export function GenerateExperience() {
         {step === 2 && story && (
           <PipelineRunner
             story={story}
+            stages={stages}
+            models={stageModels}
             onComplete={() => {
               setGenerated(true);
               setMaxReached((m) => Math.max(m, 3));
