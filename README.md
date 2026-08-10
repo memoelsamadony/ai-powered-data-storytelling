@@ -92,4 +92,5 @@ outputs, and reports remain in each paper folder. The Python pipeline requires P
 |---|---|
 | [`RESULTS.md`](RESULTS.md) | Every measured number to date, with its source artefact and its caveats. Part A (reproductions) is a result; **Part B (our pipeline) is a smoke test, not a result** |
 | [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md) | The pre-registered protocol for the reported experiments: hypotheses, controls, sample size, statistical tests, and the instrumentation fixes that block them |
+| [`FRONTEND_PLAN.md`](FRONTEND_PLAN.md) | The visualisation plan — chart audit, the chart contract, and the recommended graph set, including the figures that render the hypotheses above |
 | [`EXPERIMENTS.md`](EXPERIMENTS.md) | The earlier design sketch, superseded by the protocol above and kept for its rationale |
