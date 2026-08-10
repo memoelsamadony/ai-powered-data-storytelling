@@ -2,7 +2,7 @@
 
 import { Check, Upload, Database, AlertTriangle, TrendingUp } from "lucide-react";
 import type { Dataset } from "@/lib/data/datasets";
-import { DatasetChart } from "@/components/charts/dataset-chart";
+import { StoryChart } from "@/components/charts/story-chart";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -104,7 +104,7 @@ export function DatasetPicker({
             </div>
 
             <div>
-              <DatasetChart dataset={selected} height={260} />
+              <StoryChart dataset={selected} height={280} />
             </div>
           </div>
 

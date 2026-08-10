@@ -22,10 +22,25 @@ export interface ToneVariant {
   paragraphs: string[];
 }
 
+/**
+ * The family an edit belongs to. `reason` is the moderator's own free-text
+ * justification and is near-unique per span, so it cannot be aggregated;
+ * `category` is the coarser grouping the charts count over.
+ */
+export type EditCategory = "intensity" | "framing" | "overreach" | "grounding";
+
+export const EDIT_CATEGORIES: { id: EditCategory; label: string; blurb: string }[] = [
+  { id: "intensity", label: "Intensity", blurb: "Verbs and adjectives dialled up beyond the data" },
+  { id: "framing", label: "Framing", blurb: "Fear, doom, false reassurance, complacency" },
+  { id: "overreach", label: "Overreach", blurb: "Causal or predictive claims the table cannot support" },
+  { id: "grounding", label: "Grounding", blurb: "A vague or invented figure replaced with the real one" },
+];
+
 export interface EmotiveSpan {
   text: string;
   replacement: string;
   reason: string;
+  category: EditCategory;
 }
 
 export interface TonePhrase {
@@ -90,16 +105,16 @@ const measles: StorySet = {
     ],
   },
   emotiveSpans: [
-    { text: "exploding", replacement: "have risen", reason: "Manipulative intensity verb" },
-    { text: "nothing short of terrifying", replacement: "notable", reason: "Fear framing" },
-    { text: "preventable killer is surging out of control", replacement: "the virus has returned", reason: "Catastrophizing" },
-    { text: "collapsing in real time", replacement: "have gaps", reason: "Urgency inflation" },
-    { text: "a staggering 2.3 million", replacement: "around 359,000", reason: "Hallucinated figure, re-grounded" },
-    { text: "tore through communities", replacement: "were reported", reason: "Sensational verb" },
-    { text: "cratered", replacement: "stalled", reason: "Loaded verb" },
-    { text: "the herd-immunity wall has been shattered", replacement: "coverage is short of herd immunity", reason: "Absolute framing" },
-    { text: "crisis spiraling toward disaster", replacement: "a real but measured concern", reason: "Doom framing" },
-    { text: "hurtling toward an epidemic", replacement: "at risk of further outbreaks", reason: "Predictive overreach" },
+    { text: "exploding", replacement: "have risen", reason: "Manipulative intensity verb", category: "intensity" },
+    { text: "nothing short of terrifying", replacement: "notable", reason: "Fear framing", category: "framing" },
+    { text: "preventable killer is surging out of control", replacement: "the virus has returned", reason: "Catastrophizing", category: "framing" },
+    { text: "collapsing in real time", replacement: "have gaps", reason: "Urgency inflation", category: "intensity" },
+    { text: "a staggering 2.3 million", replacement: "around 359,000", reason: "Hallucinated figure, re-grounded", category: "grounding" },
+    { text: "tore through communities", replacement: "were reported", reason: "Sensational verb", category: "intensity" },
+    { text: "cratered", replacement: "stalled", reason: "Loaded verb", category: "intensity" },
+    { text: "the herd-immunity wall has been shattered", replacement: "coverage is short of herd immunity", reason: "Absolute framing", category: "framing" },
+    { text: "crisis spiraling toward disaster", replacement: "a real but measured concern", reason: "Doom framing", category: "framing" },
+    { text: "hurtling toward an epidemic", replacement: "at risk of further outbreaks", reason: "Predictive overreach", category: "overreach" },
   ],
   twoTones: {
     alarmist: [
@@ -155,7 +170,16 @@ const whoHealth: StorySet = {
     label: "LLM — raw",
     author: "General LLM (qwen3.5:4b)",
     title: "A Triumph for Humanity",
-    alarmismRating: 4.3,
+    /**
+     * 1.4, not a high score: on the project's scale (1 = flat and hides the
+     * stakes, 5 = manipulative catastrophising) this story's failure is at the
+     * *low* pole. "All but conquered", "victory is assured", "a problem the
+     * world can confidently consider solved" is manipulative by numbing, not by
+     * alarm. Rating it high would collapse the scale into "how emotive is this"
+     * and make both datasets move the same direction — which is exactly the
+     * opposition the two-dataset design exists to demonstrate.
+     */
+    alarmismRating: 1.4,
     paragraphs: [
       "Humanity has all but conquered child mortality. We are living through a golden age of health in which preventable death is vanishing and every year brings unstoppable, history-making progress.",
       "Life expectancy has soared past 80 worldwide, and the downward march of child deaths is now essentially unstoppable. The finish line is finally in sight, and victory is assured.",
@@ -175,12 +199,12 @@ const whoHealth: StorySet = {
     ],
   },
   emotiveSpans: [
-    { text: "all but conquered", replacement: "improved dramatically against", reason: "False completion" },
-    { text: "golden age of health", replacement: "period of real progress", reason: "Over-optimistic framing" },
-    { text: "unstoppable, history-making progress", replacement: "substantial progress", reason: "Inevitability framing" },
-    { text: "soared past 80 worldwide", replacement: "risen to about 71.7 years", reason: "Hallucinated figure, re-grounded" },
-    { text: "the finish line is finally in sight, and victory is assured", replacement: "the gap is narrowing but not closed", reason: "False reassurance" },
-    { text: "a problem the world can confidently consider solved", replacement: "a problem still concentrated in the poorest regions", reason: "Complacency framing" },
+    { text: "all but conquered", replacement: "improved dramatically against", reason: "False completion", category: "framing" },
+    { text: "golden age of health", replacement: "period of real progress", reason: "Over-optimistic framing", category: "framing" },
+    { text: "unstoppable, history-making progress", replacement: "substantial progress", reason: "Inevitability framing", category: "overreach" },
+    { text: "soared past 80 worldwide", replacement: "risen to about 71.7 years", reason: "Hallucinated figure, re-grounded", category: "grounding" },
+    { text: "the finish line is finally in sight, and victory is assured", replacement: "the gap is narrowing but not closed", reason: "False reassurance", category: "overreach" },
+    { text: "a problem the world can confidently consider solved", replacement: "a problem still concentrated in the poorest regions", reason: "Complacency framing", category: "framing" },
   ],
   twoTones: {
     alarmist: [

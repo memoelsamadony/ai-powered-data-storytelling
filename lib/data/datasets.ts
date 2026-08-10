@@ -17,6 +17,8 @@ export interface DatasetSeriesPoint {
 export interface Dataset {
   id: string;
   name: string;
+  /** Compact name for chart rows and legends, where `name` is too long. */
+  shortName: string;
   tagline: string;
   role: "primary" | "secondary";
   failureMode: FailureMode;
@@ -42,6 +44,7 @@ export const datasets: Dataset[] = [
   {
     id: "measles",
     name: "Measles × Vaccination Coverage",
+    shortName: "Measles × MCV1",
     tagline: "Coverage stalled below herd immunity — and cases came back.",
     role: "primary",
     failureMode: "alarmism",
@@ -86,6 +89,7 @@ export const datasets: Dataset[] = [
   {
     id: "who-health",
     name: "WHO Global Health Observatory",
+    shortName: "WHO child mortality",
     tagline: "Decades of progress — with a remaining gap and a COVID-era reversal.",
     role: "secondary",
     failureMode: "over-optimism",

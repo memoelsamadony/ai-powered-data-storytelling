@@ -1,5 +1,24 @@
 "use client";
 
+/**
+ * ⚠️ THE ALARMIST EXEMPLAR — deliberately misleading. Do not use as a default.
+ *
+ * This is a dual-axis chart: measles cases on a left auto-domain axis against
+ * MCV1 coverage on a right [0,100] axis. The alignment between two independent
+ * y-scales is arbitrary, so the chart *manufactures* a correlation that may not
+ * be in the data. It is the canonical misleading-chart technique.
+ *
+ * It is kept, not deleted, because it is the exhibit (FRONTEND_PLAN.md G13):
+ * the generator's chart choices rendered faithfully, beside the moderator's
+ * calibrated version of the same data. The project's own fact-checker flagged
+ * the moderated story's "which corresponds with a higher rate…" as an
+ * unsupported causal-adjacent link (RESULTS.md §B3) — this chart asserts that
+ * same link visually, which is precisely what makes it worth showing.
+ *
+ * For every honest use, import `StoryChart` from `./story-chart` instead.
+ * Defect D1 in FRONTEND_PLAN.md §1.3.
+ */
+
 import {
   Area,
   CartesianGrid,
