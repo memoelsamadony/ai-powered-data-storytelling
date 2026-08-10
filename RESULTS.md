@@ -184,6 +184,11 @@ also narrower than the paper's, which caps the achievable score.
 
 # Part B - Our tone-moderation pipeline
 
+> **Part B is a smoke test of the pipeline, not a result, and must not be cited as one.**
+> n = 3, one dataset, no control condition, and the judge is the moderator. See
+> [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md) §0 for the full list of instrumentation
+> defects and the protocol that replaces these runs. Part A is unaffected.
+
 Three complete runs on the `mid` tier: **llama3.1:8b** generator, **gemma4:31b**
 moderator, judge and fact-checker. Primary dataset (measles × MCV1), 2026-08-07.
 
