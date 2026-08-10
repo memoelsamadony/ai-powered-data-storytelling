@@ -61,6 +61,25 @@ generator and moderator: **the experiment runner addresses models directly, not 
 > the agreement coefficient it reports would be meaningless. This is a blocker, not a
 > documentation tidy-up.
 
+> **P0.13 (new, blocking).** The human baseline writers and the generator must see the
+> **same evidence**. `build_prompt_table("measles")` gives the generator World cases by
+> year, MCV1 coverage by year, per-country detail with per-million rates, and an explicit
+> line naming the ~95% herd-immunity threshold. A writer working from
+> `experiments/datapacks/measles-global.csv` sees cases and incidence only, so the entire
+> "coverage stalled below the herd-immunity line" framing is available to the model and
+> invisible to the human.
+>
+> This is not a missing column. Fix it by making the human data pack **the prompt table
+> itself**: one artefact, two consumers. **Accept when** the sha256 of each writer's pack
+> equals the sha256 of the string passed to the generator for that series, asserted in the
+> experiment config.
+>
+> Dependency: `build_prompt_table` currently has a `DatasetSpec` only for measles and a stub
+> for WHO GHO. The four new series need spec entries before their packs can be generated.
+>
+> Without this, H1 measures an information gap between human and model and reports it as
+> tone.
+
 P0.11 is what makes it safe to split work across the two machines. Verify it once, on one
 pair, before the main runs. If digests differ between machines, re-pull rather than
 re-plan.
@@ -192,6 +211,20 @@ truthful alarm story about either, purely by choosing the window, with no false 
 anywhere. That is the cleanest possible test case for the Window Selection Index, and it
 is the situation the project's whole thesis is about: framing that misleads while every
 number checks out.
+
+**Two defects in the source data, both recorded and handled in
+`experiments/datapacks/build_datapacks.py`:**
+
+- The diphtheria workbook labels its incidence row "per 1000 total population". Its own
+  metadata sheet says per 1,000,000, and the arithmetic agrees: 30,205 cases at a rate of 4
+  implies 7.55 billion people. The builder validates against the metadata string rather than
+  the row label and refuses to write the column if the two ever disagree. **All four disease
+  series are per million.**
+- The 192k-row GHO file and the wide `deaths_by_year_and_disease.csv` are **not
+  interchangeable**. Summed across its 194 countries, the GHO file runs 1.21x below the wide
+  file in 2000, widening to 1.34x by 2021. They cover different populations. The builder
+  reads the GHO file only as a printed cross-check and it feeds no series. Never mix them in
+  one story or one prompt table.
 
 `pertussis-global` supplies the opposite extreme: a trough of 30,402 in 2021 and a peak of
 941,893 in 2024, a 31-fold rise. Any baseline anchored at 2021 produces an enormous and
