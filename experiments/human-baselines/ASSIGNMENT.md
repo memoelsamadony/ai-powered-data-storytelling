@@ -28,16 +28,16 @@ Copy one block per writer, verbatim, and send it with `BRIEF.md`.
 
 ```
 AE - story 1: diphtheria-global   pack: experiments/human-baselines/datapacks/diphtheria-global.txt
-   - story 2: measles-global      pack: experiments/human-baselines/datapacks/measles-global.txt
+   - story 2: measles      pack: experiments/human-baselines/datapacks/measles.txt
 
 ME - story 1: mumps-global        pack: experiments/human-baselines/datapacks/mumps-global.txt
-   - story 2: measles-global      pack: experiments/human-baselines/datapacks/measles-global.txt
+   - story 2: measles      pack: experiments/human-baselines/datapacks/measles.txt
 
 AO - story 1: pertussis-global    pack: experiments/human-baselines/datapacks/pertussis-global.txt
-   - story 2: measles-global      pack: experiments/human-baselines/datapacks/measles-global.txt
+   - story 2: measles      pack: experiments/human-baselines/datapacks/measles.txt
 
 AR - story 1: under5-measles-deaths  pack: experiments/human-baselines/datapacks/under5-measles-deaths.txt
-   - story 2: measles-global         pack: experiments/human-baselines/datapacks/measles-global.txt
+   - story 2: measles         pack: experiments/human-baselines/datapacks/measles.txt
 
 Submit to experiments/human-baselines/stories/<slug>__<initials>.md
 story_order: 1 for your first pack, 2 for measles.
@@ -75,7 +75,7 @@ first across the full span.
 
 | Series | Span | First | Last | Direction of truth | Class |
 |---|---|---|---|---|---|
-| `measles-global` | 1980-2024 | 3,852,242 | 675,533 | falling 82.5% overall, but rising 324% across 2020-2024 (159,240 to 675,533); the series trough is 2021 at 123,152 | **mixed** |
+| `measles` | 1980-2024 | 3,852,242 | 675,533 | falling 82.5% overall, but rising 324% across 2020-2024 (159,240 to 675,533); the series trough is 2021 at 123,152 | **mixed** |
 | `mumps-global` | 2000-2025 | 544,093 | 234,954 | falling | **falling** |
 | `pertussis-global` | 2000-2025 | 190,475 | 265,317 | rising, with a 941,893 spike in 2024 | **rising** |
 | `diphtheria-global` | 2000-2025 | 11,625 | 30,205 | rising | **rising** |
@@ -102,7 +102,7 @@ constraint 1 holds without hand-picking.
 
 ### Why everyone writes measles
 
-`measles-global` is the anchor. H1 measures each machine story's distance to the median
+`measles` is the anchor. H1 measures each machine story's distance to the median
 human rating `H`, and the E1 stories are all measles (`EXPERIMENT_PLAN.md` §3, §7). Spread
 one human story per disease and the spread of `H` is part tone and part topic, with no way
 to separate them, resting on a single story per topic. Four writers on **identical data**
@@ -116,7 +116,7 @@ or noise.
 
 | Set | Stories | Status | Use |
 |---|---|---|---|
-| Anchor | 4 x `measles-global`, one per writer | primary material | defines `H` for the pre-registered H1 test |
+| Anchor | 4 x `measles`, one per writer | primary material | defines `H` for the pre-registered H1 test |
 | Extension | 4 non-measles, one per series | **PROVISIONAL, n = 1 per series** | weak per-series anchor for the multi-series addendum only |
 
 **The extension baselines are n = 1 and never enter the pre-registered primary test.** One
