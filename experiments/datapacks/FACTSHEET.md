@@ -8,6 +8,14 @@ sources. Regenerate the CSVs with:
 python3 experiments/datapacks/build_datapacks.py
 ```
 
+This file is analyst-facing, and so is everything else in
+`experiments/datapacks/`. The factsheet names the sub-windows a narrator could
+quote to reverse each headline, so handing it to someone who is about to write
+a story from the same data would pre-frame that story. Writers in the
+human-baseline study get their own packs under `experiments/human-baselines/`
+and are briefed to open nothing in this directory; the CSVs here are the
+analyst's copies of those series, not the writer-facing artefact.
+
 ## How to read this
 
 - Facts are computed on the `cases` column (reported cases for the four
@@ -256,8 +264,9 @@ All four disease series carry incidence **per 1,000,000 population**. The
 diphtheria workbook's row label reads `Incidence rate per 1000 total
 population`, which is wrong: its own metadata sheet says *"Confirmed
 diphtheria reported cases divided by 1,000,000 total population"*, and the
-arithmetic agrees (2025: 30,205 cases at rate 4 implies a denominator of
-7.55 billion, not 0.01 million). `build_datapacks.py` therefore validates the
+arithmetic agrees: in 2025, 30,205 cases at a rate of 4 implies a denominator of
+7.55 billion people if the rate is per million, but only 7.55 million
+people if the label were right. `build_datapacks.py` therefore validates the
 metadata string rather than trusting the row label, and prints a note when
 the two disagree.
 

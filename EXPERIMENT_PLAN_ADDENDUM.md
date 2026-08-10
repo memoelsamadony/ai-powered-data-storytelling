@@ -70,9 +70,16 @@ generator and moderator: **the experiment runner addresses models directly, not 
 > invisible to the human.
 >
 > This is not a missing column. Fix it by making the human data pack **the prompt table
-> itself**: one artefact, two consumers. **Accept when** the sha256 of each writer's pack
-> equals the sha256 of the string passed to the generator for that series, asserted in the
-> experiment config.
+> itself**: one artefact, two consumers.
+>
+> **Accept when** `build_prompt_table(series)` is called **exactly once** per series and the
+> resulting string object is both written to the writer's pack and passed to the generator,
+> with the sha256 recorded in the run config. Equality must be structural, not tested.
+> Comparing the digests of two separate calls is not sufficient: both calls happen in one
+> process on the day the test is written, so any latent non-determinism (dict ordering,
+> float repr, thousands separators) passes then and drifts later. Normalise the trailing
+> newline explicitly, since a lone `\n` difference makes digests differ while the rendered
+> content looks identical, which is a confusing way for a blocking gate to fail.
 >
 > Dependency: `build_prompt_table` currently has a `DatasetSpec` only for measles and a stub
 > for WHO GHO. The four new series need spec entries before their packs can be generated.
