@@ -1,0 +1,618 @@
+{
+  "generated_at": "2026-08-10",
+  "method": "25 isolated Claude Opus subagents (Agent tool), one story per agent, crossed grid of 5 writer personas x 5 series. Each agent saw exactly one evidence pack (byte-identical to the generator input, sha256 recorded), the construct-free rules 3/4/6 from BRIEF.md, a persona voice and a word-count target. No agent saw RUBRIC.md, the study construct, another draft, or anything else in the repository.",
+  "validity_note": "These are NOT independent human baselines in the sense of BRIEF.md ('no model anywhere in the chain'). They are a model-authored reference set, pending personal editing by Ahmed Saleh. After editing they form a hybrid reference (claude-draft, human-edited); similarity metrics against them measure distance to edited Claude text, not distance to independent human writing. The stories/ directory remains reserved for the genuine human track.",
+  "groundedness_tool": "storytelling.metrics.groundedness on services._dataset_values",
+  "drafts": [
+    {
+      "id": "diphtheria-global__L1",
+      "file": "experiments/human-baselines/llm-drafts/diphtheria-global__L1.md",
+      "series": "diphtheria-global",
+      "writer": "L1",
+      "persona": "wire-service news reporter",
+      "target_words": 125,
+      "word_count": 129,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/diphtheria-global.txt",
+      "datapack_sha256": "509117c7a221043b707724174ab0a7f57e630d730678ab7c9ad5628ce860204b",
+      "original_story_sha256": "d12381b5d8157b9fe36bdc33cf8e49ca2489c5aa119d67d1eed54effe5fcf7ea",
+      "groundedness": {
+        "stated": 17,
+        "supported": 14,
+        "score": 0.8235294117647058,
+        "unsupported_examples": [
+          "5,058",
+          "about 20 percent",
+          "24,000"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "diphtheria-global__L2",
+      "file": "experiments/human-baselines/llm-drafts/diphtheria-global__L2.md",
+      "series": "diphtheria-global",
+      "writer": "L2",
+      "persona": "newsletter explainer writer",
+      "target_words": 135,
+      "word_count": 133,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/diphtheria-global.txt",
+      "datapack_sha256": "509117c7a221043b707724174ab0a7f57e630d730678ab7c9ad5628ce860204b",
+      "original_story_sha256": "f3ad56cb21e7a3c39eb13cec82b5120db1ca7c02c29af822906951beb38f44eb",
+      "groundedness": {
+        "stated": 15,
+        "supported": 12,
+        "score": 0.8,
+        "unsupported_examples": [
+          "26",
+          "5,700",
+          "about 20 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "diphtheria-global__L3",
+      "file": "experiments/human-baselines/llm-drafts/diphtheria-global__L3.md",
+      "series": "diphtheria-global",
+      "writer": "L3",
+      "persona": "magazine feature writer",
+      "target_words": 145,
+      "word_count": 158,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/diphtheria-global.txt",
+      "datapack_sha256": "509117c7a221043b707724174ab0a7f57e630d730678ab7c9ad5628ce860204b",
+      "original_story_sha256": "b316f1e148f041a4d7929bf90c522da4e88a90c6cbd7b12aad3cd36d5553bb04",
+      "groundedness": {
+        "stated": 20,
+        "supported": 18,
+        "score": 0.9,
+        "unsupported_examples": [
+          "26",
+          "26"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "diphtheria-global__L4",
+      "file": "experiments/human-baselines/llm-drafts/diphtheria-global__L4.md",
+      "series": "diphtheria-global",
+      "writer": "L4",
+      "persona": "data columnist",
+      "target_words": 152,
+      "word_count": 148,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/diphtheria-global.txt",
+      "datapack_sha256": "509117c7a221043b707724174ab0a7f57e630d730678ab7c9ad5628ce860204b",
+      "original_story_sha256": "f5239f82f827ec11b9a6c2b6510261e44e011ae0ebab9196d65cc6a244e49939",
+      "groundedness": {
+        "stated": 14,
+        "supported": 10,
+        "score": 0.7142857142857143,
+        "unsupported_examples": [
+          "26",
+          "26",
+          "24,000",
+          "80,134"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "diphtheria-global__L5",
+      "file": "experiments/human-baselines/llm-drafts/diphtheria-global__L5.md",
+      "series": "diphtheria-global",
+      "writer": "L5",
+      "persona": "general-interest daily newspaper reporter",
+      "target_words": 140,
+      "word_count": 148,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/diphtheria-global.txt",
+      "datapack_sha256": "509117c7a221043b707724174ab0a7f57e630d730678ab7c9ad5628ce860204b",
+      "original_story_sha256": "3f5412a8d3a317fb693937314eb680f0cb5f58e2d553b505710bd7d1389f48c8",
+      "groundedness": {
+        "stated": 15,
+        "supported": 11,
+        "score": 0.7333333333333333,
+        "unsupported_examples": [
+          "5,058",
+          "about 20 percent",
+          "80,134",
+          "50,010"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "measles__L1",
+      "file": "experiments/human-baselines/llm-drafts/measles__L1.md",
+      "series": "measles",
+      "writer": "L1",
+      "persona": "wire-service news reporter",
+      "target_words": 125,
+      "word_count": 134,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/measles.txt",
+      "datapack_sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+      "original_story_sha256": "6305a4e64ba933aad10fe3341b7062e53a1e7dc532150ab628f3801ce7417557",
+      "groundedness": {
+        "stated": 19,
+        "supported": 19,
+        "score": 1.0,
+        "unsupported_examples": [],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "measles__L2",
+      "file": "experiments/human-baselines/llm-drafts/measles__L2.md",
+      "series": "measles",
+      "writer": "L2",
+      "persona": "newsletter explainer writer",
+      "target_words": 135,
+      "word_count": 136,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/measles.txt",
+      "datapack_sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+      "original_story_sha256": "f944b6efe0d7ac5525e32b42af30ce161f493bd5a61e2829fda6b59d7eb864e7",
+      "groundedness": {
+        "stated": 13,
+        "supported": 13,
+        "score": 1.0,
+        "unsupported_examples": [],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "measles__L3",
+      "file": "experiments/human-baselines/llm-drafts/measles__L3.md",
+      "series": "measles",
+      "writer": "L3",
+      "persona": "magazine feature writer",
+      "target_words": 145,
+      "word_count": 141,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/measles.txt",
+      "datapack_sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+      "original_story_sha256": "5daec4280a7d130b2dc73aad469ba1f1540527c8233e08ddc849bcf6f01ad569",
+      "groundedness": {
+        "stated": 20,
+        "supported": 18,
+        "score": 0.9,
+        "unsupported_examples": [
+          "6,450",
+          "about one percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "measles__L4",
+      "file": "experiments/human-baselines/llm-drafts/measles__L4.md",
+      "series": "measles",
+      "writer": "L4",
+      "persona": "data columnist",
+      "target_words": 152,
+      "word_count": 147,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/measles.txt",
+      "datapack_sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+      "original_story_sha256": "f5c9c3ec7bd4cf6132d16dc7fc21493bf3abd15330ece71ee24b5fecccb98037",
+      "groundedness": {
+        "stated": 20,
+        "supported": 17,
+        "score": 0.85,
+        "unsupported_examples": [
+          "6,450",
+          "about 1%",
+          "11"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "measles__L5",
+      "file": "experiments/human-baselines/llm-drafts/measles__L5.md",
+      "series": "measles",
+      "writer": "L5",
+      "persona": "general-interest daily newspaper reporter",
+      "target_words": 140,
+      "word_count": 141,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/measles.txt",
+      "datapack_sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+      "original_story_sha256": "432e6b762421c37124dd255e194fbacba121365424de064c5aea6c5a1d89aafe",
+      "groundedness": {
+        "stated": 17,
+        "supported": 15,
+        "score": 0.8823529411764706,
+        "unsupported_examples": [
+          "6,450",
+          "11"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "mumps-global__L1",
+      "file": "experiments/human-baselines/llm-drafts/mumps-global__L1.md",
+      "series": "mumps-global",
+      "writer": "L1",
+      "persona": "wire-service news reporter",
+      "target_words": 125,
+      "word_count": 132,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/mumps-global.txt",
+      "datapack_sha256": "b043cf89ad431423ca14a68f15363b7235998a767c589c48498fae4ea9eafa65",
+      "original_story_sha256": "9b931f688a89f9243d687c170ff73524a1f9b065c56e14b302e751f8843080da",
+      "groundedness": {
+        "stated": 12,
+        "supported": 8,
+        "score": 0.6666666666666666,
+        "unsupported_examples": [
+          "26",
+          "10,108",
+          "4.1 percent",
+          "26"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "mumps-global__L2",
+      "file": "experiments/human-baselines/llm-drafts/mumps-global__L2.md",
+      "series": "mumps-global",
+      "writer": "L2",
+      "persona": "newsletter explainer writer",
+      "target_words": 135,
+      "word_count": 145,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/mumps-global.txt",
+      "datapack_sha256": "b043cf89ad431423ca14a68f15363b7235998a767c589c48498fae4ea9eafa65",
+      "original_story_sha256": "eaca516f963bcdda59422af18ea37fecbee3087ab29b24773b5fddb57fb5eb36",
+      "groundedness": {
+        "stated": 14,
+        "supported": 12,
+        "score": 0.8571428571428571,
+        "unsupported_examples": [
+          "26",
+          "26"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "mumps-global__L3",
+      "file": "experiments/human-baselines/llm-drafts/mumps-global__L3.md",
+      "series": "mumps-global",
+      "writer": "L3",
+      "persona": "magazine feature writer",
+      "target_words": 145,
+      "word_count": 142,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/mumps-global.txt",
+      "datapack_sha256": "b043cf89ad431423ca14a68f15363b7235998a767c589c48498fae4ea9eafa65",
+      "original_story_sha256": "086f6ae1e43020d5840ded2b085f4c3a9e9477a1aab12d2b1584ebc033ee1804",
+      "groundedness": {
+        "stated": 10,
+        "supported": 8,
+        "score": 0.8,
+        "unsupported_examples": [
+          "26",
+          "39 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "mumps-global__L4",
+      "file": "experiments/human-baselines/llm-drafts/mumps-global__L4.md",
+      "series": "mumps-global",
+      "writer": "L4",
+      "persona": "data columnist",
+      "target_words": 152,
+      "word_count": 154,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/mumps-global.txt",
+      "datapack_sha256": "b043cf89ad431423ca14a68f15363b7235998a767c589c48498fae4ea9eafa65",
+      "original_story_sha256": "0787c5a8f324619f2ac57f7f5f5e16da7de9e6b4aeff221a32465648132efcd7",
+      "groundedness": {
+        "stated": 15,
+        "supported": 11,
+        "score": 0.7333333333333333,
+        "unsupported_examples": [
+          "26",
+          "87 percent",
+          "57 percent",
+          "64 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "mumps-global__L5",
+      "file": "experiments/human-baselines/llm-drafts/mumps-global__L5.md",
+      "series": "mumps-global",
+      "writer": "L5",
+      "persona": "general-interest daily newspaper reporter",
+      "target_words": 140,
+      "word_count": 152,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/mumps-global.txt",
+      "datapack_sha256": "b043cf89ad431423ca14a68f15363b7235998a767c589c48498fae4ea9eafa65",
+      "original_story_sha256": "262cd494a6f7cb1d604199fc2bc9d626909f9717eb42d057aa121ea2e5036599",
+      "groundedness": {
+        "stated": 12,
+        "supported": 10,
+        "score": 0.8333333333333334,
+        "unsupported_examples": [
+          "26",
+          "about 39 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "pertussis-global__L1",
+      "file": "experiments/human-baselines/llm-drafts/pertussis-global__L1.md",
+      "series": "pertussis-global",
+      "writer": "L1",
+      "persona": "wire-service news reporter",
+      "target_words": 125,
+      "word_count": 127,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/pertussis-global.txt",
+      "datapack_sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+      "original_story_sha256": "0c5d9546a1d26ddb1900c4ca14230917a768d55ff27973aa7e6fe32b91674f9c",
+      "groundedness": {
+        "stated": 16,
+        "supported": 14,
+        "score": 0.875,
+        "unsupported_examples": [
+          "5.8",
+          "72 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "pertussis-global__L2",
+      "file": "experiments/human-baselines/llm-drafts/pertussis-global__L2.md",
+      "series": "pertussis-global",
+      "writer": "L2",
+      "persona": "newsletter explainer writer",
+      "target_words": 135,
+      "word_count": 146,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/pertussis-global.txt",
+      "datapack_sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+      "original_story_sha256": "0c664191f5ce8f9abd5032c293ee91647b9366fa1138e60a875734b5c24304e5",
+      "groundedness": {
+        "stated": 14,
+        "supported": 13,
+        "score": 0.9285714285714286,
+        "unsupported_examples": [
+          "about 72 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "pertussis-global__L3",
+      "file": "experiments/human-baselines/llm-drafts/pertussis-global__L3.md",
+      "series": "pertussis-global",
+      "writer": "L3",
+      "persona": "magazine feature writer",
+      "target_words": 145,
+      "word_count": 141,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/pertussis-global.txt",
+      "datapack_sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+      "original_story_sha256": "952debf69162470d780a731984835c2ca239775b39c692603f7cbce629f3321b",
+      "groundedness": {
+        "stated": 13,
+        "supported": 12,
+        "score": 0.9230769230769231,
+        "unsupported_examples": [
+          "roughly 72 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "pertussis-global__L4",
+      "file": "experiments/human-baselines/llm-drafts/pertussis-global__L4.md",
+      "series": "pertussis-global",
+      "writer": "L4",
+      "persona": "data columnist",
+      "target_words": 152,
+      "word_count": 143,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/pertussis-global.txt",
+      "datapack_sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+      "original_story_sha256": "aab3b765115186c97243a002e87e4a5065036db2e4130ce395c7ce377ee6a5f9",
+      "groundedness": {
+        "stated": 14,
+        "supported": 13,
+        "score": 0.9285714285714286,
+        "unsupported_examples": [
+          "about 73 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "pertussis-global__L5",
+      "file": "experiments/human-baselines/llm-drafts/pertussis-global__L5.md",
+      "series": "pertussis-global",
+      "writer": "L5",
+      "persona": "general-interest daily newspaper reporter",
+      "target_words": 140,
+      "word_count": 141,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/pertussis-global.txt",
+      "datapack_sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+      "original_story_sha256": "57b06d40ed58d18ef9415a696951c43783eb663c39c72e9c43cde25a9afa8d79",
+      "groundedness": {
+        "stated": 13,
+        "supported": 11,
+        "score": 0.8461538461538461,
+        "unsupported_examples": [
+          "676,576",
+          "about 72 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "under5-measles-deaths__L1",
+      "file": "experiments/human-baselines/llm-drafts/under5-measles-deaths__L1.md",
+      "series": "under5-measles-deaths",
+      "writer": "L1",
+      "persona": "wire-service news reporter",
+      "target_words": 125,
+      "word_count": 128,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/under5-measles-deaths.txt",
+      "datapack_sha256": "a829979c97396adf38bd81a6a78e5ab708e4e25dfdf72185463caf706a2fe34b",
+      "original_story_sha256": "21b9b9004d478f1b98f06214d9f0995a9fc77d52ad5a55735dec1a77dfd3579e",
+      "groundedness": {
+        "stated": 15,
+        "supported": 10,
+        "score": 0.6666666666666666,
+        "unsupported_examples": [
+          "5",
+          "46 percent",
+          "47,562",
+          "46 percent",
+          "about 80 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "under5-measles-deaths__L2",
+      "file": "experiments/human-baselines/llm-drafts/under5-measles-deaths__L2.md",
+      "series": "under5-measles-deaths",
+      "writer": "L2",
+      "persona": "newsletter explainer writer",
+      "target_words": 135,
+      "word_count": 144,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/under5-measles-deaths.txt",
+      "datapack_sha256": "a829979c97396adf38bd81a6a78e5ab708e4e25dfdf72185463caf706a2fe34b",
+      "original_story_sha256": "900bb7d3185fdb5611f93afbbb4b54d93d9d73fa12394be8680690146348997b",
+      "groundedness": {
+        "stated": 10,
+        "supported": 7,
+        "score": 0.7,
+        "unsupported_examples": [
+          "about 82 percent",
+          "22",
+          "roughly 46 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "under5-measles-deaths__L3",
+      "file": "experiments/human-baselines/llm-drafts/under5-measles-deaths__L3.md",
+      "series": "under5-measles-deaths",
+      "writer": "L3",
+      "persona": "magazine feature writer",
+      "target_words": 145,
+      "word_count": 143,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/under5-measles-deaths.txt",
+      "datapack_sha256": "a829979c97396adf38bd81a6a78e5ab708e4e25dfdf72185463caf706a2fe34b",
+      "original_story_sha256": "c83d82e0a836fb7616c92080a58dc712c67dc18af32730b9386cdf85b1145ddc",
+      "groundedness": {
+        "stated": 11,
+        "supported": 9,
+        "score": 0.8181818181818182,
+        "unsupported_examples": [
+          "3,033",
+          "46 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "under5-measles-deaths__L4",
+      "file": "experiments/human-baselines/llm-drafts/under5-measles-deaths__L4.md",
+      "series": "under5-measles-deaths",
+      "writer": "L4",
+      "persona": "data columnist",
+      "target_words": 152,
+      "word_count": 155,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/under5-measles-deaths.txt",
+      "datapack_sha256": "a829979c97396adf38bd81a6a78e5ab708e4e25dfdf72185463caf706a2fe34b",
+      "original_story_sha256": "0686fbc435798e865dcae26771884787f225f2874e3c5d893dfecc1ca064741e",
+      "groundedness": {
+        "stated": 14,
+        "supported": 9,
+        "score": 0.6428571428571429,
+        "unsupported_examples": [
+          "5",
+          "70 percent",
+          "22",
+          "70 percent",
+          "46 percent"
+        ],
+        "years_out_of_range": []
+      }
+    },
+    {
+      "id": "under5-measles-deaths__L5",
+      "file": "experiments/human-baselines/llm-drafts/under5-measles-deaths__L5.md",
+      "series": "under5-measles-deaths",
+      "writer": "L5",
+      "persona": "general-interest daily newspaper reporter",
+      "target_words": 140,
+      "word_count": 126,
+      "in_target_120_160": true,
+      "in_accepted_110_170": true,
+      "datapack": "experiments/human-baselines/datapacks/under5-measles-deaths.txt",
+      "datapack_sha256": "a829979c97396adf38bd81a6a78e5ab708e4e25dfdf72185463caf706a2fe34b",
+      "original_story_sha256": "800a30804e41e20856e2673c1f3c661c49c7b2aabca08a3e0cffdb1d9685f76d",
+      "groundedness": {
+        "stated": 12,
+        "supported": 9,
+        "score": 0.75,
+        "unsupported_examples": [
+          "3,033",
+          "47,562",
+          "about 46 percent"
+        ],
+        "years_out_of_range": []
+      }
+    }
+  ]
+}
