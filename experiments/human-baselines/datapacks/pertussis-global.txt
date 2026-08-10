@@ -1,0 +1,28 @@
+REAL DATA - Pertussis (global) (WHO vaccine-preventable diseases surveillance and others; global total x year).
+pertussis-global by year -> Reported pertussis cases | Incidence per million (per million):
+  2000: 190,475 | 33.5 per million
+  2001: 174,847 | 30.8 per million
+  2002: 135,944 | 23.1 per million
+  2003: 116,598 | 20.1 per million
+  2004: 245,377 | 41.1 per million
+  2005: 152,784 | 25.9 per million
+  2006: 127,410 | 20.7 per million
+  2007: 139,521 | 30.9 per million
+  2008: 148,095 | 24.6 per million
+  2009: 166,592 | 26.2 per million
+  2010: 161,234 | 26.5 per million
+  2011: 173,441 | 27.1 per million
+  2012: 250,330 | 39.6 per million
+  2013: 172,109 | 26.1 per million
+  2014: 186,438 | 28.3 per million
+  2015: 156,065 | 24 per million
+  2016: 174,624 | 26 per million
+  2017: 163,030 | 23 per million
+  2018: 169,240 | 23.2 per million
+  2019: 149,849 | 23 per million
+  2020: 69,605 | 9.9 per million
+  2021: 30,402 | 4.6 per million
+  2022: 64,313 | 9 per million
+  2023: 163,400 | 22.7 per million
+  2024: 941,893 | 137.1 per million
+  2025: 265,317 | 37.3 per million

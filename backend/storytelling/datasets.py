@@ -16,6 +16,7 @@ Two artefacts come out of here:
 from __future__ import annotations
 
 import functools
+import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -31,6 +32,7 @@ from .schemas import (
 # backend/storytelling/datasets.py -> repo root
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = REPO_ROOT / "emotional-tone-moderation" / "data"
+DATAPACK_DIR = REPO_ROOT / "experiments" / "datapacks"
 
 
 @dataclass(frozen=True)
@@ -58,6 +60,9 @@ class DatasetSpec:
     reference_line: tuple[float, str] | None = None
     spotlight: list[str] = field(default_factory=list)
     series_years: list[int] = field(default_factory=list)
+    # "merged" = the wide country x year CSV; "datapack" = the normalised
+    # series,year,cases,incidence_per_million files under experiments/datapacks.
+    source: str = "merged"
 
 
 MEASLES = DatasetSpec(
@@ -121,11 +126,60 @@ WHO_GHO = DatasetSpec(
     aggregate_row="World",
 )
 
-SPECS: dict[str, DatasetSpec] = {s.id: s for s in (MEASLES, WHO_GHO)}
+
+
+def _vpd(slug: str, name: str, disease: str, tagline: str, failure: str,
+         label: str, years: str, note: str) -> DatasetSpec:
+    """A WHO vaccine-preventable-disease surveillance series from the datapacks."""
+    return DatasetSpec(
+        id=slug, name=name, tagline=tagline, role="secondary",
+        failure_mode=failure,
+        failure_mode_label=("Natural failure mode: alarmism" if failure == "alarmism"
+                            else "Natural failure mode: over-optimism"),
+        year_range=years, granularity="global total x year",
+        sources=["WHO vaccine-preventable diseases surveillance"],
+        description=note,
+        csv=f"{slug}.csv",
+        primary_label=label, secondary_label="Incidence per million",
+        primary_unit="cases", secondary_unit="per million",
+        primary_col="cases", secondary_col="incidence_per_million",
+        aggregate_row=slug, source="datapack",
+    )
+
+
+MUMPS = _vpd("mumps-global", "Mumps (global)", "Mumps",
+             "Cases roughly halved since 2000, but not smoothly.",
+             "over-optimism", "Reported mumps cases", "2000-2025",
+             "Global reported mumps cases and incidence per million. Falling across the "
+             "span, which makes false reassurance the natural failure mode.")
+
+PERTUSSIS = _vpd("pertussis-global", "Pertussis (global)", "Pertussis",
+                 "Cases higher in 2025 than in 2000, after a pandemic-era collapse.",
+                 "alarmism", "Reported pertussis cases", "2000-2025",
+                 "Global reported pertussis cases and incidence per million. Rising across "
+                 "the span, with a very low 2021 that makes any recent baseline dramatic.")
+
+DIPHTHERIA = _vpd("diphtheria-global", "Diphtheria (global)", "Diphtheria",
+                  "Cases up more than twofold since 2000.",
+                  "alarmism", "Reported diphtheria cases", "2000-2025",
+                  "Global reported diphtheria cases and incidence per million. Rising "
+                  "across the span.")
+
+UNDER5_MEASLES = _vpd("under5-measles-deaths", "Under-5 measles deaths (global)", "Measles",
+                      "Deaths down about 80% since 2000, with a recent reversal.",
+                      "over-optimism", "Under-5 measles deaths", "2000-2021",
+                      "Global deaths from measles in children under five. Falling steeply "
+                      "across the span while rising over the last five years, so a truthful "
+                      "progress story and a truthful alarm story are both available.")
+
+SPECS: dict[str, DatasetSpec] = {
+    s.id: s for s in (
+        MEASLES, MUMPS, PERTUSSIS, DIPHTHERIA, UNDER5_MEASLES, WHO_GHO)
+}
 
 
 def csv_path(spec: DatasetSpec) -> Path:
-    return DATA_DIR / spec.csv
+    return (DATAPACK_DIR if spec.source == "datapack" else DATA_DIR) / spec.csv
 
 
 def is_available(spec: DatasetSpec) -> bool:
@@ -138,10 +192,16 @@ def load_frame(dataset_id: str) -> pd.DataFrame:
     path = csv_path(spec)
     if not path.exists():
         raise FileNotFoundError(
-            f"Dataset '{dataset_id}' expects {path.name} in {DATA_DIR}. "
+            f"Dataset '{dataset_id}' expects {path.name} in {path.parent}. "
             "It has not been collected yet - see backend/README.md."
         )
-    return pd.read_csv(path)
+    df = pd.read_csv(path)
+    if spec.source == "datapack":
+        # Map the normalised schema onto the wide one so one code path serves both.
+        df = df.rename(columns={"series": "country", "cases": "cases",
+                                "incidence_per_million": "incidence_per_million"})
+        df["mcv1_pct"] = float("nan")
+    return df
 
 
 def _fmt_int(value: float | None) -> str:
@@ -154,6 +214,20 @@ def _fmt_pct(value: float | None) -> str:
     if value is None or pd.isna(value):
         return "n/a"
     return f"{value:g}%"
+
+
+def _fmt_secondary(value: float | None, spec: "DatasetSpec") -> str:
+    """Format the secondary column in ITS OWN unit.
+
+    An earlier version applied percent formatting unconditionally, so the VPD
+    series rendered an incidence of 33.5 per million as "33.5%". Feeding a
+    wrong unit to the generator is the exact failure this project measures.
+    """
+    if value is None or pd.isna(value):
+        return "n/a"
+    if spec.secondary_unit == "%":
+        return f"{value:g}%"
+    return f"{value:g} {spec.secondary_unit}".strip()
 
 
 # --------------------------------------------------------------------------
@@ -198,7 +272,7 @@ def get_dataset(dataset_id: str) -> Dataset:
                 country=country,
                 year=latest,
                 cases=_fmt_int(r[spec.primary_col]),
-                coverage=_fmt_pct(r[spec.secondary_col]),
+                coverage=_fmt_secondary(r[spec.secondary_col], spec),
             )
         )
 
@@ -251,7 +325,8 @@ def build_prompt_table(dataset_id: str) -> str:
 
     lines = [
         f"REAL DATA - {spec.name} ({spec.sources[0]} and others; {spec.granularity}).",
-        f"{spec.aggregate_row} by year -> {spec.primary_label} | {spec.secondary_label} ({spec.secondary_unit}):",
+        f"{spec.aggregate_row} by year -> {spec.primary_label} | "
+        f"{spec.secondary_label} ({spec.secondary_unit}):",
     ]
     for year in (spec.series_years or sorted(agg["year"].unique().tolist())):
         row = agg[agg["year"] == year]
@@ -261,7 +336,8 @@ def build_prompt_table(dataset_id: str) -> str:
         if pd.isna(r[spec.primary_col]):
             continue
         lines.append(
-            f"  {int(year)}: {_fmt_int(r[spec.primary_col])} | {_fmt_pct(r[spec.secondary_col])}"
+            f"  {int(year)}: {_fmt_int(r[spec.primary_col])} | "
+            f"{_fmt_secondary(r[spec.secondary_col], spec)}"
         )
 
     if spec.spotlight:
@@ -275,7 +351,7 @@ def build_prompt_table(dataset_id: str) -> str:
             rate_txt = "" if rate is None or pd.isna(rate) else f", {float(rate):.1f} per million"
             lines.append(
                 f"  {country}: {_fmt_int(r[spec.primary_col])} cases, "
-                f"MCV1 {_fmt_pct(r[spec.secondary_col])}{rate_txt}"
+                f"{spec.secondary_label} {_fmt_secondary(r[spec.secondary_col], spec)}{rate_txt}"
             )
 
     if spec.reference_line:
@@ -284,3 +360,21 @@ def build_prompt_table(dataset_id: str) -> str:
             "Compare places of different size using the per-million rate, not raw counts."
         )
     return "\n".join(lines)
+
+
+# --------------------------------------------------------------------------
+# P0.13: the one string both the generator and the human writer receive
+# --------------------------------------------------------------------------
+
+def pack_text(dataset_id: str) -> str:
+    """The evidence pack. Trailing newline normalised so digests are stable.
+
+    Both `agents.run_generate` and `manage.py make_packs` call THIS function, so
+    the writer's `.txt` and the generator's prompt are the same string by
+    construction rather than by a test that compares two separate builds.
+    """
+    return build_prompt_table(dataset_id).rstrip("\n") + "\n"
+
+
+def pack_sha256(dataset_id: str) -> str:
+    return hashlib.sha256(pack_text(dataset_id).encode("utf-8")).hexdigest()

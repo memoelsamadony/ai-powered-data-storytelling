@@ -248,9 +248,34 @@ def unload(model: str) -> None:
 
 
 _JSON_INSTRUCTION = (
-    "\n\nRespond with a single valid JSON object matching this schema, and nothing "
-    "else - no prose, no markdown fence:\n{schema}"
+    "\n\nReturn ONLY a JSON object holding your answer. Do not return the schema "
+    "itself, and do not include the words 'properties', 'type' or 'required'. "
+    "The object must have exactly these keys: {keys}.\n"
+    "Shape (types only, replace every value with your own content):\n{schema}"
 )
+
+
+def _schema_hint(schema_json: dict) -> tuple[str, str]:
+    """Key list plus a value-shaped skeleton.
+
+    Passing the raw JSON Schema invites a literal echo: llama3.1:8b returned the
+    schema document itself, `properties` and all, which then failed validation on
+    a missing field. Showing the shape rather than the specification avoids it.
+    """
+    props = schema_json.get("properties", {})
+    keys = ", ".join(f'"{k}"' for k in props)
+    skeleton = {}
+    for k, spec in props.items():
+        kind = spec.get("type")
+        if kind == "array":
+            item = (spec.get("items") or {}).get("type", "string")
+            skeleton[k] = ["<string>"] if item == "string" else [{"...": "..."}]
+        elif kind in ("number", "integer"):
+            skeleton[k] = 0
+        else:
+            skeleton[k] = "<string>"
+    import json as _json
+    return keys, _json.dumps(skeleton, indent=2)
 
 
 def _extract_json(raw: str) -> str:
@@ -287,13 +312,26 @@ def _extract_json(raw: str) -> str:
     return s[start:]
 
 
+def model_digest(model: str) -> str | None:
+    """Digest of the exact weights in use. Two machines must agree on this."""
+    try:
+        r = requests.get(f"{API}/api/tags", timeout=5)
+        r.raise_for_status()
+    except requests.RequestException:
+        return None
+    for m in r.json().get("models", []):
+        if m["name"] == model:
+            return m.get("digest") or (m.get("details") or {}).get("parent_model")
+    return None
+
+
 def _one_call(model, system, prompt, schema_json, use_grammar, temperature,
-              num_ctx, num_predict, keep_alive, timeout):
+              num_ctx, num_predict, seed, keep_alive, timeout):
     body = {
         "model": model,
         "system": system,
         "prompt": prompt if use_grammar else prompt + _JSON_INSTRUCTION.format(
-            schema=json.dumps(schema_json)),
+            keys=_schema_hint(schema_json)[0], schema=_schema_hint(schema_json)[1]),
         "stream": False,
         "think": False,
         "keep_alive": keep_alive,
@@ -303,6 +341,7 @@ def _one_call(model, system, prompt, schema_json, use_grammar, temperature,
             # Hard cap. At the measured 9.5 tok/s of gemma4:31b every extra
             # 100 tokens is another 10 s of wall clock.
             "num_predict": num_predict,
+            **({"seed": seed} if seed is not None else {}),
         },
     }
     if use_grammar:
@@ -325,6 +364,7 @@ def generate_json(
     temperature: float = 0.0,
     num_ctx: int = 8192,
     num_predict: int = 900,
+    seed: int | None = None,
     keep_alive: str | int = "5m",
     exclusive: bool = False,
     timeout: int = 1800,
@@ -357,7 +397,8 @@ def generate_json(
         for use_grammar in modes:
             log.info("ollama %s (ctx=%s, grammar=%s)", model, num_ctx, use_grammar)
             data, raw = _one_call(model, system, prompt, schema_json, use_grammar,
-                                  temperature, num_ctx, num_predict, keep_alive, timeout)
+                                  temperature, num_ctx, num_predict, seed, keep_alive,
+                                  timeout)
 
             if data.get("done_reason") == "length":
                 last = OllamaError(
@@ -391,6 +432,12 @@ def generate_json(
                 "prompt_eval_count": data.get("prompt_eval_count"),
                 "done_reason": data.get("done_reason"),
                 "grammar": use_grammar,
+                # everything needed to reproduce this exact call
+                "temperature": temperature,
+                "num_ctx": num_ctx,
+                "num_predict": num_predict,
+                "seed": seed,
+                "model_digest": model_digest(model),
             }
             if not use_grammar:
                 log.info("%s succeeded via the no-grammar fallback", model)

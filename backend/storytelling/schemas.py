@@ -86,7 +86,11 @@ class ToneVariant(Schema):
     label: str
     author: str
     title: str
-    alarmism_rating: float = Field(ge=1, le=5, description="1 = flat, 5 = manipulative")
+    # None means "not judged". P0.7: a missing measurement must not be
+    # indistinguishable from a real one, so there is no default and no sentinel.
+    # Consumers render "not measured" rather than a number.
+    alarmism_rating: float | None = Field(default=None, ge=1, le=5,
+                                          description="1 = flat, 5 = manipulative; None = not judged")
     paragraphs: list[str]
 
 
@@ -170,6 +174,36 @@ class TextSimilarity(Schema):
     value: float
 
 
+class TextStats(Schema):
+    """Text-only tone measures. See storytelling/textstats.py."""
+
+    flesch_reading_ease: float
+    hedge_rate: float
+    booster_rate: float
+    certainty_ratio: float
+    intensifier_rate: float
+    fear_rate: float
+    reassurance_rate: float
+    affect_balance: float
+    causal_rate: float
+    superlative_rate: float
+    numeric_density: float
+    anchored_sentence_rate: float
+    type_token_ratio: float
+    mean_sentence_length: float
+    passive_rate: float
+
+
+class Groundedness(Schema):
+    """Share of stated figures the supplied data supports. No LLM in this path."""
+
+    stated: int
+    supported: int
+    groundedness: float | None = None
+    unsupported_examples: list[str] = []
+    years_out_of_range: list[int] = []
+
+
 class ComparisonMetrics(Schema):
     """Mirrors ComparisonMetrics in lib/api.ts.
 
@@ -180,10 +214,16 @@ class ComparisonMetrics(Schema):
     """
 
     text_similarity: list[TextSimilarity]
-    alarmism_before: float
-    alarmism_after: float
+    alarmism_before: float | None = None
+    alarmism_after: float | None = None
+    alarmism_human: float | None = None
     emotive_spans_removed: int
-    facts_preserved: bool
+    # Replaces the old `facts_preserved` boolean, which was
+    # `not any(status == "flagged")` and so only restated the fact-checker.
+    groundedness_raw: Groundedness | None = None
+    groundedness_moderated: Groundedness | None = None
+    textstats_raw: TextStats | None = None
+    textstats_moderated: TextStats | None = None
 
 
 class GenerateIn(Schema):

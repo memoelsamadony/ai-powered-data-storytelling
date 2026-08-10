@@ -53,6 +53,9 @@ class Run(models.Model):
     # The human baseline, submitted from the interface (task (c) in the report).
     human_text = models.TextField(blank=True)
     human_title = models.CharField(max_length=300, blank=True)
+    # P0.2: judged on the same rubric as every other story. Previously a
+    # hardcoded 2.5 was rendered in the interface as if it were a measurement.
+    human_alarmism = models.FloatField(null=True, blank=True)
 
     error = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

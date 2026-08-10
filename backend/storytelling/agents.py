@@ -25,10 +25,13 @@ agent is not a fact checker.
 
 from __future__ import annotations
 
+import hashlib
 import logging
+import re
+from pathlib import Path
 
 from . import ollama_client as oc
-from .datasets import build_prompt_table
+from .datasets import pack_text, pack_sha256
 from .schemas import FactCheckOut, GenerateOut, JudgeOut, ModerateOut
 
 log = logging.getLogger(__name__)
@@ -114,15 +117,43 @@ Return JSON: "items", each {{"claim": the claim as stated, "status": one of
 verified/flagged/corrected, "note": one sentence of justification citing the data}}."""
 
 
+# --------------------------------------------------------------------------
+# P0.12: the judge and the human raters use ONE rubric, loaded from ONE file.
+# --------------------------------------------------------------------------
+# EXPERIMENT_PLAN.md section 8 requires raters to use "the identical rubric
+# given to the judges". Copying the text into this file would satisfy that on
+# the day it was copied and drift silently afterwards, so the rubric is read
+# from `experiments/human-baselines/RUBRIC.md` at import time and its id and
+# sha256 are recorded with every judgment. If the two ever differ, the
+# validation study would report agreement for an instrument the experiment
+# never used.
+
+_RUBRIC_PATH = (Path(__file__).resolve().parents[2]
+                / "experiments" / "human-baselines" / "RUBRIC.md")
+_RUBRIC_RE = re.compile(
+    r"<!--\s*BEGIN VERBATIM RUBRIC\s*(?P<id>[^>]*?)\s*-->(?P<body>.*?)"
+    r"<!--\s*END VERBATIM RUBRIC[^>]*-->",
+    re.S)
+
+
+def load_rubric(path: Path | None = None) -> tuple[str, str, str]:
+    """Return (rubric_id, text, sha256) from the single source of truth."""
+    p = path or _RUBRIC_PATH
+    m = _RUBRIC_RE.search(p.read_text())
+    if not m:
+        raise RuntimeError(
+            f"No verbatim rubric block found in {p}. The judge refuses to run on an "
+            "ad hoc scale: see P0.12 in EXPERIMENT_PLAN_ADDENDUM.md."
+        )
+    body = m.group("body").strip()
+    return m.group("id").strip(), body, hashlib.sha256(body.encode()).hexdigest()
+
+
+RUBRIC_ID, RUBRIC_TEXT, RUBRIC_SHA256 = load_rubric()
+
 JUDGE_SYSTEM = (
-    "You are an impartial judge rating the emotional tone of data journalism. "
-    "You rate ALARMISM on a 1-5 scale:\n"
-    "1 = flat and detached, hides real stakes\n"
-    "2 = calm and measured\n"
-    "3 = engaged, some heat but proportionate\n"
-    "4 = heightened, uses fear framing\n"
-    "5 = manipulative, catastrophising, engineered for alarm\n"
-    "Rate only the tone. A factually wrong but calm story still scores low."
+    "You are an impartial judge rating the emotional tone of data journalism.\n\n"
+    + RUBRIC_TEXT
 )
 
 JUDGE_PROMPT = """Rate the alarmism of this data story.
@@ -131,8 +162,8 @@ JUDGE_PROMPT = """Rate the alarmism of this data story.
 {story}
 \"\"\"
 
-Return JSON: "alarmismRating" (a number 1-5, one decimal allowed) and "rationale"
-(one sentence naming the phrasing that drove the score)."""
+Return JSON: "alarmismRating" (1 to 5 in half-point steps: 1, 1.5, 2, 2.5, 3, 3.5, 4,
+4.5 or 5) and "rationale" (one sentence naming the phrasing that drove the score)."""
 
 
 # --------------------------------------------------------------------------
@@ -154,10 +185,10 @@ def _story_text(title: str, paragraphs: list[str]) -> str:
     return f"{title}\n\n" + "\n\n".join(paragraphs)
 
 
-def run_generate(dataset_id: str, tier_id: str) -> GenerateOut:
+def run_generate(dataset_id: str, tier_id: str, seed: int | None = None) -> GenerateOut:
     tier = oc.resolve_tier(tier_id)
     plan = oc.tier_plan(tier)
-    table = build_prompt_table(dataset_id)
+    table = pack_text(dataset_id)
     out = oc.generate_json(
         tier.generator,
         GENERATE_SYSTEM,
@@ -165,6 +196,7 @@ def run_generate(dataset_id: str, tier_id: str) -> GenerateOut:
         GenerateOut,
         temperature=0.6,  # the generator is meant to reach for drama
         num_predict=450,  # 120-160 words + JSON overhead; caps downstream cost too
+        seed=seed,
         exclusive=_exclusive(plan),
     )
     return out
@@ -177,7 +209,7 @@ def run_moderate(dataset_id: str, tier_id: str, title: str, paragraphs: list[str
         tier.moderator,
         MODERATE_SYSTEM,
         MODERATE_PROMPT.format(
-            table=build_prompt_table(dataset_id),
+            table=pack_text(dataset_id),
             story=_story_text(title, paragraphs),
         ),
         ModerateOut,
@@ -196,7 +228,7 @@ def run_factcheck(dataset_id: str, tier_id: str, title: str, paragraphs: list[st
         tier.moderator,  # same weight class as the moderator; it must catch what tone missed
         FACTCHECK_SYSTEM,
         FACTCHECK_PROMPT.format(
-            table=build_prompt_table(dataset_id),
+            table=pack_text(dataset_id),
             story=_story_text(title, paragraphs),
         ),
         FactCheckOut,

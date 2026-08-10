@@ -1,0 +1,24 @@
+REAL DATA - Under-5 measles deaths (global) (WHO vaccine-preventable diseases surveillance and others; global total x year).
+under5-measles-deaths by year -> Under-5 measles deaths | Incidence per million (per million):
+  2000: 756,332 | n/a
+  2001: 802,917 | n/a
+  2002: 848,272 | n/a
+  2003: 760,751 | n/a
+  2004: 602,749 | n/a
+  2005: 542,102 | n/a
+  2006: 461,669 | n/a
+  2007: 344,666 | n/a
+  2008: 389,184 | n/a
+  2009: 279,411 | n/a
+  2010: 262,501 | n/a
+  2011: 254,599 | n/a
+  2012: 148,430 | n/a
+  2013: 190,190 | n/a
+  2014: 109,966 | n/a
+  2015: 147,580 | n/a
+  2016: 104,776 | n/a
+  2017: 134,164 | n/a
+  2018: 136,050 | n/a
+  2019: 168,887 | n/a
+  2020: 103,901 | n/a
+  2021: 151,463 | n/a

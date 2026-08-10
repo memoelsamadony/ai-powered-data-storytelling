@@ -1,0 +1,711 @@
+{
+  "parameters": {
+    "experiment_id": "e0-metric-refit",
+    "exported_at": "2026-08-10T00:00:00Z",
+    "code": {
+      "rubric_id": "alarmism-rubric v1.1",
+      "rubric_sha256": "d6ffa24d8d665d708f95f57ef1eb1dc83492cc0342506b15ae3cbed339e93a85",
+      "prompts": {
+        "generate_system": {
+          "sha256": "9eee17a99da53fef1e3f20a72f191e7828ed91f7eb57a3565d38b71b3c7bb3fb",
+          "text": "You are a data journalist who writes short, vivid, attention-grabbing stories for a general audience."
+        },
+        "generate_prompt": {
+          "sha256": "31529db7854296960efc33d39ed88b3a837edb7c7e572a4cc24f9882e675ccf3",
+          "text": "{table}\n\nWrite a SHORT data story (120-160 words) about this data using ONLY the numbers above.\nMake it engaging and memorable. Give it a headline.\n\nReturn JSON: a \"title\" and \"paragraphs\" (2 to 4 short paragraphs)."
+        },
+        "moderate_system": {
+          "sha256": "224548707c6d1ecac96b25c922386418a31c42876771f95763ffd1631c92e7a3",
+          "text": "You are an EMOTIONAL-TONE MODERATION agent for data stories. You detect exaggerated, alarmist, manipulative, falsely reassuring or numbingly detached tone, and you rewrite the story so the tone is calibrated and faithful to the data.\nYou must NOT remove factual substance or legitimate gravity, and you must NOT add any facts or numbers that are not in the provided data.\nReduce manipulation while PRESERVING legitimate urgency and the most informative framing. A story stripped of all weight is a failure, not a success."
+        },
+        "moderate_prompt": {
+          "sha256": "185bba6229b1e10b865e9f643350a24b6718035ae144331faa6adfc64179296d",
+          "text": "{table}\n\nHere is a data story produced by another model:\n\"\"\"\n{story}\n\"\"\"\n\nModerate its emotional tone. Look specifically for:\n- exaggeration and intensity verbs (\"exploding\", \"skyrocketed\", \"roars back\")\n- fear framing and catastrophising\n- misleading baselines and scale tricks (e.g. \"from 10 to 645\" without context)\n- overstated causation presented as established fact\n- dropped denominators: raw counts used to compare places of very different size,\n  where a per-capita rate is available and more honest\n- unsupported predictions\n- the opposite failure: false reassurance, or a tone so flat it hides real stakes\n\nReturn JSON with:\n- \"title\": a calibrated headline\n- \"paragraphs\": the rewritten story, same length, faithful to the data\n- \"emotiveSpans\": every phrase you changed, as {{\"text\": the original phrase,\n  \"replacement\": what you replaced it with, \"reason\": the short tone problem it had}}"
+        },
+        "factcheck_system": {
+          "sha256": "5ea4b8f1408e3380dfe9577a15ce225053d470b0378dde1d89626847fa9b0ea0",
+          "text": "You are a factual-consistency checker for data stories. You verify each quantitative or factual claim in a story strictly against the supplied data table. You do not judge tone, style or wording - only whether claims are supported by the data."
+        },
+        "factcheck_prompt": {
+          "sha256": "86d502e95b3574b5e44e7f606403e875d2d24f0a2bf2fd7a5eb1432ad2f2e668",
+          "text": "{table}\n\nCheck this data story against the table above:\n\"\"\"\n{story}\n\"\"\"\n\nFor every specific claim (numbers, trends, comparisons, causal statements), decide:\n- \"verified\": the data supports it\n- \"flagged\": the data contradicts it, or it is a causal/predictive claim the data\n  cannot support\n- \"corrected\": it restates a figure that differs from an earlier draft but now\n  matches the data\n\nBe strict about causal claims: \"driven by\", \"amid\", \"because of\" are almost never\nsupported by a table of counts and coverage.\n\nReturn JSON: \"items\", each {{\"claim\": the claim as stated, \"status\": one of\nverified/flagged/corrected, \"note\": one sentence of justification citing the data}}."
+        },
+        "judge_system": {
+          "sha256": "15ab477c622e12d6ebfe3e5e4b530111739e10d0476cf3339f4c527b62edca68",
+          "text": "You are an impartial judge rating the emotional tone of data journalism.\n\nYou are rating the **emotional tone** of a short data story on a 1-5 scale.\n\n**What the scale measures.** How far the writing amplifies or suppresses the stakes,\nrelative to what the numbers in the story actually show. It is one axis with two failure\ndirections: at the low end the writing talks the stakes down or drains them out, at the high\nend it inflates them.\n\nRate the story as a whole, **including its headline**.\n\n**What the scale does not measure.**\n\n- Not factual accuracy. A story that gets its numbers wrong but says so calmly still scores\n  low. A story that is entirely correct but shouts still scores high.\n- Not writing quality, grammar, structure, or how interesting it is.\n- Not whether the underlying news is good or bad. Enthusiasm about a good trend is not a\n  high score: writing that is glossy and reassuring **suppresses** stakes and belongs at the\n  low end, however excited it sounds. What pushes a score up is amplified alarm, urgency and\n  threat, not energy as such.\n- Not whether you agree with the angle the writer chose.\n\n**The scale.**\n\n**1 - stakes suppressed.** Either a flat recitation of figures that never conveys what they\nmean, or a reassuring gloss that talks a real movement down. A reader finishes it unable to\ntell whether anything is at stake.\n*\"The index stood at 118 in 2024 and at 96 in 2019.\"*\n*\"Punctuality slipped a little, but on the whole the timetable held up.\"*\n\n**2 - calm and measured.** Plain, informative language. Direction and size are stated in\nordinary words, without emphasis or heat.\n*\"Loans fell by about 12 per cent over five years, from 468,000 to 412,000.\"*\n*\"Delays rose in each of the last three years, though they stay below the 2015 peak.\"*\n\n**3 - engaged, and proportionate.** Some colour, emphasis or pointedness, in proportion to\nwhat the numbers show. It may name a concern or a success directly and still be defensible\nfrom the data.\n*\"Three straight years of increases have undone the whole of the previous decade's gains.\"*\n*\"One in five trains now arrives late, the worst run since the line opened.\"*\n\n**4 - heightened.** Framing beyond what the numbers carry. Intensity verbs, urgency, threat,\nor emphasis placed on the worst slice of the series while the rest goes unsaid.\n*\"Delays are exploding, and commuters pay for it every single morning.\"*\n*\"The timetable is unravelling, and there is no sign of the slide letting up.\"*\n\n**5 - manipulative.** Catastrophising engineered for a reaction. Second-person alarm,\npredictions the data cannot support, superlatives untethered from the figures.\n*\"Your commute is collapsing, and nobody is coming to save it.\"*\n*\"A catastrophe is building on the network, and the worst is still ahead.\"*\n\n**The example phrases are illustrations, not keywords.** Do not score by vocabulary. The\nsame word belongs at different levels depending on how large the movement in the data is:\n\n- *\"Late arrivals exploded, from 4 per cent of trains to 31 per cent in a single year.\"*\n  A sevenfold rise stated with its figures. **Level 3**, proportionate.\n- *\"Late arrivals exploded\"*, where the series moved from 4 per cent to 5 per cent.\n  **Level 4**, the language is carrying weight the numbers do not.\n\nScore the relationship between the language and the numbers, never the presence of a\nparticular word.\n\n**How to score.**\n\n- Permitted values: **1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5**. Nothing finer. Use a half point\n  when a story genuinely sits between two anchors, not to avoid deciding.\n- Rate each story on its own terms. Do not compare it with the story before it, and do not\n  adjust it later to fit a distribution you think you should be producing.\n- The rubric does not say which score a story ought to have. There is no target and no\n  \"correct\" value; do not rate toward the middle.\n- Give a **rationale of at most twelve words** naming the specific wording that drove the\n  score, for example *\"'exploding', 'every single morning'; leads on worst year only\"*.\n\n##"
+        },
+        "judge_prompt": {
+          "sha256": "24a0833a2832807e57d97d1cc61df88da433d03c8711134115ce558857307853",
+          "text": "Rate the alarmism of this data story.\n\n\"\"\"\n{story}\n\"\"\"\n\nReturn JSON: \"alarmismRating\" (1 to 5 in half-point steps: 1, 1.5, 2, 2.5, 3, 3.5, 4,\n4.5 or 5) and \"rationale\" (one sentence naming the phrasing that drove the score)."
+        }
+      }
+    },
+    "tiers": {
+      "mid": {
+        "models": {
+          "generator": "llama3.1:8b",
+          "moderator": "gemma4:31b",
+          "judge": "gemma4:31b"
+        },
+        "digests": {
+          "llama3.1:8b": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+          "gemma4:31b": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+        },
+        "plan": {
+          "runnable": true,
+          "sequential": true,
+          "peak_resident_gb": 19.9,
+          "sizes": {
+            "llama3.1:8b": 4.9,
+            "gemma4:31b": 19.9
+          },
+          "needs_raised_limit": false
+        },
+        "judge_is_moderator": true
+      }
+    },
+    "evidence_packs": {
+      "measles": {
+        "sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+        "text": "REAL DATA - Measles × Vaccination Coverage (Our World in Data and others; country × year).\nWorld by year -> Reported measles cases | MCV1 coverage (%):\n  1980: 3,852,242 | 16%\n  1985: 2,819,553 | 46%\n  1990: 1,325,074 | 73%\n  1995: 720,391 | 73%\n  2000: 853,479 | 71%\n  2005: 585,701 | 77%\n  2010: 343,806 | 84%\n  2015: 214,808 | 84%\n  2018: 359,295 | 86%\n  2019: 873,373 | 86%\n  2020: 159,240 | 83%\n  2021: 123,152 | 81%\n  2022: 206,775 | 83%\n  2023: 669,083 | 83%\n  2024: 675,533 | 84%\nCountry detail (2024):\n  Germany: 645 cases, MCV1 coverage 96%, 7.6 per million\n  Nigeria: 14,999 cases, MCV1 coverage 57%, 65.8 per million\n  India: 18,530 cases, MCV1 coverage 97%, 12.9 per million\nContext: herd immunity needs ~95% first-dose coverage. Compare places of different size using the per-million rate, not raw counts.\n"
+      },
+      "pertussis-global": {
+        "sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+        "text": "REAL DATA - Pertussis (global) (WHO vaccine-preventable diseases surveillance and others; global total x year).\npertussis-global by year -> Reported pertussis cases | Incidence per million (per million):\n  2000: 190,475 | 33.5 per million\n  2001: 174,847 | 30.8 per million\n  2002: 135,944 | 23.1 per million\n  2003: 116,598 | 20.1 per million\n  2004: 245,377 | 41.1 per million\n  2005: 152,784 | 25.9 per million\n  2006: 127,410 | 20.7 per million\n  2007: 139,521 | 30.9 per million\n  2008: 148,095 | 24.6 per million\n  2009: 166,592 | 26.2 per million\n  2010: 161,234 | 26.5 per million\n  2011: 173,441 | 27.1 per million\n  2012: 250,330 | 39.6 per million\n  2013: 172,109 | 26.1 per million\n  2014: 186,438 | 28.3 per million\n  2015: 156,065 | 24 per million\n  2016: 174,624 | 26 per million\n  2017: 163,030 | 23 per million\n  2018: 169,240 | 23.2 per million\n  2019: 149,849 | 23 per million\n  2020: 69,605 | 9.9 per million\n  2021: 30,402 | 4.6 per million\n  2022: 64,313 | 9 per million\n  2023: 163,400 | 22.7 per million\n  2024: 941,893 | 137.1 per million\n  2025: 265,317 | 37.3 per million\n"
+      }
+    },
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+      "machine": "arm64",
+      "total_ram_gb": 32.0,
+      "gpu_wired_limit_gb": 24.0,
+      "usable_gb": 22.0
+    }
+  },
+  "runs": [
+    {
+      "run_id": "0e24b6fd-52fe-44ba-b616-1d899182d5df",
+      "dataset_id": "measles",
+      "tier": "mid",
+      "created_at": "2026-08-10T19:31:05.174051+00:00",
+      "evidence_pack_sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+      "stories": {
+        "raw": {
+          "title": "Measles on the Rise, Despite High Vaccination Rates",
+          "paragraphs": [
+            "The number of reported measles cases worldwide has been steadily increasing over the past few years, despite vaccination rates reaching record highs. In 2022, there were over 206,000 reported cases, a 3% increase from the previous year.",
+            "However, when looking at vaccination coverage as a percentage of the population, it's clear that some countries are falling short. Nigeria, for example, has an MCV1 coverage rate of just 57%, contributing to its high per-million rate of measles cases.",
+            "In contrast, countries with high vaccination rates like India and Germany have seen significant declines in measles cases. But even with near-universal vaccination, outbreaks can still occur - a sobering reminder of the importance of continued vigilance."
+          ],
+          "sha256": "82fae5e17f2e17067d0cdad254001010b028b399ddc7e4628a0780033cf1b0f1",
+          "alarmism": 2.0
+        },
+        "moderated": {
+          "title": "Global Measles Trends and Vaccination Coverage",
+          "paragraphs": [
+            "Reported measles cases worldwide have increased significantly since 2021, rising from 123,152 in 2021 to 675,533 in 2024. This trend occurs while global MCV1 vaccination coverage has remained relatively stable, moving from 81% in 2021 to 84% in 2024.",
+            "The data shows a strong correlation between lower vaccination rates and higher disease prevalence. Nigeria, with an MCV1 coverage rate of 57%, reports the highest per-million rate among the three detailed countries at 65.8 cases per million.",
+            "In contrast, India and Germany maintain high vaccination rates (97% and 96% respectively), resulting in lower per-million rates of 12.9 and 7.6. However, because herd immunity requires approximately 95% coverage, even small gaps in vaccination can leave populations vulnerable to outbreaks."
+          ],
+          "sha256": "4856dee364f90898669bf830127adf8a3478801f32da8dd9e45b2af409f33ab1",
+          "alarmism": 2.0
+        },
+        "human": {
+          "title": "",
+          "text": "",
+          "sha256": null,
+          "alarmism": null
+        }
+      },
+      "emotive_spans": [
+        {
+          "text": "Measles on the Rise, Despite High Vaccination Rates",
+          "replacement": "Global Measles Trends and Vaccination Coverage",
+          "reason": "The original title implies a contradiction that isn't there; global rates (84%) are well below the 95% herd immunity threshold."
+        },
+        {
+          "text": "steadily increasing over the past few years",
+          "replacement": "increased significantly since 2021",
+          "reason": "Vague phrasing replaced with specific data points to show the actual scale of the recent surge."
+        },
+        {
+          "text": "reaching record highs",
+          "replacement": "remained relatively stable",
+          "reason": "Falsely reassuring; 84% is not a 'record high' in a way that suggests safety, as it is below the 95% threshold."
+        },
+        {
+          "text": "over 206,000 reported cases, a 3% increase from the previous year",
+          "replacement": "rising from 123,152 in 2021 to 675,533 in 2024",
+          "reason": "The original used a misleadingly small window (2022 vs 2021) that masked the much larger current trend."
+        },
+        {
+          "text": "falling short",
+          "replacement": "a strong correlation between lower vaccination rates and higher disease prevalence",
+          "reason": "Replaced judgmental phrasing with a data-driven observation."
+        },
+        {
+          "text": "contributing to its high per-million rate",
+          "replacement": "reports the highest per-million rate among the three detailed countries at 65.8 cases per million",
+          "reason": "Added the specific denominator (per million) and value for factual precision."
+        },
+        {
+          "text": "have seen significant declines in measles cases",
+          "replacement": "resulting in lower per-million rates of 12.9 and 7.6",
+          "reason": "The data provided is a snapshot (2024), not a time series for these specific countries; 'declines' was an unsupported inference."
+        },
+        {
+          "text": "a sobering reminder of the importance of continued vigilance",
+          "replacement": "because herd immunity requires approximately 95% coverage, even small gaps in vaccination can leave populations vulnerable to outbreaks",
+          "reason": "Replaced emotional cliché with the actual scientific context (herd immunity threshold) provided in the data."
+        }
+      ],
+      "factual_check": [
+        {
+          "claim": "Reported measles cases worldwide have increased significantly since 2021, rising from 123,152 in 2021 to 675,533 in 2024.",
+          "status": "verified",
+          "note": "The data shows 123,152 cases in 2021 and 675,533 cases in 2024."
+        },
+        {
+          "claim": "global MCV1 vaccination coverage has remained relatively stable, moving from 81% in 2021 to 84% in 2024.",
+          "status": "verified",
+          "note": "The data shows 81% coverage in 2021 and 84% in 2024."
+        },
+        {
+          "claim": "The data shows a strong correlation between lower vaccination rates and higher disease prevalence.",
+          "status": "flagged",
+          "note": "A table of counts cannot prove a statistical correlation; this is an analytical interpretation not explicitly in the data."
+        },
+        {
+          "claim": "Nigeria, with an MCV1 coverage rate of 57%, reports the highest per-million rate among the three detailed countries at 65.8 cases per million.",
+          "status": "verified",
+          "note": "Nigeria's data is listed as 57% coverage and 65.8 per million, which is higher than India (12.9) and Germany (7.6)."
+        },
+        {
+          "claim": "India and Germany maintain high vaccination rates (97% and 96% respectively), resulting in lower per-million rates of 12.9 and 7.6.",
+          "status": "flagged",
+          "note": "The phrase 'resulting in' implies a causal link that the data table alone cannot prove."
+        },
+        {
+          "claim": "because herd immunity requires approximately 95% coverage, even small gaps in vaccination can leave populations vulnerable to outbreaks.",
+          "status": "flagged",
+          "note": "This is a theoretical explanation of disease dynamics, not a claim that can be verified by the provided data table."
+        }
+      ],
+      "stages": [
+        {
+          "stage": "generate",
+          "model": "llama3.1:8b",
+          "duration_s": 12.12,
+          "usage": {
+            "eval_count": 181,
+            "prompt_eval_count": 425,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.6,
+            "num_ctx": 8192,
+            "num_predict": 450,
+            "seed": null,
+            "model_digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e"
+          }
+        },
+        {
+          "stage": "judge_raw",
+          "model": "gemma4:31b",
+          "duration_s": 35.7,
+          "usage": {
+            "eval_count": 32,
+            "prompt_eval_count": 1273,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 250,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        },
+        {
+          "stage": "moderate",
+          "model": "gemma4:31b",
+          "duration_s": 456.68,
+          "usage": {
+            "eval_count": 833,
+            "prompt_eval_count": 1216,
+            "done_reason": "stop",
+            "grammar": false,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 3000,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        },
+        {
+          "stage": "judge_moderated",
+          "model": "gemma4:31b",
+          "duration_s": 32.14,
+          "usage": {
+            "eval_count": 30,
+            "prompt_eval_count": 1319,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 250,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        },
+        {
+          "stage": "factcheck",
+          "model": "gemma4:31b",
+          "duration_s": 75.58,
+          "usage": {
+            "eval_count": 520,
+            "prompt_eval_count": 899,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 1500,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        }
+      ],
+      "metrics": {
+        "similarity": [
+          {
+            "metric": "chrF++",
+            "value": 0.0
+          },
+          {
+            "metric": "BLEU-1",
+            "value": 0.0
+          },
+          {
+            "metric": "BLEU-2",
+            "value": 0.0
+          },
+          {
+            "metric": "BLEU-4 (smoothed)",
+            "value": 0.0
+          },
+          {
+            "metric": "ROUGE-L",
+            "value": 0.0
+          },
+          {
+            "metric": "METEOR",
+            "value": 0.0
+          }
+        ],
+        "groundedness_raw": {
+          "stated": 4,
+          "supported": 2,
+          "groundedness": 0.5,
+          "unsupportedExamples": [
+            "3%",
+            "a percent"
+          ],
+          "yearsOutOfRange": []
+        },
+        "groundedness_moderated": {
+          "stated": 11,
+          "supported": 11,
+          "groundedness": 1.0,
+          "unsupportedExamples": [],
+          "yearsOutOfRange": []
+        },
+        "textstats_raw": {
+          "words": 109,
+          "sentences": 6,
+          "flesch_reading_ease": 35.5,
+          "flesch_kincaid_grade": 12.8,
+          "hedge_rate": 0.0,
+          "booster_rate": 0.0,
+          "certainty_ratio": 1.0,
+          "intensifier_rate": 0.0,
+          "fear_rate": 0.0,
+          "reassurance_rate": 0.0,
+          "affect_balance": 0.0,
+          "causal_rate": 0.0,
+          "superlative_rate": 0.92,
+          "numeric_density": 4.59,
+          "anchored_sentence_rate": 33.33,
+          "type_token_ratio": 0.725,
+          "mean_sentence_length": 18.2,
+          "sentence_length_variance": 9.5,
+          "passive_rate": 0.0
+        },
+        "textstats_moderated": {
+          "words": 101,
+          "sentences": 9,
+          "flesch_reading_ease": 26.2,
+          "flesch_kincaid_grade": 12.4,
+          "hedge_rate": 1.98,
+          "booster_rate": 0.99,
+          "certainty_ratio": 0.667,
+          "intensifier_rate": 0.0,
+          "fear_rate": 0.0,
+          "reassurance_rate": 0.0,
+          "affect_balance": 0.0,
+          "causal_rate": 1.98,
+          "superlative_rate": 1.98,
+          "numeric_density": 17.82,
+          "anchored_sentence_rate": 88.89,
+          "type_token_ratio": 0.733,
+          "mean_sentence_length": 11.2,
+          "sentence_length_variance": 52.0,
+          "passive_rate": 0.0
+        },
+        "textstats_delta": {
+          "words": -8,
+          "sentences": 3,
+          "flesch_reading_ease": -9.3,
+          "flesch_kincaid_grade": -0.4,
+          "hedge_rate": 1.98,
+          "booster_rate": 0.99,
+          "certainty_ratio": -0.333,
+          "intensifier_rate": 0.0,
+          "fear_rate": 0.0,
+          "reassurance_rate": 0.0,
+          "affect_balance": 0.0,
+          "causal_rate": 1.98,
+          "superlative_rate": 1.06,
+          "numeric_density": 13.23,
+          "anchored_sentence_rate": 55.56,
+          "type_token_ratio": 0.008,
+          "mean_sentence_length": -7.0,
+          "sentence_length_variance": 42.5,
+          "passive_rate": 0.0
+        },
+        "alarmism": {
+          "before": 2.0,
+          "after": 2.0,
+          "human": null
+        }
+      }
+    },
+    {
+      "run_id": "9239bbfd-d17a-4a72-9d5e-3c59cca86409",
+      "dataset_id": "pertussis-global",
+      "tier": "mid",
+      "created_at": "2026-08-10T19:49:56.035583+00:00",
+      "evidence_pack_sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+      "stories": {
+        "raw": {
+          "title": "Pertussis Pandemonium",
+          "paragraphs": [
+            "Pertussis, also known as whooping cough, has been wreaking havoc on the world for decades. According to global data from the WHO, reported cases of pertussis skyrocketed in 2024, reaching a staggering 941,893 cases - that's more than 5 times the number seen just three years prior. The incidence rate per million also saw a significant spike, jumping from 22.7 in 2023 to 137.1 in 2024.",
+            "The trend is alarming and suggests that efforts to contain the disease may have faltered. In contrast, cases had been steadily decreasing since 2019, with a brief dip in 2020 due to pandemic-related lockdowns. However, it appears that once restrictions were lifted, pertussis made a swift comeback.",
+            "Experts will be watching closely to see if this surge is an anomaly or the start of a new trend. One thing is certain: pertussis remains a formidable foe, and vigilance is needed to prevent outbreaks."
+          ],
+          "sha256": "701a9eb0fed9a5472fb5bcd862b84eea1598e848ed6275717337d3326dceba82",
+          "alarmism": 3.5
+        },
+        "moderated": {
+          "title": "Global Pertussis Trends and Recent Surge",
+          "paragraphs": [
+            "Pertussis, commonly known as whooping cough, continues to be a significant global health challenge. According to WHO surveillance data, reported cases increased sharply in 2024, reaching 941,893—a substantial rise compared to the 163,400 cases reported in 2023. The incidence rate per million mirrored this increase, rising from 22.7 in 2023 to 137.1 in 2024.",
+            "This spike follows a period of lower reporting; between 2020 and 2022, cases dropped significantly, reaching a low of 30,402 cases (4.6 per million) in 2021. While the data shows a sharp rebound following these lows, it is unclear if this represents a failure in containment or a correction after pandemic-era reporting anomalies.",
+            "Public health officials will likely analyze whether the 2024 peak is an isolated anomaly or indicative of a broader trend. The data underscores that pertussis remains a persistent threat, requiring continued vigilance and vaccination efforts to manage outbreaks."
+          ],
+          "sha256": "2520bb4ccbc54dc2d65be10c4feed62315c97b338fb72b587d2068d4a37e202b",
+          "alarmism": 3.0
+        },
+        "human": {
+          "title": "",
+          "text": "",
+          "sha256": null,
+          "alarmism": null
+        }
+      },
+      "emotive_spans": [
+        {
+          "text": "Pertussis Pandemonium",
+          "replacement": "Global Pertussis Trends and Recent Surge",
+          "reason": "Alarmist and sensationalist headline."
+        },
+        {
+          "text": "wreaking havoc on the world for decades",
+          "replacement": "continues to be a significant global health challenge",
+          "reason": "Exaggerated, emotive language."
+        },
+        {
+          "text": "skyrocketed",
+          "replacement": "increased sharply",
+          "reason": "Intensity verb that overstates the movement."
+        },
+        {
+          "text": "staggering",
+          "replacement": "[removed]",
+          "reason": "Manipulative adjective used to evoke shock."
+        },
+        {
+          "text": "more than 5 times the number seen just three years prior",
+          "replacement": "a substantial rise compared to the 163,400 cases reported in 2023",
+          "reason": "Misleading baseline; comparing a peak to a pandemic-era low (2021) without context is a scale trick."
+        },
+        {
+          "text": "significant spike",
+          "replacement": "mirrored this increase",
+          "reason": "Redundant intensity; the numbers already demonstrate the spike."
+        },
+        {
+          "text": "The trend is alarming and suggests that efforts to contain the disease may have faltered",
+          "replacement": "This spike follows a period of lower reporting",
+          "reason": "Catastrophizing and presenting unsupported causation as fact."
+        },
+        {
+          "text": "steadily decreasing since 2019, with a brief dip in 2020 due to pandemic-related lockdowns",
+          "replacement": "between 2020 and 2022, cases dropped significantly",
+          "reason": "Inaccurate description of the trend (it wasn't 'steady' from 2019; it was a crash)."
+        },
+        {
+          "text": "pertussis made a swift comeback",
+          "replacement": "the data shows a sharp rebound following these lows",
+          "reason": "Personification of the disease ('comeback') creates an adversarial, fear-based narrative."
+        },
+        {
+          "text": "formidable foe",
+          "replacement": "persistent threat",
+          "reason": "Overly dramatic, combat-oriented metaphor."
+        }
+      ],
+      "factual_check": [
+        {
+          "claim": "reported cases increased sharply in 2024, reaching 941,893",
+          "status": "verified",
+          "note": "The table shows 941,893 reported pertussis cases for 2024."
+        },
+        {
+          "claim": "a substantial rise compared to the 163,400 cases reported in 2023",
+          "status": "verified",
+          "note": "The table shows 163,400 cases for 2023, which is significantly lower than the 2024 figure."
+        },
+        {
+          "claim": "The incidence rate per million mirrored this increase, rising from 22.7 in 2023 to 137.1 in 2024",
+          "status": "verified",
+          "note": "The table lists the incidence as 22.7 per million for 2023 and 137.1 per million for 2024."
+        },
+        {
+          "claim": "between 2020 and 2022, cases dropped significantly",
+          "status": "verified",
+          "note": "Cases fell from 69,605 in 2020 to 30,402 in 2021 and 64,313 in 2022, which are the lowest values in the dataset."
+        },
+        {
+          "claim": "reaching a low of 30,402 cases (4.6 per million) in 2021",
+          "status": "verified",
+          "note": "The table confirms 30,402 cases and 4.6 per million for 2021, the lowest point in the provided data."
+        },
+        {
+          "claim": "it is unclear if this represents a failure in containment or a correction after pandemic-era reporting anomalies",
+          "status": "flagged",
+          "note": "The data table provides counts and rates but contains no information regarding causes, containment efforts, or reporting anomalies."
+        }
+      ],
+      "stages": [
+        {
+          "stage": "generate",
+          "model": "llama3.1:8b",
+          "duration_s": 13.54,
+          "usage": {
+            "eval_count": 226,
+            "prompt_eval_count": 565,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.6,
+            "num_ctx": 8192,
+            "num_predict": 450,
+            "seed": null,
+            "model_digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e"
+          }
+        },
+        {
+          "stage": "judge_raw",
+          "model": "gemma4:31b",
+          "duration_s": 45.3,
+          "usage": {
+            "eval_count": 41,
+            "prompt_eval_count": 1336,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 250,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        },
+        {
+          "stage": "moderate",
+          "model": "gemma4:31b",
+          "duration_s": 120.03,
+          "usage": {
+            "eval_count": 843,
+            "prompt_eval_count": 1196,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 3000,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        },
+        {
+          "stage": "judge_moderated",
+          "model": "gemma4:31b",
+          "duration_s": 14.59,
+          "usage": {
+            "eval_count": 30,
+            "prompt_eval_count": 1354,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 250,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        },
+        {
+          "stage": "factcheck",
+          "model": "gemma4:31b",
+          "duration_s": 90.57,
+          "usage": {
+            "eval_count": 505,
+            "prompt_eval_count": 1103,
+            "done_reason": "stop",
+            "grammar": true,
+            "temperature": 0.0,
+            "num_ctx": 8192,
+            "num_predict": 1500,
+            "seed": null,
+            "model_digest": "6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7"
+          }
+        }
+      ],
+      "metrics": {
+        "similarity": [
+          {
+            "metric": "chrF++",
+            "value": 0.0
+          },
+          {
+            "metric": "BLEU-1",
+            "value": 0.0
+          },
+          {
+            "metric": "BLEU-2",
+            "value": 0.0
+          },
+          {
+            "metric": "BLEU-4 (smoothed)",
+            "value": 0.0
+          },
+          {
+            "metric": "ROUGE-L",
+            "value": 0.0
+          },
+          {
+            "metric": "METEOR",
+            "value": 0.0
+          }
+        ],
+        "groundedness_raw": {
+          "stated": 4,
+          "supported": 4,
+          "groundedness": 1.0,
+          "unsupportedExamples": [],
+          "yearsOutOfRange": []
+        },
+        "groundedness_moderated": {
+          "stated": 6,
+          "supported": 6,
+          "groundedness": 1.0,
+          "unsupportedExamples": [],
+          "yearsOutOfRange": []
+        },
+        "textstats_raw": {
+          "words": 139,
+          "sentences": 10,
+          "flesch_reading_ease": 57.6,
+          "flesch_kincaid_grade": 8.7,
+          "hedge_rate": 2.16,
+          "booster_rate": 0.72,
+          "certainty_ratio": 0.5,
+          "intensifier_rate": 0.72,
+          "fear_rate": 0.72,
+          "reassurance_rate": 0.0,
+          "affect_balance": 0.72,
+          "causal_rate": 0.72,
+          "superlative_rate": 0.0,
+          "numeric_density": 7.19,
+          "anchored_sentence_rate": 50.0,
+          "type_token_ratio": 0.748,
+          "mean_sentence_length": 13.9,
+          "sentence_length_variance": 56.5,
+          "passive_rate": 20.0
+        },
+        "textstats_moderated": {
+          "words": 132,
+          "sentences": 10,
+          "flesch_reading_ease": 35.1,
+          "flesch_kincaid_grade": 11.6,
+          "hedge_rate": 0.76,
+          "booster_rate": 1.52,
+          "certainty_ratio": 1.5,
+          "intensifier_rate": 0.76,
+          "fear_rate": 0.76,
+          "reassurance_rate": 0.0,
+          "affect_balance": 0.76,
+          "causal_rate": 0.0,
+          "superlative_rate": 0.0,
+          "numeric_density": 12.88,
+          "anchored_sentence_rate": 70.0,
+          "type_token_ratio": 0.697,
+          "mean_sentence_length": 13.2,
+          "sentence_length_variance": 70.6,
+          "passive_rate": 0.0
+        },
+        "textstats_delta": {
+          "words": -7,
+          "sentences": 0,
+          "flesch_reading_ease": -22.5,
+          "flesch_kincaid_grade": 2.9,
+          "hedge_rate": -1.4,
+          "booster_rate": 0.8,
+          "certainty_ratio": 1.0,
+          "intensifier_rate": 0.04,
+          "fear_rate": 0.04,
+          "reassurance_rate": 0.0,
+          "affect_balance": 0.04,
+          "causal_rate": -0.72,
+          "superlative_rate": 0.0,
+          "numeric_density": 5.69,
+          "anchored_sentence_rate": 20.0,
+          "type_token_ratio": -0.051,
+          "mean_sentence_length": -0.7,
+          "sentence_length_variance": 14.1,
+          "passive_rate": -20.0
+        },
+        "alarmism": {
+          "before": 3.5,
+          "after": 3.0,
+          "human": null
+        }
+      }
+    }
+  ],
+  "human_baselines": [],
+  "counts": {
+    "runs": 2,
+    "human_baselines": 0
+  },
+  "caveats": [
+    "Alarmism is null where no judge result exists; nulls are excluded from analysis rather than defaulted (P0.7).",
+    "groundedness is a support check against the evidence pack, not a truth check: a real value asserted in the wrong context passes. Use the windowed verifier in experiments/analysis/timeseries_claims.py for context correctness."
+  ]
+}

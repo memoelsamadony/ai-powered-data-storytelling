@@ -1,0 +1,28 @@
+REAL DATA - Mumps (global) (WHO vaccine-preventable diseases surveillance and others; global total x year).
+mumps-global by year -> Reported mumps cases | Incidence per million (per million):
+  2000: 544,093 | 316.8 per million
+  2001: 412,341 | 229.7 per million
+  2002: 487,932 | 309.9 per million
+  2003: 334,524 | 200.6 per million
+  2004: 654,216 | 213.8 per million
+  2005: 619,062 | 212.4 per million
+  2006: 643,321 | 194.1 per million
+  2007: 407,873 | 119.6 per million
+  2008: 537,740 | 156.6 per million
+  2009: 546,684 | 151 per million
+  2010: 619,389 | 163.6 per million
+  2011: 726,638 | 196 per million
+  2012: 687,934 | 187 per million
+  2013: 516,316 | 137.3 per million
+  2014: 311,602 | 85.6 per million
+  2015: 385,781 | 101.1 per million
+  2016: 592,174 | 157.2 per million
+  2017: 560,784 | 151.1 per million
+  2018: 502,132 | 128.1 per million
+  2019: 169,898 | 81.7 per million
+  2020: 279,270 | 66.4 per million
+  2021: 241,742 | 43.4 per million
+  2022: 381,029 | 70 per million
+  2023: 387,586 | 95.2 per million
+  2024: 245,062 | 67.2 per million
+  2025: 234,954 | 41.2 per million

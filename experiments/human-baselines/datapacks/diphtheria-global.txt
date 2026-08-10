@@ -1,0 +1,28 @@
+REAL DATA - Diphtheria (global) (WHO vaccine-preventable diseases surveillance and others; global total x year).
+diphtheria-global by year -> Reported diphtheria cases | Incidence per million (per million):
+  2000: 11,625 | 2 per million
+  2001: 10,725 | 1.9 per million
+  2002: 9,035 | 1.5 per million
+  2003: 7,154 | 1.2 per million
+  2004: 10,069 | 1.7 per million
+  2005: 8,137 | 1.4 per million
+  2006: 4,333 | 0.7 per million
+  2007: 4,642 | 0.8 per million
+  2008: 4,978 | 0.8 per million
+  2009: 4,349 | 0.7 per million
+  2010: 4,603 | 0.7 per million
+  2011: 5,626 | 0.9 per million
+  2012: 4,490 | 0.7 per million
+  2013: 4,680 | 0.7 per million
+  2014: 7,774 | 1.6 per million
+  2015: 4,535 | 0.7 per million
+  2016: 7,102 | 1.1 per million
+  2017: 8,819 | 1.3 per million
+  2018: 16,911 | 2.4 per million
+  2019: 22,989 | 3.4 per million
+  2020: 10,137 | 1.5 per million
+  2021: 8,659 | 1.3 per million
+  2022: 10,027 | 1.4 per million
+  2023: 24,782 | 4.2 per million
+  2024: 25,147 | 3.5 per million
+  2025: 30,205 | 4 per million

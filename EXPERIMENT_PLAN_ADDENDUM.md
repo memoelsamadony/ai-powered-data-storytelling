@@ -87,6 +87,22 @@ generator and moderator: **the experiment runner addresses models directly, not 
 > Without this, H1 measures an information gap between human and model and reports it as
 > tone.
 
+> **P0.6 (revised, measured).** The base protocol's acceptance criterion is "two runs with
+> the same seed and prompt produce identical text". **Measured on this stack, that holds only
+> within a warm process.** With `llama3.1:8b`, temperature 0.6 and `seed=42`, two consecutive
+> calls are byte-identical; unloading the model between them and reloading it produces
+> different text from the same seed. Verified both ways, twice.
+>
+> The consequence is not that seeds are useless, it is that **a seed does not survive an
+> eviction**. Every sequential-tier run evicts between stages, so generation is a cold load
+> by definition and run-to-run reproducibility cannot be assumed.
+>
+> **Revised acceptance:** pin and record the seed, and treat raw stories as **generated once
+> and persisted** rather than regenerable on demand. The protocol already requires this for
+> pairing (principle 1.2), so the design is unaffected; what changes is that the committed
+> `raw_stories.jsonl` is the *only* reproducible artefact, and re-running a generation is
+> not a way to recover it. Record `warm` or `cold` per call so the distinction stays visible.
+
 P0.11 is what makes it safe to split work across the two machines. Verify it once, on one
 pair, before the main runs. If digests differ between machines, re-pull rather than
 re-plan.

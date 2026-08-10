@@ -374,3 +374,102 @@ Full policy in `backend/README.md`.
 6. **BLEU-4 in Part B is unsmoothed and single-pair**, hence zero. See B4.
 7. **One dataset.** The WHO GHO secondary dataset has not been collected, so the
    both-directions calibration claim is untested.
+
+
+---
+
+# Part D - Re-measured after the metric fixes (2026-08-10)
+
+Part B's numbers were produced by the old instruments and are superseded for the
+similarity and factuality columns. The alarmism figures there stand, but were rated on
+the terse five-line judge scale rather than the shared rubric, so they are not comparable
+to anything below.
+
+**What changed in the instrument**, all landed before these runs:
+
+| Fix | Effect |
+|---|---|
+| chrF++ primary, smoothed BLEU, BLEU-1/2 | no more structural zeroes |
+| `groundedness` against the evidence pack | replaces `factsPreserved`, which restated the fact-checker |
+| `textstats` | eleven judge-free lexical tone measures |
+| P0.12 | the judge now loads the same rubric the human raters use, half-point scale |
+| P0.13 | the generator's prompt table and the writer's pack are one string |
+| P0.7 | a missing rating is `null`; the schema rejects a `0.0` sentinel |
+
+Full parameters, prompts, hashes, stage timings and texts: `experiments/e0-metric-refit.json`.
+
+## Two runs, `mid` tier (llama3.1:8b generator, gemma4:31b moderator and judge)
+
+| | `measles` | `pertussis-global` |
+|---|---|---|
+| Direction of truth | falling | **rising** |
+| Alarmism before | 2.0 | **3.5** |
+| Alarmism after | 2.0 | **3.0** |
+| Delta | 0.0 | **-0.5** |
+| Emotive spans | 8 | 10 |
+| Flagged claims | 3 | 1 |
+| **Groundedness, raw** | **2/4** | 4/4 |
+| **Groundedness, moderated** | **11/11** | 6/6 |
+| Total wall clock | 612 s | 284 s |
+
+### The headroom effect, now with a counter-example
+
+Part B reported three measles runs all converging on 2.0 with zero delta, and argued the
+generator simply was not alarmist enough to leave the moderator anything to do.
+`pertussis-global` is the test of that argument, and it behaves as predicted: a genuinely
+rising series produced a raw story at **3.5**, and moderation moved it to **3.0**.
+
+This is the first non-zero delta measured in this project. It supports the addendum's
+position that direction of truth should be a design factor rather than something framing
+prompts have to manufacture. One run is not evidence of an effect; it is evidence that the
+design can produce one, which is what Part B could not show.
+
+The half-point value also confirms P0.12 took effect: the old five-line scale could not
+express 3.5.
+
+### Groundedness catches the silent correction
+
+On `measles` the raw story had **2 of 4** stated figures unsupported by the evidence pack;
+after moderation **11 of 11** were supported. The moderated story states more numbers and
+grounds all of them.
+
+This is the project's founding anecdote (the moderator silently corrected a hallucinated
+figure) reproduced as a measurement rather than a story, and it is computed in Python with
+no model in the loop.
+
+### Text-only tone measures
+
+| Measure | `measles` delta | `pertussis-global` delta |
+|---|---|---|
+| numeric density | **+13.23** | **+5.69** |
+| causal assertion rate | +1.98 | -0.72 |
+| intensifier rate | +0.00 | +0.04 |
+| certainty ratio | -0.33 | +1.00 |
+
+Numeric density rises in both, consistent with the groundedness result: moderation makes
+the prose more data-bound. **Causal rate moves in opposite directions**, which is worth
+reporting rather than smoothing over. With n = 2 nothing here is an effect.
+
+## Reproducibility: a seed does not survive an eviction
+
+Measured, not assumed. `llama3.1:8b`, temperature 0.6, `seed=42`:
+
+| Condition | Result |
+|---|---|
+| Two consecutive calls, model warm | **byte-identical** |
+| Same seed, model unloaded and reloaded between calls | **different text** |
+
+So seeded reproducibility holds inside a warm process and not across a cold load. Since
+every sequential-tier run evicts between stages, generation is always a cold load and
+run-to-run reproducibility cannot be assumed. The committed raw stories are therefore the
+only reproducible artefact. Base-protocol P0.6 is revised accordingly in the addendum.
+
+## Still missing
+
+- **No human baselines exist yet**, so `human_baselines` is `[]`, `alarmism.human` is
+  `null`, and every similarity metric is unavailable: chrF++ needs a reference. The
+  authoring kit is ready in `experiments/human-baselines/`.
+- **The judge is still the moderator** on this tier (`gemma4:31b` for both). The export
+  prints a warning on every run. P0.1 is not satisfied and the alarmism deltas above are
+  self-assessed.
+- **n = 2.** These runs verify the instruments on real data. They are not results.
