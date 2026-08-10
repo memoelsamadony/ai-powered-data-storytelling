@@ -1,5 +1,12 @@
 # Experiment plan — model scale vs tone moderation
 
+> **Superseded by [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md).** This file names the right
+> questions but specifies no control condition, no independent judge, no sample size and
+> no statistical test, so it cannot produce a defensible result on its own. The protocol
+> operationalises E1–E5 below, adds a paraphrase control and a judge-validation study, and
+> fixes the instrumentation defects that make the current Part B numbers uninterpretable.
+> Kept here as the design rationale.
+
 Turns the four metric families on slide 13 of the interim presentation into runs the
 backend can execute and record. Every experiment below writes `Run` + `StageResult`
 rows, so the numbers come out as queries rather than manual bookkeeping.
