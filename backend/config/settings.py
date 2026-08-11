@@ -131,10 +131,16 @@ STATIC_URL = 'static/'
 
 # The Next.js dev server. Route handlers proxying server-side do not need CORS,
 # but calling the API directly from the browser during development does.
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+#
+# Overridable like ALLOWED_HOSTS above, because the port is not guaranteed: Next
+# takes the next free one when 3000 is busy, and the browser call then fails as
+# a blocked cross-origin request. The interface reads that as a dead backend and
+# quietly falls back to mock data, which is the failure this list should not be
+# able to cause.
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    "DJANGO_CORS_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000",
+).split(",")
 
 LOGGING = {
     "version": 1,

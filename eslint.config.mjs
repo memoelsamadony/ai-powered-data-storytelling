@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The Python side. backend/README.md tells you to create the venv in here,
+    // and its site-packages ship enough JavaScript to bury the app's own lint
+    // output: 6,525 findings against the 10 the repo actually has.
+    "backend/**",
   ]),
 ]);
 
