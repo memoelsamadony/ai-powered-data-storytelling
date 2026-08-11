@@ -27,11 +27,24 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { WORLD_VIEWBOX, worldShapes } from "@/lib/data/world-geo";
 import type { CountryMetric, CountryStat } from "@/lib/data/datasets";
-import { binOf, formatValue, legendLabels, statsByIso, valueAt } from "@/lib/charts/choropleth";
+import {
+  annualYears,
+  binOf,
+  formatValue,
+  interpolateSeries,
+  legendLabels,
+  statsByIso,
+  steppedYears,
+  valueAt,
+} from "@/lib/charts/choropleth";
 import * as t from "@/lib/charts/tokens";
 
 /** One frame per this many ms while playing. */
 const FRAME_MS = 900;
+
+/** Step tabs, in years. 10 is the default — it matches the anchor spacing. */
+const STEPS = [1, 3, 5, 10] as const;
+const DEFAULT_STEP = 10;
 
 interface HoverState {
   iso3: string;
@@ -58,8 +71,34 @@ export function CountryMap({
 }) {
   const mappable = useMemo(() => metrics.filter((m) => m.mappable !== false), [metrics]);
   const [metricKey, setMetricKey] = useState(() => mappable[0]?.key ?? "");
-  const [yearIndex, setYearIndex] = useState(() => Math.max(0, years.length - 1));
+  const [step, setStep] = useState<number>(DEFAULT_STEP);
   const [playing, setPlaying] = useState(false);
+
+  /**
+   * `years` are the anchor years the dataset actually publishes. The step tabs
+   * need a value for every year in between, so the anchors are expanded once
+   * and the gaps filled by interpolation. `anchorSet` keeps track of which
+   * years were reported, so the UI can mark the rest as estimates.
+   */
+  const anchorSet = useMemo(() => new Set(years), [years]);
+  const allYears = useMemo(() => annualYears(years), [years]);
+  const annualStats = useMemo(
+    () =>
+      stats.map((s) => ({
+        ...s,
+        series: Object.fromEntries(
+          Object.entries(s.series).map(([k, v]) => [k, interpolateSeries(years, v, allYears)]),
+        ),
+      })),
+    [stats, years, allYears],
+  );
+
+  /** The subset of years the active step tab exposes. */
+  const shownYears = useMemo(() => steppedYears(allYears, step), [allYears, step]);
+  const [yearIndex, setYearIndex] = useState(() => Math.max(0, steppedYears(annualYears(years), DEFAULT_STEP).length - 1));
+
+  /* Changing the step rescales the timeline. The index is clamped where it is
+     read and where the step changes, rather than resynced from an effect. */
   const [hover, setHover] = useState<HoverState | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
   const patternId = useId();
@@ -74,12 +113,12 @@ export function CountryMap({
   }, []);
 
   useEffect(() => {
-    if (!playing || years.length < 2) return;
-    const id = window.setInterval(() => setYearIndex((i) => (i + 1) % years.length), FRAME_MS);
+    if (!playing || shownYears.length < 2) return;
+    const id = window.setInterval(() => setYearIndex((i) => (i + 1) % shownYears.length), FRAME_MS);
     return () => window.clearInterval(id);
-  }, [playing, years.length]);
+  }, [playing, shownYears.length]);
 
-  const byIso = useMemo(() => statsByIso(stats), [stats]);
+  const byIso = useMemo(() => statsByIso(annualStats), [annualStats]);
   const metric = mappable.find((m) => m.key === metricKey) ?? mappable[0];
 
   /* The one guard both call sites rely on. */
@@ -87,9 +126,12 @@ export function CountryMap({
 
   const ramp = t.rampFor(metric.polarity);
   const labels = legendLabels(metric.breaks, metric.decimals ?? 0);
-  const year = years[yearIndex];
+  const year = shownYears[Math.min(yearIndex, shownYears.length - 1)];
+  /* Index into the annual arrays, which the step tabs only ever sample. */
+  const ai = allYears.indexOf(year);
+  const estimated = !anchorSet.has(year);
   const hovered = hover ? byIso.get(hover.iso3) : undefined;
-  const anyValueThisYear = stats.some((s) => valueAt(s, metric.key, yearIndex) !== null);
+  const anyValueThisYear = annualStats.some((s) => valueAt(s, metric.key, ai) !== null);
   const hatch = `url(#nodata-${patternId})`;
 
   return (
@@ -148,7 +190,7 @@ export function CountryMap({
 
           {worldShapes.map((shape) => {
             const stat = byIso.get(shape.id);
-            const value = stat ? valueAt(stat, metric.key, yearIndex) : null;
+            const value = stat ? valueAt(stat, metric.key, ai) : null;
             const bin = binOf(value, metric.breaks);
             const name = stat?.name ?? shape.name;
             const active = hover?.iso3 === shape.id;
@@ -195,26 +237,76 @@ export function CountryMap({
             role="status"
           >
             <p className="font-mono text-[0.7rem] font-semibold text-navy">
-              {hovered.name} <span className="text-faint">· {year}</span>
+              {hovered.name}{" "}
+              <span className="text-faint">
+                · {year}
+                {estimated && " · est."}
+              </span>
             </p>
             <div className="mt-2 space-y-1.5">
               {metrics.map((m) => (
                 <div key={m.key} className="flex items-center gap-3">
                   <span className="text-muted">{m.label}</span>
                   <span className="ml-auto font-mono font-medium text-ink [font-variant-numeric:tabular-nums]">
-                    {formatValue(valueAt(hovered, m.key, yearIndex), m.decimals ?? 0)}
+                    {formatValue(valueAt(hovered, m.key, ai), m.decimals ?? 0)}
                     <span className="ml-1 text-faint">{m.unit}</span>
                   </span>
                 </div>
               ))}
             </div>
+            {estimated && (
+              <p className="mt-2 border-t border-hairline pt-1.5 text-[0.65rem] text-muted">
+                Interpolated between reported years — not a reading for {year}.
+              </p>
+            )}
           </div>
         )}
       </div>
 
+      {/* ── Step tabs. How big a jump the timeline takes between frames. */}
+      {allYears.length > 1 && (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="font-mono text-[0.6rem] uppercase tracking-wider text-faint">Step</span>
+          <div role="group" aria-label="Years per step" className="flex flex-wrap gap-1.5">
+            {STEPS.map((s) => {
+              const on = s === step;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => {
+                    setPlaying(false);
+                    setStep(s);
+                    /* Keep the visible year, not the index, so switching step
+                       does not teleport the map to an unrelated year. */
+                    const next = steppedYears(allYears, s);
+                    const nearest = next.reduce(
+                      (best, y, i) => (Math.abs(y - year) < Math.abs(next[best] - year) ? i : best),
+                      0,
+                    );
+                    setYearIndex(nearest);
+                  }}
+                  aria-pressed={on}
+                  className={`rounded-lg border px-2 py-0.5 font-mono text-[0.68rem] transition-colors ${
+                    on
+                      ? "border-navy bg-navy text-white"
+                      : "border-hairline bg-surface text-muted hover:text-ink"
+                  }`}
+                >
+                  {s} yr
+                </button>
+              );
+            })}
+          </div>
+          <span className="font-mono text-[0.6rem] text-faint">
+            {shownYears.length} frame{shownYears.length === 1 ? "" : "s"}
+          </span>
+        </div>
+      )}
+
       {/* ── Year scrubber. */}
-      {years.length > 1 && (
-        <div className="mt-3 flex items-center gap-3">
+      {shownYears.length > 1 && (
+        <div className="mt-2 flex items-center gap-3">
           {!reduceMotion && (
             <button
               type="button"
@@ -228,19 +320,20 @@ export function CountryMap({
           <input
             type="range"
             min={0}
-            max={years.length - 1}
+            max={shownYears.length - 1}
             step={1}
-            value={yearIndex}
+            value={Math.min(yearIndex, shownYears.length - 1)}
             onChange={(e) => {
               setPlaying(false);
               setYearIndex(Number(e.target.value));
             }}
             aria-label="Year"
-            aria-valuetext={String(year)}
+            aria-valuetext={estimated ? `${year}, interpolated` : String(year)}
             className="h-1 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-hairline accent-navy"
           />
-          <span className="w-10 shrink-0 text-right font-mono text-[0.7rem] text-ink [font-variant-numeric:tabular-nums]">
+          <span className="w-16 shrink-0 text-right font-mono text-[0.7rem] text-ink [font-variant-numeric:tabular-nums]">
             {year}
+            {estimated && <span className="ml-1 text-faint">est.</span>}
           </span>
         </div>
       )}
@@ -270,15 +363,23 @@ export function CountryMap({
         </p>
       )}
 
-      {sourceNote && <p className="mt-2 font-mono text-[0.6rem] text-faint">{sourceNote}</p>}
+      {sourceNote && (
+        <p className="mt-2 font-mono text-[0.6rem] text-faint">
+          {sourceNote}
+          {allYears.length > years.length && (
+            <> · reported {years.join(", ")}; other years interpolated</>
+          )}
+        </p>
+      )}
 
       {showTable && (
         <CountryTable
           metrics={metrics}
-          stats={stats}
+          stats={annualStats}
           metricKey={metric.key}
-          yearIndex={yearIndex}
+          yearIndex={ai}
           year={year}
+          estimated={estimated}
         />
       )}
     </figure>
@@ -292,12 +393,15 @@ function CountryTable({
   metricKey,
   yearIndex,
   year,
+  estimated,
 }: {
   metrics: CountryMetric[];
   stats: CountryStat[];
   metricKey: string;
   yearIndex: number;
   year: number;
+  /** True when `year` was interpolated rather than reported. */
+  estimated: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const rows = useMemo(
@@ -321,7 +425,10 @@ function CountryTable({
       {open && (
         <div className="scroll-slim mt-2 max-h-56 overflow-auto">
           <table className="w-full border-collapse text-left text-xs">
-            <caption className="sr-only">Country figures for {year}</caption>
+            <caption className="sr-only">
+              Country figures for {year}
+              {estimated && " (interpolated between reported years)"}
+            </caption>
             <thead className="sticky top-0 bg-surface">
               <tr className="border-b border-hairline">
                 <th className="py-1.5 pr-4 font-medium text-muted">Country</th>

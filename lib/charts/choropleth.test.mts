@@ -1,6 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { binOf, legendLabels, formatValue, valueAt, statsByIso } from "./choropleth.ts";
+import {
+  binOf,
+  legendLabels,
+  formatValue,
+  valueAt,
+  statsByIso,
+  annualYears,
+  interpolateSeries,
+  steppedYears,
+} from "./choropleth.ts";
 
 const BREAKS = [1, 10, 50, 200];
 
@@ -46,9 +55,9 @@ test("formatValue: thousands separators and fixed decimals", () => {
   assert.equal(formatValue(71.66, 1), "71.7");
 });
 
-test("formatValue: absent values render as an en dash, never as zero", () => {
-  assert.equal(formatValue(null), "—");
-  assert.equal(formatValue(undefined), "—");
+test("formatValue: absent values render as n/a, never as zero", () => {
+  assert.equal(formatValue(null), "n/a");
+  assert.equal(formatValue(undefined), "n/a");
 });
 
 const STATS = [
@@ -72,4 +81,69 @@ test("statsByIso: builds a lookup keyed by iso3", () => {
   assert.equal(map.size, 2);
   assert.equal(map.get("IND")?.name, "India");
   assert.equal(map.get("ZZZ"), undefined);
+});
+
+/* ── Annual expansion and the step tabs ──────────────────────────────────── */
+
+const ANCHORS = [1990, 2000, 2010, 2019, 2023];
+
+test("annualYears: fills every year between the first and last anchor", () => {
+  const y = annualYears(ANCHORS);
+  assert.equal(y.length, 34);
+  assert.equal(y[0], 1990);
+  assert.equal(y.at(-1), 2023);
+  assert.deepEqual(y.slice(0, 4), [1990, 1991, 1992, 1993]);
+});
+
+test("annualYears: a single anchor yields just that year", () => {
+  assert.deepEqual(annualYears([2020]), [2020]);
+  assert.deepEqual(annualYears([]), []);
+});
+
+test("interpolateSeries: anchor years keep their exact published value", () => {
+  const out = interpolateSeries(ANCHORS, [54, 33, 41, 54, 62], annualYears(ANCHORS));
+  const y = annualYears(ANCHORS);
+  for (const [i, a] of ANCHORS.entries()) {
+    assert.equal(out[y.indexOf(a)], [54, 33, 41, 54, 62][i], `anchor ${a} must not drift`);
+  }
+});
+
+test("interpolateSeries: midpoints are linear between the bracketing anchors", () => {
+  const y = annualYears([1990, 2000]);
+  const out = interpolateSeries([1990, 2000], [10, 20], y);
+  assert.equal(out[y.indexOf(1995)], 15);
+  assert.equal(out[y.indexOf(1991)], 11);
+});
+
+test("interpolateSeries: a null anchor makes its whole span null, never a guess", () => {
+  const y = annualYears([1990, 2000, 2010]);
+  const out = interpolateSeries([1990, 2000, 2010], [10, null, 30], y);
+  assert.equal(out[y.indexOf(1995)], null);
+  assert.equal(out[y.indexOf(2005)], null);
+  assert.equal(out[y.indexOf(1990)], 10);
+  assert.equal(out[y.indexOf(2010)], 30);
+});
+
+test("steppedYears: step 10 walks from the first anchor and always keeps the last year", () => {
+  const y = annualYears(ANCHORS);
+  assert.deepEqual(steppedYears(y, 10), [1990, 2000, 2010, 2020, 2023]);
+});
+
+test("steppedYears: step 1 returns every year", () => {
+  const y = annualYears(ANCHORS);
+  assert.deepEqual(steppedYears(y, 1), y);
+});
+
+test("steppedYears: step 5 and 3 land on the expected grid", () => {
+  const y = annualYears(ANCHORS);
+  assert.deepEqual(steppedYears(y, 5), [1990, 1995, 2000, 2005, 2010, 2015, 2020, 2023]);
+  assert.deepEqual(steppedYears(y, 3).slice(0, 4), [1990, 1993, 1996, 1999]);
+  assert.equal(steppedYears(y, 3).at(-1), 2023);
+});
+
+test("steppedYears: never duplicates the last year when the grid already lands on it", () => {
+  const y = annualYears([1990, 2000]);
+  const out = steppedYears(y, 5);
+  assert.deepEqual(out, [1990, 1995, 2000]);
+  assert.equal(new Set(out).size, out.length);
 });

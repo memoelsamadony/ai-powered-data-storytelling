@@ -49,7 +49,7 @@ export default function DatasetsPage() {
             Two datasets, two opposite ways to get the <span className="brand-gradient-text italic">tone</span> wrong.
           </>
         }
-        intro="Because tone failure is two-sided, we deliberately use a story that tempts alarmism and one that tempts false reassurance — proof the moderator calibrates in both directions."
+        intro="Because tone failure is two-sided, we deliberately use a story that tempts alarmism and one that tempts false reassurance, proving the moderator calibrates in both directions."
       />
 
       <Section>
@@ -78,9 +78,9 @@ export default function DatasetsPage() {
                   <p className="mt-2 max-w-2xl text-pretty leading-relaxed text-muted">
                     A moderator that only ever softens text would fail the second dataset. Plotted on a
                     single tone scale, the two runs move in{" "}
-                    <strong className="font-medium text-navy">opposite directions</strong> — measles is
+                    <strong className="font-medium text-navy">opposite directions</strong>: measles is
                     pulled down out of catastrophising, child mortality is pulled up out of false
-                    reassurance — and both land in the same calibrated band.
+                    reassurance, and both land in the same calibrated band.
                   </p>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default function DatasetsPage() {
                 Alarmism is an LLM-judge rating where{" "}
                 <strong className="font-medium text-navy">both ends are failures</strong>: 1 is flat and
                 hides the stakes, 5 is manipulative catastrophising. The calibrated band is an editorial
-                range, not a measured threshold — both human baselines fall inside it.
+                range, not a measured threshold, and both human baselines fall inside it.
               </p>
             </Card>
           </Reveal>

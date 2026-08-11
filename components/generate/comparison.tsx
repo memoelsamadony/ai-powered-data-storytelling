@@ -20,7 +20,7 @@ const TONE_TERMS: GlossaryItem[] = [
   {
     term: "Alarmism rating",
     def: "a 1–5 score an LLM judge assigns to a story's emotional pitch. 1 is flat and hides the stakes; 5 is manipulative catastrophising.",
-    caveat: "Both ends are failures — this is not a scale where low is good.",
+    caveat: "Both ends are failures. This is not a scale where low is good.",
   },
   {
     term: "Human tone band",
@@ -36,27 +36,27 @@ const TONE_TERMS: GlossaryItem[] = [
   },
   {
     term: "Verified / flagged / corrected",
-    def: "the separate fact-checker's verdict per claim — supported by the table, unsupported, or silently changed by the moderator without being reported.",
+    def: "the separate fact-checker's verdict per claim: supported by the table, unsupported, or silently changed by the moderator without being reported.",
   },
 ];
 
 const EDIT_FAMILY_TERMS: GlossaryItem[] = [
   {
     term: "Intensity",
-    def: "verbs and adjectives dialled up past what the numbers support — \"exploding\", \"cratered\", \"tore through\".",
+    def: "verbs and adjectives dialled up past what the numbers support: \"exploding\", \"cratered\", \"tore through\".",
   },
   {
     term: "Framing",
-    def: "how the situation is characterised rather than what is claimed — fear, doom, false reassurance, complacency, or absolutes like \"all but conquered\".",
+    def: "how the situation is characterised rather than what is claimed: fear, doom, false reassurance, complacency, or absolutes like \"all but conquered\".",
   },
   {
     term: "Overreach",
-    def: "causal or predictive claims the table cannot support — \"resulting in\", \"hurtling toward\", \"victory is assured\".",
+    def: "causal or predictive claims the table cannot support: \"resulting in\", \"hurtling toward\", \"victory is assured\".",
     caveat: "The most consequential family: both paper reproductions measured causal accuracy at 0%.",
   },
   {
     term: "Grounding",
-    def: "a vague or invented figure replaced with the real one from the data — the fact-improving side effect of a tone pass.",
+    def: "a vague or invented figure replaced with the real one from the data, the fact-improving side effect of a tone pass.",
   },
 ];
 
@@ -171,7 +171,7 @@ export function Comparison({
               Pulled <strong className="font-medium text-navy">{pulledUp ? "up" : "down"}</strong>{" "}
               <span className="font-mono text-navy">{Math.abs(moved).toFixed(1)}</span>{" "}
               {pulledUp ? "out of false reassurance" : "out of catastrophising"}
-              {landedInBand && <span className="text-muted"> — into the calibrated band</span>}
+              {landedInBand && <span className="text-muted"> and into the calibrated band</span>}
             </p>
           </div>
 
@@ -251,7 +251,7 @@ export function Comparison({
 
               <p className="mt-4 rounded-lg border border-hairline bg-surface-soft/70 px-3 py-2.5 text-[0.72rem] leading-relaxed text-muted">
                 <strong className="font-medium text-navy">Read these with care.</strong> All three
-                score <em>wording overlap</em>, not truth or tone — a factually perfect story worded
+                score <em>wording overlap</em>, not truth or tone. A factually perfect story worded
                 differently scores near zero, so a low number here is not a quality verdict. The
                 values above are illustrative placeholders. In the real runs BLEU-4 came out at
                 exactly <span className="font-mono">0.0</span>, because it is computed on a single
@@ -273,7 +273,7 @@ export function Comparison({
         </section>
 
         <p className="mt-6 text-pretty text-sm leading-relaxed text-muted">
-          Surface-overlap scores reward wording overlap, not faithfulness or tone — which is exactly
+          Surface-overlap scores reward wording overlap, not faithfulness or tone, which is exactly
           why the project pairs them with the tone-calibration metric above and a planned user study
           on trust, engagement, and human-vs-LLM preference.
         </p>
