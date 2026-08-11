@@ -13,6 +13,7 @@
 import { unstable_rethrow } from "next/navigation";
 
 import { datasets as mockDatasets, getDataset, type Dataset } from "@/lib/data/datasets";
+import { mergeDatasets, normaliseDataset } from "@/lib/data/merge-datasets";
 import { getStorySet, type FactCheckItem, type StorySet } from "@/lib/data/stories";
 
 export const API_BASE =
@@ -87,38 +88,18 @@ export async function getHealth(): Promise<Health | null> {
 
 // ------------------------------------------------------------------ datasets
 
-/**
- * The backend only serves a dataset whose CSV is actually collected, so asking
- * it alone would silently drop the interface from two datasets to one, and the
- * whole argument of the project is that tone fails in *both* directions.
- *
- * So: the backend wins for every id it serves, and the mocks fill only the ids
- * it does not. Nothing is merged field-by-field. A half-real dataset carrying a
- * real trend line under illustrative country figures would be the harder thing
- * to notice and the worse thing to publish.
- */
-function withMockedRemainder(live: Dataset[]): Dataset[] {
-  const byId = new Map(live.map((d) => [d.id, normalise(d)]));
-  const merged = mockDatasets.map((mock) => byId.get(mock.id) ?? mock);
-  const extra = live.filter((d) => !mockDatasets.some((m) => m.id === d.id));
-  return [...merged, ...extra.map(normalise)];
-}
-
-/** Tolerate a backend older than the fields the charts read. */
-function normalise(d: Dataset): Dataset {
-  return { ...d, shortName: d.shortName ?? d.name };
-}
-
 export async function getDatasets(): Promise<Dataset[]> {
+  // Merge rule and its reasoning live in lib/data/merge-datasets.ts, which is
+  // where they are unit-tested.
   return withFallback(
-    async () => withMockedRemainder(await call<Dataset[]>("/datasets")),
+    async () => mergeDatasets(await call<Dataset[]>("/datasets"), mockDatasets),
     () => mockDatasets,
   );
 }
 
 export async function getDatasetById(id: string): Promise<Dataset | undefined> {
   return withFallback(
-    async () => normalise(await call<Dataset>(`/datasets/${id}`)),
+    async () => normaliseDataset(await call<Dataset>(`/datasets/${id}`)),
     () => getDataset(id),
   );
 }
@@ -211,31 +192,25 @@ export interface ComparisonMetrics {
  * `compareStories(datasetId)`. Real similarity scoring needs the human baseline
  * text, which a dataset id cannot supply, so the caller passes the run and the
  * text it collected.
+ *
+ * Null when the backend cannot score it, like `getHealth` above, and unlike
+ * every other call here. A similarity score is a measurement of two specific
+ * texts: a stand-in figure is not a degraded version of one, it is a different
+ * claim about a comparison that never happened. The caller shows its own
+ * placeholders and labels them as such.
  */
 export async function compareStories(
   runId: string,
   humanText: string,
-  datasetIdForFallback?: string,
-): Promise<ComparisonMetrics> {
-  return withFallback(
-    () =>
-      call<ComparisonMetrics>("/compare", {
-        method: "POST",
-        body: JSON.stringify({ runId, humanText }),
-      }),
-    () => {
-      const story = getStorySet(datasetIdForFallback ?? "measles");
-      return {
-        textSimilarity: [
-          { metric: "BLEU", value: 0.31 },
-          { metric: "ROUGE-L", value: 0.48 },
-          { metric: "METEOR", value: 0.41 },
-        ],
-        alarmismBefore: story.aiRaw.alarmismRating,
-        alarmismAfter: story.aiModerated.alarmismRating,
-        emotiveSpansRemoved: story.emotiveSpans.length,
-        factsPreserved: true,
-      };
-    },
-  );
+): Promise<ComparisonMetrics | null> {
+  try {
+    return await call<ComparisonMetrics>("/compare", {
+      method: "POST",
+      body: JSON.stringify({ runId, humanText }),
+    });
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api] scoring unavailable:", err);
+    return null;
+  }
 }

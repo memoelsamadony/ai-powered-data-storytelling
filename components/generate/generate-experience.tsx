@@ -121,18 +121,23 @@ export function GenerateExperience() {
   // stage. Keyed on maxReached rather than step, because the step header can be
   // folded open without advancing, and because this way the figures are already
   // there when the reader arrives.
+  //
+  // Re-scored whenever the baseline changes, since the panel says the figures
+  // are scored against the text you typed and the textarea stays editable after
+  // the run. Debounced so that promise is kept per edit, not per keystroke.
   useEffect(() => {
     const runId = runIdRef.current;
-    if (maxReached < 3 || !runId || !datasetId || liveMetrics) return;
+    if (maxReached < 3 || !runId || !datasetId) return;
     let cancelled = false;
-    (async () => {
-      const m = await api.compareStories(runId, humanText, datasetId);
+    const timer = setTimeout(async () => {
+      const m = await api.compareStories(runId, humanText);
       if (!cancelled) setLiveMetrics(m);
-    })();
+    }, 400);
     return () => {
       cancelled = true;
+      clearTimeout(timer);
     };
-  }, [maxReached, datasetId, humanText, liveMetrics]);
+  }, [maxReached, datasetId, humanText]);
 
   const isOpen = useCallback((i: number) => openSteps.includes(i), [openSteps]);
 
@@ -285,7 +290,15 @@ export function GenerateExperience() {
                           setGenerated(true);
                           setMaxReached((m) => Math.max(m, 3));
                         }}
-                        onReset={() => setGenerated(false)}
+                        onReset={() => {
+                          // A new run gets a new id, so the previous run's
+                          // score has to go with it: keeping it would put run
+                          // two's text beside run one's figures.
+                          setGenerated(false);
+                          setLiveStory(null);
+                          setLiveMetrics(null);
+                          runIdRef.current = null;
+                        }}
                       />
                     )}
                     {i === 3 && story && dataset && (

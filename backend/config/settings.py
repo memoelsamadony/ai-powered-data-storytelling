@@ -137,10 +137,18 @@ STATIC_URL = 'static/'
 # a blocked cross-origin request. The interface reads that as a dead backend and
 # quietly falls back to mock data, which is the failure this list should not be
 # able to cause.
-CORS_ALLOWED_ORIGINS = os.environ.get(
-    "DJANGO_CORS_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000",
-).split(",")
+# Stripped and emptied-out, because an origin is matched against the Origin
+# header by exact string: a stray space in "a, b" produces an entry that can
+# never match anything, and the browser call then fails silently into the very
+# mock fallback this setting exists to prevent.
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get(
+        "DJANGO_CORS_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    ).split(",")
+    if origin.strip()
+]
 
 LOGGING = {
     "version": 1,

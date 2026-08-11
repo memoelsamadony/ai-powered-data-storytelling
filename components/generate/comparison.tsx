@@ -76,6 +76,16 @@ const SIMILARITY_TERMS: GlossaryItem[] = [
   },
 ];
 
+/** What a scored run actually plots. The backend computes no METEOR. */
+const SCORED_TERMS: GlossaryItem[] = [
+  SIMILARITY_TERMS[0],
+  SIMILARITY_TERMS[1],
+  {
+    term: "Unigram F1",
+    def: "counts the single words the two texts share, balancing how many of the story's words appear in the baseline against how many of the baseline's appear in the story. Ignores word order entirely, so it is the most forgiving of the three.",
+  },
+];
+
 export function Comparison({
   story,
   humanText,
@@ -258,7 +268,7 @@ export function Comparison({
               <Glossary
                 className="mt-4 border-t border-hairline pt-4"
                 title="The three similarity metrics"
-                items={SIMILARITY_TERMS}
+                items={metrics ? SCORED_TERMS : SIMILARITY_TERMS}
               />
 
               <p className="mt-4 rounded-lg border border-hairline bg-surface-soft/70 px-3 py-2.5 text-[0.72rem] leading-relaxed text-muted">
