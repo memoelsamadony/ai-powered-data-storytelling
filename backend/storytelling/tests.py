@@ -20,8 +20,11 @@ from django.core.management.base import CommandError
 from django.test import SimpleTestCase, TestCase
 
 from . import datasets as ds
+from . import judge
 from . import results
+from . import services
 from .management.commands import build_frontend_data
+from .models import Run, StageResult
 
 
 class CountryPayloadTests(SimpleTestCase):
@@ -540,3 +543,121 @@ class GeneratedFrontendDataTests(SimpleTestCase):
         with mock.patch.object(ds, "is_available", return_value=False):
             with self.assertRaises(CommandError):
                 build_frontend_data.render_datasets()
+
+
+def _cli_reply(payload: dict):
+    """A CompletedProcess carrying what the judge would have replied."""
+    import subprocess
+
+    return subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=json.dumps(
+            {"is_error": False, "result": json.dumps(payload), "duration_ms": 1200,
+             "total_cost_usd": 0.17}
+        ),
+        stderr="",
+    )
+
+
+class TwoAxisJudgeTests(SimpleTestCase):
+    """Alarmism and optimism, scored together.
+
+    One axis can only see one of the two datasets fail. Measles tempts
+    alarmism; WHO child mortality tempts false reassurance, and a story that
+    glosses over the countries still burying one child in twenty scores a calm
+    2.0 for alarmism while being exactly as miscalibrated.
+    """
+
+    def _score(self, payload):
+        with mock.patch("shutil.which", return_value="/usr/bin/claude"), mock.patch(
+            "subprocess.run", return_value=_cli_reply(payload)
+        ) as run:
+            return judge.score_story("TABLE", "Title", ["body"]), run
+
+    def test_one_call_returns_both_axes(self):
+        # The point of one call rather than two: the same reader produces both
+        # in one context, so the pair describes one story.
+        score, run = self._score({"alarmism": 4.2, "optimism": 1.8, "rationale": "why"})
+        self.assertEqual(score.alarmism, 4.2)
+        self.assertEqual(score.optimism, 1.8)
+        self.assertEqual(run.call_count, 1)
+
+    def test_the_prompt_asks_for_both(self):
+        _, run = self._score({"alarmism": 3, "optimism": 3, "rationale": ""})
+        prompt = run.call_args.kwargs["input"]
+        self.assertIn("optimism", prompt)
+        self.assertIn("alarmism", prompt)
+
+    def test_a_missing_axis_is_an_error_not_a_default(self):
+        # Filling the gap with 3 would report "calibrated", the one claim an
+        # unmeasured story must not carry.
+        with self.assertRaises(judge.JudgeUnavailable):
+            self._score({"alarmism": 4.0, "rationale": "no optimism key"})
+
+    def test_ratings_are_clamped_to_the_scale(self):
+        score, _ = self._score({"alarmism": 9, "optimism": -2, "rationale": ""})
+        self.assertEqual((score.alarmism, score.optimism), (5.0, 1.0))
+
+    def test_the_paired_prompt_asks_for_four_numbers(self):
+        for key in ("rawAlarmism", "rawOptimism", "moderatedAlarmism", "moderatedOptimism"):
+            self.assertIn(key, judge.PROMPT)
+
+    def test_both_scales_keep_three_as_calibrated(self):
+        # The stored runs, the 2.0-3.0 band and humanBand all assume it.
+        self.assertIn("3 is calibrated", judge.SYSTEM)
+        self.assertIn("1 = bleak", judge.SYSTEM)
+        self.assertIn("5 = false reassurance", judge.SYSTEM)
+
+    def test_the_axes_are_declared_independent(self):
+        # Not each other's inverse: a flat story is low on both, and
+        # "catastrophe averted!" is high on both.
+        self.assertIn("independent, not opposites", judge.SYSTEM)
+
+
+class TwoAxisPipelineTests(TestCase):
+    def test_an_unreachable_judge_leaves_both_axes_unmeasured(self):
+        run = Run.objects.create(dataset_id="measles", tier="demo")
+        with mock.patch.object(judge, "is_available", return_value=False):
+            self.assertEqual(
+                services._judge(run, "judge_raw", "T", ["p"]), (None, None)
+            )
+
+    def test_a_stage_result_records_both_axes(self):
+        run = Run.objects.create(dataset_id="measles", tier="demo")
+        with mock.patch.object(judge, "is_available", return_value=True), mock.patch.object(
+            judge,
+            "score_story",
+            return_value=judge.StoryScore(3.8, 2.1, "because", 0.17, 4.0),
+        ):
+            self.assertEqual(services._judge(run, "judge_raw", "T", ["p"]), (3.8, 2.1))
+        payload = StageResult.objects.get(run=run).payload
+        self.assertEqual(payload["alarmism"], 3.8)
+        self.assertEqual(payload["optimism"], 2.1)
+
+    def test_optimism_is_averaged_over_the_runs_that_carry_it(self):
+        # A run judged before the second axis existed has alarmism and no
+        # optimism. It belongs in the alarmism mean and not in the other.
+        common = dict(dataset_id="measles", tier="demo", status="done")
+        Run.objects.create(**common, raw_alarmism=4.0, moderated_alarmism=2.0)
+        Run.objects.create(
+            **common, raw_alarmism=4.0, moderated_alarmism=2.0,
+            raw_optimism=1.5, moderated_optimism=2.5,
+        )
+        out = results.measured()
+        self.assertEqual(out.alarmism_n, 2)
+        self.assertEqual(out.alarmism_before, 4.0)
+        self.assertEqual(out.optimism_before, 1.5)
+        self.assertEqual(out.optimism_after, 2.5)
+        # And the optimism mean carries the smaller n it actually rests on,
+        # rather than borrowing the alarmism one.
+        self.assertEqual(out.optimism_n, 1)
+
+    def test_no_optimism_anywhere_reads_as_none_not_zero(self):
+        Run.objects.create(
+            dataset_id="measles", tier="demo", status="done",
+            raw_alarmism=4.0, moderated_alarmism=2.0,
+        )
+        out = results.measured()
+        self.assertIsNone(out.optimism_before)
+        self.assertIsNone(out.optimism_after)

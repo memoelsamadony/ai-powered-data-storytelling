@@ -5,7 +5,7 @@ import { PageHero } from "@/components/page-hero";
 import { Container, Section, SectionHeader } from "@/components/ui/layout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlarmismMeter } from "@/components/alarmism-meter";
+import { TonePair } from "@/components/tone-meter";
 import { FaithfulnessChart, OperationChart, SimpleBarChart } from "@/components/charts/metric-charts";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
@@ -186,24 +186,29 @@ export default async function ResultsPage() {
 
                 <div className="rounded-2xl border border-hairline bg-surface p-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-navy">Alarmism, before &rarr; after</span>
+                    <span className="text-sm font-medium text-navy">Raw &rarr; tone-moderated</span>
                     {toneMeasured && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-calm-soft px-2.5 py-1 font-mono text-xs font-semibold text-calm-ink">
                         <ArrowDownRight className="h-3 w-3" />
-                        {(measured!.alarmismAfter! - measured!.alarmismBefore!).toFixed(1)}
+                        {(measured!.alarmismAfter! - measured!.alarmismBefore!).toFixed(1)} alarmism
                       </span>
                     )}
                   </div>
-                  <div className="mt-6 space-y-5">
-                    <div>
-                      <p className="mb-1.5 text-xs text-muted">Raw LLM output</p>
-                      <AlarmismMeter value={toneMeasured ? measured!.alarmismBefore : null} />
-                    </div>
-                    <div>
-                      <p className="mb-1.5 text-xs text-muted">Tone-moderated</p>
-                      <AlarmismMeter value={toneMeasured ? measured!.alarmismAfter : null} />
-                    </div>
-                  </div>
+                  {/* Both axes, because a story is calibrated only if it is
+                      calibrated on both, and the two datasets fail in opposite
+                      directions. A single alarmism meter reads "calm, fine" for
+                      a falsely reassuring story. */}
+                  <TonePair
+                    className="mt-6"
+                    size="md"
+                    showScale
+                    alarmism={toneMeasured ? measured!.alarmismAfter : null}
+                    optimism={measured?.optimismAfter ?? null}
+                    before={{
+                      alarmism: toneMeasured ? measured!.alarmismBefore : null,
+                      optimism: measured?.optimismBefore ?? null,
+                    }}
+                  />
                   {/* The figure used to be a pair of constants, 4.6 → 2.1, that no
                       run produced. It is now the mean over the judged runs in this
                       deployment, and it says so - a mean over a handful of demo
@@ -212,8 +217,16 @@ export default async function ResultsPage() {
                     {toneMeasured ? (
                       <>
                         Mean over <span className="font-mono">n = {measured!.alarmismN}</span> judged
-                        runs in this deployment, scored by the independent judge. A small local
-                        sample, not a study result.
+                        runs for alarmism
+                        {measured!.optimismN !== measured!.alarmismN && (
+                          <>
+                            {" "}
+                            and <span className="font-mono">n = {measured!.optimismN}</span> for
+                            optimism, the difference being runs judged before the second axis
+                            existed
+                          </>
+                        )}
+                        {", scored by the independent judge. A small local sample, not a study result."}
                       </>
                     ) : (
                       <>

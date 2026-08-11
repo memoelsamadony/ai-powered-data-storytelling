@@ -1,7 +1,7 @@
 import { User, Sparkles, ShieldCheck } from "lucide-react";
 import type { ToneVariant } from "@/lib/data/stories";
 import type { Dataset } from "@/lib/data/datasets";
-import { AlarmismMeter, type ToneBand } from "@/components/alarmism-meter";
+import { TonePair, type ToneBand } from "@/components/tone-meter";
 import { StoryChart } from "@/components/charts/story-chart";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ export function StoryPanel({
   className,
   compact = false,
   dataset,
-  band,
+  bands,
 }: {
   variant: ToneVariant;
   showMeter?: boolean;
@@ -25,8 +25,8 @@ export function StoryPanel({
   compact?: boolean;
   /** Pass to render the data beside the story (Phase 1, defect D2). */
   dataset?: Dataset;
-  /** The human tone band this variant is judged against (G8). */
-  band?: ToneBand;
+  /** The human tone bands this variant is judged against, one per axis (G8). */
+  bands?: { alarmism?: ToneBand; optimism?: ToneBand };
 }) {
   const a = accents[variant.id];
   const Icon = a.icon;
@@ -73,7 +73,13 @@ export function StoryPanel({
 
         {showMeter && (
           <div className="mt-auto border-t border-hairline pt-4">
-            <AlarmismMeter value={variant.alarmismRating} band={band} size="sm" showScale={!compact} />
+            <TonePair
+              alarmism={variant.alarmismRating}
+              optimism={variant.optimismRating}
+              bands={bands}
+              size="sm"
+              showScale={!compact}
+            />
           </div>
         )}
       </div>

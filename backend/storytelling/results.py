@@ -126,6 +126,10 @@ def measured() -> MeasuredResults:
     done = [r for r in runs if r.status == RunStatus.DONE]
 
     judged = [r for r in done if r.raw_alarmism is not None and r.moderated_alarmism is not None]
+    # Runs stored before the judge scored optimism carry alarmism and not this.
+    both_axes = [r for r in judged if r.raw_optimism is not None and r.moderated_optimism is not None]
+    scored_optimism_before = [r.raw_optimism for r in both_axes]
+    scored_optimism_after = [r.moderated_optimism for r in both_axes]
     moderated = [r for r in done if r.emotive_spans]
     checked = [r for r in done if r.factual_check]
 
@@ -168,7 +172,19 @@ def measured() -> MeasuredResults:
         alarmism_after=(
             round(statistics.mean(r.moderated_alarmism for r in judged), 2) if judged else None
         ),
+        # Averaged over the runs that carry the axis, and reported with its own
+        # n. Both axes come from one judge call, so anything judged since has
+        # both; the runs stored before the second axis existed have alarmism
+        # only, and folding them into one n would print an optimism mean over
+        # one run under a sample size of six.
+        optimism_before=(
+            round(statistics.mean(scored_optimism_before), 2) if scored_optimism_before else None
+        ),
+        optimism_after=(
+            round(statistics.mean(scored_optimism_after), 2) if scored_optimism_after else None
+        ),
         alarmism_n=len(judged),
+        optimism_n=len(both_axes),
         edits_per_run=(
             round(sum(len(r.emotive_spans) for r in moderated) / len(moderated), 1)
             if moderated

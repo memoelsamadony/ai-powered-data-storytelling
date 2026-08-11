@@ -39,12 +39,18 @@ class Run(models.Model):
     # Stage 1 - the raw generated story
     raw_title = models.TextField(blank=True)
     raw_paragraphs = models.JSONField(default=list, blank=True)
+    # Two tone axes, both 1-5, both scored in the same judge call. Null means no
+    # judge was reachable, which is a fact about the run; nothing fills them
+    # with a default, because the middle of a 1-5 tone scale is not neutral,
+    # it is the specific claim "calibrated".
     raw_alarmism = models.FloatField(null=True, blank=True)
+    raw_optimism = models.FloatField(null=True, blank=True)
 
     # Stage 2 - the tone-moderated story
     moderated_title = models.TextField(blank=True)
     moderated_paragraphs = models.JSONField(default=list, blank=True)
     moderated_alarmism = models.FloatField(null=True, blank=True)
+    moderated_optimism = models.FloatField(null=True, blank=True)
     emotive_spans = models.JSONField(default=list, blank=True)
 
     # Stage 3 - the separate factual check
@@ -55,7 +61,9 @@ class Run(models.Model):
     # on the mid and large tiers the judge and the moderator are the same model,
     # and measuring that self-assessment bias needs both scores side by side.
     opus_raw_alarmism = models.FloatField(null=True, blank=True)
+    opus_raw_optimism = models.FloatField(null=True, blank=True)
     opus_moderated_alarmism = models.FloatField(null=True, blank=True)
+    opus_moderated_optimism = models.FloatField(null=True, blank=True)
     opus_rationale = models.TextField(blank=True)
     opus_model = models.CharField(max_length=64, blank=True)
     opus_cost_usd = models.FloatField(null=True, blank=True)

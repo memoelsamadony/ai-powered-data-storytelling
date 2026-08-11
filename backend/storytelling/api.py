@@ -284,13 +284,14 @@ def on_judge_unavailable(request, exc):
 
 @post("/runs/{run_id}/judge", response=JudgeOutcome)
 def stage_judge(request, run_id: str, payload: JudgeIn = None):
-    """Score this run's two stories with a judge outside the Ollama stack.
+    """Score this run's two stories side by side, on both tone axes.
 
-    On the mid and large tiers the local judge and the moderator are the same
-    model, so the alarmism delta is self-assessed. This runs the Claude CLI as a
-    subprocess to get a verdict from a different family and vendor, and stores
-    it alongside the local one rather than replacing it: the gap between the two
-    is the measurement.
+    The pipeline already scores each story as it is produced, but *blind* - the
+    judge sees one story and does not know the other exists. This shows it both
+    at once, so it is comparing rather than scoring twice. Same model, and the
+    two readings are stored in separate fields because the gap between them is
+    itself worth measuring: a judge that can see the moderated version may rate
+    the raw one differently than it did on its own.
     """
     run = get_object_or_404(Run, id=run_id)
     model = (payload.model if payload else "opus").strip()
@@ -305,11 +306,15 @@ def stage_judge(request, run_id: str, payload: JudgeIn = None):
         judge_model=f"claude/{run.opus_model}",
         raw_alarmism=run.opus_raw_alarmism,
         moderated_alarmism=run.opus_moderated_alarmism,
-        delta=round((run.opus_moderated_alarmism or 0) - (run.opus_raw_alarmism or 0), 2),
+        raw_optimism=run.opus_raw_optimism,
+        moderated_optimism=run.opus_moderated_optimism,
+        delta=round(run.opus_moderated_alarmism - run.opus_raw_alarmism, 2),
+        optimism_delta=round(run.opus_moderated_optimism - run.opus_raw_optimism, 2),
         rationale=run.opus_rationale,
-        local_raw_alarmism=run.raw_alarmism,
-        local_moderated_alarmism=run.moderated_alarmism,
-        local_judge_model=oc.resolve_tier(run.tier).judge,
+        blind_raw_alarmism=run.raw_alarmism,
+        blind_moderated_alarmism=run.moderated_alarmism,
+        blind_raw_optimism=run.raw_optimism,
+        blind_moderated_optimism=run.moderated_optimism,
         cost_usd=run.opus_cost_usd,
     )
 

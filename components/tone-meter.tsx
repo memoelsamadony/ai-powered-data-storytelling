@@ -4,6 +4,12 @@ import * as t from "@/lib/charts/tokens";
 /**
  * G8 — the 1–5 tone meter, re-anchored (FRONTEND_PLAN.md §4).
  *
+ * Serves either tone axis. Both have the same shape — 3 is calibrated, both
+ * ends are failures — so one meter, one band and one calibrated range work for
+ * each; only the pole labels differ, and they come from `TONE_AXES` below
+ * rather than being passed in as free text, so the two ends of a scale cannot
+ * be labelled inconsistently in two places.
+ *
  * Two things were wrong with the original. It ran a teal→red gradient from 1 to
  * 5, which encodes "low is good" — false here, because both poles are failures
  * (1 = flat and hides the stakes, 5 = manipulative catastrophising). On the
@@ -23,6 +29,35 @@ const MIN = 1;
 /** Half-width of the band drawn around the human baseline, in scale units. */
 const BAND_HALF_WIDTH = 0.5;
 
+export type ToneAxisId = "alarmism" | "optimism";
+
+/**
+ * The two axes the judge scores in one call.
+ *
+ * `low`/`high` name the failure at each end, never "good"/"bad": on both
+ * scales the middle is the target and both poles are wrong. `under`/`over` are
+ * the verdicts printed when a story sits outside the human band.
+ */
+export const TONE_AXES: Record<
+  ToneAxisId,
+  { label: string; low: string; high: string; under: string; over: string }
+> = {
+  alarmism: {
+    label: "Alarmism",
+    low: "Numbing",
+    high: "Catastrophising",
+    under: "flattens the stakes",
+    over: "overstates",
+  },
+  optimism: {
+    label: "Optimism",
+    low: "Bleak",
+    high: "Falsely reassuring",
+    under: "denies the progress",
+    over: "over-reassures",
+  },
+};
+
 export interface ToneBand {
   from: number;
   to: number;
@@ -36,10 +71,11 @@ export function humanBand(humanValue: number, max = 5): ToneBand {
   };
 }
 
-export function AlarmismMeter({
+export function ToneMeter({
   value,
   before,
   band,
+  axis = "alarmism",
   max = 5,
   size = "md",
   showScale = true,
@@ -47,6 +83,8 @@ export function AlarmismMeter({
 }: {
   /** The rating to mark. With `before` set, this is the "after". */
   value: number | null;
+  /** Which axis this meter is showing. Sets the pole labels and the verdict. */
+  axis?: ToneAxisId;
   /** Optional earlier rating — renders as a hollow tick with a connector. */
   before?: number;
   /** The human tone band. Omit to show the track without a target. */
@@ -64,12 +102,14 @@ export function AlarmismMeter({
   // somewhere on the scale: every position on this track is a claim, and the
   // middle of it is the specific claim "calibrated", which is the one thing an
   // unmeasured story must not be shown as.
+  const poles = TONE_AXES[axis];
+
   if (value === null) {
     return (
       <div className={className}>
         <div className="h-1.5 w-full rounded-full border border-dashed border-hairline bg-surface-soft/60" />
         <p className="mt-2 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-          Tone not measured
+          {poles.label} not measured
         </p>
       </div>
     );
@@ -82,8 +122,8 @@ export function AlarmismMeter({
       : inBand
         ? "in the human band"
         : value < band!.from
-          ? "flattens the stakes"
-          : "overstates";
+          ? poles.under
+          : poles.over;
 
   const dotSize = size === "sm" ? 12 : 16;
 
@@ -91,8 +131,8 @@ export function AlarmismMeter({
     <div className={cn("w-full", className)}>
       {showScale && (
         <div className="mb-1.5 flex items-center justify-between font-mono text-[0.62rem] uppercase tracking-wider text-faint">
-          <span>Numbing</span>
-          <span>Catastrophising</span>
+          <span>{poles.low}</span>
+          <span>{poles.high}</span>
         </div>
       )}
 
@@ -151,6 +191,65 @@ export function AlarmismMeter({
           <span className="font-mono text-xs text-faint">/{max}</span>
         </span>
       </div>
+    </div>
+  );
+}
+
+/** The band around a human baseline on each axis, where one was measured. */
+export function humanBands(human: { alarmismRating: number | null; optimismRating: number | null }) {
+  return {
+    alarmism: human.alarmismRating === null ? undefined : humanBand(human.alarmismRating),
+    optimism: human.optimismRating === null ? undefined : humanBand(human.optimismRating),
+  };
+}
+
+/**
+ * Both axes, stacked, because a story is only calibrated if it is calibrated on
+ * both. The raw measles story reads 5.0 alarmism and 1.0 optimism; the raw WHO
+ * story reads 1.2 and 5.0. Either one alone looks fine on the axis it is not
+ * failing, which is the reason to draw them together rather than pick the one
+ * matching the dataset's declared failure mode.
+ */
+export function TonePair({
+  alarmism,
+  optimism,
+  before,
+  bands,
+  size = "sm",
+  showScale = false,
+  className,
+}: {
+  alarmism: number | null;
+  optimism: number | null;
+  /** The earlier reading, when this meter is showing a moderated story. */
+  before?: { alarmism: number | null; optimism: number | null };
+  bands?: { alarmism?: ToneBand; optimism?: ToneBand };
+  size?: "sm" | "md";
+  showScale?: boolean;
+  className?: string;
+}) {
+  const rows: { axis: ToneAxisId; value: number | null; from: number | null }[] = [
+    { axis: "alarmism", value: alarmism, from: before?.alarmism ?? null },
+    { axis: "optimism", value: optimism, from: before?.optimism ?? null },
+  ];
+
+  return (
+    <div className={cn("space-y-4", className)}>
+      {rows.map(({ axis, value, from }) => (
+        <div key={axis}>
+          <p className="mb-1.5 font-mono text-[0.62rem] font-medium uppercase tracking-wider text-muted">
+            {TONE_AXES[axis].label}
+          </p>
+          <ToneMeter
+            value={value}
+            before={from ?? undefined}
+            band={bands?.[axis]}
+            axis={axis}
+            size={size}
+            showScale={showScale}
+          />
+        </div>
+      ))}
     </div>
   );
 }

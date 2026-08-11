@@ -12,7 +12,7 @@ import { CountryMap } from "@/components/charts/country-map";
 import { EditTaxonomy } from "@/components/charts/edit-taxonomy";
 import { Redline } from "@/components/story/redline";
 import { FactCheckGutter } from "@/components/story/fact-check-gutter";
-import { humanBand } from "@/components/alarmism-meter";
+import { humanBands } from "@/components/tone-meter";
 import { Glossary, type GlossaryItem } from "@/components/ui/glossary";
 
 /* ── Terminology, defined on the page rather than in a tooltip ──────────── */
@@ -125,7 +125,16 @@ export function Comparison({
   // measured, which on this page would be the headline claim.
   const humanRating = story.human.alarmismRating;
   const scored = raw !== null && moderated !== null && humanRating !== null;
-  const band = humanRating === null ? undefined : humanBand(humanRating);
+  const bands = humanBands(story.human);
+  const band = bands.alarmism;
+  // The optimism move used to be *inferred* from the alarmism one - pulled down
+  // meant "out of catastrophising", pulled up meant "out of false reassurance".
+  // That inference is exactly what the second axis makes unnecessary, and it
+  // was wrong whenever a story moved on both axes the same way.
+  const optimismMoved =
+    story.aiRaw.optimismRating !== null && story.aiModerated.optimismRating !== null
+      ? +(story.aiModerated.optimismRating - story.aiRaw.optimismRating).toFixed(1)
+      : null;
   const moved = scored ? +(moderated! - raw!).toFixed(1) : null;
   const pulledUp = moved !== null && moved > 0;
   const landedInBand =
@@ -154,9 +163,9 @@ export function Comparison({
   return (
     <div className="space-y-8">
       <div className="grid gap-4 lg:grid-cols-3">
-        <StoryPanel variant={human} band={band} compact />
-        <StoryPanel variant={story.aiRaw} band={band} compact />
-        <StoryPanel variant={story.aiModerated} band={band} compact />
+        <StoryPanel variant={human} bands={bands} compact />
+        <StoryPanel variant={story.aiRaw} bands={bands} compact />
+        <StoryPanel variant={story.aiModerated} bands={bands} compact />
       </div>
 
       {/* One chart for all three panels. The three stories are three tellings of
@@ -195,7 +204,7 @@ export function Comparison({
             <div>
               <p className="text-sm font-medium text-navy">Tone calibration</p>
               <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                Alarmism · 1–5 LLM judge · the project&rsquo;s novel metric
+                Alarmism and optimism · 1–5 LLM judge, one call · the project&rsquo;s novel metric
               </p>
             </div>
             {moved === null ? (
@@ -204,10 +213,19 @@ export function Comparison({
               </p>
             ) : (
               <p className="text-sm text-muted">
-                Pulled <strong className="font-medium text-navy">{pulledUp ? "up" : "down"}</strong>{" "}
-                <span className="font-mono text-navy">{Math.abs(moved).toFixed(1)}</span>{" "}
-                {pulledUp ? "out of false reassurance" : "out of catastrophising"}
-                {landedInBand && <span className="text-muted"> and into the calibrated band</span>}
+                Alarmism{" "}
+                <strong className="font-medium text-navy">{pulledUp ? "up" : "down"}</strong>{" "}
+                <span className="font-mono text-navy">{Math.abs(moved).toFixed(1)}</span>
+                {optimismMoved !== null && (
+                  <>
+                    , optimism{" "}
+                    <strong className="font-medium text-navy">
+                      {optimismMoved > 0 ? "up" : optimismMoved < 0 ? "down" : "flat"}
+                    </strong>{" "}
+                    <span className="font-mono text-navy">{Math.abs(optimismMoved).toFixed(1)}</span>
+                  </>
+                )}
+                {landedInBand && <span className="text-muted"> · alarmism landed in the calibrated band</span>}
               </p>
             )}
           </div>

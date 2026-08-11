@@ -124,8 +124,15 @@ class ToneVariant(Schema):
     # None means no judge was reachable, which is a fact about the run and not a
     # middling score. Anything that filled it with a default would report a
     # measurement that was never taken.
+    #
+    # Two axes because the two datasets fail in opposite directions. Both keep
+    # the same shape: 3 is calibrated and both ends are failures, so a single
+    # meter, band and calibrated range serve either one.
     alarmism_rating: float | None = Field(
         default=None, ge=1, le=5, description="1 = flat, 5 = manipulative; None = not measured"
+    )
+    optimism_rating: float | None = Field(
+        default=None, ge=1, le=5, description="1 = bleak, 5 = false reassurance; None = not measured"
     )
     paragraphs: list[str]
 
@@ -203,13 +210,6 @@ class FactCheckOut(Schema):
     items: list[FactCheckItem] = Field(max_length=15)
 
 
-class JudgeOut(Schema):
-    """What the tone judge must return for a single story."""
-
-    alarmism_rating: float = Field(ge=1, le=5)
-    rationale: str
-
-
 # --------------------------------------------------------------------------
 # API request / response bodies
 # --------------------------------------------------------------------------
@@ -232,6 +232,8 @@ class ComparisonMetrics(Schema):
     text_similarity: list[TextSimilarity]
     alarmism_before: float | None = None
     alarmism_after: float | None = None
+    optimism_before: float | None = None
+    optimism_after: float | None = None
     emotive_spans_removed: int
     facts_preserved: bool
 
@@ -287,7 +289,15 @@ class MeasuredResults(Schema):
     # None, not zero, when no completed run carries a judged rating.
     alarmism_before: float | None = None
     alarmism_after: float | None = None
+    optimism_before: float | None = None
+    optimism_after: float | None = None
+    # Two counts, not one. Both axes come from the same judge call, so any run
+    # scored since has both - but runs judged before the second axis existed
+    # carry alarmism only, and printing the alarmism n beside an optimism mean
+    # taken over fewer runs is the kind of inflation this module exists to
+    # avoid. They converge as the old runs age out.
     alarmism_n: int = 0
+    optimism_n: int = 0
     edits_per_run: float | None = None
     edits_by_category: list[EditCategoryCount] = []
     facts_preserved_rate: float | None = None
@@ -369,20 +379,33 @@ class JudgeIn(Schema):
 
 
 class JudgeOutcome(Schema):
-    """An independent judge's verdict, beside the local judge's, never over it."""
+    """A paired verdict: both stories and both axes, scored side by side.
+
+    The pipeline already scores each story on its own as it is produced, which
+    is a *blind* reading - the judge has not seen the other version. This
+    endpoint shows the judge both at once. Same model, deliberately different
+    method, and the `paired_` / `blind_` pair is the comparison.
+
+    These fields were named `local_*` when the pipeline judge was gemma4:12b.
+    That judge is gone, so a field called "local" now holds a Claude score and
+    would print under the moderator's name in the interface.
+    """
 
     run_id: str
     judge_model: str
     raw_alarmism: float
     moderated_alarmism: float
+    raw_optimism: float
+    moderated_optimism: float
+    #: Change in alarmism, kept for the headline the interface already prints.
     delta: float
+    optimism_delta: float
     rationale: str
-    # The same two figures from the Ollama judge, so the interface can show the
-    # gap. On the mid and large tiers that judge is also the moderator, which is
-    # the bias this endpoint exists to measure.
-    local_raw_alarmism: float | None = None
-    local_moderated_alarmism: float | None = None
-    local_judge_model: str = ""
+    # What the same judge said about each story alone, during the run.
+    blind_raw_alarmism: float | None = None
+    blind_moderated_alarmism: float | None = None
+    blind_raw_optimism: float | None = None
+    blind_moderated_optimism: float | None = None
     cost_usd: float | None = None
 
 

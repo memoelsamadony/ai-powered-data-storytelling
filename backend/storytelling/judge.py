@@ -5,10 +5,12 @@ authenticated on the machines this project runs on, so no key has to be put in
 a settings file or a .env that the repo then has to keep out of git.
 
 Why an independent judge at all: on the mid and large tiers the local judge and
-the moderator are the same model (``gemma4:31b``), so the alarmism delta, the
+the moderator are the same model (``gemma4:31b``), so the tone delta, the
 project's novel metric, is self-assessed. A judge from a different family and a
 different vendor is the control for that. Its scores are stored beside the
 local ones and never replace them, because the comparison is the measurement.
+
+Why two axes: see the note above ``SYSTEM``. Both are scored in one call.
 
 Cost: the CLI reports `total_cost_usd`, which is the equivalent API list price
 of the tokens used, not money charged. On a Claude subscription these calls draw
@@ -26,6 +28,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+from dataclasses import dataclass
 
 from .models import Run, StageResult
 
@@ -35,10 +38,33 @@ BINARY = "claude"
 DEFAULT_MODEL = "opus"
 TIMEOUT_S = 180
 
+# Two axes, because the project's two datasets fail in opposite directions and
+# one axis can only see one of them. Measles tempts alarmism; WHO child
+# mortality tempts false reassurance, and a story that glosses over the
+# countries still burying one child in twenty scores a calm 2.0 for alarmism
+# while being exactly as miscalibrated. Scoring only alarmism left the
+# over-optimism dataset's own failure mode unmeasured.
+#
+# Both scales keep the same shape - 3 is calibrated, both ends are failures -
+# so the existing anchors, the 2.0-3.0 calibrated band and `humanBand` all
+# still mean what they meant. Alarmism's definition is deliberately unchanged:
+# runs already stored were scored against it.
+#
+# They are not each other's inverse and the prompt says so. A story can be low
+# on both (flat, no stance) or high on both ("catastrophe averted!", which
+# catastrophises the past while over-reassuring about the present), and those
+# divergent cases are most of what the second axis buys.
 SYSTEM = (
     "You are an impartial evaluator of the emotional tone of data journalism. "
-    "You rate alarmism on a 1-5 scale where BOTH ends are failures: 1 is flat "
-    "and hides real stakes, 3 is calibrated, 5 is manipulative catastrophising. "
+    "You rate two independent axes, each 1-5, where on both axes BOTH ends are "
+    "failures and 3 is calibrated.\n"
+    "ALARMISM: 1 = flat, numbing, hides real stakes; 3 = calibrated; "
+    "5 = manipulative catastrophising.\n"
+    "OPTIMISM: 1 = bleak, denies real progress the data shows; 3 = calibrated; "
+    "5 = false reassurance, glosses over remaining harm.\n"
+    "The axes are independent, not opposites. A flat, stance-free story is low "
+    "on both. A story that catastrophises what happened while implying the "
+    "danger has passed is high on both. Score each on its own terms.\n"
     "You judge tone only, never factual accuracy. You reply with JSON and nothing else."
 )
 
@@ -49,7 +75,7 @@ _UNUSED_TOOLS = [
     "Task", "TodoWrite", "NotebookEdit", "Agent", "Skill",
 ]
 
-ONE_STORY_PROMPT = """Rate the emotional tone of this data story.
+ONE_STORY_PROMPT = """Rate the emotional tone of this data story on both axes.
 
 It was written from this data:
 {table}
@@ -60,7 +86,8 @@ It was written from this data:
 {body}
 
 Reply with exactly this JSON and nothing else:
-{{"alarmism": <1-5, one decimal>, "rationale": "<one sentence naming what set it>"}}"""
+{{"alarmism": <1-5, one decimal>, "optimism": <1-5, one decimal>,
+  "rationale": "<one sentence naming the phrasing that set each>"}}"""
 
 PROMPT = """Rate the emotional tone of two versions of the same data story.
 
@@ -78,8 +105,9 @@ Both were written from this data:
 {moderated_body}
 
 Reply with exactly this JSON and nothing else:
-{{"rawAlarmism": <1-5, one decimal>, "moderatedAlarmism": <1-5, one decimal>,
-  "rationale": "<one or two sentences on what separates them>"}}"""
+{{"rawAlarmism": <1-5, one decimal>, "rawOptimism": <1-5, one decimal>,
+  "moderatedAlarmism": <1-5, one decimal>, "moderatedOptimism": <1-5, one decimal>,
+  "rationale": "<one or two sentences on what separates them, on both axes>"}}"""
 
 
 class JudgeUnavailable(RuntimeError):
@@ -161,10 +189,34 @@ def run_cli(prompt: str, model: str = DEFAULT_MODEL) -> tuple[str, float | None,
     )
 
 
+def _rating(verdict: dict, key: str, reply: str) -> float:
+    try:
+        value = float(verdict[key])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise JudgeUnavailable(f"judge omitted '{key}': {reply[:200]}") from exc
+    return max(1.0, min(5.0, value))
+
+
+@dataclass(frozen=True)
+class StoryScore:
+    """Both axes for one story, from one call."""
+
+    alarmism: float
+    optimism: float
+    rationale: str
+    cost_usd: float | None
+    duration_s: float
+
+
 def score_story(
     table: str, title: str, paragraphs: list[str], model: str = DEFAULT_MODEL
-) -> tuple[float, str, float | None, float]:
-    """Rate one story. Returns (rating, rationale, cost estimate, seconds).
+) -> StoryScore:
+    """Rate one story on both axes, in a single call.
+
+    One call rather than two, and not only to halve the cost: the two ratings
+    are then made by the same reader against each other in one context, so
+    "3.8 alarmist" and "1.9 optimistic" are a coherent pair rather than two
+    independent readings that may not describe the same story.
 
     This is what the pipeline calls at the end of the generate and moderate
     stages, in place of the Ollama judge. Raises JudgeUnavailable rather than
@@ -175,11 +227,13 @@ def score_story(
         model=model,
     )
     verdict = _extract_json(reply)
-    try:
-        rating = float(verdict["alarmism"])
-    except (KeyError, TypeError, ValueError) as exc:
-        raise JudgeUnavailable(f"judge omitted 'alarmism': {reply[:200]}") from exc
-    return max(1.0, min(5.0, rating)), str(verdict.get("rationale", ""))[:1000], cost, duration
+    return StoryScore(
+        alarmism=_rating(verdict, "alarmism", reply),
+        optimism=_rating(verdict, "optimism", reply),
+        rationale=str(verdict.get("rationale", ""))[:1000],
+        cost_usd=cost,
+        duration_s=duration,
+    )
 
 
 def judge_run(run: Run, table: str, model: str = DEFAULT_MODEL) -> Run:
@@ -199,22 +253,22 @@ def judge_run(run: Run, table: str, model: str = DEFAULT_MODEL) -> Run:
     reply, cost, duration = run_cli(prompt, model=model)
     verdict = _extract_json(reply)
 
-    def rating(key: str) -> float:
-        try:
-            value = float(verdict[key])
-        except (KeyError, TypeError, ValueError) as exc:
-            raise JudgeUnavailable(f"judge omitted '{key}': {reply[:200]}") from exc
-        return max(1.0, min(5.0, value))
-
-    run.opus_raw_alarmism = rating("rawAlarmism")
-    run.opus_moderated_alarmism = rating("moderatedAlarmism")
+    # Four numbers from one call, for the same reason score_story returns two:
+    # the comparison is the measurement, and a judge that saw both versions and
+    # both axes together is comparing them rather than scoring them apart.
+    run.opus_raw_alarmism = _rating(verdict, "rawAlarmism", reply)
+    run.opus_raw_optimism = _rating(verdict, "rawOptimism", reply)
+    run.opus_moderated_alarmism = _rating(verdict, "moderatedAlarmism", reply)
+    run.opus_moderated_optimism = _rating(verdict, "moderatedOptimism", reply)
     run.opus_rationale = str(verdict.get("rationale", ""))[:2000]
     run.opus_model = model
     run.opus_cost_usd = cost
     run.save(
         update_fields=[
             "opus_raw_alarmism",
+            "opus_raw_optimism",
             "opus_moderated_alarmism",
+            "opus_moderated_optimism",
             "opus_rationale",
             "opus_model",
             "opus_cost_usd",

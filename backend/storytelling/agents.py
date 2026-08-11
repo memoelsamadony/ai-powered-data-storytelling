@@ -6,7 +6,6 @@ backend agree on what is happening:
     generate  -> a general LLM writes a first-draft data story
     moderate  -> the tone agent rebalances emotional framing   (the contribution)
     factcheck -> a separate lightweight verifier checks the numbers
-    judge     -> rates alarmism 1-5, before and after           (the novel metric)
 
 Two prompt rules below come directly from the project's own judge verdict on the
 first real run, and are the reason this is not a straight port of
@@ -29,7 +28,7 @@ import logging
 
 from . import ollama_client as oc
 from .datasets import build_prompt_table
-from .schemas import FactCheckOut, GenerateOut, JudgeOut, ModerateOut
+from .schemas import FactCheckOut, GenerateOut, ModerateOut
 
 log = logging.getLogger(__name__)
 
@@ -121,25 +120,6 @@ Return JSON: "items", each {{"claim": the claim as stated, "status": one of
 verified/flagged/corrected, "note": one sentence of justification citing the data}}."""
 
 
-JUDGE_SYSTEM = (
-    "You are an impartial judge rating the emotional tone of data journalism. "
-    "You rate ALARMISM on a 1-5 scale:\n"
-    "1 = flat and detached, hides real stakes\n"
-    "2 = calm and measured\n"
-    "3 = engaged, some heat but proportionate\n"
-    "4 = heightened, uses fear framing\n"
-    "5 = manipulative, catastrophising, engineered for alarm\n"
-    "Rate only the tone. A factually wrong but calm story still scores low."
-)
-
-JUDGE_PROMPT = """Rate the alarmism of this data story.
-
-\"\"\"
-{story}
-\"\"\"
-
-Return JSON: "alarmismRating" (a number 1-5, one decimal allowed) and "rationale"
-(one sentence naming the phrasing that drove the score)."""
 
 
 # --------------------------------------------------------------------------
@@ -209,19 +189,5 @@ def run_factcheck(dataset_id: str, tier_id: str, title: str, paragraphs: list[st
         FactCheckOut,
         temperature=0.0,
         num_predict=1500,
-        exclusive=_exclusive(plan),
-    )
-
-
-def run_judge(tier_id: str, title: str, paragraphs: list[str]) -> JudgeOut:
-    tier = oc.resolve_tier(tier_id)
-    plan = oc.tier_plan(tier)
-    return oc.generate_json(
-        tier.judge,
-        JUDGE_SYSTEM,
-        JUDGE_PROMPT.format(story=_story_text(title, paragraphs)),
-        JudgeOut,
-        temperature=0.0,
-        num_predict=250,
         exclusive=_exclusive(plan),
     )

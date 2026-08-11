@@ -55,8 +55,15 @@ def start_run(dataset_id: str, tier_id: str) -> Run:
     return Run.objects.create(dataset_id=dataset_id, tier=tier_id)
 
 
-def _judge(run: Run, stage: str, title: str, paragraphs: list[str]) -> float | None:
-    """Rate a story with the independent judge.
+def _judge(
+    run: Run, stage: str, title: str, paragraphs: list[str]
+) -> tuple[float | None, float | None]:
+    """Rate a story with the independent judge. Returns (alarmism, optimism).
+
+    Both axes come back from one call: the datasets fail in opposite
+    directions, so a single axis can only see one of them, and a falsely
+    reassuring story scores a calm 2.0 for alarmism while being exactly as
+    miscalibrated.
 
     The tone rating is the project's own contribution, and it used to be
     produced by the same local model that had just done the moderating, which
@@ -66,15 +73,16 @@ def _judge(run: Run, stage: str, title: str, paragraphs: list[str]) -> float | N
     being removed, so re-introducing it when the CLI is missing would put the
     same number back under a name that implies otherwise.
 
-    Returns None when no judge is reachable, and None travels all the way to the
-    interface as "not measured". An unjudged story is a fact about the run.
+    Returns (None, None) when no judge is reachable, and that travels all the
+    way to the interface as "not measured". An unjudged story is a fact about
+    the run.
     """
     if not judge.is_available():
         log.warning("no independent judge available; %s left unmeasured", stage)
-        return None
+        return None, None
     started = time.perf_counter()
     try:
-        rating, rationale, cost, duration = judge.score_story(
+        score = judge.score_story(
             ds.build_prompt_table(run.dataset_id), title, paragraphs
         )
     except judge.JudgeUnavailable as exc:
@@ -86,14 +94,18 @@ def _judge(run: Run, stage: str, title: str, paragraphs: list[str]) -> float | N
             duration_s=round(time.perf_counter() - started, 2),
             payload={"error": str(exc)},
         )
-        return None
+        return None, None
     StageResult.objects.create(
         run=run, stage=stage, model=f"claude/{judge.DEFAULT_MODEL}",
-        duration_s=round(duration, 2),
-        payload={"alarmism": rating, "rationale": rationale},
-        usage={"cost_usd": cost} if cost is not None else {},
+        duration_s=round(score.duration_s, 2),
+        payload={
+            "alarmism": score.alarmism,
+            "optimism": score.optimism,
+            "rationale": score.rationale,
+        },
+        usage={"cost_usd": score.cost_usd} if score.cost_usd is not None else {},
     )
-    return rating
+    return score.alarmism, score.optimism
 
 
 def do_generate(run: Run) -> Run:
@@ -106,7 +118,9 @@ def do_generate(run: Run) -> Run:
 
     run.raw_title = out.title
     run.raw_paragraphs = out.paragraphs
-    run.raw_alarmism = _judge(run, StageResult.Stage.JUDGE_RAW, out.title, out.paragraphs)
+    run.raw_alarmism, run.raw_optimism = _judge(
+        run, StageResult.Stage.JUDGE_RAW, out.title, out.paragraphs
+    )
     run.save()
     return run
 
@@ -122,7 +136,7 @@ def do_moderate(run: Run) -> Run:
     run.moderated_title = out.title
     run.moderated_paragraphs = out.paragraphs
     run.emotive_spans = [s.model_dump(by_alias=True) for s in out.emotive_spans]
-    run.moderated_alarmism = _judge(
+    run.moderated_alarmism, run.moderated_optimism = _judge(
         run, StageResult.Stage.JUDGE_MODERATED, out.title, out.paragraphs
     )
     run.save()
@@ -172,6 +186,7 @@ def _human_variant(run: Run) -> ToneVariant:
         author="Human author",
         title=run.human_title or "Human baseline",
         alarmism_rating=None,  # the human baseline is not judged
+        optimism_rating=None,
         paragraphs=paragraphs or ["No human baseline has been written yet."],
     )
 
@@ -230,6 +245,7 @@ def to_story_set(run: Run) -> StorySet:
             author=f"General LLM ({tier.generator})",
             title=run.raw_title,
             alarmism_rating=run.raw_alarmism,
+            optimism_rating=run.raw_optimism,
             paragraphs=run.raw_paragraphs,
         ),
         ai_moderated=ToneVariant(
@@ -238,6 +254,7 @@ def to_story_set(run: Run) -> StorySet:
             author=f"Agentic moderator ({tier.moderator})",
             title=run.moderated_title,
             alarmism_rating=run.moderated_alarmism,
+            optimism_rating=run.moderated_optimism,
             paragraphs=run.moderated_paragraphs,
         ),
         emotive_spans=spans,
@@ -331,6 +348,8 @@ def compare(run: Run, human_text: str = "") -> ComparisonMetrics:
         ],
         alarmism_before=run.raw_alarmism,
         alarmism_after=run.moderated_alarmism,
+        optimism_before=run.raw_optimism,
+        optimism_after=run.moderated_optimism,
         emotive_spans_removed=len(run.emotive_spans),
         facts_preserved=not any(
             i.get("status") == "flagged" for i in run.factual_check

@@ -192,7 +192,12 @@ export interface Results {
     byTier: { tier: string; runs: number }[];
     alarmismBefore: number | null;
     alarmismAfter: number | null;
+    optimismBefore: number | null;
+    optimismAfter: number | null;
+    /** One n per axis: runs judged before the second axis exist with only the
+        first, so the two counts differ until those age out. */
     alarmismN: number;
+    optimismN: number;
     editsPerRun: number | null;
     editsByCategory: { category: string; label: string; count: number }[];
     factsPreservedRate: number | null;
@@ -233,8 +238,13 @@ export async function getResults(): Promise<Results | null> {
 
 export interface ComparisonMetrics {
   textSimilarity: { metric: string; value: number }[];
-  alarmismBefore: number;
-  alarmismAfter: number;
+  /* All four are nullable: the backend schema is, because a run whose judge was
+     unreachable has no rating, and the panel says "not measured" rather than
+     computing a move that was never taken. */
+  alarmismBefore: number | null;
+  alarmismAfter: number | null;
+  optimismBefore: number | null;
+  optimismAfter: number | null;
   emotiveSpansRemoved: number;
   factsPreserved: boolean;
 }
