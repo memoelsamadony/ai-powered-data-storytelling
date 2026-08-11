@@ -2,11 +2,13 @@
   "name": "ai-powered-storytelling",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test \"lib/**/*.test.mts\""
   },
   "dependencies": {
     "framer-motion": "^12.41.0",

@@ -122,8 +122,16 @@ Expected: PASS, 1 test.
 Run: `npm run build`
 Expected: `✓ Compiled successfully`, all 9 routes prerendered.
 
-Run: `npx eslint . --max-warnings=0`
-Expected: no output (clean). **Allow up to 5 minutes** — the first ESLint run on this repo is slow and has timed out at 2 minutes before. Do not conclude it is broken until it actually returns.
+Run: `npx eslint <the files this task touched>`
+Expected: no output.
+
+**Do not run `npx eslint .` and expect zero problems.** This repo has a pre-existing lint baseline of **2 errors and 8 warnings**, none of them related to this work:
+- `components/generate/typewriter.tsx` — `react-hooks/set-state-in-effect` (2 errors)
+- `components/ui/button.tsx` — 8 `@typescript-eslint/no-unused-vars` warnings on intentionally-discarded `_v` / `_s` / `_c` / `_ch` bindings
+
+Lint the files you touched, not the whole repo, and leave that baseline alone — fixing it is not in scope for this plan.
+
+**Allow up to 5 minutes** — the first ESLint run on this repo is slow and has timed out at 2 minutes before. Also beware `eslint … | tail`: that reports `tail`'s exit code, not ESLint's. Use `${PIPESTATUS[0]}` or don't pipe.
 
 **Rollback criterion:** if `npm run build` or lint fails and cannot be fixed within this task, revert `"type": "module"` and `allowImportingTsExtensions`, delete `choropleth.test.mts`, drop the `test` script, and note that Task 4's tests become manual verification. Everything else in this plan works unchanged without the test harness — no other task imports it.
 
