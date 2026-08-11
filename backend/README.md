@@ -23,9 +23,19 @@ cd backend
 .venv/bin/python manage.py migrate
 .venv/bin/python manage.py tiers         # what this machine can run, and why
 .venv/bin/python manage.py runserver     # http://localhost:8000/api/docs
+.venv/bin/python manage.py test storytelling   # no DB, no Ollama, < 0.1 s
 ```
 
-Ollama must be running (`http://localhost:11434`).
+Ollama must be running (`http://localhost:11434`), except for the tests.
+
+The frontend defaults to `http://localhost:8000/api` and is allowed as an
+origin on port 3000. Next takes the next free port when 3000 is busy, and the
+browser call then fails as a blocked cross-origin request that the interface
+reads as a dead backend, so pass the port you actually got:
+
+```bash
+DJANGO_CORS_ORIGINS="http://localhost:3001" .venv/bin/python manage.py runserver
+```
 
 ## Endpoints
 
@@ -271,5 +281,10 @@ This is a **local development service** and is configured as one:
   this caveat, or the tiers need a distinct judge model.
 * The human baseline is stored but not yet tone-judged, so `human.alarmismRating`
   is a placeholder. Judging it is a one-line addition to `services.py`.
-* `who_gho_tidy.csv` has not been collected.
-* No tests yet.
+* `who_gho_tidy.csv` has not been collected, so `who-health` is served from the
+  frontend mocks and its country map stays the illustrative sample.
+* Tests cover the country payload only (`storytelling/tests.py`, 18 cases
+  against the committed CSV: aggregates excluded, gaps preserved, decimals,
+  and the metric contract shared with `lib/data/datasets.ts`). The agent and
+  run-lifecycle code has none, because asserting on it means either mocking
+  Ollama or spending a minute a case on real inference.

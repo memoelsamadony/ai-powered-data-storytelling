@@ -263,7 +263,13 @@ def country_payload(
     if not spec.country_years or not spec.country_metrics:
         return None
 
-    df = load_frame(dataset_id)
+    try:
+        df = load_frame(dataset_id)
+    except FileNotFoundError:
+        # A registered dataset whose CSV has not been collected yet. Callers
+        # reach this through get_dataset, which raises first, but the contract
+        # above says "cannot supply one" and a missing table is exactly that.
+        return None
     if "code" not in df.columns:
         return None
 
