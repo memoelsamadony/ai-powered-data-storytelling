@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<pattern id="hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+  <rect width="8" height="8" fill="#2a78d6" fill-opacity="0.22"/>
+  <line x1="0" y1="0" x2="0" y2="8" stroke="#2a78d6" stroke-width="3"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"/>
+</marker>
+<marker id="arrowblue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#2a78d6"/>
+</marker>
+
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">What the tone agent actually did — one real run</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Run 056795c4  ·  measles  ·  7 spans rebalanced, each returned with a stated reason</text>
+<line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
+<text x="118" y="180" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="bold" text-anchor="start" letter-spacing="1.5">ORIGINAL</text>
+<text x="560" y="180" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="bold" text-anchor="start" letter-spacing="1.5">REPLACEMENT</text>
+<text x="990" y="180" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="bold" text-anchor="start" letter-spacing="1.5">REASON GIVEN BY THE MODERATOR</text>
+<line x1="104" y1="194" x2="1496" y2="194" stroke="#c3c2b7" stroke-width="2"/>
+<text x="118" y="237" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Plummet</text>
+<text x="520" y="237" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">→</text>
+<text x="560" y="237" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">Trends</text>
+<text x="990" y="237" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Exaggerated intensity verb</text>
+<text x="118" y="291" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">dropped dramatically</text>
+<text x="520" y="291" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">→</text>
+<text x="560" y="291" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">decreased</text>
+<text x="990" y="291" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Overstated intensity</text>
+<rect x="104" y="314" width="1392" height="48" rx="8" fill="#1baf7a" fill-opacity="0.11"/>
+<rect x="104" y="314" width="5" height="48" rx="2.5" fill="#1baf7a"/>
+<text x="118" y="345" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">just under 675,000</text>
+<text x="520" y="345" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">→</text>
+<text x="560" y="345" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">675,533</text>
+<text x="990" y="345" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Vague phrasing; precise data available</text>
+<text x="118" y="399" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">stalled</text>
+<text x="520" y="399" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">→</text>
+<text x="560" y="399" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">remained relatively stable</text>
+<text x="990" y="399" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Manipulative framing suggesting failure</text>
+<text x="118" y="453" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">shining examples of</text>
+<text x="118" y="478" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">effective vaccination</text>
+<text x="520" y="453" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">→</text>
+<text x="560" y="453" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">have high first-dose</text>
+<text x="560" y="478" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">coverage</text>
+<text x="990" y="453" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Overstated causation and celebratory tone</text>
+<text x="118" y="533" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">lags behind</text>
+<text x="520" y="533" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">→</text>
+<text x="560" y="533" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">has lower coverage</text>
+<text x="990" y="533" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Judgmental / shaming language</text>
+<rect x="104" y="556" width="1392" height="74" rx="8" fill="#1baf7a" fill-opacity="0.11"/>
+<rect x="104" y="556" width="5" height="74" rx="2.5" fill="#1baf7a"/>
+<text x="118" y="587" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">resulting in a significantly</text>
+<text x="118" y="612" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">higher measles rate</text>
+<text x="520" y="587" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">→</text>
+<text x="560" y="587" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">which corresponds with</text>
+<text x="560" y="612" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">a higher rate</text>
+<text x="990" y="587" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Overstated direct causation</text>
+<rect x="104" y="648" width="682" height="132" rx="10" fill="#1baf7a" fill-opacity="0.11"/>
+<text x="128" y="684" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#1baf7a" font-weight="bold" text-anchor="start" letter-spacing="0">Two of the seven are not cosmetic</text>
+<text x="128" y="716" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">A vague figure became the exact value from the table, and a</text>
+<text x="128" y="740" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">causal claim was downgraded to a correlational one. Given</text>
+<text x="128" y="764" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">causal accuracy is 0%, that is safety work, not style work.</text>
+<rect x="814" y="648" width="682" height="132" rx="10" fill="#fab219" fill-opacity="0.17"/>
+<text x="838" y="684" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">Then the fact-checker flagged the moderator</text>
+<text x="838" y="716" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">8 claims checked, 7 verified, 1 flagged — and the flagged item</text>
+<text x="838" y="740" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">is the moderator's own new phrasing. The two agents</text>
+<text x="838" y="764" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">disagreeing is why they are kept as separate agents.</text>
+
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Alarmism 2.0 → 2.0 on this run: the rating did not move, but seven spans were still rewritten — which is exactly why the delta on its own is an insufficient measure of</text>
+<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">what the agent does.</text>
+</svg>
