@@ -50,6 +50,16 @@ class Run(models.Model):
     # Stage 3 - the separate factual check
     factual_check = models.JSONField(default=list, blank=True)
 
+    # An independent judge, run through the Claude CLI rather than Ollama.
+    # Kept in their own fields, never overwriting the local judge's numbers:
+    # on the mid and large tiers the judge and the moderator are the same model,
+    # and measuring that self-assessment bias needs both scores side by side.
+    opus_raw_alarmism = models.FloatField(null=True, blank=True)
+    opus_moderated_alarmism = models.FloatField(null=True, blank=True)
+    opus_rationale = models.TextField(blank=True)
+    opus_model = models.CharField(max_length=64, blank=True)
+    opus_cost_usd = models.FloatField(null=True, blank=True)
+
     # The human baseline, submitted from the interface (task (c) in the report).
     human_text = models.TextField(blank=True)
     human_title = models.CharField(max_length=300, blank=True)
@@ -70,6 +80,36 @@ class Run(models.Model):
         return self.status == RunStatus.DONE
 
 
+class UploadedDataset(models.Model):
+    """A CSV a user uploaded, parked until the configuration work lands.
+
+    Deliberately not registered in ``datasets.SPECS``. A dataset there needs a
+    declared primary and secondary measure, class breaks, an aggregate row and a
+    failure mode, none of which can be inferred from an arbitrary table, and
+    guessing them is what would put an unlabelled figure in front of a reader.
+    So the file is validated and stored, and wiring it to the pipeline waits for
+    the interface that asks a human what its columns mean.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # What the uploader called it, kept for display only. The file on disk is
+    # named after the id, so nothing a client sends becomes a path.
+    original_name = models.CharField(max_length=255)
+    stored_path = models.CharField(max_length=500)
+    rows = models.IntegerField()
+    columns = models.JSONField(default=list)
+    numeric_columns = models.JSONField(default=list)
+    year_range = models.CharField(max_length=32, blank=True)
+    countries = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.original_name} ({self.rows} rows)"
+
+
 class StageResult(models.Model):
     """Per-stage telemetry. One row per agent call."""
 
@@ -79,6 +119,7 @@ class StageResult(models.Model):
         FACTCHECK = "factcheck", "Fact-check"
         JUDGE_RAW = "judge_raw", "Judge (raw)"
         JUDGE_MODERATED = "judge_moderated", "Judge (moderated)"
+        JUDGE_INDEPENDENT = "judge_independent", "Judge (independent, Claude CLI)"
 
     run = models.ForeignKey(Run, related_name="stages", on_delete=models.CASCADE)
     stage = models.CharField(max_length=24, choices=Stage)
