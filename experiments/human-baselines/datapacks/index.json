@@ -1,0 +1,32 @@
+{
+  "measles": {
+    "file": "datapacks/measles.txt",
+    "sha256": "1e2b99634284b2a8c635e6585e6b5c1d0d98a59a61ca56c592c7385e18a38e15",
+    "chars": 820,
+    "lines": 22
+  },
+  "mumps-global": {
+    "file": "datapacks/mumps-global.txt",
+    "sha256": "b043cf89ad431423ca14a68f15363b7235998a767c589c48498fae4ea9eafa65",
+    "chars": 1112,
+    "lines": 28
+  },
+  "pertussis-global": {
+    "file": "datapacks/pertussis-global.txt",
+    "sha256": "2440adfee99e8d52d2a2ec1b347d46c38ea4306cd6ea8efed3db7f42eae717da",
+    "chars": 1099,
+    "lines": 28
+  },
+  "diphtheria-global": {
+    "file": "datapacks/diphtheria-global.txt",
+    "sha256": "509117c7a221043b707724174ab0a7f57e630d730678ab7c9ad5628ce860204b",
+    "chars": 1045,
+    "lines": 28
+  },
+  "under5-measles-deaths": {
+    "file": "datapacks/under5-measles-deaths.txt",
+    "sha256": "a829979c97396adf38bd81a6a78e5ab708e4e25dfdf72185463caf706a2fe34b",
+    "chars": 704,
+    "lines": 24
+  }
+}

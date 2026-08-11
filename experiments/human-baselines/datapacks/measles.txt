@@ -1,0 +1,22 @@
+REAL DATA - Measles × Vaccination Coverage (Our World in Data and others; country × year).
+World by year -> Reported measles cases | MCV1 coverage (%):
+  1980: 3,852,242 | 16%
+  1985: 2,819,553 | 46%
+  1990: 1,325,074 | 73%
+  1995: 720,391 | 73%
+  2000: 853,479 | 71%
+  2005: 585,701 | 77%
+  2010: 343,806 | 84%
+  2015: 214,808 | 84%
+  2018: 359,295 | 86%
+  2019: 873,373 | 86%
+  2020: 159,240 | 83%
+  2021: 123,152 | 81%
+  2022: 206,775 | 83%
+  2023: 669,083 | 83%
+  2024: 675,533 | 84%
+Country detail (2024):
+  Germany: 645 cases, MCV1 coverage 96%, 7.6 per million
+  Nigeria: 14,999 cases, MCV1 coverage 57%, 65.8 per million
+  India: 18,530 cases, MCV1 coverage 97%, 12.9 per million
+Context: herd immunity needs ~95% first-dose coverage. Compare places of different size using the per-million rate, not raw counts.
