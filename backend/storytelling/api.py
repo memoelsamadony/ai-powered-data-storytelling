@@ -20,28 +20,39 @@ this hardware (see ollama_client), so parallelism would thrash, not help.
 from __future__ import annotations
 
 import logging
+import re
 
 from django.shortcuts import get_object_or_404
-from ninja import NinjaAPI, Query
+from ninja import File, NinjaAPI, Query
+from ninja.files import UploadedFile
 from ninja.errors import HttpError
 
 from . import datasets as ds
+from . import judge as judge_mod
 from . import ollama_client as oc
+from . import results as results_mod
 from . import services
-from .models import Run, RunStatus
+from . import uploads as uploads_mod
+from .models import Run, RunStatus, UploadedDataset
 from .schemas import (
     ComparisonMetrics,
     CompareIn,
     Dataset,
+    EditCategoryCount,
+    EditsOut,
     FactCheckItem,
     GenerateIn,
     HealthOut,
     HumanStoryIn,
+    JudgeIn,
+    JudgeOutcome,
     ModelInfo,
+    ResultsOut,
     RunRef,
     StorySet,
     TierInfo,
     ToneVariant,
+    UploadOut,
 )
 
 log = logging.getLogger(__name__)
@@ -112,6 +123,23 @@ def health(request):
 
 
 # --------------------------------------------------------------------------
+# Results
+# --------------------------------------------------------------------------
+
+
+@get("/results", response=ResultsOut)
+def results(request):
+    """Evaluation figures, split by where each one comes from.
+
+    `measured` is computed from the runs in this database and carries its own n.
+    `faithfulness` is read from the committed reproduction CSVs. Figures that
+    are neither are listed in `unavailable` rather than invented, so the
+    interface can say what it is still showing from its own constants.
+    """
+    return results_mod.build()
+
+
+# --------------------------------------------------------------------------
 # Datasets
 # --------------------------------------------------------------------------
 
@@ -128,6 +156,56 @@ def get_dataset(request, dataset_id: str):
     if not ds.is_available(ds.SPECS[dataset_id]):
         raise HttpError(404, f"Dataset '{dataset_id}' has no data file yet")
     return ds.get_dataset(dataset_id)
+
+
+UPLOAD_NOTE = (
+    "Stored and validated. Not yet generatable: the pipeline needs to know which "
+    "column is the measure, which is the comparison, and what its class breaks "
+    "are, and inferring that from column names is how an unlabelled figure ends "
+    "up in front of a reader. The configuration step comes first."
+)
+
+
+@post("/uploads", response=UploadOut)
+def upload_dataset(request, file: UploadedFile = File(...)):
+    """Accept a CSV for later use, validating that it is one.
+
+    Deliberately does not join the dataset registry; see UPLOAD_NOTE.
+    """
+    try:
+        record = uploads_mod.store(file)
+    except uploads_mod.UploadRejected as exc:
+        raise HttpError(400, str(exc)) from exc
+    return UploadOut(
+        id=str(record.id),
+        original_name=record.original_name,
+        rows=record.rows,
+        columns=record.columns,
+        numeric_columns=record.numeric_columns,
+        year_range=record.year_range,
+        countries=record.countries,
+        preview_rows=uploads_mod.preview(record),
+        wired=False,
+        note=UPLOAD_NOTE,
+    )
+
+
+@get("/uploads", response=list[UploadOut])
+def list_uploads(request):
+    return [
+        UploadOut(
+            id=str(r.id),
+            original_name=r.original_name,
+            rows=r.rows,
+            columns=r.columns,
+            numeric_columns=r.numeric_columns,
+            year_range=r.year_range,
+            countries=r.countries,
+            wired=False,
+            note=UPLOAD_NOTE,
+        )
+        for r in UploadedDataset.objects.all()[:50]
+    ]
 
 
 # --------------------------------------------------------------------------
@@ -189,6 +267,96 @@ def list_runs(request, dataset_id: str = Query(None), tier: str = Query(None),
         qs = qs.filter(status=RunStatus.DONE)
     return [RunRef(run_id=str(r.id), dataset_id=r.dataset_id, tier=r.tier, status=r.status)
             for r in qs[:50]]
+
+
+# --------------------------------------------------------------------------
+# The independent judge
+# --------------------------------------------------------------------------
+
+
+@api.exception_handler(judge_mod.JudgeUnavailable)
+def on_judge_unavailable(request, exc):
+    # 503 rather than 500: the pipeline is fine, the judge is simply not
+    # reachable here, and the interface should say so rather than look broken.
+    log.warning("independent judge unavailable: %s", exc)
+    return api.create_response(request, {"detail": str(exc)}, status=503)
+
+
+@post("/runs/{run_id}/judge", response=JudgeOutcome)
+def stage_judge(request, run_id: str, payload: JudgeIn = None):
+    """Score this run's two stories side by side, on both tone axes.
+
+    The pipeline already scores each story as it is produced, but *blind* - the
+    judge sees one story and does not know the other exists. This shows it both
+    at once, so it is comparing rather than scoring twice. Same model, and the
+    two readings are stored in separate fields because the gap between them is
+    itself worth measuring: a judge that can see the moderated version may rate
+    the raw one differently than it did on its own.
+    """
+    run = get_object_or_404(Run, id=run_id)
+    model = (payload.model if payload else "opus").strip()
+    # Nothing free-form reaches the argument list.
+    if not re.fullmatch(r"[A-Za-z0-9._:-]{1,64}", model):
+        raise HttpError(400, f"Unsupported judge model '{model}'")
+
+    table = ds.build_prompt_table(run.dataset_id)
+    run = judge_mod.judge_run(run, table, model=model)
+    return JudgeOutcome(
+        run_id=str(run.id),
+        judge_model=f"claude/{run.opus_model}",
+        raw_alarmism=run.opus_raw_alarmism,
+        moderated_alarmism=run.opus_moderated_alarmism,
+        raw_optimism=run.opus_raw_optimism,
+        moderated_optimism=run.opus_moderated_optimism,
+        delta=round(run.opus_moderated_alarmism - run.opus_raw_alarmism, 2),
+        optimism_delta=round(run.opus_moderated_optimism - run.opus_raw_optimism, 2),
+        rationale=run.opus_rationale,
+        blind_raw_alarmism=run.raw_alarmism,
+        blind_moderated_alarmism=run.moderated_alarmism,
+        blind_raw_optimism=run.raw_optimism,
+        blind_moderated_optimism=run.moderated_optimism,
+        cost_usd=run.opus_cost_usd,
+    )
+
+
+# --------------------------------------------------------------------------
+# The edits the moderator made
+# --------------------------------------------------------------------------
+
+# Labels mirror EDIT_CATEGORIES in lib/data/stories.ts.
+EDIT_LABELS = {
+    "intensity": "Intensity",
+    "framing": "Framing",
+    "overreach": "Overreach",
+    "grounding": "Grounding",
+}
+
+
+@get("/runs/{run_id}/edits", response=EditsOut)
+def run_edits(request, run_id: str):
+    """The moderator's own edits, categorised.
+
+    The story endpoints already carry these spans, but the taxonomy chart wants
+    the counts across all four families, zeros included, and a caller that only
+    wants the edits should not have to pull two full stories to get them.
+    """
+    run = get_object_or_404(Run, id=run_id)
+    spans = services.emotive_spans_of(run)
+    counts = [
+        EditCategoryCount(
+            category=key,  # type: ignore[arg-type]
+            label=label,
+            count=sum(1 for s in spans if s.category == key),
+        )
+        for key, label in EDIT_LABELS.items()
+    ]
+    return EditsOut(
+        run_id=str(run.id),
+        total=len(spans),
+        counts=counts,
+        spans=spans,
+        moderator=oc.resolve_tier(run.tier).moderator,
+    )
 
 
 # --------------------------------------------------------------------------

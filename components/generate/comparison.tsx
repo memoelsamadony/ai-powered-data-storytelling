@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck, ShieldAlert, MoveRight } from "lucide-react";
+import type * as api from "@/lib/api";
 import type { Dataset } from "@/lib/data/datasets";
 import type { StorySet, ToneVariant } from "@/lib/data/stories";
 import { StoryPanel } from "@/components/story-panel";
@@ -11,7 +12,7 @@ import { CountryMap } from "@/components/charts/country-map";
 import { EditTaxonomy } from "@/components/charts/edit-taxonomy";
 import { Redline } from "@/components/story/redline";
 import { FactCheckGutter } from "@/components/story/fact-check-gutter";
-import { humanBand } from "@/components/alarmism-meter";
+import { humanBands } from "@/components/tone-meter";
 import { Glossary, type GlossaryItem } from "@/components/ui/glossary";
 
 /* ── Terminology, defined on the page rather than in a tooltip ──────────── */
@@ -75,14 +76,31 @@ const SIMILARITY_TERMS: GlossaryItem[] = [
   },
 ];
 
+/** What a scored run actually plots. The backend computes no METEOR. */
+const SCORED_TERMS: GlossaryItem[] = [
+  SIMILARITY_TERMS[0],
+  SIMILARITY_TERMS[1],
+  {
+    term: "Unigram F1",
+    def: "counts the single words the two texts share, balancing how many of the story's words appear in the baseline against how many of the baseline's appear in the story. Ignores word order entirely, so it is the most forgiving of the three.",
+  },
+];
+
 export function Comparison({
   story,
   humanText,
   dataset,
+  metrics,
 }: {
   story: StorySet;
   humanText: string;
   dataset: Dataset;
+  /**
+   * Scored by the backend against the human baseline actually typed above.
+   * Null while that call is in flight, or whenever there is no backend, and the
+   * panel then shows the placeholder figures and says so.
+   */
+  metrics?: api.ComparisonMetrics | null;
 }) {
   const human: ToneVariant = {
     ...story.human,
@@ -101,19 +119,41 @@ export function Comparison({
    * negative "improvement". Which direction the story was pulled is the finding,
    * so it is stated rather than hidden behind a minus sign.
    */
-  const moved = +(moderated - raw).toFixed(1);
-  const pulledUp = moved > 0;
-  const band = humanBand(story.human.alarmismRating);
-  const landedInBand = moderated >= band.from && moderated <= band.to;
+  // Every figure below is a difference between two judged ratings, so all three
+  // have to exist before any of it can be stated. When the judge was
+  // unreachable the panel says so instead of computing a move that was never
+  // measured, which on this page would be the headline claim.
+  const humanRating = story.human.alarmismRating;
+  const scored = raw !== null && moderated !== null && humanRating !== null;
+  const bands = humanBands(story.human);
+  const band = bands.alarmism;
+  // The optimism move used to be *inferred* from the alarmism one - pulled down
+  // meant "out of catastrophising", pulled up meant "out of false reassurance".
+  // That inference is exactly what the second axis makes unnecessary, and it
+  // was wrong whenever a story moved on both axes the same way.
+  const optimismMoved =
+    story.aiRaw.optimismRating !== null && story.aiModerated.optimismRating !== null
+      ? +(story.aiModerated.optimismRating - story.aiRaw.optimismRating).toFixed(1)
+      : null;
+  const moved = scored ? +(moderated! - raw!).toFixed(1) : null;
+  const pulledUp = moved !== null && moved > 0;
+  const landedInBand =
+    scored && band ? moderated! >= band.from && moderated! <= band.to : false;
 
-  const toneRow: ToneAxisRow = {
-    id: dataset.id,
-    label: dataset.shortName,
-    tempts: `tempts ${dataset.failureMode}`,
-    human: { value: story.human.alarmismRating, title: human.title, author: human.author },
-    raw: { value: raw, title: story.aiRaw.title, author: story.aiRaw.author },
-    moderated: { value: moderated, title: story.aiModerated.title, author: story.aiModerated.author },
-  };
+  const toneRow: ToneAxisRow | null = scored
+    ? {
+        id: dataset.id,
+        label: dataset.shortName,
+        tempts: `tempts ${dataset.failureMode}`,
+        human: { value: humanRating!, title: human.title, author: human.author },
+        raw: { value: raw!, title: story.aiRaw.title, author: story.aiRaw.author },
+        moderated: {
+          value: moderated!,
+          title: story.aiModerated.title,
+          author: story.aiModerated.author,
+        },
+      }
+    : null;
 
   /* Derived from the fact-checker's own output rather than hardcoded. */
   const flagged = story.factualCheck.filter((f) => f.status === "flagged").length;
@@ -123,9 +163,9 @@ export function Comparison({
   return (
     <div className="space-y-8">
       <div className="grid gap-4 lg:grid-cols-3">
-        <StoryPanel variant={human} band={band} compact />
-        <StoryPanel variant={story.aiRaw} band={band} compact />
-        <StoryPanel variant={story.aiModerated} band={band} compact />
+        <StoryPanel variant={human} bands={bands} compact />
+        <StoryPanel variant={story.aiRaw} bands={bands} compact />
+        <StoryPanel variant={story.aiModerated} bands={bands} compact />
       </div>
 
       {/* One chart for all three panels. The three stories are three tellings of
@@ -164,20 +204,37 @@ export function Comparison({
             <div>
               <p className="text-sm font-medium text-navy">Tone calibration</p>
               <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                Alarmism · 1–5 LLM judge · the project&rsquo;s novel metric
+                Alarmism and optimism · 1–5 LLM judge, one call · the project&rsquo;s novel metric
               </p>
             </div>
-            <p className="text-sm text-muted">
-              Pulled <strong className="font-medium text-navy">{pulledUp ? "up" : "down"}</strong>{" "}
-              <span className="font-mono text-navy">{Math.abs(moved).toFixed(1)}</span>{" "}
-              {pulledUp ? "out of false reassurance" : "out of catastrophising"}
-              {landedInBand && <span className="text-muted"> and into the calibrated band</span>}
-            </p>
+            {moved === null ? (
+              <p className="text-sm text-muted">
+                No judge was reachable for this run, so the tone was not measured.
+              </p>
+            ) : (
+              <p className="text-sm text-muted">
+                Alarmism{" "}
+                <strong className="font-medium text-navy">{pulledUp ? "up" : "down"}</strong>{" "}
+                <span className="font-mono text-navy">{Math.abs(moved).toFixed(1)}</span>
+                {optimismMoved !== null && (
+                  <>
+                    , optimism{" "}
+                    <strong className="font-medium text-navy">
+                      {optimismMoved > 0 ? "up" : optimismMoved < 0 ? "down" : "flat"}
+                    </strong>{" "}
+                    <span className="font-mono text-navy">{Math.abs(optimismMoved).toFixed(1)}</span>
+                  </>
+                )}
+                {landedInBand && <span className="text-muted"> · alarmism landed in the calibrated band</span>}
+              </p>
+            )}
           </div>
 
-          <div className="mt-5">
-            <ToneAxis rows={[toneRow]} />
-          </div>
+          {toneRow && (
+            <div className="mt-5">
+              <ToneAxis rows={[toneRow]} />
+            </div>
+          )}
 
           <Glossary className="mt-5 border-t border-hairline pt-4" items={TONE_TERMS} />
         </section>
@@ -227,37 +284,61 @@ export function Comparison({
             <section className="rounded-xl border border-hairline bg-surface-soft/30 p-5">
               <p className="text-sm font-medium text-navy">Text similarity</p>
               <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                Moderated vs human · illustrative
+                {metrics ? "Moderated vs your baseline · scored" : "Not scored yet"}
               </p>
+              {/* There used to be a fallback here that drew BLEU 0.31 /
+                  ROUGE-L 0.48 / METEOR 0.41 whenever scoring had not happened,
+                  captioned "illustrative" in 10px grey under a chart of them.
+                  An unscored pair has no scores; the empty state says so, the
+                  same way the tone meter says "not measured". */}
               <div className="mt-2">
-                <SimpleBarChart
-                  data={[
-                    { label: "BLEU", value: 0.31 },
-                    { label: "ROUGE-L", value: 0.48 },
-                    { label: "METEOR", value: 0.41 },
-                  ]}
-                  color="#1e66b8"
-                  domainMax={1}
-                  decimals={2}
-                  height={150}
-                />
+                {metrics ? (
+                  <SimpleBarChart
+                    data={metrics.textSimilarity.map((m) => ({ label: m.metric, value: m.value }))}
+                    color="#1e66b8"
+                    domainMax={1}
+                    decimals={2}
+                    height={150}
+                  />
+                ) : (
+                  <div className="flex h-[150px] flex-col items-center justify-center rounded-lg border border-dashed border-hairline bg-surface-soft/40 px-4 text-center">
+                    <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                      No score yet
+                    </p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted">
+                      Write a baseline above and the backend scores it against the moderated story.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <Glossary
                 className="mt-4 border-t border-hairline pt-4"
                 title="The three similarity metrics"
-                items={SIMILARITY_TERMS}
+                items={metrics ? SCORED_TERMS : SIMILARITY_TERMS}
               />
 
               <p className="mt-4 rounded-lg border border-hairline bg-surface-soft/70 px-3 py-2.5 text-[0.72rem] leading-relaxed text-muted">
                 <strong className="font-medium text-navy">Read these with care.</strong> All three
                 score <em>wording overlap</em>, not truth or tone. A factually perfect story worded
-                differently scores near zero, so a low number here is not a quality verdict. The
-                values above are illustrative placeholders. In the real runs BLEU-4 came out at
-                exactly <span className="font-mono">0.0</span>, because it is computed on a single
-                ~120-word pair without smoothing: BLEU is the geometric mean of the 1–4-gram
-                precisions, the two texts share no 4-gram, and one zero collapses the product. The
-                backend also returns <span className="font-mono">unigram F1</span>, not METEOR.
+                differently scores near zero, so a low number here is not a quality verdict.{" "}
+                {metrics ? (
+                  <>
+                    These are scored by the backend on the baseline you typed against the moderated
+                    text. Expect BLEU near <span className="font-mono">0.0</span>: it is computed on
+                    a single short pair without smoothing, and because it is the geometric mean of
+                    the 1–4-gram precisions, two texts sharing no 4-gram collapse the product to
+                    zero.
+                  </>
+                ) : (
+                  <>
+                    Expect BLEU-4 to come out at exactly <span className="font-mono">0.0</span> on a
+                    single ~120-word pair without smoothing: it is the geometric mean of the
+                    1–4-gram precisions, the two texts share no 4-gram, and one zero collapses the
+                    product. The backend returns <span className="font-mono">unigram F1</span> as
+                    the third metric, not METEOR.
+                  </>
+                )}
               </p>
             </section>
           </div>

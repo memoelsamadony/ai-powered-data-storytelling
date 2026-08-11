@@ -98,7 +98,11 @@ TIERS: dict[str, Tier] = {
         ),
         generator="qwen3.5:4b",
         moderator="gemma4:12b",
-        judge="gemma4:12b",
+        # gemma4:12b is the moderator here, so it cannot also be the judge: that
+        # is the self-assessment this project measures rather than commits. The
+        # local judge is a different family, and the authoritative rating comes
+        # from the Claude CLI judge in judge.py.
+        judge="qwen3.5:4b",
         sizes={"qwen3.5:4b": 2.6, "gemma4:12b": 8.1},
     ),
     "mid": Tier(
@@ -126,6 +130,157 @@ TIERS: dict[str, Tier] = {
         moderator="gemma4:31b",
         judge="gemma4:31b",
         sizes={"qwen3.6:35b": 23.0, "gemma4:31b": 19.0},
+    ),
+    "g1b": Tier(
+        id="g1b",
+        label="G1B (1B generator)",
+        description=(
+            "Generator-size ladder, rung 1. Moderator and judge held fixed so the only moving part is how capable the writer is."
+        ),
+        generator="llama3.2:1b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.2:1b": 1.3, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "g3b": Tier(
+        id="g3b",
+        label="G3B (3B generator)",
+        description=(
+            "Generator-size ladder, rung 2."
+        ),
+        generator="llama3.2:3b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.2:3b": 2.0, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "g4b": Tier(
+        id="g4b",
+        label="G4B (4B generator)",
+        description=(
+            "Generator-size ladder, rung 3. qwen3.5:4b is the generator the interim report named."
+        ),
+        generator="qwen3.5:4b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:4b": 3.4, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "g8b": Tier(
+        id="g8b",
+        label="G8B (8B generator)",
+        description=(
+            "Generator-size ladder, rung 4. Same generator as the old mid tier, but judged by a model that did not write the moderation."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "m12b": Tier(
+        id="m12b",
+        label="M12B (12B moderator)",
+        description=(
+            "Moderator-size ladder, rung 1. gemma4 has no 8B tag; 12B is the smallest rung the family offers."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:12b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:12b": 8.1, "qwen3.5:4b": 3.4},
+    ),
+    "m26b": Tier(
+        id="m26b",
+        label="M26B (26B moderator)",
+        description=(
+            "Moderator-size ladder, rung 2."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:26b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:26b": 16.0, "qwen3.5:4b": 3.4},
+    ),
+    "m31b": Tier(
+        id="m31b",
+        label="M31B (31B moderator)",
+        description=(
+            "Moderator-size ladder, rung 3. Same pairing as m26b/m12b so the rungs are directly comparable."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "q2b": Tier(
+        id="q2b",
+        label="Q2B (qwen3.5:2b generator, within-family ladder)",
+        description=(
+            "Generator ladder rung 1, WITHIN ONE FAMILY. The g1b/g3b/g4b/g8b "
+            "ladder mixes llama3.2, qwen3.5 and llama3.1, so its size effect is "
+            "confounded with family and generation. qwen3.5 is the only family "
+            "here with 2b/4b/9b/27b/35b, so this ladder moves size alone."
+        ),
+        generator="qwen3.5:2b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:2b": 1.6, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "q4b": Tier(
+        id="q4b",
+        label="Q4B (qwen3.5:4b generator, within-family ladder)",
+        description="Within-family generator ladder rung 2. Same pairing as g4b.",
+        generator="qwen3.5:4b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:4b": 3.4, "gemma4:31b": 19.0},
+    ),
+    "q9b": Tier(
+        id="q9b",
+        label="Q9B (qwen3.5:9b generator, within-family ladder)",
+        description=(
+            "Within-family generator ladder rung 3. qwen3.5:9b is the only model "
+            "the family offers between 8B and 12B."
+        ),
+        generator="qwen3.5:9b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:9b": 6.6, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "x9b": Tier(
+        id="x9b",
+        label="X9B (qwen3.5:9b moderator, cross-family control)",
+        description=(
+            "Cross-family control for the moderator ladder. gemma4:12b/26b/31b "
+            "share an architecture, so a trend across them is evidence about "
+            "scaling within gemma4, not about capability. This pairs a 9B qwen "
+            "moderator against the 12B gemma rung at near-equal size."
+        ),
+        generator="llama3.1:8b",
+        moderator="qwen3.5:9b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "qwen3.5:9b": 6.6, "qwen3.5:4b": 3.4},
+    ),
+    "x35b": Tier(
+        id="x35b",
+        label="X35B (qwen3.6:35b moderator, top-end family control)",
+        description=(
+            "The cleanest family test available: 35B qwen against the 31B gemma "
+            "moderator, near-identical scale, different lineage. At 23 GB it "
+            "exceeds the 22 GB usable ceiling and will offload to CPU unless the "
+            "wired limit is raised (sudo sysctl iogpu.wired_limit_mb=28672)."
+        ),
+        generator="llama3.1:8b",
+        moderator="qwen3.6:35b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "qwen3.6:35b": 23.9, "qwen3.5:4b": 3.4},
+    ),
+    "m31b-selfjudge": Tier(
+        id="m31b-selfjudge",
+        label="M31B self-judging (P0.1 control)",
+        description=(
+            "Identical to m31b except the judge IS the moderator. Kept deliberately: the difference between this tier and m31b is the size of the self-assessment bias."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:31b",
+        judge="gemma4:31b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:31b": 19.0},
     ),
 }
 
@@ -248,9 +403,34 @@ def unload(model: str) -> None:
 
 
 _JSON_INSTRUCTION = (
-    "\n\nRespond with a single valid JSON object matching this schema, and nothing "
-    "else - no prose, no markdown fence:\n{schema}"
+    "\n\nReturn ONLY a JSON object holding your answer. Do not return the schema "
+    "itself, and do not include the words 'properties', 'type' or 'required'. "
+    "The object must have exactly these keys: {keys}.\n"
+    "Shape (types only, replace every value with your own content):\n{schema}"
 )
+
+
+def _schema_hint(schema_json: dict) -> tuple[str, str]:
+    """Key list plus a value-shaped skeleton.
+
+    Passing the raw JSON Schema invites a literal echo: llama3.1:8b returned the
+    schema document itself, `properties` and all, which then failed validation on
+    a missing field. Showing the shape rather than the specification avoids it.
+    """
+    props = schema_json.get("properties", {})
+    keys = ", ".join(f'"{k}"' for k in props)
+    skeleton = {}
+    for k, spec in props.items():
+        kind = spec.get("type")
+        if kind == "array":
+            item = (spec.get("items") or {}).get("type", "string")
+            skeleton[k] = ["<string>"] if item == "string" else [{"...": "..."}]
+        elif kind in ("number", "integer"):
+            skeleton[k] = 0
+        else:
+            skeleton[k] = "<string>"
+    import json as _json
+    return keys, _json.dumps(skeleton, indent=2)
 
 
 def _extract_json(raw: str) -> str:
@@ -287,13 +467,26 @@ def _extract_json(raw: str) -> str:
     return s[start:]
 
 
+def model_digest(model: str) -> str | None:
+    """Digest of the exact weights in use. Two machines must agree on this."""
+    try:
+        r = requests.get(f"{API}/api/tags", timeout=5)
+        r.raise_for_status()
+    except requests.RequestException:
+        return None
+    for m in r.json().get("models", []):
+        if m["name"] == model:
+            return m.get("digest") or (m.get("details") or {}).get("parent_model")
+    return None
+
+
 def _one_call(model, system, prompt, schema_json, use_grammar, temperature,
-              num_ctx, num_predict, keep_alive, timeout):
+              num_ctx, num_predict, seed, keep_alive, timeout):
     body = {
         "model": model,
         "system": system,
         "prompt": prompt if use_grammar else prompt + _JSON_INSTRUCTION.format(
-            schema=json.dumps(schema_json)),
+            keys=_schema_hint(schema_json)[0], schema=_schema_hint(schema_json)[1]),
         "stream": False,
         "think": False,
         "keep_alive": keep_alive,
@@ -303,6 +496,7 @@ def _one_call(model, system, prompt, schema_json, use_grammar, temperature,
             # Hard cap. At the measured 9.5 tok/s of gemma4:31b every extra
             # 100 tokens is another 10 s of wall clock.
             "num_predict": num_predict,
+            **({"seed": seed} if seed is not None else {}),
         },
     }
     if use_grammar:
@@ -325,6 +519,7 @@ def generate_json(
     temperature: float = 0.0,
     num_ctx: int = 8192,
     num_predict: int = 900,
+    seed: int | None = None,
     keep_alive: str | int = "5m",
     exclusive: bool = False,
     timeout: int = 1800,
@@ -357,7 +552,8 @@ def generate_json(
         for use_grammar in modes:
             log.info("ollama %s (ctx=%s, grammar=%s)", model, num_ctx, use_grammar)
             data, raw = _one_call(model, system, prompt, schema_json, use_grammar,
-                                  temperature, num_ctx, num_predict, keep_alive, timeout)
+                                  temperature, num_ctx, num_predict, seed, keep_alive,
+                                  timeout)
 
             if data.get("done_reason") == "length":
                 last = OllamaError(
@@ -391,6 +587,12 @@ def generate_json(
                 "prompt_eval_count": data.get("prompt_eval_count"),
                 "done_reason": data.get("done_reason"),
                 "grammar": use_grammar,
+                # everything needed to reproduce this exact call
+                "temperature": temperature,
+                "num_ctx": num_ctx,
+                "num_predict": num_predict,
+                "seed": seed,
+                "model_digest": model_digest(model),
             }
             if not use_grammar:
                 log.info("%s succeeded via the no-grammar fallback", model)

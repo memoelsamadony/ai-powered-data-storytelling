@@ -15,7 +15,7 @@ import type { StorySet } from "@/lib/data/stories";
 import type { Dataset } from "@/lib/data/datasets";
 import { pipelineStages, type StageId } from "@/lib/data/pipeline";
 import { Typewriter } from "@/components/generate/typewriter";
-import { AlarmismMeter, humanBand } from "@/components/alarmism-meter";
+import { TonePair, humanBands } from "@/components/tone-meter";
 import { StoryChart } from "@/components/charts/story-chart";
 import { Redline } from "@/components/story/redline";
 import { FactCheckGutter } from "@/components/story/fact-check-gutter";
@@ -57,7 +57,9 @@ export function PipelineRunner({
 
   // Render whatever the backend has produced so far; fall back to the mock.
   const view = live ?? story;
-  const band = humanBand(view.human.alarmismRating);
+  // No band without a judged human baseline: the band is drawn *around* that
+  // rating, so inventing one would draw a target where none was measured.
+  const bands = humanBands(view.human);
 
   const rawBody = view.aiRaw.paragraphs.join("\n\n");
 
@@ -216,7 +218,11 @@ export function PipelineRunner({
           />
           {phase !== "generate" && (
             <div className="mt-5 border-t border-hairline pt-4">
-              <AlarmismMeter value={view.aiRaw.alarmismRating} band={band} size="sm" />
+              <TonePair
+                alarmism={view.aiRaw.alarmismRating}
+                optimism={view.aiRaw.optimismRating}
+                bands={bands}
+              />
             </div>
           )}
         </OutputCard>
@@ -243,11 +249,14 @@ export function PipelineRunner({
               <Redline variant={view.aiRaw} spans={view.emotiveSpans} className="mt-4" />
 
               <div className="mt-5 border-t border-hairline pt-4">
-                <AlarmismMeter
-                  value={view.aiModerated.alarmismRating}
-                  before={view.aiRaw.alarmismRating}
-                  band={band}
-                  size="sm"
+                <TonePair
+                  alarmism={view.aiModerated.alarmismRating}
+                  optimism={view.aiModerated.optimismRating}
+                  before={{
+                    alarmism: view.aiRaw.alarmismRating,
+                    optimism: view.aiRaw.optimismRating,
+                  }}
+                  bands={bands}
                 />
               </div>
             </OutputCard>

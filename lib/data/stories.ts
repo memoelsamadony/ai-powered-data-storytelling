@@ -8,6 +8,16 @@
  * raw model is fluent but alarmist and hallucinates a case count; the moderator
  * strips the alarmism and silently re-grounds the number, which is exactly why a
  * separate factual check sits beside the tone agent.
+ *
+ * The prose is authored; the tone ratings on it are not. Every `alarmismRating`
+ * and `optimismRating` below is a verdict from the project's own judge
+ * (claude/opus, two axes in one call) on exactly the text above it, produced by
+ * `manage.py score_sample_stories` and pasted here. They replaced hand-picked
+ * numbers, and the measured ones make the argument better than the invented
+ * ones did: the two raw stories land at opposite corners, measles at 5.0
+ * alarmism / 1.0 optimism and WHO child mortality at 1.2 / 5.0, and moderation
+ * brings both to nearly the same place, 2.6 / 3.1. Re-run the command after
+ * editing any of this prose, or the number stops describing the words above it.
  */
 
 export type StoryVariantId = "human" | "ai-raw" | "ai-moderated";
@@ -17,8 +27,23 @@ export interface ToneVariant {
   label: string;
   author: string;
   title: string;
-  /** Alarmism rating on the 1–5 LLM-judge scale (1 = flat, 5 = manipulative). */
-  alarmismRating: number;
+  /**
+   * Two tone axes, both on the 1–5 judge scale, both scored in the same call.
+   * On each, 3 is calibrated and *both* ends are failures.
+   *
+   * Alarmism: 1 = flat and numbing, 5 = manipulative catastrophising.
+   * Optimism: 1 = bleak and denies real progress, 5 = false reassurance.
+   *
+   * One axis could only ever see one of the two datasets fail. The raw LLM
+   * story below scores a calm 1.2 for alarmism on the WHO data while being
+   * exactly as miscalibrated as the measles one that scores 5.0 — it just
+   * fails in the other direction, and the second axis is what shows it.
+   *
+   * null on either = no judge was reachable for this story. Not a middling
+   * score: the middle of this scale is the specific claim "calibrated".
+   */
+  alarmismRating: number | null;
+  optimismRating: number | null;
   paragraphs: string[];
 }
 
@@ -73,7 +98,8 @@ const measles: StorySet = {
     label: "Human baseline",
     author: "Human author",
     title: "When the Shield Slips",
-    alarmismRating: 2.4,
+    alarmismRating: 3.2,
+    optimismRating: 2.6,
     paragraphs: [
       "For two decades, measles looked like a problem the world was solving. Between 2000 and 2016, reported cases fell by more than half as first-dose vaccination climbed from 72% into the mid-80s. The trend line pointed in one direction.",
       "Then it stopped. Coverage settled in the low-to-mid 80s and never reached the roughly 95% needed to hold the virus back. In 2019, before the pandemic disrupted reporting, cases climbed back above 860,000, the worst year in a generation.",
@@ -85,7 +111,8 @@ const measles: StorySet = {
     label: "LLM: raw",
     author: "General LLM (qwen3.5:4b)",
     title: "A Deadly Disease Roars Back",
-    alarmismRating: 4.6,
+    alarmismRating: 5.0,
+    optimismRating: 1.0,
     paragraphs: [
       "Measles is exploding across the globe, and the numbers are nothing short of terrifying. After years of false comfort, a preventable killer is surging out of control, and our defenses are collapsing in real time.",
       "In 2024 alone, a staggering 2.3 million cases tore through communities as vaccination rates cratered. The herd-immunity wall has been shattered, and every stalled percentage point is another open door to catastrophe.",
@@ -97,7 +124,8 @@ const measles: StorySet = {
     label: "LLM: tone-moderated",
     author: "Agentic moderator (gemma4:12b)",
     title: "Cases Rose as Coverage Stalled",
-    alarmismRating: 2.1,
+    alarmismRating: 2.6,
+    optimismRating: 3.1,
     paragraphs: [
       "Measles cases have risen again after years of decline. First-dose coverage has held in the low-to-mid 80s, short of the roughly 95% needed for herd immunity. Where that gap persists, the virus has returned.",
       "Around 359,000 cases were reported in 2024. That is far below the early-1980s peak, but it reverses much of the progress made since 2000, with outbreaks concentrated where coverage fell.",
@@ -158,7 +186,8 @@ const whoHealth: StorySet = {
     label: "Human baseline",
     author: "Human author",
     title: "The Half-Won Fight",
-    alarmismRating: 2.2,
+    alarmismRating: 2.8,
+    optimismRating: 2.9,
     paragraphs: [
       "By almost any measure, child survival is one of the great achievements of the last generation. Since 1990, under-five mortality has fallen from 93 to 37 per 1,000 live births, and global life expectancy has risen by nearly eight years.",
       "But the line is neither straight nor finished. The pandemic erased roughly two years of life-expectancy gains in 2020–21, and a child in sub-Saharan Africa still dies before age five at many times the rate of one in Europe.",
@@ -179,7 +208,8 @@ const whoHealth: StorySet = {
      * and make both datasets move the same direction — which is exactly the
      * opposition the two-dataset design exists to demonstrate.
      */
-    alarmismRating: 1.4,
+    alarmismRating: 1.2,
+    optimismRating: 5.0,
     paragraphs: [
       "Humanity has all but conquered child mortality. We are living through a golden age of health in which preventable death is vanishing and every year brings unstoppable, history-making progress.",
       "Life expectancy has soared past 80 worldwide, and the downward march of child deaths is now essentially unstoppable. The finish line is finally in sight, and victory is assured.",
@@ -191,7 +221,8 @@ const whoHealth: StorySet = {
     label: "LLM: tone-moderated",
     author: "Agentic moderator (gemma4:12b)",
     title: "Real Progress, Still Unfinished",
-    alarmismRating: 2.3,
+    alarmismRating: 2.6,
+    optimismRating: 3.1,
     paragraphs: [
       "Child survival has improved dramatically. Under-five mortality has fallen from 93 to 37 per 1,000 live births since 1990, and life expectancy has risen substantially: real, hard-won progress.",
       "But the gains are uneven and not guaranteed. Global life expectancy is about 71.7 years, not above 80, and it fell during 2020–21 before partly recovering. The remaining burden is concentrated in the poorest regions.",

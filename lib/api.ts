@@ -10,7 +10,15 @@
  * `usingMockData()` reports which mode the last call used.
  */
 
+import { unstable_rethrow } from "next/navigation";
+
 import { datasets as mockDatasets, getDataset, type Dataset } from "@/lib/data/datasets";
+import type {
+  FaithfulnessResults,
+  MaskedNumberResults,
+  PerOperationResults,
+} from "@/lib/data/metrics";
+import { mergeDatasets, normaliseDataset } from "@/lib/data/merge-datasets";
 import { getStorySet, type FactCheckItem, type StorySet } from "@/lib/data/stories";
 
 export const API_BASE =
@@ -44,6 +52,11 @@ async function withFallback<T>(fn: () => Promise<T>, fallback: () => T): Promise
     lastCallUsedMock = false;
     return value;
   } catch (err) {
+    // `call` fetches with `cache: "no-store"`, which Next throws on while it is
+    // deciding whether a route can be prerendered. That throw is control flow,
+    // not a dead backend: catching it reports the backend as down and can bake
+    // the mock fallback into a static page for good.
+    unstable_rethrow(err);
     console.warn("[api] backend unavailable, using mock data:", err);
     lastCallUsedMock = true;
     return fallback();
@@ -81,11 +94,19 @@ export async function getHealth(): Promise<Health | null> {
 // ------------------------------------------------------------------ datasets
 
 export async function getDatasets(): Promise<Dataset[]> {
-  return withFallback(() => call<Dataset[]>("/datasets"), () => mockDatasets);
+  // Merge rule and its reasoning live in lib/data/merge-datasets.ts, which is
+  // where they are unit-tested.
+  return withFallback(
+    async () => mergeDatasets(await call<Dataset[]>("/datasets"), mockDatasets),
+    () => mockDatasets,
+  );
 }
 
 export async function getDatasetById(id: string): Promise<Dataset | undefined> {
-  return withFallback(() => call<Dataset>(`/datasets/${id}`), () => getDataset(id));
+  return withFallback(
+    async () => normaliseDataset(await call<Dataset>(`/datasets/${id}`)),
+    () => getDataset(id),
+  );
 }
 
 // ------------------------------------------------------------------ pipeline
@@ -161,12 +182,69 @@ export async function generateStory(datasetId: string, tier = "mid"): Promise<Ge
   );
 }
 
+// ------------------------------------------------------------------- results
+
+export interface Results {
+  /** Computed from the runs in the backend's own database. */
+  measured: {
+    runsTotal: number;
+    runsComplete: number;
+    byTier: { tier: string; runs: number }[];
+    alarmismBefore: number | null;
+    alarmismAfter: number | null;
+    optimismBefore: number | null;
+    optimismAfter: number | null;
+    /** One n per axis: runs judged before the second axis exist with only the
+        first, so the two counts differ until those age out. */
+    alarmismN: number;
+    optimismN: number;
+    editsPerRun: number | null;
+    editsByCategory: { category: string; label: string; count: number }[];
+    factsPreservedRate: number | null;
+    factsCheckedN: number;
+    stageTimings: { stage: string; model: string; runs: number; medianSeconds: number }[];
+  };
+  /**
+   * The reproduction half, read from the committed CSVs and naming its source
+   * file. Identical in shape to `./data/generated/results.generated.ts`, which
+   * is the same three functions snapshotted at build time - the page prefers
+   * the live copy so a re-run reproduction shows up without a rebuild, and
+   * falls back to the snapshot rather than to nothing.
+   */
+  faithfulness: FaithfulnessResults | null;
+  perOperation: PerOperationResults | null;
+  maskedNumber: MaskedNumberResults | null;
+  /** Figures the backend deliberately does not serve, and why. */
+  unavailable: string[];
+}
+
+/**
+ * Null when the backend is unreachable, like `getHealth`. No mock shape is
+ * substituted: the page's own constants are already the fallback, and they are
+ * labelled as such, so inventing a second set here would only blur which is
+ * which.
+ */
+export async function getResults(): Promise<Results | null> {
+  try {
+    return await call<Results>("/results");
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api] results unavailable:", err);
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------- comparison
 
 export interface ComparisonMetrics {
   textSimilarity: { metric: string; value: number }[];
-  alarmismBefore: number;
-  alarmismAfter: number;
+  /* All four are nullable: the backend schema is, because a run whose judge was
+     unreachable has no rating, and the panel says "not measured" rather than
+     computing a move that was never taken. */
+  alarmismBefore: number | null;
+  alarmismAfter: number | null;
+  optimismBefore: number | null;
+  optimismAfter: number | null;
   emotiveSpansRemoved: number;
   factsPreserved: boolean;
 }
@@ -176,31 +254,25 @@ export interface ComparisonMetrics {
  * `compareStories(datasetId)`. Real similarity scoring needs the human baseline
  * text, which a dataset id cannot supply, so the caller passes the run and the
  * text it collected.
+ *
+ * Null when the backend cannot score it, like `getHealth` above, and unlike
+ * every other call here. A similarity score is a measurement of two specific
+ * texts: a stand-in figure is not a degraded version of one, it is a different
+ * claim about a comparison that never happened. The caller shows its own
+ * placeholders and labels them as such.
  */
 export async function compareStories(
   runId: string,
   humanText: string,
-  datasetIdForFallback?: string,
-): Promise<ComparisonMetrics> {
-  return withFallback(
-    () =>
-      call<ComparisonMetrics>("/compare", {
-        method: "POST",
-        body: JSON.stringify({ runId, humanText }),
-      }),
-    () => {
-      const story = getStorySet(datasetIdForFallback ?? "measles");
-      return {
-        textSimilarity: [
-          { metric: "BLEU", value: 0.31 },
-          { metric: "ROUGE-L", value: 0.48 },
-          { metric: "METEOR", value: 0.41 },
-        ],
-        alarmismBefore: story.aiRaw.alarmismRating,
-        alarmismAfter: story.aiModerated.alarmismRating,
-        emotiveSpansRemoved: story.emotiveSpans.length,
-        factsPreserved: true,
-      };
-    },
-  );
+): Promise<ComparisonMetrics | null> {
+  try {
+    return await call<ComparisonMetrics>("/compare", {
+      method: "POST",
+      body: JSON.stringify({ runId, humanText }),
+    });
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api] scoring unavailable:", err);
+    return null;
+  }
 }

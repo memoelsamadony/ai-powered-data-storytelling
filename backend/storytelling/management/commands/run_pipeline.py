@@ -30,6 +30,10 @@ class Command(BaseCommand):
         parser.add_argument("--tier", default="mid", choices=list(oc.TIERS))
         parser.add_argument("--repeat", type=int, default=1,
                             help="Runs to perform. Repeats measure variance at a tier.")
+        parser.add_argument("--seed", type=int, default=None,
+                            help="Pin the generator seed (P0.6). With --repeat, seeds "
+                                 "increment from this value so each run is distinct and "
+                                 "reproducible.")
 
     def handle(self, *args, **opts):
         dataset, tier_id, repeat = opts["dataset"], opts["tier"], opts["repeat"]
@@ -60,17 +64,21 @@ class Command(BaseCommand):
         for i in range(repeat):
             self.stdout.write(f"\n--- run {i + 1}/{repeat} ---")
             start = time.perf_counter()
+            seed = None if opts["seed"] is None else opts["seed"] + i
             try:
-                run = services.run_full_pipeline(dataset, tier_id)
+                run = services.run_full_pipeline(dataset, tier_id, seed=seed)
             except Exception as exc:  # noqa: BLE001
                 raise CommandError(f"run failed: {exc}") from exc
             total = time.perf_counter() - start
 
-            self.stdout.write(self.style.SUCCESS(f"  run {run.id} done in {total:.0f}s"))
+            self.stdout.write(self.style.SUCCESS(
+                f"  run {run.id} done in {total:.0f}s"
+                + (f" (seed {seed})" if seed is not None else " (seed unpinned)")))
             for s in run.stages.all():
                 self.stdout.write(f"    {s.stage:<16} {s.model:<14} {s.duration_s:>7.1f}s")
             self.stdout.write(
                 f"  alarmism {run.raw_alarmism} -> {run.moderated_alarmism} "
+                f"| optimism {run.raw_optimism} -> {run.moderated_optimism} "
                 f"| {len(run.emotive_spans)} emotive spans "
                 f"| {sum(1 for f in run.factual_check if f.get('status') == 'flagged')} flagged claims"
             )

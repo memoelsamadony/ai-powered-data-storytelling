@@ -1,0 +1,45 @@
+{
+  "blind_seed": 20260811,
+  "key": [
+    {
+      "item_id": "S94c9b2d579",
+      "run": "0e24b6fd-52fe-44ba-b616-1d899182d5df",
+      "kind": "raw",
+      "tier": "mid",
+      "dataset": "measles",
+      "local_judge_rating": 2.0
+    },
+    {
+      "item_id": "S982e8b9d10",
+      "run": "0e24b6fd-52fe-44ba-b616-1d899182d5df",
+      "kind": "moderated",
+      "tier": "mid",
+      "dataset": "measles",
+      "local_judge_rating": 2.0
+    },
+    {
+      "item_id": "Sd3dce52bf7",
+      "run": "9239bbfd-d17a-4a72-9d5e-3c59cca86409",
+      "kind": "raw",
+      "tier": "mid",
+      "dataset": "pertussis-global",
+      "local_judge_rating": 3.5
+    },
+    {
+      "item_id": "S1070cfd81c",
+      "run": "9239bbfd-d17a-4a72-9d5e-3c59cca86409",
+      "kind": "moderated",
+      "tier": "mid",
+      "dataset": "pertussis-global",
+      "local_judge_rating": 3.0
+    },
+    {
+      "item_id": "S6063c974ca",
+      "run": "d53a7c27-2104-43ac-accd-9a6b53ee534c",
+      "kind": "raw",
+      "tier": "m31b-selfjudge",
+      "dataset": "pertussis-global",
+      "local_judge_rating": 4.0
+    }
+  ]
+}

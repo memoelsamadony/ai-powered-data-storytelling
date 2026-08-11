@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<pattern id="hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+  <rect width="8" height="8" fill="#2a78d6" fill-opacity="0.22"/>
+  <line x1="0" y1="0" x2="0" y2="8" stroke="#2a78d6" stroke-width="3"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"/>
+</marker>
+<marker id="arrowblue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#2a78d6"/>
+</marker>
+
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">Bigger models compute better. They do not reason causally.</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Reproduction of DataTales (Yang, Liu &amp; Kan)  ·  per-operation accuracy on the official test split</text>
+<line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
+<line x1="150" y1="700.0" x2="1180" y2="700.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="132" y="707.0" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#898781" font-weight="normal" text-anchor="end" letter-spacing="0">0%</text>
+<line x1="150" y1="578.75" x2="1180" y2="578.75" stroke="#e1e0d9" stroke-width="1"/>
+<text x="132" y="585.75" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#898781" font-weight="normal" text-anchor="end" letter-spacing="0">25%</text>
+<line x1="150" y1="457.5" x2="1180" y2="457.5" stroke="#e1e0d9" stroke-width="1"/>
+<text x="132" y="464.5" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#898781" font-weight="normal" text-anchor="end" letter-spacing="0">50%</text>
+<line x1="150" y1="336.25" x2="1180" y2="336.25" stroke="#e1e0d9" stroke-width="1"/>
+<text x="132" y="343.25" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#898781" font-weight="normal" text-anchor="end" letter-spacing="0">75%</text>
+<line x1="150" y1="215.0" x2="1180" y2="215.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="132" y="222.0" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#898781" font-weight="normal" text-anchor="end" letter-spacing="0">100%</text>
+<path d="M 189.5 700 L 189.5 285.93 Q 189.5 281.93 193.5 281.93 L 247.5 281.93 Q 251.5 281.93 251.5 285.93 L 251.5 700 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="220.5" y="267.93" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">86.2</text>
+
+<path d="M 253.5 700 L 253.5 252.46500000000003 Q 253.5 248.46500000000003 257.5 248.46500000000003 L 311.5 248.46500000000003 Q 315.5 248.46500000000003 315.5 252.46500000000003 L 315.5 700 Z" fill="#eb6834" fill-opacity="1.0" />
+<text x="284.5" y="234.46500000000003" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">93.1</text>
+
+<text x="252.5" y="736" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">lookup</text>
+<text x="252.5" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">simple</text>
+<text x="252.5" y="784" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">69/80  ·  81/87</text>
+<path d="M 354.5 700 L 354.5 344.13 Q 354.5 340.13 358.5 340.13 L 412.5 340.13 Q 416.5 340.13 416.5 344.13 L 416.5 700 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="385.5" y="326.13" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">74.2</text>
+
+<path d="M 418.5 700 L 418.5 259.255 Q 418.5 255.255 422.5 255.255 L 476.5 255.255 Q 480.5 255.255 480.5 259.255 L 480.5 700 Z" fill="#eb6834" fill-opacity="1.0" />
+<text x="449.5" y="241.255" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">91.7</text>
+
+<text x="417.5" y="736" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">comparison</text>
+<text x="417.5" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">basic quant.</text>
+<text x="417.5" y="784" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">66/89  ·  88/96</text>
+<path d="M 519.5 700 L 519.5 478.96000000000004 Q 519.5 474.96000000000004 523.5 474.96000000000004 L 577.5 474.96000000000004 Q 581.5 474.96000000000004 581.5 478.96000000000004 L 581.5 700 Z" fill="#2a78d6" fill-opacity="0.45" />
+<text x="550.5" y="460.96000000000004" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">46.4*</text>
+
+<path d="M 583.5 700 L 583.5 316.0 Q 583.5 312.0 587.5 312.0 L 641.5 312.0 Q 645.5 312.0 645.5 316.0 L 645.5 700 Z" fill="#eb6834" fill-opacity="0.45" />
+<text x="614.5" y="298.0" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">80.0*</text>
+
+<text x="582.5" y="736" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">subtraction</text>
+<text x="582.5" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">basic quant.</text>
+<text x="582.5" y="784" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">13/28  ·  4/5</text>
+<path d="M 684.5 700 L 684.5 493.995 Q 684.5 489.995 688.5 489.995 L 742.5 489.995 Q 746.5 489.995 746.5 493.995 L 746.5 700 Z" fill="#2a78d6" fill-opacity="0.45" />
+<text x="715.5" y="475.995" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">43.3*</text>
+
+<path d="M 748.5 700 L 748.5 272.835 Q 748.5 268.835 752.5 268.835 L 806.5 268.835 Q 810.5 268.835 810.5 272.835 L 810.5 700 Z" fill="#eb6834" fill-opacity="0.45" />
+<text x="779.5" y="254.83499999999998" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">88.9*</text>
+
+<text x="747.5" y="736" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">rate of change</text>
+<text x="747.5" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">basic quant.</text>
+<text x="747.5" y="784" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">13/30  ·  8/9</text>
+<path d="M 849.5 700 L 849.5 507.575 Q 849.5 503.575 853.5 503.575 L 907.5 503.575 Q 911.5 503.575 911.5 507.575 L 911.5 700 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="880.5" y="489.575" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">40.5</text>
+
+<path d="M 913.5 700 L 913.5 280.595 Q 913.5 276.595 917.5 276.595 L 971.5 276.595 Q 975.5 276.595 975.5 280.595 L 975.5 700 Z" fill="#eb6834" fill-opacity="1.0" />
+<text x="944.5" y="262.595" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">87.3</text>
+
+<text x="912.5" y="736" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">trend</text>
+<text x="912.5" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">advanced</text>
+<text x="912.5" y="784" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">17/42  ·  69/79</text>
+<line x1="1014.5" y1="700" x2="1076.5" y2="700" stroke="#2a78d6" stroke-width="5"/>
+<text x="1045.5" y="686.0" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">0.0</text>
+
+<line x1="1078.5" y1="700" x2="1140.5" y2="700" stroke="#eb6834" stroke-width="5"/>
+<text x="1109.5" y="686.0" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">0.0</text>
+
+<text x="1077.5" y="736" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">causal</text>
+<text x="1077.5" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">advanced</text>
+<text x="1077.5" y="784" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">0/13  ·  0/8</text>
+<line x1="150" y1="700" x2="1180" y2="700" stroke="#c3c2b7" stroke-width="2"/>
+<rect x="150" y="168" width="15" height="15" rx="3" fill="#2a78d6"/>
+<text x="174" y="181" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:4b</text>
+<rect x="340" y="168" width="15" height="15" rx="3" fill="#eb6834"/>
+<text x="364" y="181" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">gemma4:12b</text>
+<rect x="989.5" y="686" width="176" height="24" rx="6" fill="#d03b3b" fill-opacity="0.10"/>
+<text x="1077.5" y="812" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#d03b3b" font-weight="bold" text-anchor="middle" letter-spacing="0">the wall</text>
+<rect x="1220" y="238" width="360" height="352" rx="10" fill="#d03b3b" fill-opacity="0.07"/>
+<text x="1245" y="282" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#d03b3b" font-weight="bold" text-anchor="start" letter-spacing="1.5">THE CAPABILITY WALL</text>
+<text x="1245" y="322" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Scale lifts every reading and</text>
+<text x="1245" y="348" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">computing operation — trend</text>
+<text x="1245" y="374" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">40.5% → 87.3%.</text>
+<text x="1245" y="400" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0"></text>
+<text x="1245" y="426" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="bold" text-anchor="start" letter-spacing="0">Causal analysis stays at exactly</text>
+<text x="1245" y="452" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="bold" text-anchor="start" letter-spacing="0">0% for both models, on 13 and 8</text>
+<text x="1245" y="478" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">claims. Every “driven by / amid /</text>
+<text x="1245" y="504" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">as investors…” was unsupported</text>
+<text x="1245" y="530" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">by the table.</text>
+<text x="1245" y="556" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0"></text>
+<text x="1245" y="582" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="bold" text-anchor="start" letter-spacing="0">This is why the fact-checker is a</text>
+<text x="1245" y="608" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="bold" text-anchor="start" letter-spacing="0">separate agent from the tone agent.</text>
+<text x="1528" y="172" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="end" letter-spacing="0">Share of analytical claims that check out against the source table</text>
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">* Small denominators — gemma writes more concise reports and makes only 5 subtraction and 9 rate claims (against qwen's 28 and 30), so a single item moves those two</text>
+<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">bars by 12–20 points. They are drawn faded for that reason. Counts under each label are qwen · gemma.</text>
+</svg>

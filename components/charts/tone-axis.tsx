@@ -12,7 +12,7 @@
  * Scale (as defined in RESULTS.md): 1 = flat, hides the stakes ·
  * 5 = manipulative catastrophising. Both poles are failures; the middle is the
  * target. That makes this a diverging/target-band scale, NOT "low is good" —
- * see the note on AlarmismMeter in the datasets page.
+ * see the note on ToneMeter in components/tone-meter.tsx.
  *
  * Palette validated with the dataviz six checks (light, surface #ffffff,
  * --pairs all): worst CVD ΔE 13.9 (deutan), normal-vision floor 16.2. Identity
@@ -45,10 +45,25 @@ const rowY = (i: number) => FIRST_ROW + i * ROW_GAP;
 const axisBottom = (n: number) => rowY(Math.max(0, n - 1)) + 44;
 const chartHeight = (n: number) => axisBottom(n) + 38;
 
-/** The editorial "calibrated" range. Both human baselines fall inside it. */
+/**
+ * The editorial "calibrated" range, declared here rather than derived.
+ *
+ * It is deliberately NOT "wherever the human baselines landed". Once those
+ * were judged rather than hand-picked, the measles human came back at 3.2 -
+ * just outside this band, and more alarmist than the moderated LLM story at
+ * 2.6. A band defined as "wherever the humans are" would have swallowed that
+ * and made it unsayable; the caption on the datasets page says it instead.
+ */
 const BAND: [number, number] = [2.0, 3.0];
 
 const scale = (v: number) => X0 + ((v - 1) / 4) * (X1 - X0);
+
+/* Keep a value label inside the viewBox. A story scored exactly 5.0 puts its
+   mark on X1, and the label 16px beyond that ran off the canvas - invisible
+   for the one row where the number is most worth reading. The hand-picked
+   ratings this replaced topped out at 4.6 and never reached the edge. */
+const LABEL_PAD = 26;
+const clampLabel = (x: number) => Math.max(LABEL_PAD, Math.min(W - LABEL_PAD, x));
 
 export interface ToneAxisRow {
   id: string;
@@ -201,7 +216,7 @@ export function ToneAxis({ rows }: { rows: ToneAxisRow[] }) {
 
                 {/* Direct labels at the dumbbell ends only — never a number on every mark. */}
                 <text
-                  x={xr - dir * 16}
+                  x={clampLabel(xr - dir * 16)}
                   y={y + 20}
                   textAnchor={dir > 0 ? "end" : "start"}
                   fontSize={12}
@@ -211,7 +226,7 @@ export function ToneAxis({ rows }: { rows: ToneAxisRow[] }) {
                   {row.raw.value.toFixed(1)}
                 </text>
                 <text
-                  x={xm + dir * 16}
+                  x={clampLabel(xm + dir * 16)}
                   y={y + 20}
                   textAnchor={dir > 0 ? "start" : "end"}
                   fontSize={12}

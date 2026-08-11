@@ -1,0 +1,31 @@
+{
+  "blind_seed": 20260811,
+  "n": 5,
+  "items": [
+    {
+      "item_id": "Sd3dce52bf7",
+      "headline": "Pertussis Pandemonium",
+      "story": "Pertussis, also known as whooping cough, has been wreaking havoc on the world for decades. According to global data from the WHO, reported cases of pertussis skyrocketed in 2024, reaching a staggering 941,893 cases - that's more than 5 times the number seen just three years prior. The incidence rate per million also saw a significant spike, jumping from 22.7 in 2023 to 137.1 in 2024.\n\nThe trend is alarming and suggests that efforts to contain the disease may have faltered. In contrast, cases had been steadily decreasing since 2019, with a brief dip in 2020 due to pandemic-related lockdowns. However, it appears that once restrictions were lifted, pertussis made a swift comeback.\n\nExperts will be watching closely to see if this surge is an anomaly or the start of a new trend. One thing is certain: pertussis remains a formidable foe, and vigilance is needed to prevent outbreaks."
+    },
+    {
+      "item_id": "S1070cfd81c",
+      "headline": "Global Pertussis Trends and Recent Surge",
+      "story": "Pertussis, commonly known as whooping cough, continues to be a significant global health challenge. According to WHO surveillance data, reported cases increased sharply in 2024, reaching 941,893—a substantial rise compared to the 163,400 cases reported in 2023. The incidence rate per million mirrored this increase, rising from 22.7 in 2023 to 137.1 in 2024.\n\nThis spike follows a period of lower reporting; between 2020 and 2022, cases dropped significantly, reaching a low of 30,402 cases (4.6 per million) in 2021. While the data shows a sharp rebound following these lows, it is unclear if this represents a failure in containment or a correction after pandemic-era reporting anomalies.\n\nPublic health officials will likely analyze whether the 2024 peak is an isolated anomaly or indicative of a broader trend. The data underscores that pertussis remains a persistent threat, requiring continued vigilance and vaccination efforts to manage outbreaks."
+    },
+    {
+      "item_id": "S982e8b9d10",
+      "headline": "Global Measles Trends and Vaccination Coverage",
+      "story": "Reported measles cases worldwide have increased significantly since 2021, rising from 123,152 in 2021 to 675,533 in 2024. This trend occurs while global MCV1 vaccination coverage has remained relatively stable, moving from 81% in 2021 to 84% in 2024.\n\nThe data shows a strong correlation between lower vaccination rates and higher disease prevalence. Nigeria, with an MCV1 coverage rate of 57%, reports the highest per-million rate among the three detailed countries at 65.8 cases per million.\n\nIn contrast, India and Germany maintain high vaccination rates (97% and 96% respectively), resulting in lower per-million rates of 12.9 and 7.6. However, because herd immunity requires approximately 95% coverage, even small gaps in vaccination can leave populations vulnerable to outbreaks."
+    },
+    {
+      "item_id": "S6063c974ca",
+      "headline": "The Pertussis Puzzle: A Global Health Enigma",
+      "story": "A mysterious resurgence of pertussis, also known as whooping cough, has gripped the world. After a steady decline from 2000 to 2011, cases began to rise again, peaking at 941,893 in 2024 - a staggering 500% increase from just three years prior.\n\nIn contrast, the COVID-19 pandemic brought pertussis cases plummeting in 2020 and 2021, with reported cases dropping by nearly 70%. However, as global vaccination efforts shifted focus to COVID-19, pertussis cases began to creep back up in 2022 and 2023.\n\nThe latest numbers for 2025 show a concerning trend: despite a slight dip from the record high of 2024, pertussis cases remain alarmingly high at 265,317 - a stark reminder that this vaccine-preventable disease still poses a significant threat to global public health."
+    },
+    {
+      "item_id": "S94c9b2d579",
+      "headline": "Measles on the Rise, Despite High Vaccination Rates",
+      "story": "The number of reported measles cases worldwide has been steadily increasing over the past few years, despite vaccination rates reaching record highs. In 2022, there were over 206,000 reported cases, a 3% increase from the previous year.\n\nHowever, when looking at vaccination coverage as a percentage of the population, it's clear that some countries are falling short. Nigeria, for example, has an MCV1 coverage rate of just 57%, contributing to its high per-million rate of measles cases.\n\nIn contrast, countries with high vaccination rates like India and Germany have seen significant declines in measles cases. But even with near-universal vaccination, outbreaks can still occur - a sobering reminder of the importance of continued vigilance."
+    }
+  ]
+}

@@ -70,7 +70,7 @@ export function SiteFooter() {
 
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row sm:items-center">
           <p>© {course.term.match(/\d{4}/)?.[0] ?? "2026"} · {course.university} · {course.unit}</p>
-          <p className="font-mono">Built with Next.js · Interim interface · mock data</p>
+          <p className="font-mono">Built with Next.js · Django and Ollama behind the studio</p>
         </div>
       </div>
     </footer>
