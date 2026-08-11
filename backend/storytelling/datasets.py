@@ -16,6 +16,7 @@ Two artefacts come out of here:
 from __future__ import annotations
 
 import functools
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -33,6 +34,9 @@ from .schemas import (
 # backend/storytelling/datasets.py -> repo root
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = REPO_ROOT / "emotional-tone-moderation" / "data"
+# Raw source downloads, as published. The WHO extract lives here rather than in
+# DATA_DIR because nothing has been merged or derived to produce it.
+RAW_DIR = REPO_ROOT / "datasets"
 
 
 @dataclass(frozen=True)
@@ -70,6 +74,11 @@ class DatasetSpec:
     country_metrics: list[CountryMetric] = field(default_factory=list)
     country_cols: dict[str, str] = field(default_factory=dict)
     country_source_note: str = ""
+    # Where the CSV lives, and how to read it. A spec whose source is not
+    # already tidy supplies a reader that returns the tidy frame the rest of
+    # this module expects: country, code, year, and one column per measure.
+    data_dir: Path | None = None
+    reader: Callable[[Path], "pd.DataFrame"] | None = None
 
 
 MEASLES = DatasetSpec(
@@ -141,68 +150,152 @@ MEASLES = DatasetSpec(
     country_source_note="OWID / WHO / WUENIC, merged project table: every reporting country",
 )
 
-# The secondary dataset from the interim report (WHO Global Health Observatory:
-# child mortality + life expectancy). Its failure mode is the opposite of
-# measles - over-optimism - which is what proves the moderator calibrates in
-# both directions. The CSV has not been collected yet; once it lands in
-# DATA_DIR this registry entry starts serving with no other code change.
+# --------------------------------------------------------------------------
+# WHO GHO: under-five deaths by cause
+# --------------------------------------------------------------------------
+
+# The nine causes in the extract that are unambiguously infectious. The two
+# "Other ..." buckets are deliberately excluded from the numerator: each mixes
+# communicable with perinatal or noncommunicable causes, so counting them would
+# make the share mean something the label does not say. Named explicitly for the
+# same reason, so the metric is exactly "these nine causes, as a share of all".
+INFECTIOUS_CAUSES = frozenset({
+    "Acute lower respiratory infections",
+    "Diarrhoeal diseases",
+    "HIV/AIDS",
+    "Malaria",
+    "Measles",
+    "Meningitis/encephalitis",
+    "Sepsis and other infectious conditions of the newborn",
+    "Tetanus",
+    "Tuberculosis",
+})
+
+# The extract carries three overlapping age groups: "0-4 years" is the total and
+# "0-27 days" plus "1-59 months" are its two halves, which sum to it exactly
+# (9,942,150 against 9,942,151 for 2000, the difference being rounding). Reading
+# all three would double every figure, so only the total is used.
+_TOTAL_AGE_GROUP = "0-4 years"
+
+
+def read_who_gho(path: Path) -> pd.DataFrame:
+    """Reshape the WHO GHO cause-of-death extract into the tidy frame.
+
+    One row per country-year, carrying total under-five deaths and the share of
+    them from the named infectious causes. A World row is appended by summing
+    the countries, because the extract has no aggregate row of its own; that is
+    disclosed in the dataset's source note.
+    """
+    raw = pd.read_csv(
+        path,
+        low_memory=False,
+        usecols=["SpatialDimValueCode", "Location", "Period", "Dim2", "Dim3", "FactValueNumeric"],
+    )
+    raw = raw[(raw["Dim2"] == _TOTAL_AGE_GROUP) & raw["FactValueNumeric"].notna()]
+    raw = raw.rename(columns={"SpatialDimValueCode": "code", "Location": "country", "Period": "year"})
+    raw["infectious"] = raw["FactValueNumeric"].where(raw["Dim3"].isin(INFECTIOUS_CAUSES), 0.0)
+
+    by_country = (
+        raw.groupby(["code", "country", "year"], as_index=False)
+        .agg(under5_deaths=("FactValueNumeric", "sum"), infectious=("infectious", "sum"))
+    )
+    world = (
+        by_country.groupby("year", as_index=False)
+        .agg(under5_deaths=("under5_deaths", "sum"), infectious=("infectious", "sum"))
+        .assign(code="WORLD", country="World")
+    )
+    tidy = pd.concat([by_country, world], ignore_index=True)
+    # Guard against a country-year with no deaths recorded at all: a 0/0 share
+    # is not 0% infectious, it is unknown, and must stay missing.
+    tidy["infectious_share"] = (
+        tidy["infectious"].div(tidy["under5_deaths"]).where(tidy["under5_deaths"] > 0) * 100
+    ).round(1)
+    return tidy.drop(columns=["infectious"])
+
+
+# The secondary dataset: WHO Global Health Observatory, under-five deaths by
+# cause (indicator MORT_100). Its failure mode is the opposite of measles,
+# over-optimism, which is what proves the moderator calibrates in both
+# directions: deaths nearly halved between 2000 and 2021, and a story can ride
+# that fall straight past the ten million children still dying each year.
+#
+# NOTE, and it matters for the report: lib/data/datasets.ts describes this
+# dataset as under-five mortality against life expectancy. The extract in the
+# repo carries neither. It has death counts by cause, with no live-births
+# denominator for a mortality rate and no life-expectancy series at all, so the
+# measures below are what the data can actually support. The mock keeps the old
+# identity for whichever mode is not live; the two now differ, deliberately.
 WHO_GHO = DatasetSpec(
-    # The id matches lib/data/datasets.ts. The two sides used to disagree
-    # ("who-gho" here, "who-health" there), which would have served the same
-    # dataset under two ids the moment its CSV landed.
     id="who-health",
-    name="Child Mortality × Life Expectancy",
-    short_name="WHO child mortality",
-    tagline="Real progress, with a reversal and a gap the headline hides.",
+    name="Under-Five Deaths × Cause",
+    short_name="WHO child deaths",
+    tagline="Deaths nearly halved, and the ones left behind are the preventable ones.",
     role="secondary",
     failure_mode="over-optimism",
     failure_mode_label="Natural failure mode: over-optimism",
-    year_range="1990-2023",
-    granularity="country × year",
-    sources=["WHO Global Health Observatory"],
+    year_range="2000-2021",
+    granularity="country × year × cause",
+    sources=["WHO Global Health Observatory (MORT_100)"],
     description=(
-        "Under-five mortality and life expectancy trends. A hope/progress story whose "
-        "failure mode is false reassurance, so the moderator must keep the gravity, "
-        "the remaining inequality and the COVID-era reversal, rather than flatten it."
+        "Deaths in children under five, by cause, for 194 countries. A progress "
+        "story whose failure mode is false reassurance: the total fell by nearly "
+        "half between 2000 and 2021, and celebrating that alone hides both the "
+        "ten million children still dying each year and the gap in what they die "
+        "of. Infectious causes are a fifth of under-five deaths in some countries "
+        "and two thirds in others, so the moderator has to keep the gravity "
+        "rather than flatten it."
     ),
-    csv="who_gho_tidy.csv",
-    primary_label="Under-5 mortality",
-    secondary_label="Life expectancy",
-    primary_unit="per 1,000 live births",
-    secondary_unit="years",
-    primary_col="under5_mortality",
-    secondary_col="life_expectancy",
+    csv="Causes of death for children less than 5 years.csv",
+    data_dir=RAW_DIR,
+    reader=read_who_gho,
+    primary_label="Under-5 deaths",
+    secondary_label="Deaths from named infectious causes",
+    primary_unit="thousands",
+    secondary_unit="%",
+    primary_col="under5_deaths",
+    secondary_col="infectious_share",
     aggregate_row="World",
-    country_years=[1990, 2000, 2010, 2019, 2022],
+    spotlight=["Nigeria", "India", "Germany", "Brazil"],
+    series_years=[2000, 2003, 2006, 2009, 2012, 2015, 2018, 2019, 2020, 2021],
+    country_years=[2000, 2005, 2010, 2015, 2021],
     country_metrics=[
         CountryMetric(
-            key="under5_mortality",
-            label="Under-5 mortality",
-            unit="per 1,000 live births",
+            key="infectious_share",
+            label="Deaths from named infectious causes",
+            unit="% of under-5 deaths",
             polarity="higher-is-worse",
-            breaks=(5, 15, 40, 80),
+            # A share of the country's own deaths, so it is comparable across
+            # countries without a population denominator the extract lacks.
+            breaks=(10, 20, 30, 45),
+            decimals=1,
         ),
         CountryMetric(
-            key="life_expectancy",
-            label="Life expectancy",
-            unit="years",
-            polarity="higher-is-better",
-            breaks=(60, 67, 73, 79),
-            decimals=1,
+            key="under5_deaths",
+            label="Under-5 deaths",
+            unit="deaths",
+            polarity="higher-is-worse",
+            breaks=(1000, 10000, 50000, 200000),
+            # Same reason raw measles cases are never mapped: a choropleth of
+            # counts is a population map.
+            mappable=False,
         ),
     ],
     country_cols={
-        "under5_mortality": "under5_mortality",
-        "life_expectancy": "life_expectancy",
+        "infectious_share": "infectious_share",
+        "under5_deaths": "under5_deaths",
     },
-    country_source_note="WHO Global Health Observatory / UN IGME: every reporting country",
+    country_source_note=(
+        "WHO Global Health Observatory (MORT_100), 194 countries. "
+        "World totals are summed from the countries; the extract has no World row."
+    ),
 )
+
 
 SPECS: dict[str, DatasetSpec] = {s.id: s for s in (MEASLES, WHO_GHO)}
 
 
 def csv_path(spec: DatasetSpec) -> Path:
-    return DATA_DIR / spec.csv
+    return (spec.data_dir or DATA_DIR) / spec.csv
 
 
 def is_available(spec: DatasetSpec) -> bool:
@@ -218,7 +311,7 @@ def load_frame(dataset_id: str) -> pd.DataFrame:
             f"Dataset '{dataset_id}' expects {path.name} in {DATA_DIR}. "
             "It has not been collected yet - see backend/README.md."
         )
-    return pd.read_csv(path)
+    return spec.reader(path) if spec.reader else pd.read_csv(path)
 
 
 def _fmt_int(value: float | None) -> str:
