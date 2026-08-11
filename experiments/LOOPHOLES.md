@@ -10,19 +10,44 @@ in `RESULTS.md` were produced before the fix.
 
 ## Tier 1: these can invalidate the headline result
 
-### L1. The judge graded its own moderation. **FIXED 2026-08-11, but all Part B and Part D numbers predate the fix**
+### L1. The judge graded its own moderation. **FIXED 2026-08-11, and the bias is now measured: it doubled the reported effect**
 
 On the `mid` and `large` tiers the judge and the moderator were both
 `gemma4:31b`. The project's novel metric is the alarmism delta between the raw
 and the moderated story, so the model that rewrote the text also scored whether
 the rewrite improved it. That is not a measurement, it is a self-report.
 
-The `g*`/`m*` tiers now judge with `qwen3.5:9b`, a different family from the
-`gemma4` moderator. `m31b-selfjudge` deliberately keeps the old pairing so the
-size of the bias is itself measurable: the two rows differ only in who judges.
+The authoritative judge is now **Claude Opus 5**, run blinded and offline over
+exported stories, so it shares no weights, family or vendor with anything under
+study and is stronger than the moderators it grades. The `g*`/`m*` tiers also
+carry a cheap local secondary judge (`qwen3.5:4b`, a different family from the
+`gemma4` moderator) so that two independent raters give an agreement statistic.
+`m31b-selfjudge` deliberately keeps the old self-judging pairing so the size of
+the bias is itself measurable: the two rows differ only in who judges.
 
-Residual: the judge is 9B and the moderator is 31B. A judge weaker than the
-system it grades can floor the measurement. Reported, not solved.
+**Measured, 2026-08-11, pertussis-global, seed 7.** Two runs whose raw story and
+moderated story are byte-identical (`raw_sha=c34380d2b248`,
+`mod_sha=0be47174d69d`), differing only in who judges:
+
+| Tier | Judge | Raw | Moderated | Delta |
+|---|---|---|---|---|
+| `m31b-selfjudge` | `gemma4:31b` (the moderator itself) | **4.0** | 2.0 | **-2.0** |
+| `g8b` | `qwen3.5:4b` (independent) | **3.0** | 2.0 | **-1.0** |
+
+The self-judging configuration reports exactly twice the improvement on the same
+text. The whole gap comes from the *raw* rating: the model that rewrote the
+story scored the "before" a full point more alarmist than an independent judge
+did, while both agreed the "after" was 2.0. A model asked to grade its own
+moderation inflates the problem it just solved.
+
+Every Part B and Part D alarmism number was produced under the self-judging
+pairing and should be read as an upper bound, not a measurement.
+
+Residual: `qwen3.5:4b` is far smaller than the 31B moderator it grades, so a
+judge ceiling could now masquerade as a moderation ceiling in the other
+direction. This is why the authoritative rating is Claude Opus 5, run blinded
+and offline (`experiments/export_for_judging.py`); the local judge is retained
+only as a secondary rater for an agreement statistic.
 
 ### L2. There is no human baseline, so "distance to human writing" is unmeasured. **OPEN**
 
@@ -111,13 +136,21 @@ that style instructions to an LLM should be verified, not assumed.
 
 ## Tier 3: sampling, data and reproducibility
 
-### L11. A seed does not survive a model eviction. **DOCUMENTED**
+### L11. Seeded reproducibility: the earlier conclusion was too strong. **CORRECTED 2026-08-11**
 
-Same seed, model warm: byte-identical output. Same seed with an unload in
-between: different text. Every sequential-tier run evicts between stages, so
-generation is always a cold load and run-to-run reproducibility cannot be
-assumed. The committed `raw_stories.jsonl` is the reproducible artefact, not
-the seed.
+The earlier note in `RESULTS.md` said a seed does not survive a model eviction:
+same seed warm gave byte-identical output, same seed across an unload gave
+different text.
+
+The P0.1 pair above contradicts that. Both runs used seed 7 and `llama3.1:8b`,
+and between them the generator was evicted to make room for `gemma4:31b` and
+then reloaded from cold. The raw stories are byte-identical
+(`raw_sha=c34380d2b248` in both). So a seed *can* survive an eviction, and
+whatever caused the earlier divergence was not the cold load by itself.
+
+Until the real cause is isolated, treat seeded reproducibility as **observed but
+not guaranteed**: verify by hash rather than assuming either way. The committed
+raw stories remain the artefact to trust.
 
 ### L12. The seven datasets are not seven independent samples. **OPEN**
 
