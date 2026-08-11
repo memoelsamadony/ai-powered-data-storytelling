@@ -45,12 +45,23 @@ npm run start
 app/                     Routes (App Router) — one folder per page
 components/              UI: layout, charts, the tone toggle, the generate studio
   generate/             The 4-step studio (picker, editor, pipeline runner, comparison)
-  charts/               Recharts wrappers
+  charts/               Recharts wrappers + the country choropleth
 lib/
   api.ts                ← swap-in point for the real Python backend
+  charts/               Chart colour tokens + pure, unit-tested choropleth logic
   data/                 Typed mock content (datasets, stories, metrics, literature, team)
+    country-stats/      Per-country figures backing the maps
+    world-geo.ts        Generated country outlines — do not edit by hand
+scripts/                One-shot build tools (world-map geometry)
 public/brand/           Logo assets
 source-materials/       Original brief, report, presentations, palette
+```
+
+Unit tests cover the pure chart logic and run on Node's built-in runner — no
+test framework to install:
+
+```bash
+npm test
 ```
 
 ## Wiring in the Python backend (future work)
@@ -68,6 +79,11 @@ calls against the Python pipeline — no component needs to change:
 Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Recharts · Framer Motion ·
 Newsreader + IBM Plex Sans/Mono. Brand palette sampled from the project logo, with a
 tone axis added: **alarmist = warm red, calibrated = teal**.
+
+The country maps are plain inline SVG on an **Equal Earth** projection, generated at
+build time by `scripts/build-world-map.mjs` — no map library ships to the browser.
+Regenerate them with `node scripts/build-world-map.mjs` (the output is committed, so
+this is only needed if the geometry itself changes).
 
 ## Team
 
