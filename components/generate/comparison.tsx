@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck, ShieldAlert, MoveRight } from "lucide-react";
+import type * as api from "@/lib/api";
 import type { Dataset } from "@/lib/data/datasets";
 import type { StorySet, ToneVariant } from "@/lib/data/stories";
 import { StoryPanel } from "@/components/story-panel";
@@ -79,10 +80,17 @@ export function Comparison({
   story,
   humanText,
   dataset,
+  metrics,
 }: {
   story: StorySet;
   humanText: string;
   dataset: Dataset;
+  /**
+   * Scored by the backend against the human baseline actually typed above.
+   * Null while that call is in flight, or whenever there is no backend, and the
+   * panel then shows the placeholder figures and says so.
+   */
+  metrics?: api.ComparisonMetrics | null;
 }) {
   const human: ToneVariant = {
     ...story.human,
@@ -227,15 +235,19 @@ export function Comparison({
             <section className="rounded-xl border border-hairline bg-surface-soft/30 p-5">
               <p className="text-sm font-medium text-navy">Text similarity</p>
               <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                Moderated vs human · illustrative
+                {metrics ? "Moderated vs your baseline · scored" : "Moderated vs human · illustrative"}
               </p>
               <div className="mt-2">
                 <SimpleBarChart
-                  data={[
-                    { label: "BLEU", value: 0.31 },
-                    { label: "ROUGE-L", value: 0.48 },
-                    { label: "METEOR", value: 0.41 },
-                  ]}
+                  data={
+                    metrics
+                      ? metrics.textSimilarity.map((m) => ({ label: m.metric, value: m.value }))
+                      : [
+                          { label: "BLEU", value: 0.31 },
+                          { label: "ROUGE-L", value: 0.48 },
+                          { label: "METEOR", value: 0.41 },
+                        ]
+                  }
                   color="#1e66b8"
                   domainMax={1}
                   decimals={2}
@@ -252,12 +264,25 @@ export function Comparison({
               <p className="mt-4 rounded-lg border border-hairline bg-surface-soft/70 px-3 py-2.5 text-[0.72rem] leading-relaxed text-muted">
                 <strong className="font-medium text-navy">Read these with care.</strong> All three
                 score <em>wording overlap</em>, not truth or tone. A factually perfect story worded
-                differently scores near zero, so a low number here is not a quality verdict. The
-                values above are illustrative placeholders. In the real runs BLEU-4 came out at
-                exactly <span className="font-mono">0.0</span>, because it is computed on a single
-                ~120-word pair without smoothing: BLEU is the geometric mean of the 1–4-gram
-                precisions, the two texts share no 4-gram, and one zero collapses the product. The
-                backend also returns <span className="font-mono">unigram F1</span>, not METEOR.
+                differently scores near zero, so a low number here is not a quality verdict.{" "}
+                {metrics ? (
+                  <>
+                    These are scored by the backend on the baseline you typed against the moderated
+                    text. Expect BLEU near <span className="font-mono">0.0</span>: it is computed on
+                    a single short pair without smoothing, and because it is the geometric mean of
+                    the 1–4-gram precisions, two texts sharing no 4-gram collapse the product to
+                    zero.
+                  </>
+                ) : (
+                  <>
+                    The values above are illustrative placeholders. In the real runs BLEU-4 came out
+                    at exactly <span className="font-mono">0.0</span>, because it is computed on a
+                    single ~120-word pair without smoothing: BLEU is the geometric mean of the
+                    1–4-gram precisions, the two texts share no 4-gram, and one zero collapses the
+                    product. The backend also returns <span className="font-mono">unigram F1</span>,
+                    not METEOR.
+                  </>
+                )}
               </p>
             </section>
           </div>

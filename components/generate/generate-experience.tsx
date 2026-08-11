@@ -37,6 +37,7 @@ export function GenerateExperience() {
   const [health, setHealth] = useState<api.Health | null>(null);
   const [backendChecked, setBackendChecked] = useState(false);
   const [liveStory, setLiveStory] = useState<StorySet | null>(null);
+  const [liveMetrics, setLiveMetrics] = useState<api.ComparisonMetrics | null>(null);
   const runIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -84,6 +85,7 @@ export function GenerateExperience() {
     setHumanText(getStorySet(id).human.paragraphs.join("\n\n"));
     setGenerated(false);
     setLiveStory(null);
+    setLiveMetrics(null);
     runIdRef.current = null;
   };
 
@@ -114,6 +116,24 @@ export function GenerateExperience() {
     };
   }, [isLive, datasetId, tier, humanText]);
 
+  // Scored once the comparison step is reachable, not while the run is going:
+  // the metrics need the moderated text, which only exists after the last
+  // stage. Keyed on maxReached rather than step, because the step header can be
+  // folded open without advancing, and because this way the figures are already
+  // there when the reader arrives.
+  useEffect(() => {
+    const runId = runIdRef.current;
+    if (maxReached < 3 || !runId || !datasetId || liveMetrics) return;
+    let cancelled = false;
+    (async () => {
+      const m = await api.compareStories(runId, humanText, datasetId);
+      if (!cancelled) setLiveMetrics(m);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [maxReached, datasetId, humanText, liveMetrics]);
+
   const isOpen = useCallback((i: number) => openSteps.includes(i), [openSteps]);
 
   const toggle = (i: number) =>
@@ -137,6 +157,7 @@ export function GenerateExperience() {
     setHumanText("");
     setGenerated(false);
     setLiveStory(null);
+    setLiveMetrics(null);
     runIdRef.current = null;
     requestAnimationFrame(() =>
       sectionRefs.current[0]?.scrollIntoView({ behavior: "smooth", block: "start" }),
@@ -268,7 +289,12 @@ export function GenerateExperience() {
                       />
                     )}
                     {i === 3 && story && dataset && (
-                      <Comparison story={story} humanText={humanText} dataset={dataset} />
+                      <Comparison
+                        story={story}
+                        humanText={humanText}
+                        dataset={dataset}
+                        metrics={liveMetrics}
+                      />
                     )}
 
                     {/* Advance from the step you are on. */}
