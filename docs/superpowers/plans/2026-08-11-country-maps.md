@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - **No hex literals in chart components.** Every colour comes from `lib/charts/tokens.ts`. This is an existing repo rule (`FRONTEND_PLAN.md §2 item 2`, defect D5) enforced by review, not tooling.
-- **`lib/data/world-geo.ts` must stay under 120 KB.** Verified achievable at 93.2 KB. If a change pushes it over, stop and reconsider rather than shipping it.
+- **`lib/data/world-geo.ts` must stay under 120 KB.** Verified achievable at 88.3 KB. If a change pushes it over, stop and reconsider rather than shipping it.
 - **Equal-area projection only.** `geoEqualEarth`. Never Mercator — it inflates high-latitude countries 3–14×, misstating the quantity the colour encodes.
 - **Class breaks are declared per metric, never computed from the visible year.** With a year scrubber, recomputed bins recolour a country whose value did not move. This is the single most important correctness rule in this plan.
 - **"No data" is never a pale fill.** It is a hatch pattern. Measured contrast between the palest bin (`#fdeeea`) and any pale grey is 1.04 — indistinguishable. Absence must not read as a low value.
@@ -170,7 +170,7 @@ verified to pass under it."
 - Their `id` is a **UN M49 numeric code as a string**, *not* ISO alpha-3. `properties` carries only `name`.
 - Three geometries have no `id` at all: `N. Cyprus`, `Somaliland`, `Kosovo`. They have no M49 code and must be mapped by name.
 - All 177 resolve to unique alpha-3 ids with the name overrides below.
-- At width 2000 with integer coordinates the output is 93.2 KB (34.2 KB gzipped) — smaller *and* more precise than width 1000 at one decimal place.
+- At width 2000 with integer coordinates the output is 88.3 KB — smaller *and* more precise than width 1000 at one decimal place.
 
 - [ ] **Step 1: Install the build-time dependencies**
 
@@ -292,7 +292,7 @@ Expected, exactly:
 
 ```
 wrote .../lib/data/world-geo.ts
-  177 shapes, 93.2 KB, viewBox 0 0 2000 992
+  176 shapes, 88.3 KB, viewBox 0 0 2000 883
 ```
 
 No `skipped:` line. If any country is skipped, the `NO_M49` table is wrong — fix it rather than accepting a hole in the map.
@@ -303,7 +303,7 @@ No `skipped:` line. If any country is skipped, the `NO_M49` table is wrong — f
 node -e "import('./lib/data/world-geo.ts').then(m=>{const s=m.worldShapes;console.log('shapes',s.length);console.log('viewBox',m.WORLD_VIEWBOX);console.log('unique',new Set(s.map(x=>x.id)).size);const need=['NGA','IND','USA','RUS','BRA','CHN','AUS','DEU','ZAF','ARG'];console.log('join keys',need.filter(n=>s.some(x=>x.id===n)).length+'/'+need.length);console.log('all paths start with M:',s.every(x=>x.d.startsWith('M')));})"
 ```
 
-Expected: `shapes 177`, `viewBox 0 0 2000 992`, `unique 177`, `join keys 10/10`, `all paths start with M: true`.
+Expected: `shapes 176`, `viewBox 0 0 2000 883`, `unique 176`, `join keys 10/10`, `all paths start with M: true`.
 
 - [ ] **Step 5: Typecheck**
 
@@ -1638,7 +1638,7 @@ Expected: 12 tests pass; no type errors; build succeeds; lint clean. Give ESLint
 node -e "console.log((require('fs').statSync('lib/data/world-geo.ts').size/1024).toFixed(1)+' KB')"
 ```
 
-Expected: `93.2 KB`, and in all cases under 120 KB.
+Expected: `88.3 KB`, and in all cases under 120 KB.
 
 - [ ] **Step 3: Update the README**
 

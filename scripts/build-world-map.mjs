@@ -27,10 +27,25 @@ const MAX_BYTES = 120 * 1024;
 /** Territories with no UN M49 code, matched by Natural Earth's own name. */
 const NO_M49 = { "N. Cyprus": "XNC", Somaliland: "XSO", Kosovo: "XKX" };
 
+/**
+ * Antarctica is dropped. It has no population and so can never carry a value in
+ * either dataset, but Natural Earth's coastline is a wide fragmented band that
+ * ate the bottom sixth of the frame as hatching — pure noise that pushed the
+ * inhabited world smaller. Dropping it also shortens the viewBox.
+ */
+const EXCLUDE = new Set(["ATA"]);
+
 const topo = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "node_modules/world-atlas/countries-110m.json"), "utf8"),
 );
-const fc = feature(topo, topo.objects.countries);
+const all = feature(topo, topo.objects.countries);
+
+/** Resolve Natural Earth's id to ISO alpha-3, or undefined if it has none. */
+const isoOf = (f) => (f.id ? countries.numericToAlpha3(String(f.id)) : NO_M49[f.properties.name]);
+
+/* Excluded countries are dropped BEFORE fitting, so the viewBox tightens
+   around what actually remains rather than reserving space for them. */
+const fc = { ...all, features: all.features.filter((f) => !EXCLUDE.has(isoOf(f))) };
 
 /* Fit to width, then shift the projected bounds to the viewBox origin. */
 const projection = geoEqualEarth();
@@ -45,7 +60,7 @@ const shapes = [];
 const skipped = [];
 
 for (const f of fc.features) {
-  const iso3 = f.id ? countries.numericToAlpha3(String(f.id)) : NO_M49[f.properties.name];
+  const iso3 = isoOf(f);
   if (!iso3) {
     skipped.push(f.properties.name);
     continue;
