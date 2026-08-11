@@ -204,6 +204,69 @@ TIERS: dict[str, Tier] = {
         judge="qwen3.5:4b",
         sizes={"llama3.1:8b": 4.9, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
     ),
+    "q2b": Tier(
+        id="q2b",
+        label="Q2B (qwen3.5:2b generator, within-family ladder)",
+        description=(
+            "Generator ladder rung 1, WITHIN ONE FAMILY. The g1b/g3b/g4b/g8b "
+            "ladder mixes llama3.2, qwen3.5 and llama3.1, so its size effect is "
+            "confounded with family and generation. qwen3.5 is the only family "
+            "here with 2b/4b/9b/27b/35b, so this ladder moves size alone."
+        ),
+        generator="qwen3.5:2b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:2b": 1.6, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "q4b": Tier(
+        id="q4b",
+        label="Q4B (qwen3.5:4b generator, within-family ladder)",
+        description="Within-family generator ladder rung 2. Same pairing as g4b.",
+        generator="qwen3.5:4b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:4b": 3.4, "gemma4:31b": 19.0},
+    ),
+    "q9b": Tier(
+        id="q9b",
+        label="Q9B (qwen3.5:9b generator, within-family ladder)",
+        description=(
+            "Within-family generator ladder rung 3. qwen3.5:9b is the only model "
+            "the family offers between 8B and 12B."
+        ),
+        generator="qwen3.5:9b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:9b": 6.6, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
+    "x9b": Tier(
+        id="x9b",
+        label="X9B (qwen3.5:9b moderator, cross-family control)",
+        description=(
+            "Cross-family control for the moderator ladder. gemma4:12b/26b/31b "
+            "share an architecture, so a trend across them is evidence about "
+            "scaling within gemma4, not about capability. This pairs a 9B qwen "
+            "moderator against the 12B gemma rung at near-equal size."
+        ),
+        generator="llama3.1:8b",
+        moderator="qwen3.5:9b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "qwen3.5:9b": 6.6, "qwen3.5:4b": 3.4},
+    ),
+    "x35b": Tier(
+        id="x35b",
+        label="X35B (qwen3.6:35b moderator, top-end family control)",
+        description=(
+            "The cleanest family test available: 35B qwen against the 31B gemma "
+            "moderator, near-identical scale, different lineage. At 23 GB it "
+            "exceeds the 22 GB usable ceiling and will offload to CPU unless the "
+            "wired limit is raised (sudo sysctl iogpu.wired_limit_mb=28672)."
+        ),
+        generator="llama3.1:8b",
+        moderator="qwen3.6:35b",
+        judge="qwen3.5:4b",
+        sizes={"llama3.1:8b": 4.9, "qwen3.6:35b": 23.9, "qwen3.5:4b": 3.4},
+    ),
     "m31b-selfjudge": Tier(
         id="m31b-selfjudge",
         label="M31B self-judging (P0.1 control)",
