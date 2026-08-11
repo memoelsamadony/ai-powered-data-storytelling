@@ -49,14 +49,34 @@ direction. This is why the authoritative rating is Claude Opus 5, run blinded
 and offline (`experiments/export_for_judging.py`); the local judge is retained
 only as a secondary rater for an agreement statistic.
 
-### L2. There is no human baseline, so "distance to human writing" is unmeasured. **OPEN**
+### L2. A human reference exists now, but it is a pilot, not the protocol set. **PARTLY CLOSED 2026-08-12**
 
-`experiments/human-baselines/stories/` is empty. The 25 stories in
-`llm-drafts/` are Claude-authored and labelled as such. Any similarity metric
-computed against them measures distance to Claude text, not distance to
-independent human writing, and H1 as written in the addendum cannot be tested.
-The kit for the real human track is ready; four writers and about four hours
-each is what it costs.
+`experiments/human-baselines/pilot-stories/` holds 25 human-written stories, 5
+per series, and they are scored on the same blind Opus judge as everything else
+(`experiments/score_human_baselines.py`). That is enough to answer the question
+the project could not answer at all before: where do the machine stories sit
+relative to a person writing from the same evidence pack.
+
+Three reasons it is not yet the baseline `ASSIGNMENT.md` specifies, all from
+`pilot-stories/README.md`:
+
+1. **Not blind.** Every writer rewrote an LLM draft rather than starting from
+   the pack, so the machine's framing leaked into the reference set. Similarity
+   metrics against it are therefore still contaminated, and only the *tone*
+   numbers are safe to use.
+2. **Not from scratch**, so `BRIEF.md` rule 2 is violated by construction.
+3. **Wrong shape for `H`.** S6 wants four named writers with stable identity
+   across series; this set has five interchangeable slots per series. Nothing
+   in the repo computes `H` from it, and nothing should.
+
+The old `llm-drafts/` set, which was Claude-authored throughout, has been
+deleted (`DELETED-LLM-DRAFTS.md`), so the repo no longer contains a
+machine-written set that could be mistaken for a baseline.
+
+One asymmetry to keep in view: the pilot stories have no headline, so the judge
+scores body-only text for humans and headline-plus-body for machines. Headlines
+are where alarmism concentrates, so the human figures are, if anything,
+flattered relative to the machine ones.
 
 ### L3. n = 1 per cell. **OPEN**
 

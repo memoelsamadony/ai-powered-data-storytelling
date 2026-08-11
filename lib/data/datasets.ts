@@ -4,6 +4,9 @@
  * pipeline reads the full merged tables (see source attributions).
  */
 
+import { measlesYears, measlesMetrics, measlesCountryStats } from "./country-stats/measles";
+import { whoYears, whoMetrics, whoCountryStats } from "./country-stats/who-health";
+
 export type FailureMode = "alarmism" | "over-optimism";
 
 export interface DatasetSeriesPoint {
@@ -14,9 +17,39 @@ export interface DatasetSeriesPoint {
   secondary: number;
 }
 
+/** One mapped or disclosed measure in a dataset's country table. */
+export interface CountryMetric {
+  /** Stable key; indexes into CountryStat.series. */
+  key: string;
+  label: string;
+  unit: string;
+  /** Picks the colour ramp: alarm-ward or calm-ward. */
+  polarity: "higher-is-worse" | "higher-is-better";
+  /**
+   * Four ascending class breaks → five bins. Declared, never computed from the
+   * visible year: with a year scrubber, recomputed bins would make a country
+   * change colour because the scale moved rather than because its value did.
+   */
+  breaks: [number, number, number, number];
+  /** Decimal places for display. Default 0. */
+  decimals?: number;
+  /** false = shown in the tooltip and table, never mapped. Default true. */
+  mappable?: boolean;
+}
+
+/** One country's figures, columnar: metric key → value per countryYears index. */
+export interface CountryStat {
+  /** ISO 3166-1 alpha-3 — joins to WorldShape.id in lib/data/world-geo.ts. */
+  iso3: string;
+  name: string;
+  series: Record<string, (number | null)[]>;
+}
+
 export interface Dataset {
   id: string;
   name: string;
+  /** Compact name for chart rows and legends, where `name` is too long. */
+  shortName: string;
   tagline: string;
   role: "primary" | "secondary";
   failureMode: FailureMode;
@@ -36,13 +69,24 @@ export interface Dataset {
   series: DatasetSeriesPoint[];
   /** A few preview rows shown as a table on the dataset/generate pages. */
   previewRows: { country: string; year: number; cases: string; coverage: string }[];
+  /**
+   * The map's own timeline — deliberately coarser than `series`, because the
+   * country figures are anchored to years with published values rather than
+   * interpolated across every point of the world trend.
+   */
+  countryYears?: number[];
+  countryMetrics?: CountryMetric[];
+  countryStats?: CountryStat[];
+  /** Attribution shown under the map. */
+  countrySourceNote?: string;
 }
 
 export const datasets: Dataset[] = [
   {
     id: "measles",
     name: "Measles × Vaccination Coverage",
-    tagline: "Coverage stalled below herd immunity — and cases came back.",
+    shortName: "Measles × MCV1",
+    tagline: "Coverage stalled below herd immunity, and cases came back.",
     role: "primary",
     failureMode: "alarmism",
     failureModeLabel: "Natural failure mode: alarmism",
@@ -51,7 +95,7 @@ export const datasets: Dataset[] = [
     granularity: "country × year",
     sources: ["Our World in Data", "WHO", "WUENIC (MCV1)"],
     description:
-      "Merged measles case counts with first-dose measles vaccine (MCV1) coverage and population, by country and year. Global coverage has plateaued below the ~95% herd-immunity threshold, and case counts rebounded — a story whose natural failure mode is alarmism, so the moderator must pull an over-alarmist narrative down without losing real urgency.",
+      "Merged measles case counts with first-dose measles vaccine (MCV1) coverage and population, by country and year. Global coverage has plateaued below the ~95% herd-immunity threshold, and case counts rebounded, a story whose natural failure mode is alarmism, so the moderator must pull an over-alarmist narrative down without losing real urgency.",
     primaryLabel: "Reported measles cases",
     secondaryLabel: "MCV1 coverage",
     primaryUnit: "thousands",
@@ -82,11 +126,16 @@ export const datasets: Dataset[] = [
       { country: "India", year: 2023, cases: "39,617", coverage: "89%" },
       { country: "Yemen", year: 2023, cases: "31,406", coverage: "67%" },
     ],
+    countryYears: measlesYears,
+    countryMetrics: measlesMetrics,
+    countryStats: measlesCountryStats,
+    countrySourceNote: "WHO / WUENIC · illustrative country sample",
   },
   {
     id: "who-health",
     name: "WHO Global Health Observatory",
-    tagline: "Decades of progress — with a remaining gap and a COVID-era reversal.",
+    shortName: "WHO child mortality",
+    tagline: "Decades of progress, with a remaining gap and a COVID-era reversal.",
     role: "secondary",
     failureMode: "over-optimism",
     failureModeLabel: "Natural failure mode: over-optimism",
@@ -95,7 +144,7 @@ export const datasets: Dataset[] = [
     granularity: "country × year",
     sources: ["WHO Global Health Observatory", "UN IGME"],
     description:
-      "Child-mortality and life-expectancy trends. This is a 'hope / progress' story — under-five mortality fell sharply and life expectancy rose — but its failure mode is the opposite: over-optimism and false reassurance. The moderator must keep the gravity (the remaining inequality, the COVID-era reversal) rather than flatten it, proving the agent calibrates in both directions.",
+      "Child-mortality and life-expectancy trends. This is a 'hope / progress' story (under-five mortality fell sharply and life expectancy rose), but its failure mode is the opposite: over-optimism and false reassurance. The moderator must keep the gravity (the remaining inequality, the COVID-era reversal) rather than flatten it, proving the agent calibrates in both directions.",
     primaryLabel: "Under-5 mortality",
     secondaryLabel: "Life expectancy",
     primaryUnit: "per 1,000 live births",
@@ -118,6 +167,10 @@ export const datasets: Dataset[] = [
       { country: "Sub-Saharan Africa", year: 2022, cases: "70.5", coverage: "61.0 yrs" },
       { country: "Europe", year: 2022, cases: "4.3", coverage: "78.2 yrs" },
     ],
+    countryYears: whoYears,
+    countryMetrics: whoMetrics,
+    countryStats: whoCountryStats,
+    countrySourceNote: "WHO Global Health Observatory / UN IGME · illustrative country sample",
   },
 ];
 

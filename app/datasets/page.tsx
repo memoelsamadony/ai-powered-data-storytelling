@@ -4,10 +4,34 @@ import { PageHero } from "@/components/page-hero";
 import { Container, Section } from "@/components/ui/layout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { DatasetChart } from "@/components/charts/dataset-chart";
+import { StoryChart } from "@/components/charts/story-chart";
+import { CountryMap } from "@/components/charts/country-map";
+import { ToneAxis, type ToneAxisRow } from "@/components/charts/tone-axis";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
 import { datasets, type Dataset } from "@/lib/data/datasets";
+import { getStorySet } from "@/lib/data/stories";
+
+/**
+ * Both datasets on one tone scale. Built here in the Server Component and passed
+ * down as plain props — the chart only needs `"use client"` for its hover layer.
+ */
+const toneRows: ToneAxisRow[] = datasets.map((d) => {
+  const s = getStorySet(d.id);
+  const pick = (v: (typeof s)["human"]) => ({
+    value: v.alarmismRating,
+    title: v.title,
+    author: v.author,
+  });
+  return {
+    id: d.id,
+    label: d.shortName,
+    tempts: `tempts ${d.failureMode}`,
+    human: pick(s.human),
+    raw: pick(s.aiRaw),
+    moderated: pick(s.aiModerated),
+  };
+});
 
 export const metadata: Metadata = {
   title: "Datasets",
@@ -25,7 +49,7 @@ export default function DatasetsPage() {
             Two datasets, two opposite ways to get the <span className="brand-gradient-text italic">tone</span> wrong.
           </>
         }
-        intro="Because tone failure is two-sided, we deliberately use a story that tempts alarmism and one that tempts false reassurance — proof the moderator calibrates in both directions."
+        intro="Because tone failure is two-sided, we deliberately use a story that tempts alarmism and one that tempts false reassurance, proving the moderator calibrates in both directions."
       />
 
       <Section>
@@ -42,21 +66,37 @@ export default function DatasetsPage() {
 
       <Section className="border-t border-hairline bg-surface-soft/40">
         <Container>
-          <Card className="p-8 sm:p-10">
-            <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center">
-              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-navy text-white">
-                <Layers className="h-6 w-6" />
-              </span>
-              <div>
-                <h2 className="text-2xl text-navy">Why two datasets matter</h2>
-                <p className="mt-2 text-pretty leading-relaxed text-muted">
-                  Together they show the agent is calibrated and specific — many edits on the alarmist
-                  story, far fewer on the already-measured one. A moderator that only ever softens text
-                  would fail the second dataset; a good one keeps the gravity where gravity is due.
-                </p>
+          <Reveal>
+            <Card className="p-6 sm:p-10">
+              <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-start">
+                <span className="grid h-14 w-14 place-items-center rounded-2xl bg-navy text-white">
+                  <Layers className="h-6 w-6" />
+                </span>
+                <div>
+                  <span className="kicker text-deep-teal">The whole argument, in one axis</span>
+                  <h2 className="mt-2 text-2xl text-navy">Why two datasets matter</h2>
+                  <p className="mt-2 max-w-2xl text-pretty leading-relaxed text-muted">
+                    A moderator that only ever softens text would fail the second dataset. Plotted on a
+                    single tone scale, the two runs move in{" "}
+                    <strong className="font-medium text-navy">opposite directions</strong>: measles is
+                    pulled down out of catastrophising, child mortality is pulled up out of false
+                    reassurance, and both land in the same calibrated band.
+                  </p>
+                </div>
               </div>
-            </div>
-          </Card>
+
+              <div className="mt-8 border-t border-hairline pt-8">
+                <ToneAxis rows={toneRows} />
+              </div>
+
+              <p className="mt-6 max-w-3xl text-pretty text-sm leading-relaxed text-muted">
+                Alarmism is an LLM-judge rating where{" "}
+                <strong className="font-medium text-navy">both ends are failures</strong>: 1 is flat and
+                hides the stakes, 5 is manipulative catastrophising. The calibrated band is an editorial
+                range, not a measured threshold, and both human baselines fall inside it.
+              </p>
+            </Card>
+          </Reveal>
         </Container>
       </Section>
 
@@ -101,18 +141,27 @@ function DatasetBlock({ dataset, reversed }: { dataset: Dataset; reversed: boole
       <Card className={`p-5 sm:p-6 ${reversed ? "lg:order-1" : ""}`}>
         <div className="mb-4 flex items-center justify-between">
           <span className="font-mono text-[0.7rem] uppercase tracking-wider text-faint">
-            {dataset.primaryLabel} vs {dataset.secondaryLabel}
+            {dataset.yearRange} · shared timeline
           </span>
         </div>
-        <DatasetChart dataset={dataset} height={300} />
-        <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-hairline pt-4 text-xs text-muted">
-          <span className="inline-flex items-center gap-2">
-            <span className="h-2.5 w-4 rounded-full bg-alarm" /> {dataset.primaryLabel} ({dataset.primaryUnit})
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <span className="h-2.5 w-4 rounded-full bg-brand-blue" /> {dataset.secondaryLabel} ({dataset.secondaryUnit})
-          </span>
-        </div>
+        <StoryChart dataset={dataset} height={340} />
+
+        {dataset.countryYears && dataset.countryMetrics && dataset.countryStats && (
+          <div className="mt-5 border-t border-hairline pt-5">
+            <CountryMap
+              years={dataset.countryYears}
+              metrics={dataset.countryMetrics}
+              stats={dataset.countryStats}
+              sourceNote={dataset.countrySourceNote}
+            />
+          </div>
+        )}
+
+        <p className="mt-4 border-t border-hairline pt-4 text-xs leading-relaxed text-muted">
+          Two panels on one timeline rather than two y-axes on one plot: a dual axis lets the
+          two lines be slid into any apparent relationship, which is the inference our own
+          fact-checker flags the model for making.
+        </p>
       </Card>
     </div>
   );

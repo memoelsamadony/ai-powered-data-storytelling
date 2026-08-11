@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-"""Assemble every baseline story into one combined JSON file.
+"""Assemble the BRIEF.md human submissions into one combined JSON file.
 
-Run this AFTER editing the drafts in ``llm-drafts/``. It walks two directories:
+It walks exactly one directory, ``stories/``, and writes ``baselines.json``
+next to this script, recomputing every word count with the shared counter.
 
-* ``llm-drafts/``  - LLM-drafted reference stories (source: "llm-draft")
-* ``stories/``     - genuine human submissions per BRIEF.md (source: "human")
+Two sibling sets are deliberately NOT read here:
 
-and writes ``baselines.json`` next to this script. For every draft it
-recomputes the word count with the shared counter and compares the current
-story hash against the ``original_story_sha256`` recorded at generation time,
-so an edited draft is labelled ``edited: true`` automatically. Provenance is
-carried into every entry on purpose: once a story passes through
-``manage.py set_human`` the run record cannot tell a human story from an
-LLM-drafted one, so this file is where that distinction survives.
+* ``llm-drafts/`` held 25 model-drafted stories and was deleted on 2026-08-12
+  (hashes in ``DELETED-LLM-DRAFTS.md``). Mixing machine text into a file named
+  baselines.json only ever created a chance to forget which rows were which.
+* ``pilot-stories/`` holds hand-rewrites of those drafts. Its own README bars
+  it from this script and from the ``H`` computation in ASSIGNMENT.md S6,
+  because the writers saw a machine draft first. Score it with
+  ``experiments/score_human_baselines.py``, which keeps that caveat attached.
+
+So every entry in ``baselines.json`` is a blind, from-scratch human story, and
+a similarity metric computed against this file means what its name says.
 
     python3 experiments/human-baselines/build_baselines_json.py
 """
@@ -56,22 +59,12 @@ def load_dir(directory: Path, source: str) -> list[dict]:
         fm, headline, body = split_story(text)
         meta = parse_frontmatter(fm)
         sha = story_sha256(headline, body)
-        # The frontmatter records a 12-char prefix of the hash at generation
-        # time, so an unedited draft matches by prefix, not full equality.
-        original = meta.get("original_story_sha256", "")
-        edited = bool(original) and not sha.startswith(original)
         words = count_words(text)
-        if source == "llm-draft":
-            provenance = ("claude-draft, human-edited" if edited
-                          else "claude-draft, UNEDITED")
-        else:
-            provenance = "human-written per BRIEF.md"
         entries.append({
             "id": path.stem,
             "file": str(path.relative_to(HERE.parent.parent)),
             "source": source,
-            "provenance": provenance,
-            "edited": edited,
+            "provenance": "human-written per BRIEF.md",
             "series": meta.get("series", path.stem.split("__")[0]),
             "writer": meta.get("writer", path.stem.split("__")[-1]),
             "persona": meta.get("persona"),
@@ -81,36 +74,24 @@ def load_dir(directory: Path, source: str) -> list[dict]:
             "word_count_in_range": ACCEPTED[0] <= words <= ACCEPTED[1],
             "datapack": meta.get("datapack"),
             "datapack_sha256": meta.get("datapack_sha256"),
-            "original_story_sha256": original or None,
             "story_sha256": sha,
         })
     return entries
 
 
 def main() -> int:
-    baselines = []
-    baselines += load_dir(HERE / "llm-drafts", "llm-draft") if (HERE / "llm-drafts").is_dir() else []
-    baselines += load_dir(HERE / "stories", "human") if (HERE / "stories").is_dir() else []
+    baselines = load_dir(HERE / "stories", "human") if (HERE / "stories").is_dir() else []
     if not baselines:
-        print("no stories found in llm-drafts/ or stories/")
+        print("no stories in stories/ yet; the blind track is still being collected")
         return 1
 
-    unedited = [b["id"] for b in baselines
-                if b["source"] == "llm-draft" and not b["edited"]]
     out = {
         "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "note": ("LLM-drafted entries are a model-authored reference set "
-                 "(Claude Opus subagents, one isolated context per story, "
-                 "construct-free pack-only prompt). They are NOT independent "
-                 "human baselines in the sense of BRIEF.md; similarity metrics "
-                 "computed against them measure distance to (edited) Claude "
-                 "text. Entries from stories/ are the genuine human track."),
-        "counts": {
-            "total": len(baselines),
-            "llm_drafts": sum(1 for b in baselines if b["source"] == "llm-draft"),
-            "human": sum(1 for b in baselines if b["source"] == "human"),
-            "llm_drafts_unedited": len(unedited),
-        },
+        "note": ("Every entry is a blind, from-scratch human submission under "
+                 "BRIEF.md. The model-drafted set was deleted (see "
+                 "DELETED-LLM-DRAFTS.md) and the hand-rewritten pilot set is "
+                 "scored separately, so nothing machine-originated is in here."),
+        "counts": {"total": len(baselines), "human": len(baselines)},
         "baselines": baselines,
     }
     dest = HERE / "baselines.json"
@@ -119,13 +100,7 @@ def main() -> int:
     print(f"wrote {dest} ({len(baselines)} stories)")
     for b in baselines:
         flag = "" if b["word_count_in_range"] else "  <-- OUTSIDE 110-170"
-        print(f"  {b['id']:<34} {b['source']:<9} edited={str(b['edited']):<5} "
-              f"{b['word_count']} words{flag}")
-    if unedited:
-        print(f"\nWARNING: {len(unedited)} LLM draft(s) are byte-identical to "
-              "the generated original (no human edit yet):")
-        for name in unedited:
-            print(f"  - {name}")
+        print(f"  {b['id']:<34} {b['source']:<9} {b['word_count']} words{flag}")
     return 0
 
 

@@ -1,5 +1,6 @@
 "use client";
 
+import * as t from "@/lib/charts/tokens";
 import {
   Bar,
   BarChart,
@@ -12,8 +13,10 @@ import {
   YAxis,
 } from "recharts";
 
-const mono = { fontFamily: "var(--font-plex-mono)", fontSize: 11, fill: "#8493a5" };
-const toneColor: Record<string, string> = { bad: "#e0392b", warn: "#e8a33d", good: "#0e8f86" };
+const mono = t.monoTick;
+/* Series identity, not status: these are model rows, so they wear categorical
+   hues. Status tokens stay reserved for fact-check state (contract item 3). */
+const toneColor: Record<string, string> = { bad: t.alarm, warn: t.amber, good: t.calm };
 
 function ChartTooltip({
   active,
@@ -57,13 +60,13 @@ export function FaithfulnessChart({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart layout="vertical" data={data} margin={{ top: 4, right: 44, bottom: 4, left: 8 }}>
-        <CartesianGrid stroke="#d9dfe7" strokeDasharray="3 4" horizontal={false} />
+        <CartesianGrid stroke={t.grid} horizontal={false} />
         <XAxis type="number" domain={[0, 100]} tick={mono} tickLine={false} axisLine={false} unit="%" />
-        <YAxis type="category" dataKey="model" tick={{ ...mono, fontSize: 12, fill: "#0f172a" }} tickLine={false} axisLine={false} width={96} />
-        <Tooltip cursor={{ fill: "#eef4f8" }} content={<ChartTooltip suffix="%" />} />
+        <YAxis type="category" dataKey="model" tick={{ ...mono, fontSize: 12, fill: t.ink }} tickLine={false} axisLine={false} width={96} />
+        <Tooltip cursor={{ fill: t.surfaceSoft }} content={<ChartTooltip suffix="%" />} />
         <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={26} name="Error rate">
           {data.map((d, i) => (
-            <Cell key={i} fill={toneColor[d.tone] ?? "#1e66b8"} />
+            <Cell key={i} fill={toneColor[d.tone] ?? t.brandBlue} />
           ))}
           <LabelList dataKey="value" position="right" formatter={(v) => `${v}%`} style={mono} />
         </Bar>
@@ -88,17 +91,17 @@ export function OperationChart({
     <div>
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={data} margin={{ top: 16, right: 8, bottom: 4, left: -16 }}>
-          <CartesianGrid stroke="#d9dfe7" strokeDasharray="3 4" vertical={false} />
-          <XAxis dataKey="op" tick={{ ...mono, fontSize: 11 }} tickLine={false} axisLine={{ stroke: "#d9dfe7" }} />
+          <CartesianGrid stroke={t.grid} vertical={false} />
+          <XAxis dataKey="op" tick={{ ...mono, fontSize: 11 }} tickLine={false} axisLine={t.axisLineProps} />
           <YAxis domain={[0, 100]} tick={mono} tickLine={false} axisLine={false} unit="%" />
-          <Tooltip cursor={{ fill: "#eef4f8" }} content={<ChartTooltip suffix="%" />} />
-          <Bar dataKey="small" name={smallLabel} fill="#9cc2e8" radius={[5, 5, 0, 0]} barSize={20} />
-          <Bar dataKey="large" name={largeLabel} fill="#1e66b8" radius={[5, 5, 0, 0]} barSize={20} />
+          <Tooltip cursor={{ fill: t.surfaceSoft }} content={<ChartTooltip suffix="%" />} />
+          <Bar dataKey="small" name={smallLabel} fill={t.brandBlueLight} radius={[5, 5, 0, 0]} barSize={20} />
+          <Bar dataKey="large" name={largeLabel} fill={t.brandBlue} radius={[5, 5, 0, 0]} barSize={20} />
         </BarChart>
       </ResponsiveContainer>
       <div className="mt-3 flex items-center justify-center gap-6 text-xs text-muted">
-        <Legend color="#9cc2e8" label={smallLabel} />
-        <Legend color="#1e66b8" label={largeLabel} />
+        <Legend color={t.brandBlueLight} label={smallLabel} />
+        <Legend color={t.brandBlue} label={largeLabel} />
       </div>
     </div>
   );
@@ -107,7 +110,7 @@ export function OperationChart({
 /* Generic single-series vertical bars (masked numbers, text similarity). */
 export function SimpleBarChart({
   data,
-  color = "#1e66b8",
+  color = t.brandBlue,
   domainMax = 100,
   suffix = "",
   decimals = 0,
@@ -123,10 +126,10 @@ export function SimpleBarChart({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} margin={{ top: 20, right: 8, bottom: 4, left: -16 }}>
-        <CartesianGrid stroke="#d9dfe7" strokeDasharray="3 4" vertical={false} />
-        <XAxis dataKey="label" tick={{ ...mono, fontSize: 11 }} tickLine={false} axisLine={{ stroke: "#d9dfe7" }} />
+        <CartesianGrid stroke={t.grid} vertical={false} />
+        <XAxis dataKey="label" tick={{ ...mono, fontSize: 11 }} tickLine={false} axisLine={t.axisLineProps} />
         <YAxis domain={[0, domainMax]} tick={mono} tickLine={false} axisLine={false} />
-        <Tooltip cursor={{ fill: "#eef4f8" }} content={<ChartTooltip suffix={suffix} />} />
+        <Tooltip cursor={{ fill: t.surfaceSoft }} content={<ChartTooltip suffix={suffix} />} />
         <Bar dataKey="value" fill={color} radius={[6, 6, 0, 0]} barSize={48}>
           <LabelList
             dataKey="value"

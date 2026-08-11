@@ -78,8 +78,10 @@ Not for your series, not for any other. During the writing window, do not open:
 
 - `RESULTS.md` Part B, and especially §B3, which is a complete machine-written story on one
   of these series, with its headline and a table of rewritten phrases;
-- `experiments/human-baselines/llm-drafts/`, which holds 25 machine-drafted stories on
-  exactly your series - reading even one of them before you submit poisons your story;
+- `experiments/human-baselines/pilot-stories/`, whose 25 stories began life as machine
+  drafts on exactly your series - reading even one of them before you submit poisons
+  your story. (The machine drafts themselves are deleted, but these still carry their
+  framing.)
 - `backend/storytelling/agents.py`, which contains the instructions the machine writer is
   given;
 - `emotional-tone-moderation/pipeline.py`, `lib/data/`, or any demo story in the frontend;

@@ -60,8 +60,8 @@ export function ToneToggle({
           )}
         />
         {tone === "alarmist"
-          ? "Manipulative urgency — technically defensible, emotionally loaded."
-          : "Measured framing — the urgency stays, the manipulation goes."}
+          ? "Manipulative urgency: technically defensible, emotionally loaded."
+          : "Measured framing: the urgency stays, the manipulation goes."}
       </div>
     </div>
   );

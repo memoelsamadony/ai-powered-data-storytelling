@@ -8,51 +8,66 @@ Opus 5, applied blind offline (`export_for_judging.py`).
 
 | dataset | tier | generator | moderator | local judge | self-judging? | s |
 |---|---|---|---|---|---|---|
-| measles | `mid` | `llama3.1:8b` | `gemma4:31b` | `gemma4:31b` | **yes** | 612 |
-| pertussis-global | `mid` | `llama3.1:8b` | `gemma4:31b` | `gemma4:31b` | **yes** | 284 |
-| pertussis-global | `m31b-selfjudge` | `llama3.1:8b` | `gemma4:31b` | `gemma4:31b` | **yes** | 262 |
-| pertussis-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 266 |
-| pertussis-global | `g1b` | `llama3.2:1b` | `gemma4:31b` | `qwen3.5:4b` | no | 214 |
-| pertussis-global | `g3b` | `llama3.2:3b` | `gemma4:31b` | `qwen3.5:4b` | no | 254 |
-| pertussis-global | `g4b` | `qwen3.5:4b` | `gemma4:31b` | `qwen3.5:4b` | no | 188 |
-| pertussis-global | `m12b` | `llama3.1:8b` | `gemma4:12b` | `qwen3.5:4b` | no | 308 |
-| pertussis-global | `m26b` | `llama3.1:8b` | `gemma4:26b` | `qwen3.5:4b` | no | 90 |
-| measles | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 228 |
-| mumps-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 251 |
-| diphtheria-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 309 |
-| under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 295 |
-| under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 738 |
-| under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 234 |
-| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | `qwen3.5:4b` | no | 86 |
-| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | `qwen3.5:4b` | no | 80 |
-| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | `qwen3.5:4b` | no | 224 |
-| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | `qwen3.5:4b` | no | 225 |
-| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | `qwen3.5:4b` | no | 257 |
+| measles | `mid` | `llama3.1:8b` | `gemma4:31b` | `gemma4:31b` | **yes** | 618 |
+| pertussis-global | `mid` | `llama3.1:8b` | `gemma4:31b` | `gemma4:31b` | **yes** | 290 |
+| pertussis-global | `m31b-selfjudge` | `llama3.1:8b` | `gemma4:31b` | `gemma4:31b` | **yes** | 268 |
+| pertussis-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 273 |
+| pertussis-global | `g1b` | `llama3.2:1b` | `gemma4:31b` | `qwen3.5:4b` | no | 222 |
+| pertussis-global | `g3b` | `llama3.2:3b` | `gemma4:31b` | `qwen3.5:4b` | no | 262 |
+| pertussis-global | `g4b` | `qwen3.5:4b` | `gemma4:31b` | `qwen3.5:4b` | no | 195 |
+| pertussis-global | `m12b` | `llama3.1:8b` | `gemma4:12b` | `qwen3.5:4b` | no | 314 |
+| pertussis-global | `m26b` | `llama3.1:8b` | `gemma4:26b` | `qwen3.5:4b` | no | 98 |
+| measles | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 234 |
+| mumps-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 256 |
+| diphtheria-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 315 |
+| under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 302 |
+| under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 745 |
+| under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 240 |
+| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | `qwen3.5:4b` | no | 92 |
+| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | `qwen3.5:4b` | no | 90 |
+| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | `qwen3.5:4b` | no | 229 |
+| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | `qwen3.5:4b` | no | 230 |
+| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | `qwen3.5:4b` | no | 263 |
 
-## B. Tone
+## B. Tone, by both judges
 
-| dataset | tier | generator | moderator | raw | moderated | delta | spans |
-|---|---|---|---|---|---|---|---|
-| measles | `mid` | `llama3.1:8b` | `gemma4:31b` | 2.0 | 2.0 | 0.0 | 8 |
-| pertussis-global | `mid` | `llama3.1:8b` | `gemma4:31b` | 3.5 | 3.0 | -0.5 | 10 |
-| pertussis-global | `m31b-selfjudge` | `llama3.1:8b` | `gemma4:31b` | 4.0 | 2.0 | -2.0 | 8 |
-| pertussis-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | 3.0 | 2.0 | -1.0 | 8 |
-| pertussis-global | `g1b` | `llama3.2:1b` | `gemma4:31b` | 4.0 | 2.0 | -2.0 | 6 |
-| pertussis-global | `g3b` | `llama3.2:3b` | `gemma4:31b` | 4.0 | 3.0 | -1.0 | 8 |
-| pertussis-global | `g4b` | `qwen3.5:4b` | `gemma4:31b` | 4.5 | 3.0 | -1.5 | 5 |
-| pertussis-global | `m12b` | `llama3.1:8b` | `gemma4:12b` | 3.0 | 1.5 | -1.5 | 6 |
-| pertussis-global | `m26b` | `llama3.1:8b` | `gemma4:26b` | 3.0 | 2.0 | -1.0 | 5 |
-| measles | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.0 | 2.0 | 0.0 | 9 |
-| mumps-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | 1.5 | 2.0 | 0.5 | 8 |
-| diphtheria-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | 3.0 | 2.0 | -1.0 | 7 |
-| under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.0 | 2.0 | 0.0 | 6 |
-| under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.0 | 2.0 | 0.0 | 6 |
-| under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 1.5 | 2.0 | 0.5 | 5 |
-| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | 3.0 | 2.0 | -1.0 | 7 |
-| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | 3.0 | 2.0 | -1.0 | 5 |
-| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | 4.5 | 3.0 | -1.5 | 5 |
-| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | 4.0 | 3.0 | -1.0 | 7 |
-| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | 4.0 | 4.0 | 0.0 | 10 |
+The Opus columns are the authoritative rating: a blind call per story,
+no label, no sibling to compare against, a vendor and family that
+appear nowhere else in the pipeline. The local columns are the cheap
+in-pipeline rater, kept so the two can be compared rather than because
+either alone is trusted.
+
+| dataset | tier | generator | moderator | opus raw | opus mod | **opus delta** | local raw | local mod | local delta | spans |
+|---|---|---|---|---|---|---|---|---|---|---|
+| measles | `mid` | `llama3.1:8b` | `gemma4:31b` | 2.4 | 2.3 | **-0.1** | 2.0 | 2.0 | 0.0 | 8 |
+| pertussis-global | `mid` | `llama3.1:8b` | `gemma4:31b` | 4.0 | 2.6 | **-1.4** | 3.5 | 3.0 | -0.5 | 10 |
+| pertussis-global | `m31b-selfjudge` | `llama3.1:8b` | `gemma4:31b` | 3.7 | 2.3 | **-1.4** | 4.0 | 2.0 | -2.0 | 8 |
+| pertussis-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | 3.7 | 2.3 | **-1.4** | 3.0 | 2.0 | -1.0 | 8 |
+| pertussis-global | `g1b` | `llama3.2:1b` | `gemma4:31b` | 4.0 | 2.0 | **-2.0** | 4.0 | 2.0 | -2.0 | 6 |
+| pertussis-global | `g3b` | `llama3.2:3b` | `gemma4:31b` | 4.5 | 2.5 | **-2.0** | 4.0 | 3.0 | -1.0 | 8 |
+| pertussis-global | `g4b` | `qwen3.5:4b` | `gemma4:31b` | 4.3 | 2.0 | **-2.3** | 4.5 | 3.0 | -1.5 | 5 |
+| pertussis-global | `m12b` | `llama3.1:8b` | `gemma4:12b` | 3.7 | 2.3 | **-1.4** | 3.0 | 1.5 | -1.5 | 6 |
+| pertussis-global | `m26b` | `llama3.1:8b` | `gemma4:26b` | 3.8 | 2.0 | **-1.8** | 3.0 | 2.0 | -1.0 | 5 |
+| measles | `g8b` | `llama3.1:8b` | `gemma4:31b` | 1.5 | 1.8 | **+0.3** | 2.0 | 2.0 | 0.0 | 9 |
+| mumps-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.5 | 1.8 | **-0.7** | 1.5 | 2.0 | 0.5 | 8 |
+| diphtheria-global | `g8b` | `llama3.1:8b` | `gemma4:31b` | 3.4 | 2.4 | **-1.0** | 3.0 | 2.0 | -1.0 | 7 |
+| under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 3.2 | 2.5 | **-0.7** | 2.0 | 2.0 | 0.0 | 6 |
+| under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.4 | 2.5 | **+0.1** | 2.0 | 2.0 | 0.0 | 6 |
+| under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.2 | 2.5 | **+0.3** | 1.5 | 2.0 | 0.5 | 5 |
+| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | 3.8 | 2.0 | **-1.8** | 3.0 | 2.0 | -1.0 | 7 |
+| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | 3.7 | 1.5 | **-2.2** | 3.0 | 2.0 | -1.0 | 5 |
+| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | 4.3 | 2.0 | **-2.3** | 4.5 | 3.0 | -1.5 | 5 |
+| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | 4.5 | 2.5 | **-2.0** | 4.0 | 3.0 | -1.0 | 7 |
+| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | 4.7 | 2.5 | **-2.2** | 4.0 | 4.0 | 0.0 | 10 |
+
+### B1. Do the two judges agree?
+
+- Ratings compared: **40** (every raw and moderated story).
+- Pearson r between local and Opus ratings: **0.79**.
+- Mean absolute difference: **0.52** points on a 1-5 scale.
+- Mean rating: local **2.70**, Opus **2.86**.
+- Mean moderation delta: local **-0.75**, Opus **-1.30** (Pearson r between the two deltas: **0.69**).
+- Runs where the local judge understated the shift by more than 0.25 points: **12 of 20**.
 
 ## C. Faithfulness of the moderation
 

@@ -21,11 +21,13 @@ the results are not over-claimed:
    decides which story is shown first, and the mapping lives in the key file,
    so a position effect can be measured instead of assumed.
 
-2. **No gold reference story exists.** The published protocol hands the judge a
-   reference story. This project has no human baselines yet
-   (`human-baselines/stories/` is empty), so the judge works from the evidence
-   pack alone. That makes "Relevance and Informativeness" a weaker criterion
-   here than in the paper, and it is flagged in the output rather than hidden.
+2. **No gold reference story is shown.** The published protocol hands the
+   judge a reference story. The only human set in this repo,
+   `human-baselines/pilot-stories/`, was hand-rewritten *from* the machine
+   drafts, so handing it to the judge would be comparing the machine against an
+   edited version of itself. The judge therefore works from the evidence pack
+   alone, which makes "Relevance and Informativeness" a weaker criterion here
+   than in the paper. Flagged in the output rather than hidden.
 
 The fifth published criterion, *Visualization Specification Quality*, is
 reported as not-applicable: this pipeline produces prose, and the charts are
@@ -108,6 +110,89 @@ def build() -> tuple[list[dict], list[dict]]:
     return items, key
 
 
+PAIRWISE_SYSTEM = (
+    "You are an impartial evaluator of data journalism. You compare two stories "
+    "written from the same data and decide which is better on each criterion, or "
+    "whether they tie. You have no information about how either story was "
+    "produced and must not speculate. You reply with JSON and nothing else."
+)
+
+PAIRWISE_PROMPT = """Two stories were written from the same data. Compare them.
+
+--- DATA ---
+{table}
+
+--- STORY 1 ---
+{s1_headline}
+
+{s1_body}
+
+--- STORY 2 ---
+{s2_headline}
+
+{s2_body}
+
+For each criterion, answer "story_1", "story_2" or "tie":
+
+{criteria}
+
+Then give an "overall" verdict on the same three-way choice.
+
+Reply with exactly this JSON and nothing else:
+{{"criteria": {{{keys}}}, "overall": "<story_1|story_2|tie>",
+  "rationale": "<one or two sentences>"}}"""
+
+
+def judge_pairs(workers: int = 3, model: str = "opus") -> int:
+    """Run the pairwise comparison through the backend's CLI judge.
+
+    The judge is given two stories and the table, and is told nothing about
+    where either came from. Which of the two is the moderated one is decided by
+    the position coin flip in ``build()`` and lives only in the key file, so a
+    verdict cannot be a response to the label.
+    """
+    from concurrent.futures import ThreadPoolExecutor
+    from storytelling import judge as judge_mod
+
+    if not judge_mod.is_available():
+        print("the 'claude' CLI is not on PATH", file=sys.stderr)
+        return 1
+    items = json.loads((HERE / "pairwise_items.json").read_text())["items"]
+    criteria_block = "\n".join(f"- {k}: {v}" for k, v in CRITERIA.items())
+    keys_block = ", ".join(f'"{k}": "<story_1|story_2|tie>"' for k in CRITERIA)
+
+    def one(item: dict) -> dict:
+        prompt = PAIRWISE_PROMPT.format(
+            table=item["data_table"],
+            s1_headline=item["story_1"]["headline"], s1_body=item["story_1"]["body"],
+            s2_headline=item["story_2"]["headline"], s2_body=item["story_2"]["body"],
+            criteria=criteria_block, keys=keys_block,
+        )
+        try:
+            reply, cost, _s = judge_mod.run_cli(prompt, model=model, system=PAIRWISE_SYSTEM)
+            v = judge_mod._extract_json(reply)
+            return {"pair_id": item["pair_id"], "criteria": v.get("criteria", {}),
+                    "overall": v.get("overall"), "rationale": v.get("rationale", ""),
+                    "cost_usd": cost}
+        except judge_mod.JudgeUnavailable as exc:
+            return {"pair_id": item["pair_id"], "criteria": {}, "overall": None,
+                    "error": str(exc)}
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        verdicts = list(pool.map(one, items))
+
+    failed = [v for v in verdicts if v.get("error")]
+    spend = sum(v.get("cost_usd") or 0 for v in verdicts)
+    dest = HERE / "pairwise_results.json"
+    dest.write_text(json.dumps(
+        {"judge": f"claude/{model}", "blind": True, "position_seed": POSITION_SEED,
+         "n": len(verdicts), "failed": len(failed), "cost_usd": round(spend, 4),
+         "verdicts": verdicts}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"wrote {dest.name}: {len(verdicts)} pairs, {len(failed)} failed, "
+          f"${spend:.2f} list-price equivalent")
+    return score(dest)
+
+
 def score(results_path: Path) -> int:
     """Aggregate judge verdicts into win rates, and check for position bias."""
     key = {k["pair_id"]: k for k in
@@ -179,17 +264,24 @@ def score(results_path: Path) -> int:
             print(f"{t:<20}{d['moderated']:>10}{d['raw']:>10}{d['tie']:>10}")
 
     print("\nNot scored: " + NOT_APPLICABLE["visualization_quality"])
-    print("No gold reference story exists (human-baselines/stories/ is empty), "
-          "so the judge worked from the evidence pack alone.")
+    print("No gold reference story was shown to the judge: the human pilot set "
+          "is hand-rewritten from machine drafts,")
+    print("  so using it as the gold reference would compare the machine with "
+          "an edited version of itself.")
     return 0
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--score", type=Path, help="aggregate a judge results file")
+    ap.add_argument("--judge", action="store_true",
+                    help="run the comparison through the Claude CLI, then score it")
+    ap.add_argument("--workers", type=int, default=3)
     a = ap.parse_args()
     if a.score:
         return score(a.score)
+    if a.judge:
+        return judge_pairs(workers=a.workers)
     items, key = build()
     if not items:
         print("no completed runs to pair")

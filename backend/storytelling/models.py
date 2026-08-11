@@ -50,6 +50,16 @@ class Run(models.Model):
     # Stage 3 - the separate factual check
     factual_check = models.JSONField(default=list, blank=True)
 
+    # An independent judge, run through the Claude CLI rather than Ollama.
+    # Kept in their own fields, never overwriting the local judge's numbers:
+    # on several tiers the local judge and the moderator are the same model, and
+    # measuring that self-assessment bias needs both scores side by side.
+    opus_raw_alarmism = models.FloatField(null=True, blank=True)
+    opus_moderated_alarmism = models.FloatField(null=True, blank=True)
+    opus_rationale = models.TextField(blank=True)
+    opus_model = models.CharField(max_length=64, blank=True)
+    opus_cost_usd = models.FloatField(null=True, blank=True)
+
     # The human baseline, submitted from the interface (task (c) in the report).
     human_text = models.TextField(blank=True)
     human_title = models.CharField(max_length=300, blank=True)

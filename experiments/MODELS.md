@@ -3,12 +3,17 @@
 Two entirely separate model populations are involved, and conflating them is the
 easiest mistake a reader of this repo can make.
 
-- **Local Ollama models** are the *object of study*. They generate, moderate,
-  judge and fact-check the stories. Every number in `RESULTS.md` comes from
-  them.
-- **Claude (Opus, via subagents)** is *tooling*. It wrote the 25 reference
-  stories in `experiments/human-baselines/llm-drafts/`, and it wrote the code.
-  It never appears in the pipeline and never rates anything.
+- **Local Ollama models** are the *object of study*. They generate, moderate
+  and fact-check the stories, and they carry a cheap secondary tone rating.
+- **Claude Opus** now has two distinct jobs, and the split matters:
+  - as the **authoritative tone judge**, called from
+    `backend/storytelling/judge.py` through the `claude` CLI. It never
+    generates or moderates, so it grades no work of its own, and it is a
+    different vendor and family from everything it grades.
+  - as **tooling** that wrote the code. It also drafted a 25-story reference
+    set that was deleted on 2026-08-12
+    (`experiments/human-baselines/DELETED-LLM-DRAFTS.md`); the reference set is
+    now human-written.
 
 ---
 

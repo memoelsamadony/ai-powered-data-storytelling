@@ -98,7 +98,11 @@ TIERS: dict[str, Tier] = {
         ),
         generator="qwen3.5:4b",
         moderator="gemma4:12b",
-        judge="gemma4:12b",
+        # gemma4:12b is the moderator here, so it cannot also be the judge: that
+        # is the self-assessment this project measures rather than commits. The
+        # local judge is a different family, and the authoritative rating comes
+        # from the Claude CLI judge in judge.py.
+        judge="qwen3.5:4b",
         sizes={"qwen3.5:4b": 2.6, "gemma4:12b": 8.1},
     ),
     "mid": Tier(
