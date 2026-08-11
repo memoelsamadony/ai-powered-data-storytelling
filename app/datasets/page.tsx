@@ -118,7 +118,9 @@ export default async function DatasetsPage() {
                 Alarmism is an LLM-judge rating where{" "}
                 <strong className="font-medium text-navy">both ends are failures</strong>: 1 is flat and
                 hides the stakes, 5 is manipulative catastrophising. The calibrated band is an editorial
-                range, not a measured threshold, and both human baselines fall inside it.
+                range, not a measured threshold. The WHO human baseline sits inside it at 2.8;
+                the measles one is judged 3.2, just outside and above the moderated LLM story
+                &mdash; the human author is the more alarmist of the two on that dataset.
               </p>
             </Card>
           </Reveal>
