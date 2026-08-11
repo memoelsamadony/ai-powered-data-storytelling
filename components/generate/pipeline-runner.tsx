@@ -9,38 +9,36 @@ import {
   PenLine,
   Scale,
   ShieldCheck,
-  ArrowRight,
-  AlertTriangle,
   RotateCcw,
 } from "lucide-react";
-import type { StorySet, FactStatus } from "@/lib/data/stories";
+import type { StorySet } from "@/lib/data/stories";
+import type { Dataset } from "@/lib/data/datasets";
 import { pipelineStages, type StageId } from "@/lib/data/pipeline";
 import { Typewriter } from "@/components/generate/typewriter";
-import { AlarmismMeter } from "@/components/alarmism-meter";
+import { AlarmismMeter, humanBand } from "@/components/alarmism-meter";
+import { StoryChart } from "@/components/charts/story-chart";
+import { Redline } from "@/components/story/redline";
+import { FactCheckGutter } from "@/components/story/fact-check-gutter";
 import { cn } from "@/lib/utils";
 
 type Phase = "idle" | "generate" | "moderate" | "factcheck" | "done";
 
 const stageIcons = { generate: PenLine, moderate: Scale, factcheck: ShieldCheck } as const;
 
-const factTone: Record<FactStatus, { className: string; icon: typeof Check; label: string }> = {
-  verified: { className: "text-calm border-calm/30 bg-calm-soft/50", icon: Check, label: "Verified" },
-  flagged: { className: "text-alarm border-alarm/30 bg-alarm-soft/50", icon: AlertTriangle, label: "Flagged" },
-  corrected: { className: "text-brand-blue border-brand-blue/30 bg-brand-blue/5", icon: RotateCcw, label: "Corrected" },
-};
-
 export function PipelineRunner({
   story,
+  dataset,
   stages,
   models,
   onComplete,
   onReset,
 }: {
   story: StorySet;
+  dataset: Dataset;
   /**
    * When supplied, each stage is awaited against the real backend and the phase
    * advances when that stage actually finishes. Without it the component keeps
-   * its original timed behaviour over mock data.
+   * its timed behaviour over mock data.
    */
   stages?: {
     generate: () => Promise<StorySet>;
@@ -59,6 +57,8 @@ export function PipelineRunner({
 
   // Render whatever the backend has produced so far; fall back to the mock.
   const view = live ?? story;
+  const band = humanBand(view.human.alarmismRating);
+
   const rawBody = view.aiRaw.paragraphs.join("\n\n");
 
   const stageState = (id: keyof typeof stageIcons): "pending" | "running" | "done" => {
@@ -192,8 +192,14 @@ export function PipelineRunner({
         </div>
       )}
 
-      {/* Generation output */}
+      {/* Once the run starts, the data stays on screen beside every stage —
+          the chart is no longer a dataset preview that vanishes (defect D2). */}
       {phase !== "idle" && (!isLive || live) && (
+        <div className="grid gap-6 lg:grid-cols-[1fr_310px] lg:items-start">
+          <div className="min-w-0 space-y-6">
+
+      {/* Generation output */}
+      {(
         <OutputCard
           accent="alarm"
           icon={PenLine}
@@ -210,7 +216,7 @@ export function PipelineRunner({
           />
           {phase !== "generate" && (
             <div className="mt-5 border-t border-hairline pt-4">
-              <AlarmismMeter value={view.aiRaw.alarmismRating} size="sm" />
+              <AlarmismMeter value={view.aiRaw.alarmismRating} band={band} size="sm" />
             </div>
           )}
         </OutputCard>
@@ -231,37 +237,18 @@ export function PipelineRunner({
               author={view.aiModerated.author}
             >
               <h3 className="font-serif text-xl text-navy">{view.aiModerated.title}</h3>
-              <div className="mt-3 space-y-3">
-                {view.aiModerated.paragraphs.map((p, i) => (
-                  <p key={i} className="font-serif text-[0.975rem] leading-relaxed text-ink/85">
-                    {p}
-                  </p>
-                ))}
-              </div>
 
-              <div className="mt-5 rounded-xl border border-hairline bg-surface-soft/50 p-4">
-                <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                  {view.emotiveSpans.length} emotive spans rebalanced
-                </p>
-                <ul className="mt-3 space-y-2">
-                  {view.emotiveSpans.slice(0, 4).map((s, i) => (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.15 + i * 0.12 }}
-                      className="flex flex-wrap items-center gap-2 text-sm"
-                    >
-                      <span className="text-alarm line-through decoration-alarm/50">{s.text}</span>
-                      <ArrowRight className="h-3.5 w-3.5 text-faint" />
-                      <span className="font-medium text-calm">{s.replacement}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
+              {/* G6 — the edits marked in place, rather than a list of four of
+                  them that makes the reader re-find each phrase in the prose. */}
+              <Redline variant={view.aiRaw} spans={view.emotiveSpans} className="mt-4" />
 
               <div className="mt-5 border-t border-hairline pt-4">
-                <AlarmismMeter value={view.aiModerated.alarmismRating} size="sm" />
+                <AlarmismMeter
+                  value={view.aiModerated.alarmismRating}
+                  before={view.aiRaw.alarmismRating}
+                  band={band}
+                  size="sm"
+                />
               </div>
             </OutputCard>
           </motion.div>
@@ -281,38 +268,25 @@ export function PipelineRunner({
                 A tone agent is not a fact-checker. Here, the moderator silently re-grounded a
                 hallucinated number without flagging it — so a separate pass audits every claim.
               </p>
-              <ul className="mt-4 space-y-3">
-                {view.factualCheck.map((f, i) => {
-                  const t = factTone[f.status];
-                  const Icon = t.icon;
-                  return (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 + i * 0.15 }}
-                      className={cn("flex gap-3 rounded-xl border p-3.5", t.className)}
-                    >
-                      <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white/70">
-                        <Icon className="h-3.5 w-3.5" />
-                      </span>
-                      <div>
-                        <p className="text-sm font-medium text-ink">
-                          <span className="font-mono text-[0.7rem] uppercase tracking-wide opacity-70">
-                            {t.label}
-                          </span>{" "}
-                          — {f.claim}
-                        </p>
-                        <p className="mt-1 text-sm leading-relaxed text-muted">{f.note}</p>
-                      </div>
-                    </motion.li>
-                  );
-                })}
-              </ul>
+              {/* G7 — status marks in a gutter, each with an icon and a label. */}
+              <FactCheckGutter items={view.factualCheck} className="mt-4" />
             </OutputCard>
           </motion.div>
         )}
       </AnimatePresence>
+
+          </div>
+
+          <aside className="lg:sticky lg:top-24">
+            <div className="rounded-2xl border border-hairline bg-surface p-4">
+              <p className="mb-3 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                The data · {dataset.yearRange}
+              </p>
+              <StoryChart dataset={dataset} height={260} compact />
+            </div>
+          </aside>
+        </div>
+      )}
 
       {phase === "done" && (
         <div className="flex items-center justify-between gap-4 rounded-2xl border border-calm/30 bg-calm-soft/40 px-5 py-4">
