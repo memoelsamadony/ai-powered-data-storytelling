@@ -36,7 +36,25 @@ INDICATORS = {
     "under5_mortality": "MDG_0000000007",
     "life_expectancy": "WHOSIS_000001",
 }
-BOTH_SEXES = "SEX_BTSX"
+
+# A GHO fact row is a cell in a cube, and the country-year figure is the one
+# where every other dimension sits on its *total* member. Those members, across
+# both indicators used here:
+#
+#   Dim1  SEX_BTSX               both sexes, against SEX_MLE / SEX_FMLE
+#   Dim2  AGEGROUP_YEARSUNDER5   the mortality indicator's own age group
+#   Dim3  WEALTHQUINTILE_TOTL    the national rate, against WQ1..WQ5
+#
+# The wealth quintile is the one that cost a rebuild. MDG_0000000007 publishes
+# six rows per country-year for the countries with survey data - the national
+# rate plus five quintiles - and keeping whichever the API returned last gave
+# Nigeria 100.5 for 2010, its *fourth quintile*, where the national rate is
+# 126.3. The series that came out ran 157.9 -> 76.6 -> 100.5 -> 154.5, which is
+# not a mortality trend but a walk across the income distribution. Worse, only
+# countries with quintile data were affected, which is exactly the set of
+# countries the map is about.
+TOTAL_MEMBERS = {"SEX_BTSX", "AGEGROUP_YEARSUNDER5", "WEALTHQUINTILE_TOTL"}
+DIMENSIONS = ("Dim1", "Dim2", "Dim3")
 
 
 def fetch(path: str) -> list[dict]:
@@ -54,14 +72,17 @@ def country_names() -> dict[str, str]:
 
 
 def series(indicator: str) -> dict[tuple[str, int], float]:
-    """(iso3, year) -> value, both sexes only.
+    """(iso3, year) -> the national, both-sexes value.
 
-    The API returns one row per sex; taking all of them would put three
-    different numbers under the same country-year.
+    Every row whose dimensions are not all on their total member is dropped,
+    and a key that arrives twice raises instead of overwriting. That second
+    half is the point: a silent last-wins is what produced a wealth quintile
+    posing as a national rate, and a dimension WHO adds later would do it again
+    without the guard.
     """
     out: dict[tuple[str, int], float] = {}
     for row in fetch(indicator):
-        if row.get("Dim1") not in (BOTH_SEXES, None):
+        if any(row.get(d) not in (None, *TOTAL_MEMBERS) for d in DIMENSIONS):
             continue
         code, year, value = row.get("SpatialDim"), row.get("TimeDim"), row.get("NumericValue")
         kind = row.get("SpatialDimType")
@@ -74,8 +95,16 @@ def series(indicator: str) -> dict[tuple[str, int], float]:
         # need a births denominator this API does not carry).
         if kind == "GLOBAL":
             code = "WORLD"
-        if code and year:
-            out[(code, int(year))] = float(value)
+        if not code or not year:
+            continue
+        key = (code, int(year))
+        if key in out:
+            raise SystemExit(
+                f"{indicator}: two rows for {key} ({out[key]} and {value}). "
+                "A dimension is not being filtered - inspect Dim1/Dim2/Dim3 and "
+                "add its total member to TOTAL_MEMBERS."
+            )
+        out[key] = float(value)
     return out
 
 

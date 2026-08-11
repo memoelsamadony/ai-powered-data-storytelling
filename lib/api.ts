@@ -13,6 +13,11 @@
 import { unstable_rethrow } from "next/navigation";
 
 import { datasets as mockDatasets, getDataset, type Dataset } from "@/lib/data/datasets";
+import type {
+  FaithfulnessResults,
+  MaskedNumberResults,
+  PerOperationResults,
+} from "@/lib/data/metrics";
 import { mergeDatasets, normaliseDataset } from "@/lib/data/merge-datasets";
 import { getStorySet, type FactCheckItem, type StorySet } from "@/lib/data/stories";
 
@@ -179,13 +184,6 @@ export async function generateStory(datasetId: string, tier = "mid"): Promise<Ge
 
 // ------------------------------------------------------------------- results
 
-export interface FaithfulnessPoint {
-  model: string;
-  value: number;
-  note: string;
-  tone: "good" | "warn" | "bad";
-}
-
 export interface Results {
   /** Computed from the runs in the backend's own database. */
   measured: {
@@ -201,13 +199,16 @@ export interface Results {
     factsCheckedN: number;
     stageTimings: { stage: string; model: string; runs: number; medianSeconds: number }[];
   };
-  /** Read from the committed reproduction CSVs, naming its source file. */
-  faithfulness: {
-    caption: string;
-    unit: string;
-    source: string;
-    series: FaithfulnessPoint[];
-  } | null;
+  /**
+   * The reproduction half, read from the committed CSVs and naming its source
+   * file. Identical in shape to `./data/generated/results.generated.ts`, which
+   * is the same three functions snapshotted at build time - the page prefers
+   * the live copy so a re-run reproduction shows up without a rebuild, and
+   * falls back to the snapshot rather than to nothing.
+   */
+  faithfulness: FaithfulnessResults | null;
+  perOperation: PerOperationResults | null;
+  maskedNumber: MaskedNumberResults | null;
   /** Figures the backend deliberately does not serve, and why. */
   unavailable: string[];
 }

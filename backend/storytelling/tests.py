@@ -12,11 +12,16 @@ Run with `python manage.py test storytelling`.
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from unittest import mock
 
+from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import SimpleTestCase, TestCase
 
 from . import datasets as ds
+from . import results
+from .management.commands import build_frontend_data
 
 
 class CountryPayloadTests(SimpleTestCase):
@@ -111,8 +116,8 @@ class CountryPayloadTests(SimpleTestCase):
         self.assertEqual(self.years, sorted(self.years))
 
     def test_the_note_says_the_figures_are_real(self):
-        # The datasets page shows this under the map, and it is the only thing
-        # distinguishing these figures from the illustrative sample.
+        # The datasets page prints this under the map. It is the only thing on
+        # screen naming the table the colours came from.
         self.assertIn("every reporting country", self.note)
 
 
@@ -409,3 +414,129 @@ class UploadTests(TestCase):
             store(self._file("bad.csv", "name,note\nfoo,bar\n"))
         after = set(UPLOAD_DIR.glob("*.csv")) if UPLOAD_DIR.exists() else set()
         self.assertEqual(before, after)
+
+
+class WhoDimensionTests(SimpleTestCase):
+    """The GHO cube trap, pinned.
+
+    ``MDG_0000000007`` publishes six rows per country-year wherever survey data
+    exists: the national rate plus five wealth quintiles. The build script kept
+    whichever the API returned last, so Nigeria's 2010 figure was 100.5 - its
+    *fourth quintile* - against a national rate of 126.3, and the series that
+    reached the map ran 157.9 -> 76.6 -> 100.5 -> 154.5. Only countries with
+    quintile data were affected, which is the set of countries the map exists
+    to show.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.df = ds.load_frame("who-health")
+
+    def test_one_row_per_country_year(self):
+        pairs = self.df.groupby(["code", "year"]).size()
+        self.assertEqual(int(pairs.max()), 1, "a dimension is collapsing into duplicates")
+
+    def test_the_national_rate_not_a_quintile(self):
+        # The national figure WHO publishes for Nigeria in 2010. A quintile
+        # would land on 64.9, 100.5, 137.1, 163.9 or 165.3 instead.
+        row = self.df[(self.df["code"] == "NGA") & (self.df["year"] == 2010)]
+        self.assertAlmostEqual(float(row.iloc[0]["under5_mortality"]), 126.34, places=1)
+
+    def test_child_mortality_falls_over_the_plotted_period(self):
+        # Not a smoothness assertion: conflict and COVID genuinely reverse this
+        # in individual countries. But a series walking the income distribution
+        # rather than time shows up as a majority of countries with no trend at
+        # all, which is what this catches.
+        rising = 0
+        countries = 0
+        frame = self.df[self.df["year"].between(2000, 2021) & (self.df["code"] != "WORLD")]
+        for _, group in frame.groupby("code"):
+            series = group.sort_values("year")["under5_mortality"].dropna()
+            if len(series) < 10:
+                continue
+            countries += 1
+            if series.iloc[-1] >= series.iloc[0]:
+                rising += 1
+        self.assertGreater(countries, 150)
+        self.assertLess(rising / countries, 0.1, "under-five mortality should be falling almost everywhere")
+
+
+class ReproductionResultsTests(SimpleTestCase):
+    def test_per_operation_carries_the_denominator(self):
+        # A percentage without its n invites 80% off 4-of-5 to be read beside
+        # 93.1% off 81-of-87 as an equal.
+        block = results.per_operation()
+        self.assertIsNotNone(block)
+        for row in block.rows:
+            self.assertGreater(row.total, 0)
+            self.assertLessEqual(row.correct, row.total)
+
+    def test_per_operation_reproduces_the_complexity_gradient(self):
+        block = results.per_operation()
+        by_key = {(r.model, r.operation): r.pct for r in block.rows}
+        for model in block.models:
+            self.assertEqual(by_key[(model, "causal")], 0.0)
+            self.assertGreater(by_key[(model, "lookup")], 80.0)
+
+    def test_per_operation_labels_the_models_it_measured(self):
+        # A chart of qwen3.5:4b's numbers legended "gemma 4B" shipped once.
+        self.assertEqual(results.per_operation().models, ["qwen3.5:4b", "gemma4:12b"])
+
+    def test_masked_number_separates_quoted_from_rerun(self):
+        block = results.masked_number()
+        ours = [p for p in block.series if p.source == "ours"]
+        paper = [p for p in block.series if p.source == "paper"]
+        self.assertTrue(ours and paper)
+        # The paper's figures are quoted, so they carry no denominator of ours.
+        self.assertTrue(all(p.total is None for p in paper))
+        self.assertTrue(all(p.total == 115 for p in ours))
+
+    def test_everything_stays_in_the_sub_30_regime(self):
+        # The claim being reproduced is a regime, not a number.
+        self.assertTrue(all(p.value < 30 for p in results.masked_number().series))
+
+
+class ResultsAssemblyTests(TestCase):
+    """`build()` reads the Run table, so it needs a database."""
+
+    def test_a_missing_aggregate_is_named_not_faked(self):
+        with mock.patch.object(results, "DATATALES_DIR", Path("/nonexistent")):
+            out = results.build()
+        self.assertIsNone(out.per_operation)
+        self.assertIsNone(out.masked_number)
+        self.assertEqual(len(out.unavailable), 2)
+
+
+class GeneratedFrontendDataTests(SimpleTestCase):
+    """The generated modules are the offline fallback, so staleness is the risk.
+
+    They cannot hold an invented figure - they are written from `get_dataset`
+    and the results functions - but they can hold last month's. This fails the
+    build when they do.
+    """
+
+    def test_generated_dataset_module_is_current(self):
+        call_command("build_frontend_data", "--check")
+
+    def test_the_generated_module_carries_the_real_country_figures(self):
+        text = (build_frontend_data.DATASETS_TARGET).read_text()
+        # Nigeria's 1990 measles incidence, as the merged table has it. The
+        # sample this replaced said 606.
+        self.assertIn("1191.1", text)
+
+    def test_a_year_the_source_does_not_publish_stays_null(self):
+        text = (build_frontend_data.DATASETS_TARGET).read_text()
+        # France has no 1990 measles figure. The sample invented 75 for it.
+        self.assertRegex(text, r'"iso3": "FRA",\s*\n\s*"name": "France",\s*\n\s*"series": \{\s*\n\s*"cases_per_million": \[null,')
+
+    def test_optional_fields_are_absent_not_null(self):
+        # `referenceLine?:` on the TS side. `null` would typecheck as absent
+        # only by accident and reads as "there is one, and it is nothing".
+        text = (build_frontend_data.DATASETS_TARGET).read_text()
+        self.assertNotIn(": null,\n", text.replace('"cases_per_million"', ""))
+
+    def test_the_generator_refuses_to_emit_an_empty_dataset_list(self):
+        with mock.patch.object(ds, "is_available", return_value=False):
+            with self.assertRaises(CommandError):
+                build_frontend_data.render_datasets()

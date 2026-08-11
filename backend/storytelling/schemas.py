@@ -311,9 +311,53 @@ class ReproductionResults(Schema):
     series: list[FaithfulnessPoint]
 
 
+class OperationAccuracy(Schema):
+    """One model's accuracy on one analytical operation.
+
+    ``correct``/``total`` travel with the percentage on purpose. gemma4:12b
+    scores 80% on subtraction off four correct answers out of five, and a bar
+    that prints only "80%" invites that to be read next to its 93.1% on
+    lookup (81/87) as though the two were equally established.
+    """
+
+    model: str
+    operation: str
+    label: str
+    correct: int
+    total: int
+    pct: float
+
+
+class PerOperationResults(Schema):
+    caption: str
+    unit: str
+    source: str
+    #: Model labels in the order the chart should draw them, smallest first.
+    models: list[str]
+    rows: list[OperationAccuracy]
+
+
+class MaskedNumberPoint(Schema):
+    model: str
+    value: float
+    #: Absent for the paper's own figures, which are quoted, not recomputed.
+    correct: int | None = None
+    total: int | None = None
+    source: Literal["ours", "paper"]
+
+
+class MaskedNumberResults(Schema):
+    caption: str
+    unit: str
+    source: str
+    series: list[MaskedNumberPoint]
+
+
 class ResultsOut(Schema):
     measured: MeasuredResults
     faithfulness: ReproductionResults | None = None
+    per_operation: PerOperationResults | None = None
+    masked_number: MaskedNumberResults | None = None
     # Named so the frontend can say what it is still showing from its own
     # constants rather than quietly mixing the two.
     unavailable: list[str] = []

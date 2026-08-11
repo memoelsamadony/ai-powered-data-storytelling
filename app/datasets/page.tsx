@@ -58,10 +58,10 @@ export const metadata: Metadata = {
 };
 
 export default async function DatasetsPage() {
-  // Real rows, real year range and, for any dataset whose table is collected,
-  // every reporting country on the map instead of the illustrative sample.
-  // Falls back to that sample when the backend is down, so the page is never
-  // dead, and the source note under each map says which one is on screen.
+  // Falls back to the generated snapshot when the backend is down, so the page
+  // is never dead. Both carry the same figures, read from the same CSVs; the
+  // fallback can only be older, and the source note under each map names the
+  // table either way.
   const datasets = await getDatasets();
   const toneRows = toneRowsFor(datasets);
 

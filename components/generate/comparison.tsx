@@ -266,24 +266,32 @@ export function Comparison({
             <section className="rounded-xl border border-hairline bg-surface-soft/30 p-5">
               <p className="text-sm font-medium text-navy">Text similarity</p>
               <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                {metrics ? "Moderated vs your baseline · scored" : "Moderated vs human · illustrative"}
+                {metrics ? "Moderated vs your baseline · scored" : "Not scored yet"}
               </p>
+              {/* There used to be a fallback here that drew BLEU 0.31 /
+                  ROUGE-L 0.48 / METEOR 0.41 whenever scoring had not happened,
+                  captioned "illustrative" in 10px grey under a chart of them.
+                  An unscored pair has no scores; the empty state says so, the
+                  same way the tone meter says "not measured". */}
               <div className="mt-2">
-                <SimpleBarChart
-                  data={
-                    metrics
-                      ? metrics.textSimilarity.map((m) => ({ label: m.metric, value: m.value }))
-                      : [
-                          { label: "BLEU", value: 0.31 },
-                          { label: "ROUGE-L", value: 0.48 },
-                          { label: "METEOR", value: 0.41 },
-                        ]
-                  }
-                  color="#1e66b8"
-                  domainMax={1}
-                  decimals={2}
-                  height={150}
-                />
+                {metrics ? (
+                  <SimpleBarChart
+                    data={metrics.textSimilarity.map((m) => ({ label: m.metric, value: m.value }))}
+                    color="#1e66b8"
+                    domainMax={1}
+                    decimals={2}
+                    height={150}
+                  />
+                ) : (
+                  <div className="flex h-[150px] flex-col items-center justify-center rounded-lg border border-dashed border-hairline bg-surface-soft/40 px-4 text-center">
+                    <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                      No score yet
+                    </p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted">
+                      Write a baseline above and the backend scores it against the moderated story.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <Glossary
@@ -306,12 +314,11 @@ export function Comparison({
                   </>
                 ) : (
                   <>
-                    The values above are illustrative placeholders. In the real runs BLEU-4 came out
-                    at exactly <span className="font-mono">0.0</span>, because it is computed on a
-                    single ~120-word pair without smoothing: BLEU is the geometric mean of the
+                    Expect BLEU-4 to come out at exactly <span className="font-mono">0.0</span> on a
+                    single ~120-word pair without smoothing: it is the geometric mean of the
                     1–4-gram precisions, the two texts share no 4-gram, and one zero collapses the
-                    product. The backend also returns <span className="font-mono">unigram F1</span>,
-                    not METEOR.
+                    product. The backend returns <span className="font-mono">unigram F1</span> as
+                    the third metric, not METEOR.
                   </>
                 )}
               </p>

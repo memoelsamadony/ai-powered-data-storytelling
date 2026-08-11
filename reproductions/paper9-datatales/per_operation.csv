@@ -1,0 +1,14 @@
+model,operation,correct,total,pct
+qwen3.5:4b,lookup,69,80,86.2
+qwen3.5:4b,comparison,66,89,74.2
+qwen3.5:4b,subtraction,13,28,46.4
+qwen3.5:4b,rate_of_change,13,30,43.3
+qwen3.5:4b,trend,17,42,40.5
+qwen3.5:4b,causal,0,13,0.0
+qwen3.5:4b,predictive,0,1,0.0
+gemma4:12b,lookup,81,87,93.1
+gemma4:12b,comparison,88,96,91.7
+gemma4:12b,subtraction,4,5,80.0
+gemma4:12b,rate_of_change,8,9,88.9
+gemma4:12b,trend,69,79,87.3
+gemma4:12b,causal,0,8,0.0

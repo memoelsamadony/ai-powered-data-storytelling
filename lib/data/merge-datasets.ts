@@ -1,5 +1,5 @@
 /**
- * How a backend dataset list and the typed mocks are combined.
+ * How a live backend dataset list and the generated snapshot are combined.
  *
  * Kept apart from `lib/api.ts` so it can be unit-tested: that module reaches for
  * `next/navigation` and the `@/` alias, neither of which resolves under the bare
@@ -18,13 +18,15 @@ export function normaliseDataset(d: Dataset): Dataset {
  * alone would silently drop the interface from two datasets to one, and the
  * whole argument of the project is that tone fails in *both* directions.
  *
- * So: the backend wins for every id it serves, and the mocks fill only the ids
- * it does not. Deliberately whole-dataset, never field-by-field. A dataset
- * carrying a real trend line under illustrative country figures would be the
- * harder thing to notice and the worse thing to publish, and the source note
- * under the map could no longer say which of the two is on screen.
+ * So: the backend wins for every id it serves, and the snapshot fills only the
+ * ids it does not. Deliberately whole-dataset, never field-by-field. Both
+ * sides now hold the same real figures, so the risk is no longer a fabricated
+ * number but a stale one: a dataset carrying today's trend line over last
+ * month's country table would be the harder thing to notice and the worse
+ * thing to publish, and the source note under the map could no longer say
+ * which of the two is on screen.
  *
- * Mock order is preserved, because it is the order the page argues in: the
+ * Snapshot order is preserved, because it is the order the page argues in: the
  * alarmism dataset first, the over-optimism one second.
  */
 export function mergeDatasets(live: Dataset[], mocks: Dataset[]): Dataset[] {

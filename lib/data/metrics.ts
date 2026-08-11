@@ -1,73 +1,105 @@
 /**
- * Evaluation numbers surfaced on the Results page and in the comparison panel.
- * Grounded in the interim report's reproductions; figures marked "illustrative"
- * are representative samples for the interface, not final study results.
+ * Evaluation results: the types, and the half of the numbers that is static.
+ *
+ * Every figure here now traces to a committed file. Until this rewrite the
+ * module held hand-written constants that read like results and were not:
+ * per-operation accuracy was a "4B vs 12B" table whose values matched neither
+ * reproduction (lookup 71/95 against the measured 86.2/93.1), the alarmism
+ * headline of 4.6 → 2.1 came from no run at all, and the three similarity
+ * scores carried an `illustrative: true` flag that the page then printed in
+ * 10px grey under a chart of them.
+ *
+ * The split that replaced them:
+ *
+ * * **Reproduction figures** - from evaluations that already ran, read out of
+ *   the `per_operation.csv`, `masked_number.csv` and `metrics.csv` files
+ *   committed under `reproductions/`. Static, so
+ *   they are generated into `./generated/results.generated.ts` at build time
+ *   and need no backend.
+ * * **Measured figures** - what the runs in *this* deployment show. Live, so
+ *   they are fetched from `GET /results` and carry their own n. See `Results`
+ *   in lib/api.ts.
+ * * **Per-run figures** - text similarity is scored against the baseline the
+ *   reader typed, so it exists only inside a run and lives in the studio.
+ *
+ * A figure belonging to none of the three is not shown.
  */
 
-/* ---- Faithfulness: % of outputs with ≥1 semantic error (lower is better) ---- */
-export const faithfulness = {
-  caption:
-    "Re-running the reference-free error-span method, a modern 12B model is far more faithful than the paper's original baseline; a 4B model regresses. Both size and recency matter.",
-  unit: "% of outputs with ≥1 semantic error",
-  series: [
-    { model: "Paper baseline", value: 80, note: ">80% in the original study", tone: "bad" as const },
-    { model: "gemma 4B", value: 52, note: "smaller model regresses", tone: "warn" as const },
-    { model: "gemma 12B", value: 18, note: "modern, fairly faithful", tone: "good" as const },
-  ],
-};
+import {
+  generatedFaithfulness,
+  generatedPerOperation,
+  generatedMaskedNumber,
+} from "./generated/results.generated";
+import { datasets } from "./datasets";
 
-/* ---- Analytical correctness: per-operation accuracy (higher is better) ---- */
-export const perOperation = {
-  caption:
-    "Reading and computing operations improve sharply with scale, but the causal operation scores 0% for both models. Causal reasoning is a capability wall, not a size problem.",
-  unit: "accuracy %",
-  operations: [
-    { op: "Lookup", small: 71, large: 95 },
-    { op: "Comparison", small: 58, large: 88 },
-    { op: "Trend", small: 49, large: 86 },
-    { op: "Rate-of-change", small: 43, large: 89 },
-    { op: "Causal", small: 0, large: 0 },
-  ],
-  smallLabel: "4B model",
-  largeLabel: "12B model",
-};
+export interface FaithfulnessPoint {
+  model: string;
+  value: number;
+  note: string;
+  tone: "good" | "warn" | "bad";
+}
 
-/* ---- Masked-number prediction (sub-30% regime) ---- */
-export const maskedNumber = {
-  caption:
-    "Reconstructing a human analyst's key numbers stays in the paper's sub-30% regime: strong models still fail most analytical numbers.",
-  unit: "% of masked numbers correctly predicted",
-  series: [
-    { model: "gemma 12B", value: 12.2 },
-    { model: "gemma 4B", value: 0.9 },
-  ],
-};
+export interface FaithfulnessResults {
+  caption: string;
+  unit: string;
+  /** The file this was read from, printed under the chart. */
+  source: string;
+  series: FaithfulnessPoint[];
+}
 
-/* ---- Tone calibration (the novel metric) ---- */
-export const toneCalibration = {
-  caption:
-    "The novel metric: an LLM-judge alarmism rating (1–5) measured before vs after moderation, plus the count of emotive spans removed, with faithfulness re-checked afterwards to confirm the edit preserved the facts.",
-  alarmismBefore: 4.6,
-  alarmismAfter: 2.1,
-  scaleMax: 5,
-  emotiveSpansRemoved: 14,
-  factsPreserved: true,
-  factsPreservedNote: "All retained numbers re-verified after moderation",
-};
+/**
+ * One model on one analytical operation. `correct`/`total` travel with `pct`
+ * because they are not decoration: gemma4:12b's 80% on subtraction is four
+ * right out of five, and next to its 93.1% on lookup (81 of 87) the bare
+ * percentages would imply an equivalence the sample sizes do not support.
+ */
+export interface OperationAccuracy {
+  model: string;
+  operation: string;
+  label: string;
+  correct: number;
+  total: number;
+  pct: number;
+}
 
-/* ---- Text-similarity metrics (human vs LLM-moderated) — illustrative ---- */
-export const textSimilarity = {
-  caption:
-    "Surface-overlap scores comparing the LLM-moderated story against the human baseline. Useful as a signal, but they reward wording overlap, not faithfulness or tone, which is why our metric set goes beyond them.",
-  illustrative: true,
-  series: [
-    { metric: "BLEU", value: 0.31 },
-    { metric: "ROUGE-L", value: 0.48 },
-    { metric: "METEOR", value: 0.41 },
-  ],
-};
+export interface PerOperationResults {
+  caption: string;
+  unit: string;
+  source: string;
+  /** Model labels in draw order, smallest first. */
+  models: string[];
+  rows: OperationAccuracy[];
+}
 
-/* ---- User study dimensions (planned, Task 5) ---- */
+export interface MaskedNumberPoint {
+  model: string;
+  value: number;
+  /** Absent for the paper's own figures, which are quoted rather than rerun. */
+  correct?: number | null;
+  total?: number | null;
+  source: "ours" | "paper";
+}
+
+export interface MaskedNumberResults {
+  caption: string;
+  unit: string;
+  source: string;
+  series: MaskedNumberPoint[];
+}
+
+/* ---- The reproduction half, snapshotted from the committed CSVs ---- */
+
+export const faithfulness = generatedFaithfulness;
+export const perOperation = generatedPerOperation;
+export const maskedNumber = generatedMaskedNumber;
+
+/** Rows for one model, in the chart's operation order. */
+export function operationsFor(results: PerOperationResults, model: string) {
+  return results.rows.filter((r) => r.model === model);
+}
+
+/* ---- User study (planned, Task 5): a design, and no numbers yet ---- */
+
 export const userStudy = {
   caption:
     "A controlled study comparing the human baseline against the LLM-plus-moderated story. Planned for the project's final phase.",
@@ -81,9 +113,39 @@ export const userStudy = {
 };
 
 /* ---- Headline stats for the home credibility band ---- */
+
+function pct(value: number) {
+  return `${Number.isInteger(value) ? value : value.toFixed(1)}%`;
+}
+
+const causalRow = perOperation.rows.find((r) => r.operation === "causal");
+const bestFaithful = faithfulness.series.reduce((a, b) => (a.value <= b.value ? a : b));
+const primary = datasets.find((d) => d.role === "primary") ?? datasets[0];
+
+/**
+ * Derived, never typed in. The band used to carry "4.6 → 2.1" for alarmism,
+ * which no run produced; the tone figures now live on the results page, where
+ * they are fetched with the sample size behind them.
+ */
 export const headlineStats = [
-  { value: "18%", label: "12B faithfulness error rate", sub: "vs >80% in the original benchmark" },
-  { value: "0%", label: "causal-operation accuracy", sub: "a capability wall for both model sizes" },
-  { value: "4.6 → 2.1", label: "alarmism, before → after", sub: "on the 1–5 LLM-judge tone scale" },
-  { value: "9,959", label: "rows in the primary dataset", sub: "measles × MCV1 coverage, 1980–2024" },
+  {
+    value: pct(bestFaithful.value),
+    label: `${bestFaithful.model} faithfulness error rate`,
+    sub: `vs > ${pct(Math.max(...faithfulness.series.map((s) => s.value)))} in the original benchmark`,
+  },
+  {
+    value: causalRow ? pct(causalRow.pct) : "0%",
+    label: "causal-operation accuracy",
+    sub: "a capability wall for both model sizes",
+  },
+  {
+    value: maskedNumber.series.filter((s) => s.source === "ours").map((s) => pct(s.value)).join(" / "),
+    label: "of a human analyst's numbers predicted",
+    sub: "4B and 12B, both far inside the paper's sub-30% regime",
+  },
+  {
+    value: primary.rows.toLocaleString("en-US"),
+    label: "rows in the primary dataset",
+    sub: `${primary.shortName}, ${primary.yearRange}`,
+  },
 ];

@@ -8,10 +8,7 @@ Two sources, never blended:
 * **reproduction** - read from the committed artifacts under ``reproductions/``,
   naming the file each figure came from.
 
-Anything that is neither is reported as unavailable rather than filled in. The
-paper9 per-operation and masked-number figures are the live case: their JSON
-outputs are gitignored, so they exist on the machine that produced them and not
-in a clone, and no honest endpoint can serve them from here.
+Anything that is neither is reported as unavailable rather than filled in.
 """
 
 from __future__ import annotations
@@ -27,7 +24,11 @@ from .models import Run, RunStatus, StageResult
 from .schemas import (
     EditCategoryCount,
     FaithfulnessPoint,
+    MaskedNumberPoint,
+    MaskedNumberResults,
     MeasuredResults,
+    OperationAccuracy,
+    PerOperationResults,
     ReproductionResults,
     ResultsOut,
     StageTiming,
@@ -36,6 +37,24 @@ from .schemas import (
 from .services import emotive_spans_of
 
 QUINTD_DIR = REPO_ROOT / "reproductions" / "paper5-quintd"
+DATATALES_DIR = REPO_ROOT / "reproductions" / "paper9-datatales"
+
+# Ascending analytical complexity, which is the axis the DataTales finding is
+# about: accuracy falls as the operation asks for more than reading a cell.
+# Ordering here rather than in the chart keeps the claim with the data.
+OPERATIONS = [
+    ("lookup", "Lookup"),
+    ("comparison", "Comparison"),
+    ("subtraction", "Subtraction"),
+    ("rate_of_change", "Rate of change"),
+    ("trend", "Trend"),
+    ("causal", "Causal"),
+    ("predictive", "Predictive"),
+]
+
+# Smallest first, so a reader crossing the chart reads the scale effect in the
+# direction the caption describes it.
+DATATALES_MODELS = ["qwen3.5:4b", "gemma4:12b"]
 
 EDIT_LABELS = {
     "intensity": "Intensity",
@@ -178,10 +197,106 @@ def measured() -> MeasuredResults:
     )
 
 
+def per_operation() -> PerOperationResults | None:
+    """The paper-9 reproduction: accuracy against analytical complexity.
+
+    Read from ``per_operation.csv``, which ``export_aggregates.py`` writes out
+    of the judged evaluation. The per-item judgments themselves are gitignored,
+    but the aggregate is small and is exactly what the chart quotes, so it is
+    committed rather than retyped here as a constant.
+    """
+    path = DATATALES_DIR / "per_operation.csv"
+    if not path.exists():
+        return None
+
+    labels = dict(OPERATIONS)
+    order = {op: i for i, (op, _) in enumerate(OPERATIONS)}
+    rows: list[OperationAccuracy] = []
+    with path.open() as fh:
+        for row in csv.DictReader(fh):
+            if row["operation"] not in labels:
+                continue
+            rows.append(
+                OperationAccuracy(
+                    model=row["model"],
+                    operation=row["operation"],
+                    label=labels[row["operation"]],
+                    correct=int(row["correct"]),
+                    total=int(row["total"]),
+                    pct=float(row["pct"]),
+                )
+            )
+    if not rows:
+        return None
+
+    models = [m for m in DATATALES_MODELS if any(r.model == m for r in rows)]
+    models += sorted({r.model for r in rows} - set(models))
+    rows.sort(key=lambda r: (order[r.operation], models.index(r.model)))
+
+    return PerOperationResults(
+        caption=(
+            "Reproducing the DataTales finding that accuracy falls as analytical "
+            "complexity rises, on 30 equity-market reports judged against the source "
+            "table. Scale closes the gap on reading and computing - trend goes from "
+            "40.5% to 87.3% between the 4B and the 12B - but the causal operation "
+            "stays at 0% for both. That is a capability wall, not a size problem."
+        ),
+        unit="accuracy %, correct of attempted",
+        source="reproductions/paper9-datatales/per_operation.csv",
+        models=models,
+        rows=rows,
+    )
+
+
+def masked_number() -> MaskedNumberResults | None:
+    """Paper 9's own factuality metric: predict the human analyst's next number.
+
+    Kept beside the paper's reported models, because the claim being reproduced
+    is not a number but a regime - everything lands under 30%.
+    """
+    path = DATATALES_DIR / "masked_number.csv"
+    if not path.exists():
+        return None
+
+    series: list[MaskedNumberPoint] = []
+    with path.open() as fh:
+        for row in csv.DictReader(fh):
+            series.append(
+                MaskedNumberPoint(
+                    model=row["model"],
+                    value=float(row["pct"]),
+                    correct=int(row["correct"]) if row["correct"] else None,
+                    total=int(row["total"]) if row["total"] else None,
+                    source=row["source"],  # type: ignore[arg-type]
+                )
+            )
+    if not series:
+        return None
+
+    return MaskedNumberResults(
+        caption=(
+            "The paper's own factuality metric, reimplemented: give the model the table "
+            "and the human report up to a number, and check whether it predicts that "
+            "number exactly. The same 115 gold targets for both of ours, so they are "
+            "directly comparable. Everything lands in the paper's sub-30% regime, which "
+            "is the claim that reproduces."
+        ),
+        unit="% of masked numbers predicted exactly",
+        source="reproductions/paper9-datatales/masked_number.csv",
+        series=series,
+    )
+
+
 def build() -> ResultsOut:
+    blocks = {
+        "faithfulness": faithfulness(),
+        "per_operation": per_operation(),
+        "masked_number": masked_number(),
+    }
     unavailable = [
-        "Per-operation analytical accuracy and masked-number prediction come from the "
-        "paper9-datatales reproduction, whose per-item JSON outputs are gitignored and "
-        "exist only on the machine that produced them. They cannot be served from a clone."
+        f"The {name.replace('_', ' ')} figures come from a reproduction whose "
+        "aggregate file is not present in this checkout."
+        for name, value in blocks.items()
+        if value is None
     ]
-    return ResultsOut(measured=measured(), faithfulness=faithfulness(), unavailable=unavailable)
+    return ResultsOut(measured=measured(), **blocks, unavailable=unavailable)
