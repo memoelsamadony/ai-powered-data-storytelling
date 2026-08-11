@@ -20,7 +20,7 @@ import {
 export const metadata: Metadata = {
   title: "Results & evaluation",
   description:
-    "Faithfulness, analytical correctness, the novel tone-calibration metric, text-similarity scores, and a planned user study — grounded in offline reproductions.",
+    "Faithfulness, analytical correctness, the novel tone-calibration metric, text-similarity scores, and a planned user study, all grounded in offline reproductions.",
 };
 
 export default function ResultsPage() {
@@ -33,7 +33,7 @@ export default function ResultsPage() {
             The numbers that told us <span className="brand-gradient-text italic">tone</span> is the open problem.
           </>
         }
-        intro="Reproducing prior systems offline showed modern open models are already fairly faithful at stating data — but they confabulate causal claims, and nothing yet checks how a story feels. Our metric set follows from exactly that."
+        intro="Reproducing prior systems offline showed modern open models are already fairly faithful at stating data, but they confabulate causal claims, and nothing yet checks how a story feels. Our metric set follows from exactly that."
       />
 
       {/* Faithfulness + masked number */}
@@ -42,7 +42,7 @@ export default function ResultsPage() {
           <Reveal>
             <SectionHeader
               kicker="Faithfulness & analytical correctness"
-              title="Modern models state data well — and reason causally badly"
+              title="Modern models state data well, and reason causally badly"
             />
           </Reveal>
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
@@ -92,7 +92,7 @@ export default function ResultsPage() {
                   <span className="mt-0.5 font-mono text-2xl font-semibold text-alarm">0%</span>
                   <p className="text-sm leading-relaxed text-muted">
                     The <span className="font-medium text-ink">causal</span> operation scores zero for
-                    both model sizes — causal reasoning is a capability wall, not a size problem. It's
+                    both model sizes: causal reasoning is a capability wall, not a size problem. It's
                     why a lightweight causal/factual check sits beside the tone agent.
                   </p>
                 </div>

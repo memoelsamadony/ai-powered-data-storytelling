@@ -203,7 +203,7 @@ export function PipelineRunner({
         <OutputCard
           accent="alarm"
           icon={PenLine}
-          label="Stage 1 — General LLM"
+          label="Stage 1: General LLM"
           author={view.aiRaw.author}
         >
           <h3 className="font-serif text-xl text-navy">{view.aiRaw.title}</h3>
@@ -233,7 +233,7 @@ export function PipelineRunner({
             <OutputCard
               accent="calm"
               icon={Scale}
-              label="Stage 2 — Tone moderator"
+              label="Stage 2: Tone moderator"
               author={view.aiModerated.author}
             >
               <h3 className="font-serif text-xl text-navy">{view.aiModerated.title}</h3>
@@ -263,10 +263,10 @@ export function PipelineRunner({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <OutputCard accent="brand" icon={ShieldCheck} label="Stage 3 — Factual check" author="grounding pass">
+            <OutputCard accent="brand" icon={ShieldCheck} label="Stage 3: Factual check" author="grounding pass">
               <p className="text-sm text-muted">
                 A tone agent is not a fact-checker. Here, the moderator silently re-grounded a
-                hallucinated number without flagging it — so a separate pass audits every claim.
+                hallucinated number without flagging it, so a separate pass audits every claim.
               </p>
               {/* G7 — status marks in a gutter, each with an icon and a label. */}
               <FactCheckGutter items={view.factualCheck} className="mt-4" />
@@ -291,7 +291,7 @@ export function PipelineRunner({
       {phase === "done" && (
         <div className="flex items-center justify-between gap-4 rounded-2xl border border-calm/30 bg-calm-soft/40 px-5 py-4">
           <p className="text-sm font-medium text-calm-ink">
-            Pipeline complete — three stages run on the same data.
+            Pipeline complete: three stages run on the same data.
           </p>
           <button
             onClick={reset}

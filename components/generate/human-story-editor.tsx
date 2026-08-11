@@ -62,7 +62,7 @@ export function HumanStoryEditor({
       {importedName && (
         <div className="flex items-center gap-2 border-b border-hairline bg-calm-soft/50 px-5 py-2 text-xs text-calm-ink">
           <FileText className="h-3.5 w-3.5" />
-          Imported <span className="font-mono font-medium">{importedName}</span> — a sample human story you can edit.
+          Imported <span className="font-mono font-medium">{importedName}</span>, a sample human story you can edit.
         </div>
       )}
 

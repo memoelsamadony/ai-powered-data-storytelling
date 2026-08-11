@@ -15,12 +15,12 @@ const features = [
   {
     icon: PenLine,
     title: "Generate",
-    body: "A general LLM turns a real dataset into a fluent, first-draft data narrative — the way most AI storytelling stops today.",
+    body: "A general LLM turns a real dataset into a fluent, first-draft data narrative, the way most AI storytelling stops today.",
   },
   {
     icon: Scale,
     title: "Moderate tone",
-    body: "An agentic LLM detects manipulative fear, false reassurance, or numbing detachment and rebalances the framing — our novel contribution.",
+    body: "An agentic LLM detects manipulative fear, false reassurance, or numbing detachment and rebalances the framing, our novel contribution.",
   },
   {
     icon: BarChart3,
@@ -48,7 +48,7 @@ export default function HomePage() {
                     Fluent text is not the same as <em className="text-brand-blue not-italic">faithful</em> text.
                   </>
                 }
-                intro="Raw data is hard to read, so we let models narrate it. But the way a story is framed measurably changes how people interpret it — and a model can mislead even when every number is correct. Engagement and trustworthiness pull in opposite directions; tone is where they meet."
+                intro="Raw data is hard to read, so we let models narrate it. But the way a story is framed measurably changes how people interpret it, and a model can mislead even when every number is correct. Engagement and trustworthiness pull in opposite directions; tone is where they meet."
               />
             </Reveal>
 
@@ -56,11 +56,11 @@ export default function HomePage() {
               <Card className="relative overflow-hidden p-8">
                 <Quote className="absolute -right-3 -top-3 h-24 w-24 text-surface-soft" />
                 <p className="relative font-serif text-2xl leading-relaxed text-navy">
-                  &ldquo;The emotional framing of a data story changes how it is received — and can
+                  &ldquo;The emotional framing of a data story changes how it is received, and can
                   mislead even when every number is correct.&rdquo;
                 </p>
                 <p className="relative mt-6 font-mono text-xs uppercase tracking-wider text-faint">
-                  The gap our project fills — no published system moderates the affective tone of a
+                  The gap our project fills: no published system moderates the affective tone of a
                   data narrative.
                 </p>
               </Card>
@@ -109,7 +109,7 @@ export default function HomePage() {
               align="center"
               kicker="What the app does"
               title="Three moves, one interface"
-              intro="Built around the project's pipeline — generate a story, moderate its tone, then compare it to a human baseline."
+              intro="Built around the project's pipeline: generate a story, moderate its tone, then compare it to a human baseline."
               className="mx-auto"
             />
           </Reveal>
@@ -165,7 +165,7 @@ export default function HomePage() {
               align="center"
               kicker="Grounded in reproductions"
               title="What we already measured"
-              intro="Before building, we reproduced three prior systems offline to ground the design — and the numbers told us tone, not facts, is the open problem."
+              intro="Before building, we reproduced three prior systems offline to ground the design, and the numbers told us tone, not facts, is the open problem."
               className="mx-auto"
             />
           </Reveal>

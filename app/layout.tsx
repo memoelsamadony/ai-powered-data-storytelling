@@ -27,7 +27,7 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "AI-Powered Data Storytelling — Moderating the Emotional Tone of Data Narratives",
+    default: "AI-Powered Data Storytelling · Moderating the Emotional Tone of Data Narratives",
     template: "%s · AI-Powered Data Storytelling",
   },
   description:
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     "narrative visualization",
     "TU Dresden",
   ],
-  authors: [{ name: "Team — AI-Powered Data Storytelling" }],
+  authors: [{ name: "The AI-Powered Data Storytelling Team" }],
   openGraph: {
     title: "AI-Powered Data Storytelling",
     description:

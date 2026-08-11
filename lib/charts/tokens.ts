@@ -86,3 +86,32 @@ export const monoTick = {
 /** Axis/grid props shared by every Recharts plot, so D4 cannot regress. */
 export const gridProps = { stroke: grid, strokeDasharray: undefined } as const;
 export const axisLineProps = { stroke: hairline } as const;
+
+/* ── Sequential ramps for the choropleth ────────────────────────────────────
+ *
+ * Five bins each, interpolated in OKLab between the alarm-soft/alarm-ink and
+ * calm-soft/calm-ink token pairs so they stay inside the existing palette.
+ * Lightness is monotonic and adjacent-step contrast runs 1.49–1.80.
+ *
+ * Contrast vs #ffffff, light → dark:
+ *   alarm  1.13  1.74  2.83  4.97  8.93
+ *   calm   1.13  1.68  2.65  4.34  7.52
+ *
+ * The palest bin sits at 1.13 against the surface, which is why "no data" is a
+ * hatch and never a pale fill — a pale grey scores 1.04 against it and the two
+ * would be indistinguishable. Absence must not read as a low value.
+ */
+export const rampAlarm = ["#fdeeea", "#e5bbb2", "#cb897d", "#ae5649", "#8f1d12"] as const;
+export const rampCalm = ["#e4f5f2", "#b0cec9", "#7ea7a2", "#4b837d", "#0a5f59"] as const;
+
+/** Diagonal hatch stroke for countries with no figure. Fill stays `surface`. */
+export const noDataStroke = "#b3bfcd";
+/** Border between countries — the hairline, so shapes read even in the palest bin. */
+export const countryStroke = hairline;
+
+export type Polarity = "higher-is-worse" | "higher-is-better";
+
+/** Higher-is-worse ramps toward alarm; higher-is-better ramps toward calm. */
+export function rampFor(polarity: Polarity): readonly string[] {
+  return polarity === "higher-is-worse" ? rampAlarm : rampCalm;
+}
