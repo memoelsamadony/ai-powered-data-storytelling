@@ -5,6 +5,7 @@ import { Container, Section } from "@/components/ui/layout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StoryChart } from "@/components/charts/story-chart";
+import { CountryMap } from "@/components/charts/country-map";
 import { ToneAxis, type ToneAxisRow } from "@/components/charts/tone-axis";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
@@ -144,6 +145,18 @@ function DatasetBlock({ dataset, reversed }: { dataset: Dataset; reversed: boole
           </span>
         </div>
         <StoryChart dataset={dataset} height={340} />
+
+        {dataset.countryYears && dataset.countryMetrics && dataset.countryStats && (
+          <div className="mt-5 border-t border-hairline pt-5">
+            <CountryMap
+              years={dataset.countryYears}
+              metrics={dataset.countryMetrics}
+              stats={dataset.countryStats}
+              sourceNote={dataset.countrySourceNote}
+            />
+          </div>
+        )}
+
         <p className="mt-4 border-t border-hairline pt-4 text-xs leading-relaxed text-muted">
           Two panels on one timeline rather than two y-axes on one plot: a dual axis lets the
           two lines be slid into any apparent relationship, which is the inference our own

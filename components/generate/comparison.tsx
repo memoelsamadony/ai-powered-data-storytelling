@@ -7,6 +7,7 @@ import { StoryPanel } from "@/components/story-panel";
 import { SimpleBarChart } from "@/components/charts/metric-charts";
 import { ToneAxis, type ToneAxisRow } from "@/components/charts/tone-axis";
 import { StoryChart } from "@/components/charts/story-chart";
+import { CountryMap } from "@/components/charts/country-map";
 import { EditTaxonomy } from "@/components/charts/edit-taxonomy";
 import { Redline } from "@/components/story/redline";
 import { FactCheckGutter } from "@/components/story/fact-check-gutter";
@@ -139,6 +140,18 @@ export function Comparison({
           </p>
         </div>
         <StoryChart dataset={dataset} height={300} />
+
+        {dataset.countryYears && dataset.countryMetrics && dataset.countryStats && (
+          <div className="mt-5 border-t border-hairline pt-5">
+            <CountryMap
+              years={dataset.countryYears}
+              metrics={dataset.countryMetrics}
+              stats={dataset.countryStats}
+              sourceNote={dataset.countrySourceNote}
+              compact
+            />
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-hairline bg-surface p-5 sm:p-7">
