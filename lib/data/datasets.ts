@@ -4,8 +4,11 @@
  * pipeline reads the full merged tables (see source attributions).
  */
 
-import { measlesYears, measlesMetrics, measlesCountryStats } from "./country-stats/measles";
-import { whoYears, whoMetrics, whoCountryStats } from "./country-stats/who-health";
+/* Explicit .ts extensions: Node's type-stripping resolves value imports
+   literally, so without them nothing that reaches this file can be tested with
+   `node --test`. Type-only imports are erased and do not need one. */
+import { measlesYears, measlesMetrics, measlesCountryStats } from "./country-stats/measles.ts";
+import { whoYears, whoMetrics, whoCountryStats } from "./country-stats/who-health.ts";
 
 export type FailureMode = "alarmism" | "over-optimism";
 
