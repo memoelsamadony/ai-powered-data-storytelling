@@ -16,7 +16,6 @@ Two artefacts come out of here:
 from __future__ import annotations
 
 import functools
-from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -34,9 +33,6 @@ from .schemas import (
 # backend/storytelling/datasets.py -> repo root
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = REPO_ROOT / "emotional-tone-moderation" / "data"
-# Raw source downloads, as published. The WHO extract lives here rather than in
-# DATA_DIR because nothing has been merged or derived to produce it.
-RAW_DIR = REPO_ROOT / "datasets"
 
 
 @dataclass(frozen=True)
@@ -74,11 +70,11 @@ class DatasetSpec:
     country_metrics: list[CountryMetric] = field(default_factory=list)
     country_cols: dict[str, str] = field(default_factory=dict)
     country_source_note: str = ""
-    # Where the CSV lives, and how to read it. A spec whose source is not
-    # already tidy supplies a reader that returns the tidy frame the rest of
-    # this module expects: country, code, year, and one column per measure.
-    data_dir: Path | None = None
-    reader: Callable[[Path], "pd.DataFrame"] | None = None
+    # `primary_unit` is how the *chart* labels the series, which for measles is
+    # thousands because the series is divided by 1000. The country detail prints
+    # the column's own raw value, so it needs the column's own unit: 14,999
+    # cases, not 14,999 thousands. Defaults to primary_unit when they agree.
+    primary_col_unit: str = ""
 
 
 MEASLES = DatasetSpec(
@@ -107,6 +103,7 @@ MEASLES = DatasetSpec(
     primary_col="measles_cases",
     secondary_col="mcv1_pct",
     aggregate_row="World",
+    primary_col_unit="cases",
     reference_line=(95, "~95% herd-immunity line"),
     spotlight=["Germany", "Nigeria", "United States", "India"],
     series_years=[1980, 1985, 1990, 1995, 2000, 2005, 2010,
@@ -150,143 +147,75 @@ MEASLES = DatasetSpec(
     country_source_note="OWID / WHO / WUENIC, merged project table: every reporting country",
 )
 
-# --------------------------------------------------------------------------
-# WHO GHO: under-five deaths by cause
-# --------------------------------------------------------------------------
-
-# The nine causes in the extract that are unambiguously infectious. The two
-# "Other ..." buckets are deliberately excluded from the numerator: each mixes
-# communicable with perinatal or noncommunicable causes, so counting them would
-# make the share mean something the label does not say. Named explicitly for the
-# same reason, so the metric is exactly "these nine causes, as a share of all".
-INFECTIOUS_CAUSES = frozenset({
-    "Acute lower respiratory infections",
-    "Diarrhoeal diseases",
-    "HIV/AIDS",
-    "Malaria",
-    "Measles",
-    "Meningitis/encephalitis",
-    "Sepsis and other infectious conditions of the newborn",
-    "Tetanus",
-    "Tuberculosis",
-})
-
-# The extract carries three overlapping age groups: "0-4 years" is the total and
-# "0-27 days" plus "1-59 months" are its two halves, which sum to it exactly
-# (9,942,150 against 9,942,151 for 2000, the difference being rounding). Reading
-# all three would double every figure, so only the total is used.
-_TOTAL_AGE_GROUP = "0-4 years"
-
-
-def read_who_gho(path: Path) -> pd.DataFrame:
-    """Reshape the WHO GHO cause-of-death extract into the tidy frame.
-
-    One row per country-year, carrying total under-five deaths and the share of
-    them from the named infectious causes. A World row is appended by summing
-    the countries, because the extract has no aggregate row of its own; that is
-    disclosed in the dataset's source note.
-    """
-    raw = pd.read_csv(
-        path,
-        low_memory=False,
-        usecols=["SpatialDimValueCode", "Location", "Period", "Dim2", "Dim3", "FactValueNumeric"],
-    )
-    raw = raw[(raw["Dim2"] == _TOTAL_AGE_GROUP) & raw["FactValueNumeric"].notna()]
-    raw = raw.rename(columns={"SpatialDimValueCode": "code", "Location": "country", "Period": "year"})
-    raw["infectious"] = raw["FactValueNumeric"].where(raw["Dim3"].isin(INFECTIOUS_CAUSES), 0.0)
-
-    by_country = (
-        raw.groupby(["code", "country", "year"], as_index=False)
-        .agg(under5_deaths=("FactValueNumeric", "sum"), infectious=("infectious", "sum"))
-    )
-    world = (
-        by_country.groupby("year", as_index=False)
-        .agg(under5_deaths=("under5_deaths", "sum"), infectious=("infectious", "sum"))
-        .assign(code="WORLD", country="World")
-    )
-    tidy = pd.concat([by_country, world], ignore_index=True)
-    # Guard against a country-year with no deaths recorded at all: a 0/0 share
-    # is not 0% infectious, it is unknown, and must stay missing.
-    tidy["infectious_share"] = (
-        tidy["infectious"].div(tidy["under5_deaths"]).where(tidy["under5_deaths"] > 0) * 100
-    ).round(1)
-    return tidy.drop(columns=["infectious"])
-
-
-# The secondary dataset: WHO Global Health Observatory, under-five deaths by
-# cause (indicator MORT_100). Its failure mode is the opposite of measles,
+# The secondary dataset: WHO Global Health Observatory, under-five mortality
+# against life expectancy. Its failure mode is the opposite of measles,
 # over-optimism, which is what proves the moderator calibrates in both
-# directions: deaths nearly halved between 2000 and 2021, and a story can ride
-# that fall straight past the ten million children still dying each year.
+# directions: both lines are good news, and a story can ride them straight past
+# the countries still burying one child in twenty.
 #
-# NOTE, and it matters for the report: lib/data/datasets.ts describes this
-# dataset as under-five mortality against life expectancy. The extract in the
-# repo carries neither. It has death counts by cause, with no live-births
-# denominator for a mortality rate and no life-expectancy series at all, so the
-# measures below are what the data can actually support. The mock keeps the old
-# identity for whichever mode is not live; the two now differ, deliberately.
+# Built by emotional-tone-moderation/data/build_who_gho.py from two GHO
+# indicators, MDG_0000000007 and WHOSIS_000001. The cause-of-death extract in
+# datasets/ is a different indicator (MORT_100) and carries neither measure.
 WHO_GHO = DatasetSpec(
     id="who-health",
-    name="Under-Five Deaths × Cause",
-    short_name="WHO child deaths",
-    tagline="Deaths nearly halved, and the ones left behind are the preventable ones.",
+    name="Child Mortality × Life Expectancy",
+    short_name="WHO child mortality",
+    tagline="Decades of progress, with a remaining gap and a COVID-era reversal.",
     role="secondary",
     failure_mode="over-optimism",
     failure_mode_label="Natural failure mode: over-optimism",
     year_range="2000-2021",
-    granularity="country × year × cause",
-    sources=["WHO Global Health Observatory (MORT_100)"],
+    granularity="country × year",
+    sources=["WHO Global Health Observatory", "UN IGME"],
     description=(
-        "Deaths in children under five, by cause, for 194 countries. A progress "
-        "story whose failure mode is false reassurance: the total fell by nearly "
-        "half between 2000 and 2021, and celebrating that alone hides both the "
-        "ten million children still dying each year and the gap in what they die "
-        "of. Infectious causes are a fifth of under-five deaths in some countries "
-        "and two thirds in others, so the moderator has to keep the gravity "
+        "Under-five mortality and life expectancy by country and year. A hope "
+        "and progress story whose failure mode is false reassurance: global "
+        "under-five mortality nearly halved between 2000 and 2021 and life "
+        "expectancy rose, while the gap between countries stayed enormous and "
+        "COVID reversed part of it. The moderator has to keep that gravity "
         "rather than flatten it."
     ),
-    csv="Causes of death for children less than 5 years.csv",
-    data_dir=RAW_DIR,
-    reader=read_who_gho,
-    primary_label="Under-5 deaths",
-    secondary_label="Deaths from named infectious causes",
-    primary_unit="thousands",
-    secondary_unit="%",
-    primary_col="under5_deaths",
-    secondary_col="infectious_share",
+    csv="who_gho_tidy.csv",
+    primary_label="Under-5 mortality",
+    secondary_label="Life expectancy",
+    primary_unit="per 1,000 live births",
+    secondary_unit="years",
+    primary_col="under5_mortality",
+    secondary_col="life_expectancy",
     aggregate_row="World",
     spotlight=["Nigeria", "India", "Germany", "Brazil"],
+    # Both measures overlap on 2000-2021; life expectancy is not published
+    # before 2000, and a series that quietly starts one measure earlier than the
+    # other would put a gap where the reader sees a trend.
     series_years=[2000, 2003, 2006, 2009, 2012, 2015, 2018, 2019, 2020, 2021],
     country_years=[2000, 2005, 2010, 2015, 2021],
     country_metrics=[
+        # Keys, breaks and polarity mirror lib/data/country-stats/who-health.ts,
+        # so the map bins identically whichever source is on screen.
         CountryMetric(
-            key="infectious_share",
-            label="Deaths from named infectious causes",
-            unit="% of under-5 deaths",
+            key="under5_mortality",
+            label="Under-5 mortality",
+            unit="per 1,000 live births",
             polarity="higher-is-worse",
-            # A share of the country's own deaths, so it is comparable across
-            # countries without a population denominator the extract lacks.
-            breaks=(10, 20, 30, 45),
+            breaks=(5, 15, 40, 80),
             decimals=1,
         ),
         CountryMetric(
-            key="under5_deaths",
-            label="Under-5 deaths",
-            unit="deaths",
-            polarity="higher-is-worse",
-            breaks=(1000, 10000, 50000, 200000),
-            # Same reason raw measles cases are never mapped: a choropleth of
-            # counts is a population map.
-            mappable=False,
+            key="life_expectancy",
+            label="Life expectancy",
+            unit="years",
+            polarity="higher-is-better",
+            breaks=(60, 67, 73, 79),
+            decimals=1,
         ),
     ],
     country_cols={
-        "infectious_share": "infectious_share",
-        "under5_deaths": "under5_deaths",
+        "under5_mortality": "under5_mortality",
+        "life_expectancy": "life_expectancy",
     },
     country_source_note=(
-        "WHO Global Health Observatory (MORT_100), 194 countries. "
-        "World totals are summed from the countries; the extract has no World row."
+        "WHO Global Health Observatory (MDG_0000000007, WHOSIS_000001) / UN IGME, "
+        "every reporting country"
     ),
 )
 
@@ -295,7 +224,7 @@ SPECS: dict[str, DatasetSpec] = {s.id: s for s in (MEASLES, WHO_GHO)}
 
 
 def csv_path(spec: DatasetSpec) -> Path:
-    return (spec.data_dir or DATA_DIR) / spec.csv
+    return DATA_DIR / spec.csv
 
 
 def is_available(spec: DatasetSpec) -> bool:
@@ -311,19 +240,36 @@ def load_frame(dataset_id: str) -> pd.DataFrame:
             f"Dataset '{dataset_id}' expects {path.name} in {DATA_DIR}. "
             "It has not been collected yet - see backend/README.md."
         )
-    return spec.reader(path) if spec.reader else pd.read_csv(path)
+    return pd.read_csv(path)
 
 
 def _fmt_int(value: float | None) -> str:
+    """Whole numbers for counts, one decimal for anything that is not one.
+
+    Measles cases are counts and read best as 42,938. An under-five mortality
+    rate of 60.4 per 1,000 is not a count, and rounding it to 60 throws away a
+    figure the source publishes.
+    """
     if value is None or pd.isna(value):
         return "n/a"
-    return f"{int(round(value)):,}"
+    if float(value).is_integer():
+        return f"{int(value):,}"
+    return f"{value:,.1f}"
 
 
 def _fmt_pct(value: float | None) -> str:
     if value is None or pd.isna(value):
         return "n/a"
     return f"{value:g}%"
+
+
+def _fmt_secondary(value: float | None, unit: str) -> str:
+    """The secondary column in its own unit, rather than always a percentage."""
+    if value is None or pd.isna(value):
+        return "n/a"
+    if unit == "%":
+        return _fmt_pct(value)
+    return f"{value:,.1f} {unit}".strip()
 
 
 # --------------------------------------------------------------------------
@@ -432,7 +378,12 @@ def get_dataset(dataset_id: str) -> Dataset:
             )
         )
 
-    latest = int(df["year"].max())
+    # The last year the spec actually plots, not the last in the table. The two
+    # differ when the measures end at different times: under-five mortality runs
+    # to 2024 while life expectancy stops at 2021, so the newest row in the file
+    # would show every spotlight country with a blank second column, and would
+    # hand the agent that same blank.
+    latest = int(spec.series_years[-1]) if spec.series_years else int(df["year"].max())
     preview: list[DatasetPreviewRow] = []
     for country in spec.spotlight:
         row = df[(df["country"] == country) & (df["year"] == latest)]
@@ -444,7 +395,7 @@ def get_dataset(dataset_id: str) -> Dataset:
                 country=country,
                 year=latest,
                 cases=_fmt_int(r[spec.primary_col]),
-                coverage=_fmt_pct(r[spec.secondary_col]),
+                coverage=_fmt_secondary(r[spec.secondary_col], spec.secondary_unit),
             )
         )
 
@@ -500,7 +451,12 @@ def build_prompt_table(dataset_id: str) -> str:
     spec = SPECS[dataset_id]
     df = load_frame(dataset_id)
     agg = df[df["country"] == spec.aggregate_row]
-    latest = int(df["year"].max())
+    # The last year the spec actually plots, not the last in the table. The two
+    # differ when the measures end at different times: under-five mortality runs
+    # to 2024 while life expectancy stops at 2021, so the newest row in the file
+    # would show every spotlight country with a blank second column, and would
+    # hand the agent that same blank.
+    latest = int(spec.series_years[-1]) if spec.series_years else int(df["year"].max())
 
     lines = [
         f"REAL DATA - {spec.name} ({spec.sources[0]} and others; {spec.granularity}).",
@@ -514,7 +470,8 @@ def build_prompt_table(dataset_id: str) -> str:
         if pd.isna(r[spec.primary_col]):
             continue
         lines.append(
-            f"  {int(year)}: {_fmt_int(r[spec.primary_col])} | {_fmt_pct(r[spec.secondary_col])}"
+            f"  {int(year)}: {_fmt_int(r[spec.primary_col])} | "
+            f"{_fmt_secondary(r[spec.secondary_col], spec.secondary_unit)}"
         )
 
     if spec.spotlight:
@@ -527,8 +484,10 @@ def build_prompt_table(dataset_id: str) -> str:
             rate = r.get("incidence_per_million")
             rate_txt = "" if rate is None or pd.isna(rate) else f", {float(rate):.1f} per million"
             lines.append(
-                f"  {country}: {_fmt_int(r[spec.primary_col])} cases, "
-                f"MCV1 {_fmt_pct(r[spec.secondary_col])}{rate_txt}"
+                f"  {country}: {_fmt_int(r[spec.primary_col])} "
+                f"{spec.primary_col_unit or spec.primary_unit}, "
+                f"{spec.secondary_label} "
+                f"{_fmt_secondary(r[spec.secondary_col], spec.secondary_unit)}{rate_txt}"
             )
 
     if spec.reference_line:
