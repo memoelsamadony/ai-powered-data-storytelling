@@ -9,29 +9,41 @@ import { CountryMap } from "@/components/charts/country-map";
 import { ToneAxis, type ToneAxisRow } from "@/components/charts/tone-axis";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
-import { datasets, type Dataset } from "@/lib/data/datasets";
+import { type Dataset } from "@/lib/data/datasets";
 import { getStorySet } from "@/lib/data/stories";
+import { getDatasets } from "@/lib/api";
 
 /**
- * Both datasets on one tone scale. Built here in the Server Component and passed
- * down as plain props — the chart only needs `"use client"` for its hover layer.
+ * Both datasets on one tone scale. Built in the Server Component and passed down
+ * as plain props, the chart only needs `"use client"` for its hover layer.
+ *
+ * The stories stay mock here by design: this page compares *tone*, and the
+ * ratings it plots are the ones the report cites. A live rating belongs to one
+ * run of one tier, so plotting it here would change the argument every reload.
  */
-const toneRows: ToneAxisRow[] = datasets.map((d) => {
-  const s = getStorySet(d.id);
-  const pick = (v: (typeof s)["human"]) => ({
-    value: v.alarmismRating,
-    title: v.title,
-    author: v.author,
+function toneRowsFor(datasets: Dataset[]): ToneAxisRow[] {
+  return datasets.map((d) => {
+    const s = getStorySet(d.id);
+    const pick = (v: (typeof s)["human"]) => ({
+      value: v.alarmismRating,
+      title: v.title,
+      author: v.author,
+    });
+    return {
+      id: d.id,
+      label: d.shortName,
+      tempts: `tempts ${d.failureMode}`,
+      human: pick(s.human),
+      raw: pick(s.aiRaw),
+      moderated: pick(s.aiModerated),
+    };
   });
-  return {
-    id: d.id,
-    label: d.shortName,
-    tempts: `tempts ${d.failureMode}`,
-    human: pick(s.human),
-    raw: pick(s.aiRaw),
-    moderated: pick(s.aiModerated),
-  };
-});
+}
+
+// The dataset payload is read per request, so the page is server-rendered on
+// demand. Declared rather than inferred: without it Next attempts a prerender,
+// and the attempt only resolves through a thrown framework error.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Datasets",
@@ -39,7 +51,14 @@ export const metadata: Metadata = {
     "Two real-world datasets chosen so tone fails in opposite directions: measles × vaccination (alarmism) and WHO child mortality (over-optimism).",
 };
 
-export default function DatasetsPage() {
+export default async function DatasetsPage() {
+  // Real rows, real year range and, for any dataset whose table is collected,
+  // every reporting country on the map instead of the illustrative sample.
+  // Falls back to that sample when the backend is down, so the page is never
+  // dead, and the source note under each map says which one is on screen.
+  const datasets = await getDatasets();
+  const toneRows = toneRowsFor(datasets);
+
   return (
     <>
       <PageHero

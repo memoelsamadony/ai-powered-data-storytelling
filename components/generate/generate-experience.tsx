@@ -45,9 +45,7 @@ export function GenerateExperience() {
       const [h, ds] = await Promise.all([api.getHealth(), api.getDatasets()]);
       if (cancelled) return;
       setHealth(h);
-      // The backend predates `shortName`, which the charts label rows with, so
-      // fall back to the full name instead of rendering a blank legend.
-      setDatasets(ds.map((d) => ({ ...d, shortName: d.shortName ?? d.name })));
+      setDatasets(ds);
       setBackendChecked(true);
     })();
     return () => {

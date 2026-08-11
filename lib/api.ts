@@ -10,6 +10,8 @@
  * `usingMockData()` reports which mode the last call used.
  */
 
+import { unstable_rethrow } from "next/navigation";
+
 import { datasets as mockDatasets, getDataset, type Dataset } from "@/lib/data/datasets";
 import { getStorySet, type FactCheckItem, type StorySet } from "@/lib/data/stories";
 
@@ -44,6 +46,11 @@ async function withFallback<T>(fn: () => Promise<T>, fallback: () => T): Promise
     lastCallUsedMock = false;
     return value;
   } catch (err) {
+    // `call` fetches with `cache: "no-store"`, which Next throws on while it is
+    // deciding whether a route can be prerendered. That throw is control flow,
+    // not a dead backend: catching it reports the backend as down and can bake
+    // the mock fallback into a static page for good.
+    unstable_rethrow(err);
     console.warn("[api] backend unavailable, using mock data:", err);
     lastCallUsedMock = true;
     return fallback();
@@ -80,12 +87,40 @@ export async function getHealth(): Promise<Health | null> {
 
 // ------------------------------------------------------------------ datasets
 
+/**
+ * The backend only serves a dataset whose CSV is actually collected, so asking
+ * it alone would silently drop the interface from two datasets to one, and the
+ * whole argument of the project is that tone fails in *both* directions.
+ *
+ * So: the backend wins for every id it serves, and the mocks fill only the ids
+ * it does not. Nothing is merged field-by-field. A half-real dataset carrying a
+ * real trend line under illustrative country figures would be the harder thing
+ * to notice and the worse thing to publish.
+ */
+function withMockedRemainder(live: Dataset[]): Dataset[] {
+  const byId = new Map(live.map((d) => [d.id, normalise(d)]));
+  const merged = mockDatasets.map((mock) => byId.get(mock.id) ?? mock);
+  const extra = live.filter((d) => !mockDatasets.some((m) => m.id === d.id));
+  return [...merged, ...extra.map(normalise)];
+}
+
+/** Tolerate a backend older than the fields the charts read. */
+function normalise(d: Dataset): Dataset {
+  return { ...d, shortName: d.shortName ?? d.name };
+}
+
 export async function getDatasets(): Promise<Dataset[]> {
-  return withFallback(() => call<Dataset[]>("/datasets"), () => mockDatasets);
+  return withFallback(
+    async () => withMockedRemainder(await call<Dataset[]>("/datasets")),
+    () => mockDatasets,
+  );
 }
 
 export async function getDatasetById(id: string): Promise<Dataset | undefined> {
-  return withFallback(() => call<Dataset>(`/datasets/${id}`), () => getDataset(id));
+  return withFallback(
+    async () => normalise(await call<Dataset>(`/datasets/${id}`)),
+    () => getDataset(id),
+  );
 }
 
 // ------------------------------------------------------------------ pipeline
