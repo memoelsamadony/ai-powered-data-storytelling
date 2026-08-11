@@ -58,7 +58,8 @@ alone under-describes what the agent does.
 Alarmism 1–5, before and after. On the rising pertussis series 3.5 → 3.0, the first non-zero
 delta in the project. On the falling measles series nothing moved — the honest finding: the
 moderator can only remove alarmism the generator actually produced.
-→ Say both caveats out loud: **n = 2**, and **the judge is the same model as the moderator**.
+→ Say both caveats out loud: **n = 2**, and **these two runs were self-judged** (legacy `mid`
+tier, judge = moderator = gemma4:31b). An independent judge is now wired — see fig6.
 
 **fig4 — Groundedness.** *(Speaker 3, ~60 s)*
 The strongest slide. The raw measles story stated 4 figures and 2 were unsupported; the
@@ -67,8 +68,11 @@ data-bound. Computed in Python against the evidence pack — no model in the loo
 not exposed to the judge caveat above.
 
 **fig6 — Where the experiments stand.** *(Speaker 3, ~45 s, hands over to the demo)*
-Instruments built and verified; E1–E6 specified and ready to run; two things blocked and we
-name them ourselves — an independent judge, and the human baselines. Then hand to the demo.
+Instruments built and verified. As of today the ladder runs have started: an independent judge
+(`qwen3.5:9b`, a different family from the gemma4 moderator) is wired on every new tier, and an
+`m31b-selfjudge` control tier differs from `g8b` in exactly one thing — who judges — so the gap
+between them *measures* how inflated the earlier self-judged numbers were. Still genuinely open:
+the human baselines. Then hand to the demo.
 
 **fig7 — The hardware ceiling.** *(held back for Q&A)*
 32 GB, ~22 GB usable, the two big models total 43.8 GB, so every run is load → infer → evict
@@ -80,7 +84,7 @@ Most answers are a figure you already showed — jump back to it rather than des
 
 | If asked | Go to | The answer |
 |---|---|---|
-| "Isn't the judge grading its own rewrite?" | `fig4` | Yes — known defect, protocol item P0.1. Then: groundedness has no judge in it. |
+| "Isn't the judge grading its own rewrite?" | `fig6`, `fig4` | It was, on the runs shown — and we fixed it: independent judge plus a self-judge control that quantifies the old bias. Also: groundedness has no judge in it at all. |
 | "n = 2, why believe any of it?" | `fig1`, `fig2` | You shouldn't yet. The reproductions (n = 100, n = 30) carry the evidence. |
 | "Where are the human baselines?" | `fig6` | 25 model-drafted reference stories with provenance; the human track is deliberately empty. |
 | "Why so slow / why local models?" | `fig7` | The only unshown figure. 43.8 GB of models, 22 GB of usable memory. |

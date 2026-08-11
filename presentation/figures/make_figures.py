@@ -311,9 +311,10 @@ def fig3():
         "The novel metric: alarmism before vs after moderation",
         "Two runs, mid tier  ·  llama3.1:8b generator, gemma4:31b moderator  ·  after the 2026-08-10 metric refit",
         "\n".join(b),
-        footnote="n = 2 runs — these verify the instrument on real data; they are not yet a result. The judge is currently the "
-        "same model as the moderator (gemma4:31b), so these deltas are self-assessed; an independent judge is protocol item "
-        "P0.1 and is not yet satisfied.")
+        footnote="n = 2 runs — these verify the instrument on real data; they are not yet a result. Both were rated on the "
+        "legacy mid tier, where the judge is the same model as the moderator (gemma4:31b), so these two deltas are "
+        "self-assessed. An independent judge (qwen3.5:9b, a different family) has since been wired, with a self-judge "
+        "control tier to quantify that bias; those runs are not in these numbers.")
 
 
 # =========================================================================
@@ -439,9 +440,9 @@ def fig6():
         ("E2", "Rubric ablation", "ready", "is it the rubric or just\nthe parameter count?"),
         ("E3", "Specificity &\nidempotence", "ready", "re-moderating a moderated\nstory should change nothing"),
         ("E4", "Silent fact\ncorrection", "ready", "figures fixed without being\nflagged — falls out of E1"),
-        ("E5", "Generator ×\nmoderator scale", "ready", "can a strong moderator\nreplace generator scale?"),
+        ("E5", "Generator ×\nmoderator scale", "active", "7 ladder tiers defined,\n1B → 35B; first rung run"),
         ("E6", "Visual tone", "later", "depends on the\nchart-spec work"),
-        ("—", "Judge validation", "blocked", "judge == moderator today;\nneeds a distinct model"),
+        ("—", "Independent\njudge", "active", "qwen3.5:9b judge, different\nfamily; + self-judge control"),
         ("—", "Human baselines", "blocked", "25 LLM drafts written; the\nhuman track is still empty"),
         ("—", "User study", "later", "trust, engagement,\nreadability, preference"),
     ]
@@ -449,6 +450,7 @@ def fig6():
         "done":    (GOOD, "✓", "DONE"),
         "ready":   (BLUE, "▶", "READY TO RUN"),
         "blocked": (CRITICAL, "!", "BLOCKED"),
+        "active":  (WARNING, "◑", "RUNNING NOW"),
         "later":   (MUTED, "○", "AFTER THE ABOVE"),
     }
     cw, ch, gx, gy = 265, 196, 20, 22
@@ -471,17 +473,18 @@ def fig6():
 
     b.append(f'<rect x="96" y="656" width="1408" height="122" rx="10" fill="{WARNING}" fill-opacity="0.14"/>')
     b.append(txt(122, 694, "What has to happen before any tone number is citable", size=22, fill=INK, weight="bold"))
-    b.append(txt(122, 728, "1.  Pick a judge from a different model family than the moderator — today gemma4:31b grades its own rewrite, "
-                 "so every alarmism delta is self-assessed.", size=19, fill=INK_2))
-    b.append(txt(122, 758, "2.  Land the human baselines — without a reference, chrF++ and every similarity metric is undefined, and the "
-                 "1–5 scale has no anchor.", size=19, fill=INK_2))
+    b.append(txt(122, 728, "1.  The alarmism numbers on the previous slide predate the independent judge — they were self-assessed on the "
+                 "legacy tier, and will be re-measured.", size=19, fill=INK_2))
+    b.append(txt(122, 758, "2.  Land the genuine human baselines — the 25 drafts are model-authored and labelled as such, so similarity "
+                 "against them measures distance to Claude text.", size=19, fill=INK_2))
 
     return frame(
         "Where the experiments stand tonight",
-        "The instruments are built and verified on real data. The measurements come next.",
+        "The instruments are built and verified on real data. As of today the ladder runs have started.",
         "\n".join(b),
-        footnote="Protocol: EXPERIMENT_PLAN.md plus Addendum A (scale, prompting, time-series metrics). E0 parameters, "
-        "prompts, hashes, stage timings and full texts are committed in experiments/e0-metric-refit.json.")
+        footnote="Protocol: EXPERIMENT_PLAN.md plus Addendum A. Model roster and tier table: experiments/MODELS.md. The "
+        "m31b-selfjudge tier differs from g8b in exactly one thing — who judges — so the gap between them measures the "
+        "self-assessment bias in the earlier numbers. Neither is in RESULTS.md yet.")
 
 
 # =========================================================================
