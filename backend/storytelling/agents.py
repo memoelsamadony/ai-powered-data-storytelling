@@ -83,7 +83,14 @@ Return JSON with:
 - "title": a calibrated headline
 - "paragraphs": the rewritten story, same length, faithful to the data
 - "emotiveSpans": every phrase you changed, as {{"text": the original phrase,
-  "replacement": what you replaced it with, "reason": the short tone problem it had}}"""
+  "replacement": what you replaced it with, "reason": the short tone problem it had,
+  "category": which of the four families the problem belongs to}}
+
+The four categories, exactly one per edit:
+- "intensity": a verb or adjective dialled up beyond what the data says
+- "framing": fear, doom, false reassurance or complacency
+- "overreach": a causal or predictive claim the table cannot support
+- "grounding": a vague or invented figure replaced with the real one"""
 
 
 FACTCHECK_SYSTEM = (

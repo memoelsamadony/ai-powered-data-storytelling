@@ -136,9 +136,51 @@ def _human_variant(run: Run) -> ToneVariant:
     )
 
 
+# Keyword -> category, for spans that predate the categorised schema or come
+# back from a model that ignored it. Ordered: the first family whose words
+# appear in the moderator's own stated reason wins.
+_CATEGORY_HINTS: list[tuple[str, tuple[str, ...]]] = [
+    ("grounding", ("vague", "invented", "unsupported figure", "no figure", "imprecise",
+                   "not in the data", "actual figure", "real number", "quantif")),
+    ("overreach", ("causal", "cause", "predict", "forecast", "implies", "speculat",
+                   "extrapolat", "unsupported claim", "correlation")),
+    ("framing", ("fear", "doom", "alarm", "panic", "catastroph", "reassur",
+                 "complacen", "crisis", "apocalyp", "framing")),
+    ("intensity", ("exaggerat", "overstate", "dramatic", "hyperbol", "emotive",
+                   "intensity", "sensational", "loaded", "strong")),
+]
+
+
+def categorise_span(span: dict) -> str:
+    """Best-effort family for an edit the moderator did not label.
+
+    Falls back to "intensity", the broadest family, rather than inventing a
+    fifth bucket: the frontend counts exactly four and an unknown id would
+    silently vanish from the chart instead of showing up as uncategorised.
+    """
+    haystack = " ".join(
+        str(span.get(k, "")) for k in ("reason", "text", "replacement")
+    ).lower()
+    for category, needles in _CATEGORY_HINTS:
+        if any(needle in haystack for needle in needles):
+            return category
+    return "intensity"
+
+
+def emotive_spans_of(run: Run) -> list[EmotiveSpan]:
+    """Stored spans, every one of them carrying a category."""
+    spans: list[EmotiveSpan] = []
+    for raw in run.emotive_spans:
+        data = dict(raw)
+        if not data.get("category"):
+            data["category"] = categorise_span(data)
+        spans.append(EmotiveSpan.model_validate(data))
+    return spans
+
+
 def to_story_set(run: Run) -> StorySet:
     tier = oc.resolve_tier(run.tier)
-    spans = [EmotiveSpan.model_validate(s) for s in run.emotive_spans]
+    spans = emotive_spans_of(run)
     return StorySet(
         dataset_id=run.dataset_id,
         human=_human_variant(run),

@@ -125,10 +125,20 @@ class ToneVariant(Schema):
     paragraphs: list[str]
 
 
+# Mirrors EDIT_CATEGORIES in lib/data/stories.ts, where the taxonomy chart
+# counts spans by exactly these four ids. The frontend type requires the field,
+# so a span without one is not a missing label, it is a bar that reads zero.
+EditCategory = Literal["intensity", "framing", "overreach", "grounding"]
+
+
 class EmotiveSpan(Schema):
     text: str
     replacement: str
     reason: str
+    # Declared on the wire schema so it reaches the decoder as a grammar
+    # constraint: the moderator has to pick one of the four while writing,
+    # which beats inferring it from prose afterwards.
+    category: EditCategory = "intensity"
 
 
 class TonePhrase(Schema):
@@ -219,6 +229,128 @@ class ComparisonMetrics(Schema):
     alarmism_after: float
     emotive_spans_removed: int
     facts_preserved: bool
+
+
+class EditCategoryCount(Schema):
+    category: EditCategory
+    label: str
+    count: int
+
+
+class EditsOut(Schema):
+    """What the moderator changed, and the shape of those changes.
+
+    `counts` covers all four families including the zeros, so the chart does
+    not have to decide whether an absent family means none or means unknown.
+    """
+
+    run_id: str
+    total: int
+    counts: list[EditCategoryCount]
+    spans: list[EmotiveSpan]
+    moderator: str
+
+
+# --------------------------------------------------------------------------
+# Results
+# --------------------------------------------------------------------------
+# Split by provenance, and the split is the point. `measured` is computed from
+# the runs in this database and carries its own n, so a mean over three demo
+# runs cannot be read as a study result. `reproduction` is read from committed
+# artifacts and names the file it came from. A figure that is neither is not
+# served at all rather than being dressed as one of them.
+
+
+class TierRuns(Schema):
+    tier: str
+    runs: int
+
+
+class StageTiming(Schema):
+    stage: str
+    model: str
+    runs: int
+    median_seconds: float
+
+
+class MeasuredResults(Schema):
+    """Computed from the Run table. Every figure carries the n behind it."""
+
+    runs_total: int
+    runs_complete: int
+    by_tier: list[TierRuns]
+    # None, not zero, when no completed run carries a judged rating.
+    alarmism_before: float | None = None
+    alarmism_after: float | None = None
+    alarmism_n: int = 0
+    edits_per_run: float | None = None
+    edits_by_category: list[EditCategoryCount] = []
+    facts_preserved_rate: float | None = None
+    facts_checked_n: int = 0
+    stage_timings: list[StageTiming] = []
+
+
+class FaithfulnessPoint(Schema):
+    model: str
+    value: float
+    note: str
+    tone: Literal["good", "warn", "bad"]
+
+
+class ReproductionResults(Schema):
+    """Read from the committed reproduction artifacts, not from any run here."""
+
+    caption: str
+    unit: str
+    source: str
+    series: list[FaithfulnessPoint]
+
+
+class ResultsOut(Schema):
+    measured: MeasuredResults
+    faithfulness: ReproductionResults | None = None
+    # Named so the frontend can say what it is still showing from its own
+    # constants rather than quietly mixing the two.
+    unavailable: list[str] = []
+
+
+class JudgeIn(Schema):
+    # Only a model alias, never a path or a flag: this reaches a subprocess.
+    model: str = "opus"
+
+
+class JudgeOutcome(Schema):
+    """An independent judge's verdict, beside the local judge's, never over it."""
+
+    run_id: str
+    judge_model: str
+    raw_alarmism: float
+    moderated_alarmism: float
+    delta: float
+    rationale: str
+    # The same two figures from the Ollama judge, so the interface can show the
+    # gap. On the mid and large tiers that judge is also the moderator, which is
+    # the bias this endpoint exists to measure.
+    local_raw_alarmism: float | None = None
+    local_moderated_alarmism: float | None = None
+    local_judge_model: str = ""
+    cost_usd: float | None = None
+
+
+class UploadOut(Schema):
+    """A stored upload. `wired` is false and says why, so the interface cannot
+    imply the file is ready to generate from when it is not."""
+
+    id: str
+    original_name: str
+    rows: int
+    columns: list[str]
+    numeric_columns: list[str]
+    year_range: str = ""
+    countries: int | None = None
+    preview_rows: list[dict[str, str]] = []
+    wired: bool = False
+    note: str = ""
 
 
 class GenerateIn(Schema):
