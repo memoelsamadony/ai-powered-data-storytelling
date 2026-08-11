@@ -121,7 +121,12 @@ class ToneVariant(Schema):
     label: str
     author: str
     title: str
-    alarmism_rating: float = Field(ge=1, le=5, description="1 = flat, 5 = manipulative")
+    # None means no judge was reachable, which is a fact about the run and not a
+    # middling score. Anything that filled it with a default would report a
+    # measurement that was never taken.
+    alarmism_rating: float | None = Field(
+        default=None, ge=1, le=5, description="1 = flat, 5 = manipulative; None = not measured"
+    )
     paragraphs: list[str]
 
 
@@ -225,8 +230,8 @@ class ComparisonMetrics(Schema):
     """
 
     text_similarity: list[TextSimilarity]
-    alarmism_before: float
-    alarmism_after: float
+    alarmism_before: float | None = None
+    alarmism_after: float | None = None
     emotive_spans_removed: int
     facts_preserved: bool
 

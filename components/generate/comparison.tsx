@@ -119,19 +119,32 @@ export function Comparison({
    * negative "improvement". Which direction the story was pulled is the finding,
    * so it is stated rather than hidden behind a minus sign.
    */
-  const moved = +(moderated - raw).toFixed(1);
-  const pulledUp = moved > 0;
-  const band = humanBand(story.human.alarmismRating);
-  const landedInBand = moderated >= band.from && moderated <= band.to;
+  // Every figure below is a difference between two judged ratings, so all three
+  // have to exist before any of it can be stated. When the judge was
+  // unreachable the panel says so instead of computing a move that was never
+  // measured, which on this page would be the headline claim.
+  const humanRating = story.human.alarmismRating;
+  const scored = raw !== null && moderated !== null && humanRating !== null;
+  const band = humanRating === null ? undefined : humanBand(humanRating);
+  const moved = scored ? +(moderated! - raw!).toFixed(1) : null;
+  const pulledUp = moved !== null && moved > 0;
+  const landedInBand =
+    scored && band ? moderated! >= band.from && moderated! <= band.to : false;
 
-  const toneRow: ToneAxisRow = {
-    id: dataset.id,
-    label: dataset.shortName,
-    tempts: `tempts ${dataset.failureMode}`,
-    human: { value: story.human.alarmismRating, title: human.title, author: human.author },
-    raw: { value: raw, title: story.aiRaw.title, author: story.aiRaw.author },
-    moderated: { value: moderated, title: story.aiModerated.title, author: story.aiModerated.author },
-  };
+  const toneRow: ToneAxisRow | null = scored
+    ? {
+        id: dataset.id,
+        label: dataset.shortName,
+        tempts: `tempts ${dataset.failureMode}`,
+        human: { value: humanRating!, title: human.title, author: human.author },
+        raw: { value: raw!, title: story.aiRaw.title, author: story.aiRaw.author },
+        moderated: {
+          value: moderated!,
+          title: story.aiModerated.title,
+          author: story.aiModerated.author,
+        },
+      }
+    : null;
 
   /* Derived from the fact-checker's own output rather than hardcoded. */
   const flagged = story.factualCheck.filter((f) => f.status === "flagged").length;
@@ -185,17 +198,25 @@ export function Comparison({
                 Alarmism · 1–5 LLM judge · the project&rsquo;s novel metric
               </p>
             </div>
-            <p className="text-sm text-muted">
-              Pulled <strong className="font-medium text-navy">{pulledUp ? "up" : "down"}</strong>{" "}
-              <span className="font-mono text-navy">{Math.abs(moved).toFixed(1)}</span>{" "}
-              {pulledUp ? "out of false reassurance" : "out of catastrophising"}
-              {landedInBand && <span className="text-muted"> and into the calibrated band</span>}
-            </p>
+            {moved === null ? (
+              <p className="text-sm text-muted">
+                No judge was reachable for this run, so the tone was not measured.
+              </p>
+            ) : (
+              <p className="text-sm text-muted">
+                Pulled <strong className="font-medium text-navy">{pulledUp ? "up" : "down"}</strong>{" "}
+                <span className="font-mono text-navy">{Math.abs(moved).toFixed(1)}</span>{" "}
+                {pulledUp ? "out of false reassurance" : "out of catastrophising"}
+                {landedInBand && <span className="text-muted"> and into the calibrated band</span>}
+              </p>
+            )}
           </div>
 
-          <div className="mt-5">
-            <ToneAxis rows={[toneRow]} />
-          </div>
+          {toneRow && (
+            <div className="mt-5">
+              <ToneAxis rows={[toneRow]} />
+            </div>
+          )}
 
           <Glossary className="mt-5 border-t border-hairline pt-4" items={TONE_TERMS} />
         </section>

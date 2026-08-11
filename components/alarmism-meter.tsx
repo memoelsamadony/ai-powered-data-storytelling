@@ -46,7 +46,7 @@ export function AlarmismMeter({
   className,
 }: {
   /** The rating to mark. With `before` set, this is the "after". */
-  value: number;
+  value: number | null;
   /** Optional earlier rating — renders as a hollow tick with a connector. */
   before?: number;
   /** The human tone band. Omit to show the track without a target. */
@@ -59,6 +59,21 @@ export function AlarmismMeter({
   const span = max - MIN;
   const pos = (v: number) => (Math.max(MIN, Math.min(max, v)) - MIN) / span;
   const pct = (v: number) => `${pos(v) * 100}%`;
+
+  // No judge was reachable for this story. Say that, rather than draw a marker
+  // somewhere on the scale: every position on this track is a claim, and the
+  // middle of it is the specific claim "calibrated", which is the one thing an
+  // unmeasured story must not be shown as.
+  if (value === null) {
+    return (
+      <div className={className}>
+        <div className="h-1.5 w-full rounded-full border border-dashed border-hairline bg-surface-soft/60" />
+        <p className="mt-2 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+          Tone not measured
+        </p>
+      </div>
+    );
+  }
 
   const inBand = band ? value >= band.from && value <= band.to : undefined;
   const verdict =

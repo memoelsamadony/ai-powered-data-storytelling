@@ -18,7 +18,8 @@ export interface ToneVariant {
   author: string;
   title: string;
   /** Alarmism rating on the 1–5 LLM-judge scale (1 = flat, 5 = manipulative). */
-  alarmismRating: number;
+  /** null = no judge was reachable for this story. Not a middling score. */
+  alarmismRating: number | null;
   paragraphs: string[];
 }
 

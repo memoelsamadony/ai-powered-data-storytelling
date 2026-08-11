@@ -170,57 +170,82 @@ class DatasetPayloadTests(SimpleTestCase):
         ds.country_payload.cache_clear()
 
 
-class WhoGhoReaderTests(SimpleTestCase):
-    """The WHO extract, whose shape has one trap that doubles every figure."""
+class WhoGhoTests(SimpleTestCase):
+    """The WHO dataset, built by build_who_gho.py from two GHO indicators.
+
+    The extract in datasets/ (MORT_100) is a different indicator and carries
+    neither of these measures; these tests are what stops the two being
+    confused again.
+    """
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.frame = ds.load_frame("who-health")
+        cls.dataset = ds.get_dataset("who-health")
 
-    def test_overlapping_age_groups_are_not_double_counted(self):
-        """The extract carries 0-4 years AND its two halves, which sum to it.
+    def test_it_carries_the_measures_the_interface_declares(self):
+        self.assertIn("under5_mortality", self.frame.columns)
+        self.assertIn("life_expectancy", self.frame.columns)
 
-        Reading all three doubles every death in the dataset. 2000 is the
-        published total for the 0-4 group; twice that is the failure mode.
+    def test_the_world_row_is_who_s_own_global_figure(self):
+        """Not an average of the country rows.
+
+        A mortality *rate* cannot be averaged across countries without a
+        live-births denominator, which this API does not carry, so the global
+        series has to be the one WHO publishes.
         """
-        world_2000 = self.frame[
-            (self.frame["code"] == "WORLD") & (self.frame["year"] == 2000)
-        ]["under5_deaths"].iloc[0]
-        self.assertAlmostEqual(world_2000, 9_942_151, delta=2)
-
-    def test_the_world_row_is_the_sum_of_the_countries(self):
-        countries = self.frame[(self.frame["code"] != "WORLD") & (self.frame["year"] == 2021)]
         world = self.frame[(self.frame["code"] == "WORLD") & (self.frame["year"] == 2021)]
-        self.assertAlmostEqual(
-            countries["under5_deaths"].sum(), world["under5_deaths"].iloc[0], delta=2
-        )
+        self.assertEqual(len(world), 1)
+        self.assertAlmostEqual(float(world["under5_mortality"].iloc[0]), 39.6, delta=0.5)
+        self.assertAlmostEqual(float(world["life_expectancy"].iloc[0]), 71.4, delta=0.5)
 
-    def test_the_share_is_a_percentage(self):
-        shares = self.frame["infectious_share"].dropna()
-        self.assertTrue(((shares >= 0) & (shares <= 100)).all())
+    def test_the_figures_are_in_their_units(self):
+        """Deaths per 1,000 live births, and years. Not percentages.
 
-    def test_a_country_with_no_deaths_has_no_share(self):
-        """0 deaths out of 0 is unknown, not 0% infectious.
-
-        A zero would be drawn in the palest bin, reading as "measured, and
-        almost none of it infectious" for a country that reported nothing.
+        The upper bound is the definitional one, 1,000, not a plausible-looking
+        one: the series reaches 780.9 for South Sudan in 1988 and 551.3 for
+        Cambodia in 1976, which are real UN IGME estimates of real catastrophes.
+        A tighter bound here would be this suite asserting an assumption.
         """
-        zero_total = self.frame[self.frame["under5_deaths"] == 0]
-        if len(zero_total):
-            self.assertTrue(zero_total["infectious_share"].isna().all())
+        mortality = self.frame["under5_mortality"].dropna()
+        life = self.frame["life_expectancy"].dropna()
+        self.assertTrue(((mortality > 0) & (mortality <= 1000)).all())
+        self.assertTrue(((life >= 20) & (life <= 95)).all())
 
-    def test_the_dataset_is_served_and_mappable(self):
-        dataset = ds.get_dataset("who-health")
-        self.assertGreater(len(dataset.country_stats), 150)
-        mappable = [m for m in dataset.country_metrics if m.mappable]
-        self.assertEqual([m.key for m in mappable], ["infectious_share"])
+    def test_one_row_per_country_year(self):
+        # The API returns a row per sex; keeping all three would put three
+        # different numbers under the same country-year.
+        pairs = self.frame[["code", "year"]]
+        self.assertEqual(len(pairs), len(pairs.drop_duplicates()))
 
-    def test_raw_death_counts_are_not_mapped(self):
-        counts = next(
-            m for m in ds.get_dataset("who-health").country_metrics if m.key == "under5_deaths"
-        )
-        self.assertFalse(counts.mappable)
+    def test_the_map_covers_the_reporting_world(self):
+        self.assertGreater(len(self.dataset.country_stats), 150)
+
+    def test_metric_contract_matches_the_frontend(self):
+        by_key = {m.key: m for m in self.dataset.country_metrics}
+        self.assertEqual(set(by_key), {"under5_mortality", "life_expectancy"})
+        self.assertEqual(list(by_key["under5_mortality"].breaks), [5, 15, 40, 80])
+        self.assertEqual(list(by_key["life_expectancy"].breaks), [60, 67, 73, 79])
+        self.assertEqual(by_key["under5_mortality"].polarity, "higher-is-worse")
+        self.assertEqual(by_key["life_expectancy"].polarity, "higher-is-better")
+
+    def test_the_preview_year_has_both_measures(self):
+        """Mortality runs to 2024, life expectancy stops at 2021.
+
+        Taking the newest year in the table would show every spotlight country
+        with a blank second column.
+        """
+        self.assertTrue(self.dataset.preview_rows)
+        for row in self.dataset.preview_rows:
+            self.assertNotEqual(row.coverage, "n/a", row.country)
+
+    def test_the_prompt_table_states_each_measure_in_its_own_unit(self):
+        # The generator reads this. "66.8%" for a life expectancy in years is a
+        # unit error handed straight into the story.
+        table = ds.build_prompt_table("who-health")
+        self.assertIn("years", table)
+        self.assertNotRegex(table, r"7[0-9]\.[0-9]%")
 
 
 EDIT_IDS = {"intensity", "framing", "overreach", "grounding"}

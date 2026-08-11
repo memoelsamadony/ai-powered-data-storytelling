@@ -11,6 +11,8 @@ import time
 from typing import Callable, TypeVar
 
 from . import agents
+from . import datasets as ds
+from . import judge
 from . import ollama_client as oc
 from .models import Run, RunStatus, StageResult
 from .schemas import (
@@ -53,6 +55,47 @@ def start_run(dataset_id: str, tier_id: str) -> Run:
     return Run.objects.create(dataset_id=dataset_id, tier=tier_id)
 
 
+def _judge(run: Run, stage: str, title: str, paragraphs: list[str]) -> float | None:
+    """Rate a story with the independent judge.
+
+    The tone rating is the project's own contribution, and it used to be
+    produced by the same local model that had just done the moderating, which
+    makes it a self-assessment rather than a judgement. It is now the Claude
+    CLI, a different family and vendor, and there is deliberately no fallback to
+    the local model: a rating from the moderator about its own work is the thing
+    being removed, so re-introducing it when the CLI is missing would put the
+    same number back under a name that implies otherwise.
+
+    Returns None when no judge is reachable, and None travels all the way to the
+    interface as "not measured". An unjudged story is a fact about the run.
+    """
+    if not judge.is_available():
+        log.warning("no independent judge available; %s left unmeasured", stage)
+        return None
+    started = time.perf_counter()
+    try:
+        rating, rationale, cost, duration = judge.score_story(
+            ds.build_prompt_table(run.dataset_id), title, paragraphs
+        )
+    except judge.JudgeUnavailable as exc:
+        # The run itself is fine; only its rating is missing. Failing the whole
+        # stage here would throw away a story that was generated correctly.
+        log.warning("judge failed for %s: %s", stage, exc)
+        StageResult.objects.create(
+            run=run, stage=stage, model=f"claude/{judge.DEFAULT_MODEL}",
+            duration_s=round(time.perf_counter() - started, 2),
+            payload={"error": str(exc)},
+        )
+        return None
+    StageResult.objects.create(
+        run=run, stage=stage, model=f"claude/{judge.DEFAULT_MODEL}",
+        duration_s=round(duration, 2),
+        payload={"alarmism": rating, "rationale": rationale},
+        usage={"cost_usd": cost} if cost is not None else {},
+    )
+    return rating
+
+
 def do_generate(run: Run) -> Run:
     tier = oc.resolve_tier(run.tier)
     run.status = RunStatus.GENERATING
@@ -60,12 +103,10 @@ def do_generate(run: Run) -> Run:
 
     out = _timed(run, StageResult.Stage.GENERATE, tier.generator,
                  lambda: agents.run_generate(run.dataset_id, run.tier))
-    judged = _timed(run, StageResult.Stage.JUDGE_RAW, tier.judge,
-                    lambda: agents.run_judge(run.tier, out.title, out.paragraphs))
 
     run.raw_title = out.title
     run.raw_paragraphs = out.paragraphs
-    run.raw_alarmism = judged.alarmism_rating
+    run.raw_alarmism = _judge(run, StageResult.Stage.JUDGE_RAW, out.title, out.paragraphs)
     run.save()
     return run
 
@@ -78,13 +119,12 @@ def do_moderate(run: Run) -> Run:
     out = _timed(run, StageResult.Stage.MODERATE, tier.moderator,
                  lambda: agents.run_moderate(run.dataset_id, run.tier,
                                              run.raw_title, run.raw_paragraphs))
-    judged = _timed(run, StageResult.Stage.JUDGE_MODERATED, tier.judge,
-                    lambda: agents.run_judge(run.tier, out.title, out.paragraphs))
-
     run.moderated_title = out.title
     run.moderated_paragraphs = out.paragraphs
     run.emotive_spans = [s.model_dump(by_alias=True) for s in out.emotive_spans]
-    run.moderated_alarmism = judged.alarmism_rating
+    run.moderated_alarmism = _judge(
+        run, StageResult.Stage.JUDGE_MODERATED, out.title, out.paragraphs
+    )
     run.save()
     return run
 
@@ -131,7 +171,7 @@ def _human_variant(run: Run) -> ToneVariant:
         label="Human baseline",
         author="Human author",
         title=run.human_title or "Human baseline",
-        alarmism_rating=2.5,  # placeholder until the human story is judged too
+        alarmism_rating=None,  # the human baseline is not judged
         paragraphs=paragraphs or ["No human baseline has been written yet."],
     )
 
@@ -189,7 +229,7 @@ def to_story_set(run: Run) -> StorySet:
             label="LLM - raw",
             author=f"General LLM ({tier.generator})",
             title=run.raw_title,
-            alarmism_rating=run.raw_alarmism or 3.0,
+            alarmism_rating=run.raw_alarmism,
             paragraphs=run.raw_paragraphs,
         ),
         ai_moderated=ToneVariant(
@@ -197,7 +237,7 @@ def to_story_set(run: Run) -> StorySet:
             label="LLM - tone-moderated",
             author=f"Agentic moderator ({tier.moderator})",
             title=run.moderated_title,
-            alarmism_rating=run.moderated_alarmism or 2.0,
+            alarmism_rating=run.moderated_alarmism,
             paragraphs=run.moderated_paragraphs,
         ),
         emotive_spans=spans,
@@ -289,8 +329,8 @@ def compare(run: Run, human_text: str = "") -> ComparisonMetrics:
             TextSimilarity(metric="ROUGE-L", value=_rouge_l(reference, candidate)),
             TextSimilarity(metric="Unigram F1", value=_unigram_f1(reference, candidate)),
         ],
-        alarmism_before=run.raw_alarmism or 0.0,
-        alarmism_after=run.moderated_alarmism or 0.0,
+        alarmism_before=run.raw_alarmism,
+        alarmism_after=run.moderated_alarmism,
         emotive_spans_removed=len(run.emotive_spans),
         facts_preserved=not any(
             i.get("status") == "flagged" for i in run.factual_check

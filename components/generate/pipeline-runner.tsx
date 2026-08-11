@@ -57,7 +57,10 @@ export function PipelineRunner({
 
   // Render whatever the backend has produced so far; fall back to the mock.
   const view = live ?? story;
-  const band = humanBand(view.human.alarmismRating);
+  // No band without a judged human baseline: the band is drawn *around* that
+  // rating, so inventing one would draw a target where none was measured.
+  const band =
+    view.human.alarmismRating === null ? undefined : humanBand(view.human.alarmismRating);
 
   const rawBody = view.aiRaw.paragraphs.join("\n\n");
 
@@ -245,7 +248,7 @@ export function PipelineRunner({
               <div className="mt-5 border-t border-hairline pt-4">
                 <AlarmismMeter
                   value={view.aiModerated.alarmismRating}
-                  before={view.aiRaw.alarmismRating}
+                  before={view.aiRaw.alarmismRating ?? undefined}
                   band={band}
                   size="sm"
                 />

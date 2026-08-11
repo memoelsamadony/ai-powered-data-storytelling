@@ -22,21 +22,27 @@ import { getDatasets } from "@/lib/api";
  * run of one tier, so plotting it here would change the argument every reload.
  */
 function toneRowsFor(datasets: Dataset[]): ToneAxisRow[] {
-  return datasets.map((d) => {
+  return datasets.flatMap((d) => {
     const s = getStorySet(d.id);
     const pick = (v: (typeof s)["human"]) => ({
       value: v.alarmismRating,
       title: v.title,
       author: v.author,
     });
-    return {
-      id: d.id,
-      label: d.shortName,
-      tempts: `tempts ${d.failureMode}`,
-      human: pick(s.human),
-      raw: pick(s.aiRaw),
-      moderated: pick(s.aiModerated),
-    };
+    const [human, raw, moderated] = [pick(s.human), pick(s.aiRaw), pick(s.aiModerated)];
+    // A row is three positions on one scale. If any of them was never
+    // measured, the row cannot be drawn without inventing the missing one.
+    if (human.value === null || raw.value === null || moderated.value === null) return [];
+    return [
+      {
+        id: d.id,
+        label: d.shortName,
+        tempts: `tempts ${d.failureMode}`,
+        human: { ...human, value: human.value },
+        raw: { ...raw, value: raw.value },
+        moderated: { ...moderated, value: moderated.value },
+      },
+    ];
   });
 }
 

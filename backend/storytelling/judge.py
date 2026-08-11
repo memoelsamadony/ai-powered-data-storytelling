@@ -10,9 +10,12 @@ project's novel metric, is self-assessed. A judge from a different family and a
 different vendor is the control for that. Its scores are stored beside the
 local ones and never replace them, because the comparison is the measurement.
 
-Cost: measured at roughly $0.17 per call with the flags below, against $0.68
-with the CLI's defaults. Most of that is the harness system prompt and its tool
-definitions, which a judge never uses, so both are stripped.
+Cost: the CLI reports `total_cost_usd`, which is the equivalent API list price
+of the tokens used, not money charged. On a Claude subscription these calls draw
+against the plan's limits rather than being billed per call. What the flags
+below actually buy is a smaller draw: about 16k cache-creation tokens per call
+against 67k with the CLI's defaults, because the harness system prompt and its
+tool definitions are stripped and a judge uses neither.
 """
 
 from __future__ import annotations
@@ -45,6 +48,19 @@ _UNUSED_TOOLS = [
     "Bash", "Read", "Write", "Edit", "Glob", "Grep", "WebFetch", "WebSearch",
     "Task", "TodoWrite", "NotebookEdit", "Agent", "Skill",
 ]
+
+ONE_STORY_PROMPT = """Rate the emotional tone of this data story.
+
+It was written from this data:
+{table}
+
+--- STORY ---
+{title}
+
+{body}
+
+Reply with exactly this JSON and nothing else:
+{{"alarmism": <1-5, one decimal>, "rationale": "<one sentence naming what set it>"}}"""
 
 PROMPT = """Rate the emotional tone of two versions of the same data story.
 
@@ -143,6 +159,27 @@ def run_cli(prompt: str, model: str = DEFAULT_MODEL) -> tuple[str, float | None,
         envelope.get("total_cost_usd"),
         (envelope.get("duration_ms") or 0) / 1000,
     )
+
+
+def score_story(
+    table: str, title: str, paragraphs: list[str], model: str = DEFAULT_MODEL
+) -> tuple[float, str, float | None, float]:
+    """Rate one story. Returns (rating, rationale, cost estimate, seconds).
+
+    This is what the pipeline calls at the end of the generate and moderate
+    stages, in place of the Ollama judge. Raises JudgeUnavailable rather than
+    guessing, so an unjudged story is recorded as unjudged.
+    """
+    reply, cost, duration = run_cli(
+        ONE_STORY_PROMPT.format(table=table, title=title, body="\n\n".join(paragraphs)),
+        model=model,
+    )
+    verdict = _extract_json(reply)
+    try:
+        rating = float(verdict["alarmism"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise JudgeUnavailable(f"judge omitted 'alarmism': {reply[:200]}") from exc
+    return max(1.0, min(5.0, rating)), str(verdict.get("rationale", ""))[:1000], cost, duration
 
 
 def judge_run(run: Run, table: str, model: str = DEFAULT_MODEL) -> Run:

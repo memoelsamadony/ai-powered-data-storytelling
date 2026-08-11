@@ -184,7 +184,10 @@ export function GenerateExperience() {
     }
     if (i === 2) return generated ? "Pipeline complete: 3 stages" : "Not run yet";
     if (i === 3 && story) {
-      const moved = story.aiModerated.alarmismRating - story.aiRaw.alarmismRating;
+      const after = story.aiModerated.alarmismRating;
+      const beforeRating = story.aiRaw.alarmismRating;
+      if (after === null || beforeRating === null) return "Tone not measured";
+      const moved = after - beforeRating;
       return `Tone pulled ${moved > 0 ? "up" : "down"} ${Math.abs(moved).toFixed(1)}`;
     }
     return null;
