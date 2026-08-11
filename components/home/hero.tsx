@@ -5,10 +5,20 @@ import { ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GithubIcon } from "@/components/icons";
 import { Container } from "@/components/ui/layout";
-import { AlarmismMeter } from "@/components/alarmism-meter";
+import { ToneMeter } from "@/components/tone-meter";
 import { course } from "@/lib/data/team";
+import { getStorySet } from "@/lib/data/stories";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+/* The two cards quote the measles sample story, so they read its judged
+   ratings rather than repeating them as literals. They were literals, 4.6 and
+   2.1, and they had drifted from the story they sat under. */
+const sample = getStorySet("measles")!;
+const rawTone = sample.aiRaw.alarmismRating;
+const moderatedTone = sample.aiModerated.alarmismRating;
+const toneMove =
+  rawTone !== null && moderatedTone !== null ? +(moderatedTone - rawTone).toFixed(1) : null;
 
 export function Hero() {
   return (
@@ -106,7 +116,7 @@ function HeroVisual() {
           defenses <span className="font-semibold italic text-alarm">collapse</span>.
         </p>
         <div className="mt-4">
-          <AlarmismMeter value={4.6} size="sm" />
+          <ToneMeter value={rawTone} size="sm" />
         </div>
       </motion.div>
 
@@ -127,11 +137,14 @@ function HeroVisual() {
           <span className="font-semibold italic text-calm">coverage stalled</span>.
         </p>
         <div className="mt-4">
-          <AlarmismMeter value={2.1} size="sm" />
+          <ToneMeter value={moderatedTone} size="sm" />
         </div>
-        <div className="absolute -right-3 -top-3 rounded-full border border-calm/30 bg-surface px-3 py-1 font-mono text-xs font-semibold text-calm shadow-sm">
-          tone −2.5
-        </div>
+        {toneMove !== null && (
+          <div className="absolute -right-3 -top-3 rounded-full border border-calm/30 bg-surface px-3 py-1 font-mono text-xs font-semibold text-calm shadow-sm">
+            tone {toneMove > 0 ? "+" : "−"}
+            {Math.abs(toneMove).toFixed(1)}
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );

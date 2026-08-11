@@ -1,6 +1,7 @@
 "use client";
 
 import * as t from "@/lib/charts/tokens";
+import type { PerOperationResults } from "@/lib/data/metrics";
 import {
   Bar,
   BarChart,
@@ -23,11 +24,20 @@ function ChartTooltip({
   payload,
   label,
   suffix = "",
+  noteKeySuffix,
 }: {
   active?: boolean;
-  payload?: { value: number; name: string; color: string }[];
+  payload?: {
+    value: number;
+    name: string;
+    color: string;
+    payload?: Record<string, number | string>;
+  }[];
   label?: string;
   suffix?: string;
+  /** Reads `<series name><suffix>` off the row and prints it beside the value,
+      which is how a percentage gets to show the count it rests on. */
+  noteKeySuffix?: string;
 }) {
   if (!active || !payload?.length) return null;
   return (
@@ -41,6 +51,11 @@ function ChartTooltip({
             <span className="ml-auto font-mono font-medium text-ink">
               {p.value}
               {suffix}
+              {noteKeySuffix && p.payload?.[`${p.name}${noteKeySuffix}`] && (
+                <span className="ml-1.5 font-normal text-faint">
+                  {p.payload[`${p.name}${noteKeySuffix}`]}
+                </span>
+              )}
             </span>
           </div>
         ))}
@@ -75,18 +90,40 @@ export function FaithfulnessChart({
   );
 }
 
-/* Per-operation accuracy — grouped bars (small vs large model). */
+/**
+ * Per-operation accuracy, one grouped bar per model.
+ *
+ * The chart takes the results block whole rather than a pre-pivoted array, so
+ * the model labels come from the data and cannot drift from it - a chart of
+ * qwen3.5:4b's numbers legended "gemma 4B" is a mistake this file has already
+ * shipped once.
+ *
+ * Every bar's tooltip carries `correct/total`. Some cells rest on very few
+ * attempts (gemma4:12b's 80% on subtraction is 4 of 5, because it writes more
+ * concise reports and states fewer explicit differences), and a bare
+ * percentage would put that beside an 87-attempt cell as an equal.
+ */
 export function OperationChart({
-  data,
-  smallLabel,
-  largeLabel,
+  results,
   height = 300,
 }: {
-  data: { op: string; small: number; large: number }[];
-  smallLabel: string;
-  largeLabel: string;
+  results: PerOperationResults;
   height?: number;
 }) {
+  const colors = [t.brandBlueLight, t.brandBlue];
+  const order: string[] = [];
+  const byOperation = new Map<string, Record<string, number | string>>();
+  for (const row of results.rows) {
+    if (!byOperation.has(row.operation)) {
+      byOperation.set(row.operation, { op: row.label });
+      order.push(row.operation);
+    }
+    const cell = byOperation.get(row.operation)!;
+    cell[row.model] = row.pct;
+    cell[`${row.model}__n`] = `${row.correct}/${row.total}`;
+  }
+  const data = order.map((op) => byOperation.get(op)!);
+
   return (
     <div>
       <ResponsiveContainer width="100%" height={height}>
@@ -94,20 +131,32 @@ export function OperationChart({
           <CartesianGrid stroke={t.grid} vertical={false} />
           <XAxis dataKey="op" tick={{ ...mono, fontSize: 11 }} tickLine={false} axisLine={t.axisLineProps} />
           <YAxis domain={[0, 100]} tick={mono} tickLine={false} axisLine={false} unit="%" />
-          <Tooltip cursor={{ fill: t.surfaceSoft }} content={<ChartTooltip suffix="%" />} />
-          <Bar dataKey="small" name={smallLabel} fill={t.brandBlueLight} radius={[5, 5, 0, 0]} barSize={20} />
-          <Bar dataKey="large" name={largeLabel} fill={t.brandBlue} radius={[5, 5, 0, 0]} barSize={20} />
+          <Tooltip
+            cursor={{ fill: t.surfaceSoft }}
+            content={<ChartTooltip suffix="%" noteKeySuffix="__n" />}
+          />
+          {results.models.map((model, i) => (
+            <Bar
+              key={model}
+              dataKey={model}
+              name={model}
+              fill={colors[i % colors.length]}
+              radius={[5, 5, 0, 0]}
+              barSize={20}
+            />
+          ))}
         </BarChart>
       </ResponsiveContainer>
-      <div className="mt-3 flex items-center justify-center gap-6 text-xs text-muted">
-        <Legend color={t.brandBlueLight} label={smallLabel} />
-        <Legend color={t.brandBlue} label={largeLabel} />
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-6 text-xs text-muted">
+        {results.models.map((model, i) => (
+          <Legend key={model} color={colors[i % colors.length]} label={model} />
+        ))}
       </div>
     </div>
   );
 }
 
-/* Generic single-series vertical bars (masked numbers, text similarity). */
+/* Generic single-series vertical bars (masked numbers, similarity scores). */
 export function SimpleBarChart({
   data,
   color = t.brandBlue,
@@ -116,7 +165,9 @@ export function SimpleBarChart({
   decimals = 0,
   height = 240,
 }: {
-  data: { label: string; value: number }[];
+  /** `muted` recedes a bar without removing it: quoted reference values sit on
+      the same axis as measured ones but are not the same kind of claim. */
+  data: { label: string; value: number; muted?: boolean }[];
   color?: string;
   domainMax?: number;
   suffix?: string;
@@ -131,6 +182,9 @@ export function SimpleBarChart({
         <YAxis domain={[0, domainMax]} tick={mono} tickLine={false} axisLine={false} />
         <Tooltip cursor={{ fill: t.surfaceSoft }} content={<ChartTooltip suffix={suffix} />} />
         <Bar dataKey="value" fill={color} radius={[6, 6, 0, 0]} barSize={48}>
+          {data.map((d, i) => (
+            <Cell key={i} fill={d.muted ? t.hairline : color} />
+          ))}
           <LabelList
             dataKey="value"
             position="top"

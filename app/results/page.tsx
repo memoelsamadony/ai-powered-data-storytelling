@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { ArrowDownRight, Scissors, ShieldCheck, Sparkles, Clock } from "lucide-react";
+import { ArrowDownRight, ArrowRight, Scissors, ShieldCheck, Sparkles, Clock } from "lucide-react";
+import Link from "next/link";
 import { PageHero } from "@/components/page-hero";
 import { Container, Section, SectionHeader } from "@/components/ui/layout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlarmismMeter } from "@/components/alarmism-meter";
+import { TonePair } from "@/components/tone-meter";
 import { FaithfulnessChart, OperationChart, SimpleBarChart } from "@/components/charts/metric-charts";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
 import {
-  faithfulness,
-  perOperation,
-  maskedNumber,
-  toneCalibration,
-  textSimilarity,
+  faithfulness as staticFaithfulness,
+  perOperation as staticPerOperation,
+  maskedNumber as staticMaskedNumber,
   userStudy,
 } from "@/lib/data/metrics";
+import { getResults } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Results & evaluation",
@@ -23,7 +23,29 @@ export const metadata: Metadata = {
     "Faithfulness, analytical correctness, the novel tone-calibration metric, text-similarity scores, and a planned user study, all grounded in offline reproductions.",
 };
 
-export default function ResultsPage() {
+// The measured block is read per request; the reproduction figures are static
+// but arrive on the same call.
+export const dynamic = "force-dynamic";
+
+export default async function ResultsPage() {
+  const live = await getResults();
+
+  // The reproduction blocks exist twice, and both are the same numbers: the
+  // backend reads the committed CSVs per request, the generated module is
+  // those same functions snapshotted at build time. Preferring the live copy
+  // means a re-run reproduction appears without a redeploy; falling back to
+  // the snapshot means the page never has to reach for a constant nobody
+  // measured. `sourceNote` names the file either way.
+  const faith = live?.faithfulness ?? staticFaithfulness;
+  const ops = live?.perOperation ?? staticPerOperation;
+  const masked = live?.maskedNumber ?? staticMaskedNumber;
+  const sourceNote = (source: string) => `Computed from ${source}.`;
+
+  const measured = live?.measured ?? null;
+  const toneMeasured =
+    measured && measured.alarmismBefore !== null && measured.alarmismAfter !== null;
+  const causal = ops.rows.find((r) => r.operation === "causal");
+
   return (
     <>
       <PageHero
@@ -49,22 +71,29 @@ export default function ResultsPage() {
             <Reveal>
               <MetricCard
                 title="Faithfulness"
-                unit={faithfulness.unit}
-                caption={faithfulness.caption}
+                unit={faith.unit}
+                caption={`${faith.caption} ${sourceNote(faith.source)}`}
                 hint="Lower is better"
               >
-                <FaithfulnessChart data={faithfulness.series} />
+                <FaithfulnessChart data={faith.series} />
               </MetricCard>
             </Reveal>
             <Reveal delay={0.1}>
               <MetricCard
                 title="Masked-number prediction"
-                unit={maskedNumber.unit}
-                caption={maskedNumber.caption}
+                unit={masked.unit}
+                caption={`${masked.caption} ${sourceNote(masked.source)}`}
                 hint="Higher is better"
               >
                 <SimpleBarChart
-                  data={maskedNumber.series.map((s) => ({ label: s.model, value: s.value }))}
+                  data={masked.series.map((point) => ({
+                    label: point.model,
+                    value: point.value,
+                    // The paper's four models are quoted from Fig. 5, ours were
+                    // rerun here. Same axis, different provenance, so they are
+                    // drawn apart rather than blended into one ranking.
+                    muted: point.source === "paper",
+                  }))}
                   color="#1e66b8"
                   domainMax={30}
                   suffix="%"
@@ -79,21 +108,30 @@ export default function ResultsPage() {
             <div className="mt-5">
               <MetricCard
                 title="Per-operation accuracy"
-                unit={perOperation.unit}
-                caption={perOperation.caption}
+                unit={ops.unit}
+                caption={`${ops.caption} ${sourceNote(ops.source)}`}
                 hint="Higher is better"
               >
-                <OperationChart
-                  data={perOperation.operations}
-                  smallLabel={perOperation.smallLabel}
-                  largeLabel={perOperation.largeLabel}
-                />
+                <OperationChart results={ops} />
                 <div className="mt-5 flex items-start gap-3 rounded-xl border border-alarm/30 bg-alarm-soft/40 p-4">
-                  <span className="mt-0.5 font-mono text-2xl font-semibold text-alarm">0%</span>
+                  <span className="mt-0.5 font-mono text-2xl font-semibold text-alarm">
+                    {causal ? `${causal.pct}%` : "0%"}
+                  </span>
                   <p className="text-sm leading-relaxed text-muted">
                     The <span className="font-medium text-ink">causal</span> operation scores zero for
-                    both model sizes: causal reasoning is a capability wall, not a size problem. It's
-                    why a lightweight causal/factual check sits beside the tone agent.
+                    both model sizes
+                    {causal && (
+                      <>
+                        {" "}
+                        &mdash; not one of the{" "}
+                        {ops.rows
+                          .filter((r) => r.operation === "causal")
+                          .reduce((n, r) => n + r.total, 0)}{" "}
+                        causal claims across both runs was supported by the table
+                      </>
+                    )}
+                    . Causal reasoning is a capability wall, not a size problem. It&rsquo;s why a
+                    lightweight causal/factual check sits beside the tone agent.
                   </p>
                 </div>
               </MetricCard>
@@ -120,31 +158,83 @@ export default function ResultsPage() {
               <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
                 <div>
                   <h2 className="text-2xl text-navy sm:text-3xl">Measuring the edit, not just the output</h2>
-                  <p className="mt-4 text-pretty leading-relaxed text-muted">{toneCalibration.caption}</p>
+                  <p className="mt-4 text-pretty leading-relaxed text-muted">
+                    The novel metric: an independent LLM judge rates tone on a 1&ndash;5 scale before
+                    and after moderation, and the emotive spans the moderator rewrote are counted and
+                    categorised, with faithfulness re-checked afterwards to confirm the edit preserved
+                    the facts.
+                  </p>
                   <div className="mt-6 flex flex-wrap gap-3">
-                    <Stat icon={Scissors} value={`${toneCalibration.emotiveSpansRemoved}`} label="emotive spans removed" tone="alarm" />
-                    <Stat icon={ShieldCheck} value="✓" label="facts preserved after moderation" tone="calm" />
+                    <Stat
+                      icon={Scissors}
+                      value={measured?.editsPerRun !== null && measured ? String(measured.editsPerRun) : "—"}
+                      label="emotive spans rewritten per run"
+                      tone="alarm"
+                    />
+                    <Stat
+                      icon={ShieldCheck}
+                      value={
+                        measured?.factsPreservedRate !== null && measured
+                          ? `${measured.factsPreservedRate}%`
+                          : "—"
+                      }
+                      label="of runs with no flagged claim after moderation"
+                      tone="calm"
+                    />
                   </div>
                 </div>
 
                 <div className="rounded-2xl border border-hairline bg-surface p-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-navy">Alarmism, before → after</span>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-calm-soft px-2.5 py-1 font-mono text-xs font-semibold text-calm-ink">
-                      <ArrowDownRight className="h-3 w-3" />
-                      −{(toneCalibration.alarmismBefore - toneCalibration.alarmismAfter).toFixed(1)}
-                    </span>
+                    <span className="text-sm font-medium text-navy">Raw &rarr; tone-moderated</span>
+                    {toneMeasured && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-calm-soft px-2.5 py-1 font-mono text-xs font-semibold text-calm-ink">
+                        <ArrowDownRight className="h-3 w-3" />
+                        {(measured!.alarmismAfter! - measured!.alarmismBefore!).toFixed(1)} alarmism
+                      </span>
+                    )}
                   </div>
-                  <div className="mt-6 space-y-5">
-                    <div>
-                      <p className="mb-1.5 text-xs text-muted">Raw LLM output</p>
-                      <AlarmismMeter value={toneCalibration.alarmismBefore} max={toneCalibration.scaleMax} />
-                    </div>
-                    <div>
-                      <p className="mb-1.5 text-xs text-muted">Tone-moderated</p>
-                      <AlarmismMeter value={toneCalibration.alarmismAfter} max={toneCalibration.scaleMax} />
-                    </div>
-                  </div>
+                  {/* Both axes, because a story is calibrated only if it is
+                      calibrated on both, and the two datasets fail in opposite
+                      directions. A single alarmism meter reads "calm, fine" for
+                      a falsely reassuring story. */}
+                  <TonePair
+                    className="mt-6"
+                    size="md"
+                    showScale
+                    alarmism={toneMeasured ? measured!.alarmismAfter : null}
+                    optimism={measured?.optimismAfter ?? null}
+                    before={{
+                      alarmism: toneMeasured ? measured!.alarmismBefore : null,
+                      optimism: measured?.optimismBefore ?? null,
+                    }}
+                  />
+                  {/* The figure used to be a pair of constants, 4.6 → 2.1, that no
+                      run produced. It is now the mean over the judged runs in this
+                      deployment, and it says so - a mean over a handful of demo
+                      runs is not a study result and must not read like one. */}
+                  <p className="mt-5 border-t border-hairline pt-4 text-xs leading-relaxed text-muted">
+                    {toneMeasured ? (
+                      <>
+                        Mean over <span className="font-mono">n = {measured!.alarmismN}</span> judged
+                        runs for alarmism
+                        {measured!.optimismN !== measured!.alarmismN && (
+                          <>
+                            {" "}
+                            and <span className="font-mono">n = {measured!.optimismN}</span> for
+                            optimism, the difference being runs judged before the second axis
+                            existed
+                          </>
+                        )}
+                        {", scored by the independent judge. A small local sample, not a study result."}
+                      </>
+                    ) : (
+                      <>
+                        No judged run is stored here yet, so there is nothing to plot. Run the
+                        pipeline in the studio and this fills in with its own sample size.
+                      </>
+                    )}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -157,20 +247,43 @@ export default function ResultsPage() {
         <Container>
           <div className="grid gap-5 lg:grid-cols-2">
             <Reveal>
-              <MetricCard
-                title="Text-similarity metrics"
-                unit="moderated vs human baseline"
-                caption={textSimilarity.caption}
-                hint="Illustrative"
-              >
-                <SimpleBarChart
-                  data={textSimilarity.series.map((s) => ({ label: s.metric, value: s.value }))}
-                  color="#0e8f86"
-                  domainMax={1}
-                  decimals={2}
-                  height={240}
-                />
-              </MetricCard>
+              <Card className="flex h-full flex-col p-6 sm:p-7">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-xl text-navy">Text-similarity metrics</h3>
+                    <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                      moderated vs human baseline
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-surface-soft px-2.5 py-1 font-mono text-[0.62rem] font-medium uppercase tracking-wide text-faint">
+                    Per run
+                  </span>
+                </div>
+                {/* This card used to plot BLEU 0.31 / ROUGE-L 0.48 / METEOR 0.41,
+                    three numbers flagged `illustrative: true` in the source and
+                    then drawn as a chart. There is no aggregate to replace them
+                    with: the score is against the baseline a reader typed, so it
+                    exists per run and nowhere else. */}
+                <p className="mt-5 text-sm leading-relaxed text-muted">
+                  BLEU, ROUGE-L and unigram F1 are scored against the baseline you write, so they
+                  exist per run rather than as a study figure. The studio computes them live at
+                  step 4 and shows them beside the moderated story.
+                </p>
+                <p className="mt-4 rounded-lg border border-hairline bg-surface-soft/70 px-3 py-2.5 text-[0.72rem] leading-relaxed text-muted">
+                  <strong className="font-medium text-navy">Read them with care.</strong> All three
+                  score <em>wording overlap</em>, not truth or tone. A factually perfect story
+                  worded differently scores near zero, which is why the metric set above does not
+                  stop here. Expect BLEU near <span className="font-mono">0.0</span> on a single
+                  short pair: it is the geometric mean of the 1&ndash;4-gram precisions, and two
+                  texts sharing no 4-gram collapse the product to zero.
+                </p>
+                <Link
+                  href="/generate"
+                  className="mt-5 inline-flex items-center gap-1.5 self-start font-mono text-[0.7rem] uppercase tracking-wider text-brand-blue hover:underline"
+                >
+                  Score a run in the studio <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Card>
             </Reveal>
 
             <Reveal delay={0.1}>
@@ -196,8 +309,101 @@ export default function ResultsPage() {
         </Container>
       </Section>
 
+      {/* Everything above is study evidence. This is what the runs on this
+          machine actually show, kept separate and carrying its own n, because a
+          mean over a handful of demo runs is not a result and must not be able
+          to read like one. */}
+      {live && live.measured.runsComplete > 0 && (
+        <Section className="border-t border-hairline bg-surface-soft/40">
+          <Container>
+            <Reveal>
+              <SectionHeader
+                kicker="This deployment"
+                title="What the runs on this machine show"
+                intro="Measured from the pipeline runs stored in the backend, not from the study. Small samples, shown with their sample size."
+              />
+              <Card className="mt-8 p-6 sm:p-8">
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  <RunStat
+                    label="Completed runs"
+                    value={String(live.measured.runsComplete)}
+                    sub={live.measured.byTier.map((t) => `${t.runs} ${t.tier}`).join(" · ")}
+                  />
+                  <RunStat
+                    label="Alarmism, before → after"
+                    value={
+                      live.measured.alarmismBefore !== null
+                        ? `${live.measured.alarmismBefore} → ${live.measured.alarmismAfter}`
+                        : "not measured"
+                    }
+                    sub={`mean over n = ${live.measured.alarmismN}`}
+                  />
+                  <RunStat
+                    label="Edits per run"
+                    value={live.measured.editsPerRun !== null ? String(live.measured.editsPerRun) : "—"}
+                    sub={live.measured.editsByCategory
+                      .filter((c) => c.count > 0)
+                      .map((c) => `${c.label} ${c.count}`)
+                      .join(" · ")}
+                  />
+                  <RunStat
+                    label="Facts preserved"
+                    value={
+                      live.measured.factsPreservedRate !== null
+                        ? `${live.measured.factsPreservedRate}%`
+                        : "—"
+                    }
+                    sub={`of n = ${live.measured.factsCheckedN} checked runs`}
+                  />
+                </div>
+
+                {live.measured.stageTimings.length > 0 && (
+                  <div className="mt-8 border-t border-hairline pt-6">
+                    <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                      Median seconds per stage
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
+                      {live.measured.stageTimings.map((t) => (
+                        <span key={`${t.stage}-${t.model}`} className="text-sm text-muted">
+                          <span className="text-navy">{t.stage}</span>{" "}
+                          <span className="font-mono text-xs">{t.medianSeconds}s</span>{" "}
+                          <span className="text-faint">
+                            ({t.model}, n={t.runs})
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {live.unavailable.map((note) => (
+                  <p
+                    key={note}
+                    className="mt-6 rounded-lg border border-hairline bg-surface-soft/70 px-3 py-2.5 text-[0.72rem] leading-relaxed text-muted"
+                  >
+                    <strong className="font-medium text-navy">Not served here.</strong> {note}
+                  </p>
+                ))}
+              </Card>
+            </Reveal>
+          </Container>
+        </Section>
+      )}
+
       <CtaBand />
     </>
+  );
+}
+
+/** Plain figure with its sample size. Distinct from `Stat` below, which is the
+ *  icon-and-tone badge the study sections use. */
+function RunStat({ label, value, sub }: { label: string; value: string; sub?: string }) {
+  return (
+    <div>
+      <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">{label}</p>
+      <p className="mt-1.5 font-serif text-2xl text-navy">{value}</p>
+      {sub && <p className="mt-1 text-xs text-muted">{sub}</p>}
+    </div>
   );
 }
 

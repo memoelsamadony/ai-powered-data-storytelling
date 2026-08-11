@@ -37,6 +37,7 @@ export function GenerateExperience() {
   const [health, setHealth] = useState<api.Health | null>(null);
   const [backendChecked, setBackendChecked] = useState(false);
   const [liveStory, setLiveStory] = useState<StorySet | null>(null);
+  const [liveMetrics, setLiveMetrics] = useState<api.ComparisonMetrics | null>(null);
   const runIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -45,9 +46,7 @@ export function GenerateExperience() {
       const [h, ds] = await Promise.all([api.getHealth(), api.getDatasets()]);
       if (cancelled) return;
       setHealth(h);
-      // The backend predates `shortName`, which the charts label rows with, so
-      // fall back to the full name instead of rendering a blank legend.
-      setDatasets(ds.map((d) => ({ ...d, shortName: d.shortName ?? d.name })));
+      setDatasets(ds);
       setBackendChecked(true);
     })();
     return () => {
@@ -86,6 +85,7 @@ export function GenerateExperience() {
     setHumanText(getStorySet(id).human.paragraphs.join("\n\n"));
     setGenerated(false);
     setLiveStory(null);
+    setLiveMetrics(null);
     runIdRef.current = null;
   };
 
@@ -116,6 +116,29 @@ export function GenerateExperience() {
     };
   }, [isLive, datasetId, tier, humanText]);
 
+  // Scored once the comparison step is reachable, not while the run is going:
+  // the metrics need the moderated text, which only exists after the last
+  // stage. Keyed on maxReached rather than step, because the step header can be
+  // folded open without advancing, and because this way the figures are already
+  // there when the reader arrives.
+  //
+  // Re-scored whenever the baseline changes, since the panel says the figures
+  // are scored against the text you typed and the textarea stays editable after
+  // the run. Debounced so that promise is kept per edit, not per keystroke.
+  useEffect(() => {
+    const runId = runIdRef.current;
+    if (maxReached < 3 || !runId || !datasetId) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const m = await api.compareStories(runId, humanText);
+      if (!cancelled) setLiveMetrics(m);
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [maxReached, datasetId, humanText]);
+
   const isOpen = useCallback((i: number) => openSteps.includes(i), [openSteps]);
 
   const toggle = (i: number) =>
@@ -139,6 +162,7 @@ export function GenerateExperience() {
     setHumanText("");
     setGenerated(false);
     setLiveStory(null);
+    setLiveMetrics(null);
     runIdRef.current = null;
     requestAnimationFrame(() =>
       sectionRefs.current[0]?.scrollIntoView({ behavior: "smooth", block: "start" }),
@@ -160,7 +184,10 @@ export function GenerateExperience() {
     }
     if (i === 2) return generated ? "Pipeline complete: 3 stages" : "Not run yet";
     if (i === 3 && story) {
-      const moved = story.aiModerated.alarmismRating - story.aiRaw.alarmismRating;
+      const after = story.aiModerated.alarmismRating;
+      const beforeRating = story.aiRaw.alarmismRating;
+      if (after === null || beforeRating === null) return "Tone not measured";
+      const moved = after - beforeRating;
       return `Tone pulled ${moved > 0 ? "up" : "down"} ${Math.abs(moved).toFixed(1)}`;
     }
     return null;
@@ -266,11 +293,24 @@ export function GenerateExperience() {
                           setGenerated(true);
                           setMaxReached((m) => Math.max(m, 3));
                         }}
-                        onReset={() => setGenerated(false)}
+                        onReset={() => {
+                          // A new run gets a new id, so the previous run's
+                          // score has to go with it: keeping it would put run
+                          // two's text beside run one's figures.
+                          setGenerated(false);
+                          setLiveStory(null);
+                          setLiveMetrics(null);
+                          runIdRef.current = null;
+                        }}
                       />
                     )}
                     {i === 3 && story && dataset && (
-                      <Comparison story={story} humanText={humanText} dataset={dataset} />
+                      <Comparison
+                        story={story}
+                        humanText={humanText}
+                        dataset={dataset}
+                        metrics={liveMetrics}
+                      />
                     )}
 
                     {/* Advance from the step you are on. */}

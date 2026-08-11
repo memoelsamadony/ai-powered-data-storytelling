@@ -78,6 +78,7 @@ class Command(BaseCommand):
                 self.stdout.write(f"    {s.stage:<16} {s.model:<14} {s.duration_s:>7.1f}s")
             self.stdout.write(
                 f"  alarmism {run.raw_alarmism} -> {run.moderated_alarmism} "
+                f"| optimism {run.raw_optimism} -> {run.moderated_optimism} "
                 f"| {len(run.emotive_spans)} emotive spans "
                 f"| {sum(1 for f in run.factual_check if f.get('status') == 'flagged')} flagged claims"
             )

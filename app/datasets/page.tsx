@@ -9,29 +9,47 @@ import { CountryMap } from "@/components/charts/country-map";
 import { ToneAxis, type ToneAxisRow } from "@/components/charts/tone-axis";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
-import { datasets, type Dataset } from "@/lib/data/datasets";
+import { type Dataset } from "@/lib/data/datasets";
 import { getStorySet } from "@/lib/data/stories";
+import { getDatasets } from "@/lib/api";
 
 /**
- * Both datasets on one tone scale. Built here in the Server Component and passed
- * down as plain props — the chart only needs `"use client"` for its hover layer.
+ * Both datasets on one tone scale. Built in the Server Component and passed down
+ * as plain props, the chart only needs `"use client"` for its hover layer.
+ *
+ * The stories stay mock here by design: this page compares *tone*, and the
+ * ratings it plots are the ones the report cites. A live rating belongs to one
+ * run of one tier, so plotting it here would change the argument every reload.
  */
-const toneRows: ToneAxisRow[] = datasets.map((d) => {
-  const s = getStorySet(d.id);
-  const pick = (v: (typeof s)["human"]) => ({
-    value: v.alarmismRating,
-    title: v.title,
-    author: v.author,
+function toneRowsFor(datasets: Dataset[]): ToneAxisRow[] {
+  return datasets.flatMap((d) => {
+    const s = getStorySet(d.id);
+    const pick = (v: (typeof s)["human"]) => ({
+      value: v.alarmismRating,
+      title: v.title,
+      author: v.author,
+    });
+    const [human, raw, moderated] = [pick(s.human), pick(s.aiRaw), pick(s.aiModerated)];
+    // A row is three positions on one scale. If any of them was never
+    // measured, the row cannot be drawn without inventing the missing one.
+    if (human.value === null || raw.value === null || moderated.value === null) return [];
+    return [
+      {
+        id: d.id,
+        label: d.shortName,
+        tempts: `tempts ${d.failureMode}`,
+        human: { ...human, value: human.value },
+        raw: { ...raw, value: raw.value },
+        moderated: { ...moderated, value: moderated.value },
+      },
+    ];
   });
-  return {
-    id: d.id,
-    label: d.shortName,
-    tempts: `tempts ${d.failureMode}`,
-    human: pick(s.human),
-    raw: pick(s.aiRaw),
-    moderated: pick(s.aiModerated),
-  };
-});
+}
+
+// The dataset payload is read per request, so the page is server-rendered on
+// demand. Declared rather than inferred: without it Next attempts a prerender,
+// and the attempt only resolves through a thrown framework error.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Datasets",
@@ -39,7 +57,14 @@ export const metadata: Metadata = {
     "Two real-world datasets chosen so tone fails in opposite directions: measles × vaccination (alarmism) and WHO child mortality (over-optimism).",
 };
 
-export default function DatasetsPage() {
+export default async function DatasetsPage() {
+  // Falls back to the generated snapshot when the backend is down, so the page
+  // is never dead. Both carry the same figures, read from the same CSVs; the
+  // fallback can only be older, and the source note under each map names the
+  // table either way.
+  const datasets = await getDatasets();
+  const toneRows = toneRowsFor(datasets);
+
   return (
     <>
       <PageHero
@@ -93,7 +118,9 @@ export default function DatasetsPage() {
                 Alarmism is an LLM-judge rating where{" "}
                 <strong className="font-medium text-navy">both ends are failures</strong>: 1 is flat and
                 hides the stakes, 5 is manipulative catastrophising. The calibrated band is an editorial
-                range, not a measured threshold, and both human baselines fall inside it.
+                range, not a measured threshold. The WHO human baseline sits inside it at 2.8;
+                the measles one is judged 3.2, just outside and above the moderated LLM story
+                &mdash; the human author is the more alarmist of the two on that dataset.
               </p>
             </Card>
           </Reveal>

@@ -21,8 +21,9 @@
       "mean_sentence_length": 14.2,
       "sentence_length_variance": 39.3,
       "passive_rate": 0.0,
-      "opus_alarmism": 1.5,
-      "opus_rationale": "Purely mechanical description of rises and falls — words like 'huge dip' and 'sharp decrease' describe shape, not stakes, and a record-high resurgence of a vaccine-preventable disease is reported with no indication that it matters."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.0,
+      "opus_rationale": "Purely mechanical trend narration — 'witnessed a huge dip', 'suddenly increased again', 'hitting a maximum of about 30000 cases' — describes a record-high resurgence of a deadly vaccine-preventable disease without naming any stake, so it neither dramatises nor reassures, but its flat 'overall' summary of a 2.5x rise since 2015 understates real danger while withholding any acknowledgement of the genuine early-record progress as good news."
     },
     {
       "series": "diphtheria-global",
@@ -43,8 +44,9 @@
       "mean_sentence_length": 11.5,
       "sentence_length_variance": 55.0,
       "passive_rate": 7.14,
-      "opus_alarmism": 2.3,
-      "opus_rationale": "Plain descriptive recounting with hedged numbers and no threat framing, though words like 'huge increase' and 'rising strongly' plus flagging the record high keep it from being fully flat."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.0,
+      "opus_rationale": "Neutral recital phrasing like \"the number jumped to about 25000 cases\" and \"increased again to about 30000 cases in 2025, which is the highest number in the whole record\" states the record high without naming any human stake, keeping alarmism low, while the closing \"stayed low for many years... but started rising strongly\" offers no reassurance or acknowledged progress, leaving optimism low too."
     },
     {
       "series": "diphtheria-global",
@@ -66,7 +68,8 @@
       "sentence_length_variance": 29.2,
       "passive_rate": 0.0,
       "opus_alarmism": 2.0,
-      "opus_rationale": "Purely descriptive year-by-year recounting with neutral quantifiers ('huge spike', 'strong increase') and no health framing, consequences, or stakes for a record-high resurgence of a vaccine-preventable disease."
+      "opus_optimism": 2.0,
+      "opus_rationale": "Purely descriptive number-recitation ('the number continued increasing slightly', 'the dataset shows a long period of relatively low cases followed by a strong increase') keeps alarmism low — 'huge spike'/'huge rise' are the only heat and they describe real jumps — while the flat ledger tone never credits the genuine 2000-2013 decline as progress nor names any human stakes, leaving optimism equally muted."
     },
     {
       "series": "diphtheria-global",
@@ -87,8 +90,9 @@
       "mean_sentence_length": 14.8,
       "sentence_length_variance": 25.1,
       "passive_rate": 9.09,
-      "opus_alarmism": 1.8,
-      "opus_rationale": "Purely descriptive recitation of maxima and comparisons with neutral verbs ('increased significantly', 'much higher') and no framing of what a sixfold rise in a vaccine-preventable disease means, leaving real public-health stakes understated."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.5,
+      "opus_rationale": "Purely descriptive phrasing like \"increased significantly during the later years\" and \"the biggest numbers appeared near the end of the dataset\" reports the sixfold rise without naming any human stakes, keeping alarmism low-flat, while the absence of any reassurance — but also of any acknowledgment that this is a preventable disease resurging — leaves optimism just below calibrated rather than falsely rosy."
     },
     {
       "series": "diphtheria-global",
@@ -109,8 +113,9 @@
       "mean_sentence_length": 13.7,
       "sentence_length_variance": 47.1,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.3,
-      "opus_rationale": "Purely descriptive trend recitation with hedged neutral verbs ('witnessed a dip', 'stayed almost the same') and the mildly minimising 'only 4333 cases', which never names the human stakes of a record high in a vaccine-preventable fatal disease, though words like 'huge' and 'more than doubled' keep it from being fully flat."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.0,
+      "opus_rationale": "Neutral descriptive verbs like \"noticeable increase,\" \"witnessed a huge dip,\" and \"stayed almost the same\" keep it just short of catastrophising, but the story never names human stakes (a record 30,205 cases of a vaccine-preventable killer) and equally never credits the earlier decline as progress, leaving it flat and stance-free on both axes."
     },
     {
       "series": "measles",
@@ -132,7 +137,8 @@
       "sentence_length_variance": 21.5,
       "passive_rate": 0.0,
       "opus_alarmism": 2.0,
-      "opus_rationale": "Purely descriptive trend recitation with hedged quantifiers ('about', 'almost the same') and intensifiers limited to magnitude ('huge spike', 'surged'), but it never names the stakes — no mention of the 95% herd-immunity threshold, the stalled 84% coverage, or that the recent rise means preventable illness."
+      "opus_optimism": 2.0,
+      "opus_rationale": "Intensifiers like \"huge spike\" and \"surged significantly\" push slightly above flat but the piece is otherwise a stance-free number recital that never names the human stakes of 675,000 cases, and the closing \"decreased hugely... but strong rises again\" acknowledges the reversal without any false reassurance while also omitting the 95% herd-immunity shortfall and coverage stagnation that would give the progress its real weight."
     },
     {
       "series": "measles",
@@ -154,7 +160,8 @@
       "sentence_length_variance": 28.4,
       "passive_rate": 0.0,
       "opus_alarmism": 2.5,
-      "opus_rationale": "Plain numeric recounting with hedged verbs ('increased a bit', 'generally decreased') keeps it mostly flat, but the repeated 'huge spike'/'rose sharply' framing and the explicit note that coverage sits below the herd-immunity threshold do convey the real stakes, landing just under calibrated."
+      "opus_optimism": 2.7,
+      "opus_rationale": "Flat, hedged reporting phrasing like \"witnessed a huge spike\" and \"rose sharply again\" carries some stakes but is undercut by numbing qualifiers (\"a bit\", \"almost the same\") and no mention of human consequence, keeping alarmism just under calibrated; the closing \"huge long-term decrease\" framing plus the noted 95% herd-immunity shortfall keeps optimism near calibrated, tipped slightly high by describing coverage as having \"increased\" without noting it remains below the 2019 level."
     },
     {
       "series": "measles",
@@ -175,8 +182,9 @@
       "mean_sentence_length": 11.2,
       "sentence_length_variance": 34.3,
       "passive_rate": 0.0,
-      "opus_alarmism": 1.6,
-      "opus_rationale": "Pure sequential number-recitation with hedged neutral verbs ('increased again', 'noticeable rise') and no mention of the 95% herd-immunity gap or what a 5x rebound to 676,000 cases means, leaving real stakes flat and unstated."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.5,
+      "opus_rationale": "Neutral recital verbs like \"decreased significantly,\" \"witnessed a huge spike\" and \"jumped to about 669000\" keep it just short of flat but never name the human stakes of the 95% herd-immunity gap, pushing alarmism low; the closing \"measles cases decreased greatly compared with the early years\" softened only by \"a noticeable rise again\" leans mildly reassuring without falsely claiming the danger is over."
     },
     {
       "series": "measles",
@@ -197,8 +205,9 @@
       "mean_sentence_length": 13.0,
       "sentence_length_variance": 26.5,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.3,
-      "opus_rationale": "Neutral chronological recitation with hedged quantifiers ('about', 'listed') and no stakes framing — words like 'huge spike' and 'increasing strongly' add mild intensity, but the absence of any mention of the 95% herd-immunity gap or consequences leaves it below calibrated."
+      "opus_alarmism": 2.5,
+      "opus_optimism": 2.7,
+      "opus_rationale": "Neutral recitation of numbers with only mild intensifiers ('huge spike', 'increasing strongly again') and no stakes — no deaths, no herd-immunity gap, no named consequence — keeps alarmism just below calibrated, while 'Overall, the long-term trend shows a huge decrease' framing the resurgence as a trailing qualifier leaves optimism close to but slightly above calibrated."
     },
     {
       "series": "measles",
@@ -219,8 +228,9 @@
       "mean_sentence_length": 13.1,
       "sentence_length_variance": 39.9,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.0,
-      "opus_rationale": "Flat, neutral reporting language ('stayed quite high', 'more than triple') with no framing of health stakes, coverage shortfall against the 95% herd-immunity threshold, or who is affected, leaving the resurgence sounding like a mere number fluctuation."
+      "opus_alarmism": 2.3,
+      "opus_optimism": 2.7,
+      "opus_rationale": "Neutral quantitative phrasing like \"went from about 207000 in 2022 to about 669000 in 2023\" and \"stayed quite high\" reports the resurgence without urgency language or naming the 84%-vs-95% herd-immunity gap, keeping alarmism slightly flat, while \"measles cases witnessed a huge long-term decrease\" is balanced by the closing \"but the number started rising again after 2021,\" leaving optimism close to calibrated."
     },
     {
       "series": "mumps-global",
@@ -241,8 +251,9 @@
       "mean_sentence_length": 16.9,
       "sentence_length_variance": 88.8,
       "passive_rate": 0.0,
-      "opus_alarmism": 1.8,
-      "opus_rationale": "Purely descriptive recitation of peaks and dips with neutral verbs and a flat closing summary; the only intensifiers ('huge dip', 'very high') point toward improvement, and no stakes, risk, or human consequence of mumps is acknowledged at all."
+      "opus_alarmism": 1.5,
+      "opus_optimism": 2.5,
+      "opus_rationale": "Purely mechanical recitation — 'kept moving up and down', 'hitting about 245000' — with no mention of illness, outbreaks, or vaccination stakes sets alarmism low, while the mildly favourable closers 'lowest rate in the whole 26-year record' and 'the general trend moved downward' lean only slightly positive without overclaiming victory."
     },
     {
       "series": "mumps-global",
@@ -264,7 +275,8 @@
       "sentence_length_variance": 64.4,
       "passive_rate": 0.0,
       "opus_alarmism": 2.0,
-      "opus_rationale": "Purely descriptive year-by-year recitation with neutral verbs and no framing of stakes, though mild intensifiers like 'huge dip' keep it just above completely flat."
+      "opus_optimism": 2.5,
+      "opus_rationale": "Purely descriptive ledger phrasing like \"kept rising and falling\" and \"the number started decreasing more clearly\" keeps stakes almost entirely unnamed (no mention of outbreaks, coverage, or who gets sick), pushing alarmism low, while the mild \"huge dip\" and the closing \"became lower in the later years... lowest level in 2025\" lean slightly positive without ever claiming the problem is solved."
     },
     {
       "series": "mumps-global",
@@ -286,7 +298,8 @@
       "sentence_length_variance": 35.5,
       "passive_rate": 0.0,
       "opus_alarmism": 1.8,
-      "opus_rationale": "Purely descriptive trend recitation with neutral verbs and no framing of health stakes, though mild intensifiers like 'huge dip' keep it just above wholly flat."
+      "opus_optimism": 2.6,
+      "opus_rationale": "Purely descriptive ledger phrasing ('generally decreased', 'a huge dip', 'the lowest number in the whole record') never names illness, outbreaks, or human stakes, keeping alarmism low, while the closing 'the later years are generally much lower than the earlier years' credits the real decline without overselling it or claiming the problem is solved."
     },
     {
       "series": "mumps-global",
@@ -308,7 +321,8 @@
       "sentence_length_variance": 46.1,
       "passive_rate": 7.69,
       "opus_alarmism": 2.0,
-      "opus_rationale": "Almost entirely neutral recounting of peaks and dips, with only mild intensifiers like 'extremely high' and 'huge dip' lifting it above flat, while the reassuring long-term decline is stated plainly without stakes."
+      "opus_optimism": 2.5,
+      "opus_rationale": "Near-flat recitation with only mild intensifiers ('extremely high', 'huge dip') keeps alarmism low, while the closing 'became much lower over time and reached its minimum in 2025' is a modest, data-anchored positive note that stops short of reassurance about remaining burden."
     },
     {
       "series": "mumps-global",
@@ -329,8 +343,9 @@
       "mean_sentence_length": 13.6,
       "sentence_length_variance": 33.2,
       "passive_rate": 0.0,
-      "opus_alarmism": 1.5,
-      "opus_rationale": "Purely descriptive trend recitation with neutral verbs and no framing of stakes; the only charged words ('huge dip', 'witnessed') attach to declines, so a real disease burden of hundreds of thousands of annual cases is narrated as flat bookkeeping."
+      "opus_alarmism": 1.8,
+      "opus_optimism": 2.6,
+      "opus_rationale": "Purely descriptive movement language ('moved up and down', 'witnessed a huge dip', 'quite high') carries no stakes or human consequence, keeping alarmism low, while the neutral closing note that cases 'became lower after 2019' and the flagged record-low 41.2 per million lean mildly positive without overclaiming victory."
     },
     {
       "series": "pertussis-global",
@@ -352,7 +367,8 @@
       "sentence_length_variance": 64.6,
       "passive_rate": 0.0,
       "opus_alarmism": 2.0,
-      "opus_rationale": "Purely descriptive chronological narration with neutral verbs and no health framing or consequences, though words like 'surged massively' and 'huge spike' keep it just above flat."
+      "opus_optimism": 2.5,
+      "opus_rationale": "Neutral trend-describing verbs ('witnessed a spike', 'kept hovering', 'is by far the highest number in the dataset') report the 2024 six-fold surge without naming any human stake, keeping alarmism low, while the closing 'falling again in 2025' and the framing of the whole record as 'relatively stable' softens the ending slightly toward reassurance without denying that 2025 remains above all pre-2024 years."
     },
     {
       "series": "pertussis-global",
@@ -373,8 +389,9 @@
       "mean_sentence_length": 13.0,
       "sentence_length_variance": 54.0,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.4,
-      "opus_rationale": "Purely descriptive framing with no health-consequence stakes or urgency language, though intensifiers like 'extremely huge spike' and 'record high' lift it slightly above flat."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.5,
+      "opus_rationale": "Alarmism sits low because the 2024 record is described only in mechanical terms ('extremely huge spike', 'much higher than every previous year') with no mention of who gets sick or why it matters, while optimism is slightly below calibrated because the closing 'before falling again in 2025' frames the 265,317-case year as a resolution without noting it still exceeds nearly every pre-pandemic year."
     },
     {
       "series": "pertussis-global",
@@ -395,8 +412,9 @@
       "mean_sentence_length": 14.3,
       "sentence_length_variance": 36.2,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.3,
-      "opus_rationale": "Flat, mechanical recitation of the numbers with only mild intensifiers ('massive spike', 'huge maximum') and no acknowledgement that a 5-6x jump in a vaccine-preventable disease carries real public-health stakes."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.0,
+      "opus_rationale": "Neutral describe-the-line phrasing like \"kept moving up and down\" and \"quite steady for many years\" keeps alarmism low despite \"massive spike\" and \"huge maximum,\" while never naming what a 942,000-case year or the 2025 drop means for children leaves both the stakes and the real 2020-21 progress unstated, so optimism sits below calibrated too."
     },
     {
       "series": "pertussis-global",
@@ -418,7 +436,8 @@
       "sentence_length_variance": 41.7,
       "passive_rate": 0.0,
       "opus_alarmism": 2.0,
-      "opus_rationale": "Neutral descriptive register throughout, with only mild intensifiers ('massive spike', 'very unusual') attached to a genuinely large 2024 outlier, and no framing of risk, cause, or consequence — slightly flat given the stakes of a resurgent vaccine-preventable disease."
+      "opus_optimism": 2.5,
+      "opus_rationale": "Purely descriptive sequencing ('stayed mostly between', 'the rate reached') with only mild intensifiers ('massive spike', 'very unusual') keeps alarm low and never names the human stakes of a 942,000-case year, while 'before coming back down in 2025' closes on a reassuring resolution that leaves 2025 still above the pre-pandemic norm unremarked."
     },
     {
       "series": "pertussis-global",
@@ -439,8 +458,9 @@
       "mean_sentence_length": 11.9,
       "sentence_length_variance": 56.6,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.5,
-      "opus_rationale": "Descriptive, chronological framing with hedged numbers keeps it near-neutral, but repeated intensifiers like 'massive', 'suddenly surging' and 'huge' push it slightly above flat reporting without any framing of harm or urgency."
+      "opus_alarmism": 2.6,
+      "opus_optimism": 2.8,
+      "opus_rationale": "Mildly heightened words like \"suddenly surging to the massive 2024 peak\" and \"huge\" nudge alarmism just above flat description, while framing 2025 as a \"huge decrease\"/\"sharp decrease again\" without noting cases remain above the pre-2020 typical range lends a slightly reassuring close, though the mostly neutral, stakes-free recounting keeps both near calibrated."
     },
     {
       "series": "under5-measles-deaths",
@@ -461,8 +481,9 @@
       "mean_sentence_length": 14.0,
       "sentence_length_variance": 38.8,
       "passive_rate": 0.0,
-      "opus_alarmism": 1.5,
-      "opus_rationale": "Purely mechanical recitation of figures with neutral verbs like 'dipped' and 'hovering' and no acknowledgment that the numbers are child deaths or that the post-2012 plateau and 2021 rebound carry real stakes."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 2.5,
+      "opus_rationale": "Purely mechanical trend-tracing ('it increased', 'dropped to about 603000', 'witnessed another dip') never names that the figures are dead children, keeping alarmism low, while 'decreased hugely' and 'hovering at much lower levels' acknowledge real progress but the flat framing of the post-2012 rebound stops short of false reassurance."
     },
     {
       "series": "under5-measles-deaths",
@@ -483,8 +504,9 @@
       "mean_sentence_length": 15.0,
       "sentence_length_variance": 57.3,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.3,
-      "opus_rationale": "Mostly neutral descriptive reporting of the decline, but 'extremely high' and repeated 'huge decrease' framing lean slightly reassuring while the 2021 uptick and stalled progress are noted without any sense of stakes."
+      "opus_alarmism": 2.0,
+      "opus_optimism": 3.0,
+      "opus_rationale": "The flat recitation of figures with only 'extremely high' and no mention of the 100,000+ children still dying yearly or the post-2019 resurgence's meaning keeps alarmism low, while 'huge decrease' paired with the honest note that the decline stalled and 'increased again to about 151000 in 2021' keeps optimism calibrated."
     },
     {
       "series": "under5-measles-deaths",
@@ -505,8 +527,9 @@
       "mean_sentence_length": 13.1,
       "sentence_length_variance": 21.4,
       "passive_rate": 0.0,
-      "opus_alarmism": 1.7,
-      "opus_rationale": "Purely descriptive trend narration with neutral verbs and no mention of the human stakes — 100,000+ child deaths a year and a post-2012 stall that the text flattens into 'kept fluctuating' — leaving real urgency understated."
+      "opus_alarmism": 1.8,
+      "opus_optimism": 2.4,
+      "opus_rationale": "Alarmism sits low because the deaths are narrated as pure trend mechanics — 'the number increased', 'kept going up and down', 'witnessed a dip' — with no acknowledgement that these are children dying, though the plain 'about 848000 deaths' figures keep it from being fully numbing; optimism is near-calibrated because 'a huge difference compared with the early 2000s' is offset by the closing note that the numbers 'kept fluctuating instead of continuously decreasing', which declines to promise the problem is solved."
     },
     {
       "series": "under5-measles-deaths",
@@ -527,8 +550,9 @@
       "mean_sentence_length": 16.0,
       "sentence_length_variance": 30.0,
       "passive_rate": 0.0,
-      "opus_alarmism": 1.8,
-      "opus_rationale": "Purely mechanical recitation of turning points with neutral verbs ('hovering', 'fluctuations') and no acknowledgment that the figures are child deaths or that the post-2012 stall carries any human stakes, though 'long and strong decrease' and 'decreased massively' keep it from being fully flat."
+      "opus_alarmism": 1.5,
+      "opus_optimism": 2.5,
+      "opus_rationale": "Purely mechanical recitation of numbers with no mention of children, preventability, or stakes ('the number started hovering at a much lower level') sets alarmism very low, while 'decreased massively' paired with the honest caveat that later years show 'more fluctuations and no clear continuous decline' keeps optimism just short of calibrated rather than falsely reassuring."
     },
     {
       "series": "under5-measles-deaths",
@@ -549,44 +573,45 @@
       "mean_sentence_length": 14.3,
       "sentence_length_variance": 58.8,
       "passive_rate": 0.0,
-      "opus_alarmism": 2.0,
-      "opus_rationale": "Purely descriptive trend recitation with neutral quantitative language ('kept decreasing', 'hovering') that never names the human stakes of 151,000 child deaths or the flattening of progress, though 'huge' and 'significantly' keep it from being fully flat."
+      "opus_alarmism": 1.5,
+      "opus_optimism": 2.5,
+      "opus_rationale": "Purely mechanical chart-reading — \"the number was about 756000\", \"kept hovering between roughly 100000 and 190000\" — never names that these figures are dead children, which flattens the stakes; the recap of real declines is accurate and the closing note on \"smaller rises and dips\" does acknowledge the stall, so optimism sits just under calibrated rather than falsely reassuring."
     }
   ],
   "machine_reference_opus": {
     "pertussis-global": {
-      "raw_mean": 4.05,
-      "moderated_mean": 2.19,
+      "raw_mean": 4.25,
+      "moderated_mean": 2.12,
       "n": 13
     },
     "under5-tetanus-deaths": {
-      "raw_mean": 2.2,
-      "moderated_mean": 2.5,
+      "raw_mean": 2.0,
+      "moderated_mean": 2.0,
       "n": 1
     },
     "under5-all-cause-deaths": {
-      "raw_mean": 2.4,
-      "moderated_mean": 2.5,
+      "raw_mean": 2.3,
+      "moderated_mean": 2.3,
       "n": 1
     },
     "under5-measles-deaths": {
-      "raw_mean": 3.2,
+      "raw_mean": 3.0,
       "moderated_mean": 2.5,
       "n": 1
     },
     "diphtheria-global": {
-      "raw_mean": 3.4,
-      "moderated_mean": 2.4,
+      "raw_mean": 3.5,
+      "moderated_mean": 2.5,
       "n": 1
     },
     "mumps-global": {
-      "raw_mean": 2.5,
+      "raw_mean": 2.6,
       "moderated_mean": 1.8,
       "n": 1
     },
     "measles": {
-      "raw_mean": 1.95,
-      "moderated_mean": 2.05,
+      "raw_mean": 2.1,
+      "moderated_mean": 2.0,
       "n": 2
     }
   }

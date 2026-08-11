@@ -11,9 +11,9 @@
     "alarmism_raw_local": 2.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": 0.0,
-    "alarmism_raw_opus": 2.4,
-    "alarmism_moderated_opus": 2.3,
-    "alarmism_delta_opus": -0.1,
+    "alarmism_raw_opus": 2.2,
+    "alarmism_moderated_opus": 2.5,
+    "alarmism_delta_opus": 0.3,
     "emotive_spans": 8,
     "flagged_claims": 0,
     "groundedness_raw": "2/4",
@@ -60,10 +60,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.7
+        "seconds": 10.9
       }
     },
-    "seconds_total": 617.9
+    "seconds_total": 623.1
   },
   {
     "run": "9239bbfd-d17a-4a72-9d5e-3c59cca86409",
@@ -78,8 +78,8 @@
     "alarmism_moderated_local": 3.0,
     "alarmism_delta_local": -0.5,
     "alarmism_raw_opus": 4.0,
-    "alarmism_moderated_opus": 2.6,
-    "alarmism_delta_opus": -1.4,
+    "alarmism_moderated_opus": 2.5,
+    "alarmism_delta_opus": -1.5,
     "emotive_spans": 10,
     "flagged_claims": 0,
     "groundedness_raw": "4/4",
@@ -126,10 +126,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 6.3
+        "seconds": 7.9
       }
     },
-    "seconds_total": 290.3
+    "seconds_total": 291.9
   },
   {
     "run": "d53a7c27-2104-43ac-accd-9a6b53ee534c",
@@ -143,9 +143,9 @@
     "alarmism_raw_local": 4.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": -2.0,
-    "alarmism_raw_opus": 3.7,
-    "alarmism_moderated_opus": 2.3,
-    "alarmism_delta_opus": -1.4,
+    "alarmism_raw_opus": 4.0,
+    "alarmism_moderated_opus": 2.0,
+    "alarmism_delta_opus": -2.0,
     "emotive_spans": 8,
     "flagged_claims": 0,
     "groundedness_raw": "2/6",
@@ -192,10 +192,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 6.0
+        "seconds": 6.6
       }
     },
-    "seconds_total": 268.0
+    "seconds_total": 268.6
   },
   {
     "run": "ad549d9a-36b7-4b0a-87f4-f737fcecc684",
@@ -209,9 +209,9 @@
     "alarmism_raw_local": 3.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": -1.0,
-    "alarmism_raw_opus": 3.7,
-    "alarmism_moderated_opus": 2.3,
-    "alarmism_delta_opus": -1.4,
+    "alarmism_raw_opus": 4.0,
+    "alarmism_moderated_opus": 2.0,
+    "alarmism_delta_opus": -2.0,
     "emotive_spans": 8,
     "flagged_claims": 0,
     "groundedness_raw": "2/6",
@@ -275,9 +275,9 @@
     "alarmism_raw_local": 4.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": -2.0,
-    "alarmism_raw_opus": 4.0,
+    "alarmism_raw_opus": 4.3,
     "alarmism_moderated_opus": 2.0,
-    "alarmism_delta_opus": -2.0,
+    "alarmism_delta_opus": -2.3,
     "emotive_spans": 6,
     "flagged_claims": 0,
     "groundedness_raw": "1/3",
@@ -324,10 +324,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 7.7
+        "seconds": 8.5
       }
     },
-    "seconds_total": 221.5
+    "seconds_total": 222.3
   },
   {
     "run": "f8186e42-ff85-4760-863f-3b1b4f9b42ae",
@@ -341,9 +341,9 @@
     "alarmism_raw_local": 4.0,
     "alarmism_moderated_local": 3.0,
     "alarmism_delta_local": -1.0,
-    "alarmism_raw_opus": 4.5,
+    "alarmism_raw_opus": 4.6,
     "alarmism_moderated_opus": 2.5,
-    "alarmism_delta_opus": -2.0,
+    "alarmism_delta_opus": -2.1,
     "emotive_spans": 8,
     "flagged_claims": 0,
     "groundedness_raw": "2/5",
@@ -390,10 +390,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 7.5
+        "seconds": 6.8
       }
     },
-    "seconds_total": 261.9
+    "seconds_total": 261.2
   },
   {
     "run": "063f23d7-40ce-42df-bba1-2616878a99ff",
@@ -407,9 +407,9 @@
     "alarmism_raw_local": 4.5,
     "alarmism_moderated_local": 3.0,
     "alarmism_delta_local": -1.5,
-    "alarmism_raw_opus": 4.3,
+    "alarmism_raw_opus": 4.5,
     "alarmism_moderated_opus": 2.0,
-    "alarmism_delta_opus": -2.3,
+    "alarmism_delta_opus": -2.5,
     "emotive_spans": 5,
     "flagged_claims": 0,
     "groundedness_raw": "7/7",
@@ -456,10 +456,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 7.0
+        "seconds": 10.7
       }
     },
-    "seconds_total": 194.7
+    "seconds_total": 198.4
   },
   {
     "run": "501f5794-136b-405c-949d-2448cf86bd31",
@@ -473,9 +473,9 @@
     "alarmism_raw_local": 3.0,
     "alarmism_moderated_local": 1.5,
     "alarmism_delta_local": -1.5,
-    "alarmism_raw_opus": 3.7,
-    "alarmism_moderated_opus": 2.3,
-    "alarmism_delta_opus": -1.4,
+    "alarmism_raw_opus": 4.0,
+    "alarmism_moderated_opus": 2.0,
+    "alarmism_delta_opus": -2.0,
     "emotive_spans": 6,
     "flagged_claims": 0,
     "groundedness_raw": "2/6",
@@ -522,10 +522,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.6
+        "seconds": 6.5
       }
     },
-    "seconds_total": 313.8
+    "seconds_total": 314.7
   },
   {
     "run": "10908df4-026c-4bdd-b6b1-bc177f182f7d",
@@ -539,9 +539,9 @@
     "alarmism_raw_local": 3.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": -1.0,
-    "alarmism_raw_opus": 3.8,
+    "alarmism_raw_opus": 4.0,
     "alarmism_moderated_opus": 2.0,
-    "alarmism_delta_opus": -1.8,
+    "alarmism_delta_opus": -2.0,
     "emotive_spans": 5,
     "flagged_claims": 0,
     "groundedness_raw": "2/6",
@@ -588,10 +588,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 8.2
+        "seconds": 7.4
       }
     },
-    "seconds_total": 98.2
+    "seconds_total": 97.4
   },
   {
     "run": "aadbe056-49bd-47f8-9ed8-50f608d6d43d",
@@ -605,9 +605,9 @@
     "alarmism_raw_local": 2.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": 0.0,
-    "alarmism_raw_opus": 1.5,
-    "alarmism_moderated_opus": 1.8,
-    "alarmism_delta_opus": 0.3,
+    "alarmism_raw_opus": 2.0,
+    "alarmism_moderated_opus": 1.5,
+    "alarmism_delta_opus": -0.5,
     "emotive_spans": 9,
     "flagged_claims": 0,
     "groundedness_raw": "7/8",
@@ -654,10 +654,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 6.2
+        "seconds": 11.3
       }
     },
-    "seconds_total": 234.4
+    "seconds_total": 239.5
   },
   {
     "run": "7ae6a2ce-ccde-4b25-8579-3d759f841b10",
@@ -671,9 +671,9 @@
     "alarmism_raw_local": 1.5,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": 0.5,
-    "alarmism_raw_opus": 2.5,
+    "alarmism_raw_opus": 2.6,
     "alarmism_moderated_opus": 1.8,
-    "alarmism_delta_opus": -0.7,
+    "alarmism_delta_opus": -0.8,
     "emotive_spans": 8,
     "flagged_claims": 0,
     "groundedness_raw": "4/5",
@@ -720,10 +720,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.3
+        "seconds": 9.0
       }
     },
-    "seconds_total": 256.3
+    "seconds_total": 260.0
   },
   {
     "run": "5dae0881-9f6d-4664-a363-56b0e4a7f33e",
@@ -737,8 +737,8 @@
     "alarmism_raw_local": 3.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": -1.0,
-    "alarmism_raw_opus": 3.4,
-    "alarmism_moderated_opus": 2.4,
+    "alarmism_raw_opus": 3.5,
+    "alarmism_moderated_opus": 2.5,
     "alarmism_delta_opus": -1.0,
     "emotive_spans": 7,
     "flagged_claims": 0,
@@ -786,10 +786,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 6.0
+        "seconds": 7.3
       }
     },
-    "seconds_total": 314.8
+    "seconds_total": 316.1
   },
   {
     "run": "64c4f9c3-135c-4529-8806-742cde0e6a22",
@@ -803,9 +803,9 @@
     "alarmism_raw_local": 2.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": 0.0,
-    "alarmism_raw_opus": 3.2,
+    "alarmism_raw_opus": 3.0,
     "alarmism_moderated_opus": 2.5,
-    "alarmism_delta_opus": -0.7,
+    "alarmism_delta_opus": -0.5,
     "emotive_spans": 6,
     "flagged_claims": 0,
     "groundedness_raw": "3/4",
@@ -852,10 +852,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 7.9
+        "seconds": 10.1
       }
     },
-    "seconds_total": 302.5
+    "seconds_total": 304.7
   },
   {
     "run": "5f8a2b14-2a69-4e47-b91b-b261822bb0a6",
@@ -869,9 +869,9 @@
     "alarmism_raw_local": 2.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": 0.0,
-    "alarmism_raw_opus": 2.4,
-    "alarmism_moderated_opus": 2.5,
-    "alarmism_delta_opus": 0.1,
+    "alarmism_raw_opus": 2.3,
+    "alarmism_moderated_opus": 2.3,
+    "alarmism_delta_opus": 0.0,
     "emotive_spans": 6,
     "flagged_claims": 0,
     "groundedness_raw": "2/6",
@@ -918,10 +918,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 6.4
+        "seconds": 7.4
       }
     },
-    "seconds_total": 744.9
+    "seconds_total": 745.9
   },
   {
     "run": "75748240-206a-464c-a19d-c36cc867619c",
@@ -935,9 +935,9 @@
     "alarmism_raw_local": 1.5,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": 0.5,
-    "alarmism_raw_opus": 2.2,
-    "alarmism_moderated_opus": 2.5,
-    "alarmism_delta_opus": 0.3,
+    "alarmism_raw_opus": 2.0,
+    "alarmism_moderated_opus": 2.0,
+    "alarmism_delta_opus": 0.0,
     "emotive_spans": 5,
     "flagged_claims": 0,
     "groundedness_raw": "4/6",
@@ -984,10 +984,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.1
+        "seconds": 6.3
       }
     },
-    "seconds_total": 239.6
+    "seconds_total": 240.8
   },
   {
     "run": "e061abb3-676e-472a-a3fb-7bca062bc139",
@@ -1001,9 +1001,9 @@
     "alarmism_raw_local": 3.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": -1.0,
-    "alarmism_raw_opus": 3.8,
+    "alarmism_raw_opus": 4.0,
     "alarmism_moderated_opus": 2.0,
-    "alarmism_delta_opus": -1.8,
+    "alarmism_delta_opus": -2.0,
     "emotive_spans": 7,
     "flagged_claims": 0,
     "groundedness_raw": "2/6",
@@ -1050,10 +1050,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.8
+        "seconds": 6.2
       }
     },
-    "seconds_total": 92.3
+    "seconds_total": 92.7
   },
   {
     "run": "faf34f8c-3769-4483-8b52-774a7b8b33a2",
@@ -1067,9 +1067,9 @@
     "alarmism_raw_local": 3.0,
     "alarmism_moderated_local": 2.0,
     "alarmism_delta_local": -1.0,
-    "alarmism_raw_opus": 3.7,
+    "alarmism_raw_opus": 4.0,
     "alarmism_moderated_opus": 1.5,
-    "alarmism_delta_opus": -2.2,
+    "alarmism_delta_opus": -2.5,
     "emotive_spans": 5,
     "flagged_claims": 0,
     "groundedness_raw": "2/6",
@@ -1116,10 +1116,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 9.7
+        "seconds": 5.7
       }
     },
-    "seconds_total": 89.5
+    "seconds_total": 85.5
   },
   {
     "run": "99a3c97a-d360-44ad-a27b-1108b268c092",
@@ -1133,9 +1133,9 @@
     "alarmism_raw_local": 4.5,
     "alarmism_moderated_local": 3.0,
     "alarmism_delta_local": -1.5,
-    "alarmism_raw_opus": 4.3,
+    "alarmism_raw_opus": 4.6,
     "alarmism_moderated_opus": 2.0,
-    "alarmism_delta_opus": -2.3,
+    "alarmism_delta_opus": -2.6,
     "emotive_spans": 5,
     "flagged_claims": 0,
     "groundedness_raw": "7/7",
@@ -1182,10 +1182,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.6
+        "seconds": 7.2
       }
     },
-    "seconds_total": 229.3
+    "seconds_total": 230.9
   },
   {
     "run": "a626f724-7296-4102-843e-5b8ed20befce",
@@ -1248,10 +1248,10 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.4
+        "seconds": 8.0
       }
     },
-    "seconds_total": 230.0
+    "seconds_total": 232.6
   },
   {
     "run": "e92c0f3c-60cd-4ba2-afe1-e2d5274c3931",
@@ -1314,9 +1314,9 @@
       },
       "judge_independent": {
         "model": "claude/opus",
-        "seconds": 5.5
+        "seconds": 7.9
       }
     },
-    "seconds_total": 262.8
+    "seconds_total": 265.2
   }
 ]

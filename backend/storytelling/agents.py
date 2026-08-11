@@ -6,7 +6,6 @@ backend agree on what is happening:
     generate  -> a general LLM writes a first-draft data story
     moderate  -> the tone agent rebalances emotional framing   (the contribution)
     factcheck -> a separate lightweight verifier checks the numbers
-    judge     -> rates alarmism 1-5, before and after           (the novel metric)
 
 Two prompt rules below come directly from the project's own judge verdict on the
 first real run, and are the reason this is not a straight port of
@@ -86,7 +85,14 @@ Return JSON with:
 - "title": a calibrated headline
 - "paragraphs": the rewritten story, same length, faithful to the data
 - "emotiveSpans": every phrase you changed, as {{"text": the original phrase,
-  "replacement": what you replaced it with, "reason": the short tone problem it had}}"""
+  "replacement": what you replaced it with, "reason": the short tone problem it had,
+  "category": which of the four families the problem belongs to}}
+
+The four categories, exactly one per edit:
+- "intensity": a verb or adjective dialled up beyond what the data says
+- "framing": fear, doom, false reassurance or complacency
+- "overreach": a causal or predictive claim the table cannot support
+- "grounding": a vague or invented figure replaced with the real one"""
 
 
 FACTCHECK_SYSTEM = (
@@ -221,6 +227,29 @@ def run_moderate(dataset_id: str, tier_id: str, title: str, paragraphs: list[str
     return out
 
 
+def run_judge(tier_id: str, title: str, paragraphs: list[str]) -> JudgeOut:
+    """The cheap in-pipeline tone rating, from a local Ollama model.
+
+    Kept after the Claude judge landed, rather than replaced by it. The two
+    ratings live in different columns and disagreeing is the point: comparing
+    them is what showed the local rater compresses the moderation effect to
+    about 57% of its measured size. Overwriting `raw_alarmism` with Claude
+    scores would also mix two instruments inside one column, so runs recorded
+    before and after the change would no longer be comparable.
+    """
+    tier = oc.resolve_tier(tier_id)
+    plan = oc.tier_plan(tier)
+    return oc.generate_json(
+        tier.judge,
+        JUDGE_SYSTEM,
+        JUDGE_PROMPT.format(story=_story_text(title, paragraphs)),
+        JudgeOut,
+        temperature=0.0,
+        num_predict=250,
+        exclusive=_exclusive(plan),
+    )
+
+
 def run_factcheck(dataset_id: str, tier_id: str, title: str, paragraphs: list[str]) -> FactCheckOut:
     tier = oc.resolve_tier(tier_id)
     plan = oc.tier_plan(tier)
@@ -234,19 +263,5 @@ def run_factcheck(dataset_id: str, tier_id: str, title: str, paragraphs: list[st
         FactCheckOut,
         temperature=0.0,
         num_predict=1500,
-        exclusive=_exclusive(plan),
-    )
-
-
-def run_judge(tier_id: str, title: str, paragraphs: list[str]) -> JudgeOut:
-    tier = oc.resolve_tier(tier_id)
-    plan = oc.tier_plan(tier)
-    return oc.generate_json(
-        tier.judge,
-        JUDGE_SYSTEM,
-        JUDGE_PROMPT.format(story=_story_text(title, paragraphs)),
-        JudgeOut,
-        temperature=0.0,
-        num_predict=250,
         exclusive=_exclusive(plan),
     )

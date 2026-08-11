@@ -88,24 +88,32 @@ def measure(story: dict) -> dict:
     }
 
 
-def judge_one(story: dict) -> tuple[str, float | None, str]:
+def judge_one(story: dict) -> tuple[str, float | None, float | None, str]:
+    """Both tone axes for one story. Alarmism alone cannot see the other failure.
+
+    A story that glosses over remaining harm scores a calm 2.0 for alarmism
+    while being exactly as miscalibrated, and three of these five series are
+    falling, which is where that failure lives.
+    """
     table = ds.build_prompt_table(story["meta"]["series"])
     try:
-        rating, rationale, _cost, _s = judge.score_story(
-            table, NO_HEADLINE, paragraphs(story["body"])
-        )
-        return story["path"], rating, rationale
+        s = judge.score_story(table, NO_HEADLINE, paragraphs(story["body"]))
+        return story["path"], s.alarmism, s.optimism, s.rationale
     except judge.JudgeUnavailable as exc:
-        return story["path"], None, f"unjudged: {exc}"
+        return story["path"], None, None, f"unjudged: {exc}"
 
 
 def machine_reference() -> dict[str, dict]:
     """Opus ratings of the machine stories, per series, for the comparison."""
     out: dict[str, dict] = {}
     for run in Run.objects.exclude(opus_raw_alarmism=None):
-        out.setdefault(run.dataset_id, {"raw": [], "moderated": []})
+        out.setdefault(run.dataset_id, {"raw": [], "moderated": [],
+                                        "raw_opt": [], "mod_opt": []})
         out[run.dataset_id]["raw"].append(run.opus_raw_alarmism)
         out[run.dataset_id]["moderated"].append(run.opus_moderated_alarmism)
+        if run.opus_raw_optimism is not None:
+            out[run.dataset_id]["raw_opt"].append(run.opus_raw_optimism)
+            out[run.dataset_id]["mod_opt"].append(run.opus_moderated_optimism)
     return out
 
 
@@ -127,8 +135,9 @@ def main() -> int:
             return 1
         by_path = {r["path"]: r for r in rows}
         with ThreadPoolExecutor(max_workers=a.workers) as pool:
-            for path, rating, rationale in pool.map(judge_one, stories):
-                by_path[path]["opus_alarmism"] = rating
+            for path, alarmism, optimism, rationale in pool.map(judge_one, stories):
+                by_path[path]["opus_alarmism"] = alarmism
+                by_path[path]["opus_optimism"] = optimism
                 by_path[path]["opus_rationale"] = rationale
 
     machine = machine_reference()
@@ -159,9 +168,13 @@ def main() -> int:
             print(f"| {s} | {statistics.fmean(hs):.2f} "
                   f"(min {min(hs)}, max {max(hs)}) | {mr} | {mm} |")
         allh = [r["opus_alarmism"] for r in judged]
-        print(f"\nhuman pilot overall: mean {statistics.fmean(allh):.2f}, "
+        print(f"\nhuman pilot alarmism: mean {statistics.fmean(allh):.2f}, "
               f"median {statistics.median(allh):.2f}, "
               f"sd {statistics.pstdev(allh):.2f}, range {min(allh)}-{max(allh)}")
+        opt = [r["opus_optimism"] for r in judged if r.get("opus_optimism") is not None]
+        if opt:
+            print(f"human pilot optimism: mean {statistics.fmean(opt):.2f}, "
+                  f"sd {statistics.pstdev(opt):.2f}, range {min(opt)}-{max(opt)}")
     return 0
 
 

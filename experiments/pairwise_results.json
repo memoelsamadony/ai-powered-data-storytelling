@@ -4,7 +4,7 @@
   "position_seed": 20260811,
   "n": 20,
   "failed": 0,
-  "cost_usd": 0.8092,
+  "cost_usd": 0.7327,
   "verdicts": [
     {
       "pair_id": "P001",
@@ -15,8 +15,8 @@
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 1 cites figures that all appear in the table (2021 vs 2024 cases, coverage levels, per-million rates) and correctly frames Nigeria's low coverage against the 95% herd-immunity threshold. Story 2 makes several unsupported claims — vaccination rates at 'record highs' (84% is below the 86% of 2018-19), a fabricated '3% increase' for 2022 (cases actually rose ~68% from 2021), and 'significant declines' in India and Germany that the data does not show.",
-      "cost_usd": 0.0342435
+      "rationale": "Story 1 uses the table accurately (2021→2024 case rise, stable 81–84% coverage, per-million comparisons) and ties the numbers to the ~95% herd-immunity threshold. Story 2 misstates the 2022 change as a 3% increase (it was ~68% over 2021), claims 'record high' coverage when 86% in 2018–19 was higher, and asserts unsupported declines in India and Germany.",
+      "cost_usd": 0.021357499999999998
     },
     {
       "pair_id": "P002",
@@ -27,32 +27,32 @@
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier but factually wrong: 2024's 941,893 is roughly 31 times (not 'more than 5 times') the 30,402 cases three years prior in 2021, and cases were not 'steadily decreasing since 2019' with only a 'brief dip in 2020' — the trough spans 2020–2022. Story 1 sticks to figures present in the table and adds the more defensible insight that the rebound may partly reflect pandemic-era reporting anomalies, though both stories ignore the 2025 drop to 265,317.",
-      "cost_usd": 0.0427435
+      "rationale": "Story 2 is livelier but misstates the data: the 5x comparison belongs to 2023 (one year prior), not three years prior (2021, where the ratio is ~31x), and the claim that cases were 'steadily decreasing since 2019' with only a 'brief dip in 2020' contradicts the table's 2020-2022 trough. Story 1 sticks to figures the table supports and adds the genuinely useful caveat that the rebound may partly reflect pandemic-era reporting anomalies.",
+      "cost_usd": 0.047072
     },
     {
       "pair_id": "P003",
       "criteria": {
         "relevance_informativeness": "story_1",
         "structure_coherence": "tie",
-        "narrative_quality": "tie",
+        "narrative_quality": "story_2",
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier but riddled with errors: the 2000–2011 period was volatile, not a 'steady decline'; the 2021-to-2024 rise is roughly 3,000%, not 500%; and the claim about vaccination effort being diverted to COVID is not in the data. Story 1 sticks to figures the table supports while covering the same arc, so it wins on accuracy and informativeness with comparable structure.",
-      "cost_usd": 0.0488175
+      "rationale": "Story 2 is livelier but rests on wrong or unsupported claims — there was no 'steady decline from 2000 to 2011', the 2021-to-2024 jump is roughly 3,000% not 500%, the '70%' drop is misstated, and the vaccination-focus explanation is not in the data. Story 1 describes the same volatility, pandemic dip and 2024 spike accurately, so its factual reliability outweighs Story 2's stylistic edge.",
+      "cost_usd": 0.045390999999999994
     },
     {
       "pair_id": "P004",
       "criteria": {
         "relevance_informativeness": "story_1",
         "structure_coherence": "tie",
-        "narrative_quality": "tie",
+        "narrative_quality": "story_2",
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier but rests on several claims the table contradicts — there was no 'steady decline from 2000 to 2011', the 2021-to-2024 rise is roughly 3,000% not 500%, the 2020 drop was about 54% rather than 'nearly 70%', and the vaccination-shift explanation is not in the data. Story 1 is plainer but every figure and characterization it offers is supported, making it the more informative and trustworthy account.",
-      "cost_usd": 0.029524499999999995
+      "rationale": "Story 2 is livelier but misstates the data: 2000–2011 was volatile rather than a \"steady decline,\" the 2021→2024 rise is roughly 3,000% not 500%, the \"nearly 70%\" pandemic drop does not match the 2019–2020 figures, and the vaccination-focus explanation is unsupported. Story 1 stays within the table and still conveys the volatility, pandemic dip, and 2024 spike.",
+      "cost_usd": 0.025964499999999998
     },
     {
       "pair_id": "P005",
@@ -63,8 +63,8 @@
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 1 accurately tracks the series and highlights the genuine 2024 surge, with only a minor slip in calling 2012 the pre-2024 incidence peak (2004's 41.1 per million was higher). Story 2 is riddled with fabricated and misattributed figures — a '1371% increase in five years' lifted from 2024's incidence value, 39.6 called an all-time high, and a claimed 45% decline from 2010 to 2023 that the data contradicts — and its narrative contradicts itself.",
-      "cost_usd": 0.041932
+      "rationale": "Story 1 accurately identifies the dominant feature of the data — the pandemic dip and the extraordinary 2024 surge to 941,893 cases (137.1 per million) — though it slips in calling 2012 the pre-2024 incidence peak when 2004 was higher at 41.1 per million. Story 2 is flashier but factually broken: the '1371% in five years' misreads the 2024 incidence value, the claimed 45% decline from 2010 to 2023 is actually a slight rise, and it ignores the 2024 spike entirely.",
+      "cost_usd": 0.041207
     },
     {
       "pair_id": "P006",
@@ -75,21 +75,20 @@
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier but fabricates figures — 1,943,893 cases for 2025 (actual 265,317), a 900% increase, and a wrong low point in 2010 rather than 2021. Story 1 stays accurate to the table, correctly identifying the 2024 peak and the 2021 trough, which outweighs its blander prose.",
-      "cost_usd": 0.033731
+      "rationale": "Story 2 is livelier but riddled with fabrications: a 2025 figure of 1,943,893 (actual 265,317), a bogus 900% increase, and a claimed low point in 2010 when the low was 4.6 per million in 2021. Story 1 is plainer but every figure it cites matches the table, making it the more trustworthy and genuinely informative account.",
+      "cost_usd": 0.034020999999999996
     },
     {
       "pair_id": "P007",
       "criteria": {
-        "relevance_informativeness": "story_1",
+        "relevance_informativeness": "tie",
         "structure_coherence": "tie",
         "narrative_quality": "story_2",
-        "factual_correctness": "story_1",
-        "overall": "story_1"
+        "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 1 states the range, the 2021 trough and the 2024 spike accurately, while Story 2 adds unsupported specifics — 'in late 2024 alone' (the table is annual only), a narrow '150,000–175,000' band that many years fall outside, and 'mid-decade' peaks that actually occurred in 2004 and 2012. Story 2's prose is livelier, but its embellishments distort the data, so Story 1 wins overall.",
-      "cost_usd": 0.040048999999999994
+      "rationale": "Story 2 is livelier but misstates the baseline as \"150,000–175,000\" (the series ranges from 116,598 to 250,330) and invents a \"late 2024\" timeframe the annual data cannot support, while calling a period with 941,893 cases \"stubbornly contained\" up to that point. Story 1 sticks to figures the table supports, so its accuracy outweighs Story 2's stylistic edge, though both ignore the 2025 fall to 265,317.",
+      "cost_usd": 0.038429
     },
     {
       "pair_id": "P008",
@@ -100,20 +99,20 @@
         "factual_correctness": "story_2"
       },
       "overall": "story_2",
-      "rationale": "Story 1 is livelier but rests on unsupported numbers — a '500% increase from three years prior' (2021's 30,402 to 941,893 is roughly 3,000%) and a 'nearly 70%' drop and 'steady decline from 2000 to 2011' that the fluctuating table does not support. Story 2 is drier yet every figure and comparison it makes checks out against the data, so it wins overall.",
-      "cost_usd": 0.04905399999999999
+      "rationale": "Story 1 is livelier but misstates the data: the 2021→2024 rise is roughly 3,000%, not 500%, the 2020 drop is ~54% rather than 'nearly 70%', and the 2000–2011 period was not a steady decline. Story 2 is drier yet every figure and comparison it cites matches the table, so it wins overall despite the flatter prose.",
+      "cost_usd": 0.051694
     },
     {
       "pair_id": "P009",
       "criteria": {
-        "relevance_informativeness": "tie",
+        "relevance_informativeness": "story_1",
         "structure_coherence": "tie",
         "narrative_quality": "story_2",
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier and frames a resurgence narrative, but it misstates the data: 2000–2011 was fluctuating rather than a 'steady decline', the 2024 peak is roughly a 3,000% rise over 2021 (not 500%), and the pandemic drop plus the vaccination-focus explanation are not supported by the table. Story 1 is drier but every figure and characterization matches the data, so it wins overall.",
-      "cost_usd": 0.04506999999999999
+      "rationale": "Story 2 is livelier but rests on several claims the table contradicts: no 'steady decline' from 2000–2011, the 2024 peak is roughly a 3,000% rise over 2021 rather than 500%, the '70%' pandemic drop is imprecise, and the vaccination-focus explanation is unsupported. Story 1 is drier yet every figure and trend it states matches the data, which decides the overall verdict.",
+      "cost_usd": 0.048225000000000004
     },
     {
       "pair_id": "P010",
@@ -124,20 +123,20 @@
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Both cover the same figures accurately and share the same three-part structure, but Story 2 buys its livelier voice with unsupported framing — countries 'crushing the virus' and vaccination 'eradicating diseases' — while both miss the resurgence visible in the 2019, 2023 and 2024 rows. Story 1's restraint keeps every claim tied to the table, which outweighs Story 2's stronger narrative energy.",
-      "cost_usd": 0.042609
+      "rationale": "Both cover the same figures with the same structure and both omit the key insight in the data — the 2019 spike and the 2023–24 resurgence back above 669,000 cases despite flat 83–84% coverage, plus India's high coverage yet higher rate than Germany. Story 2 is livelier but overreaches with claims like 'crushing the virus' and 'eradicating diseases' that the table does not support, so Story 1's more measured accuracy wins overall.",
+      "cost_usd": 0.025953
     },
     {
       "pair_id": "P011",
       "criteria": {
         "relevance_informativeness": "tie",
-        "structure_coherence": "tie",
+        "structure_coherence": "story_2",
         "narrative_quality": "story_1",
         "factual_correctness": "story_2"
       },
       "overall": "story_2",
-      "rationale": "Both cover the same trend with the same accurate figures and similar three-part structure, but Story 1 attributes the decline to vaccination, a causal claim the table cannot support, and its 'mystery' framing sits awkwardly with its own explanation. Story 2 is drier yet keeps every claim tied to the data, so it edges out overall despite Story 1's livelier voice.",
-      "cost_usd": 0.044549
+      "rationale": "Both stories cover the same figures accurately, but Story 1 adds an unsupported causal attribution to vaccination and sits awkwardly between a 'plummet' headline and a described rebound, while Story 2 states the peak, trough, 2021–2023 rise and incidence decline precisely and coheres better. Story 1 is livelier, but Story 2 is the sounder piece overall.",
+      "cost_usd": 0.04815699999999999
     },
     {
       "pair_id": "P012",
@@ -148,56 +147,56 @@
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier and quantifies change with percentages, but its headline claim of a 245% rise between 2019 and 2023 is wrong (22,989 to 24,782 is under 8%), and the vaccination-decline explanation is not in the data. Story 1 is plainer but every figure it cites matches the table, so it wins overall on accuracy.",
-      "cost_usd": 0.047223
+      "rationale": "Story 2 is livelier and its 113% figure checks out, but its centerpiece claim of a 245% rise between 2019 and 2023 is wrong (22,989 to 24,782 is about 8%), and the vaccination-decline explanation is not in the data. Story 1 is plainer but every figure and period it cites matches the table, so accuracy decides it.",
+      "cost_usd": 0.043642
     },
     {
       "pair_id": "P013",
       "criteria": {
         "relevance_informativeness": "story_1",
-        "structure_coherence": "story_1",
+        "structure_coherence": "tie",
         "narrative_quality": "story_2",
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier but internally contradictory — it says 2021 deaths were 103,901 (actually the 2020 figure) and then 151,463 in the same breath, miscomputes the decline as 86%, and adds an unsupported claim about rising vaccination rates. Story 1 uses the table's figures correctly and coheres, so it wins overall despite flatter prose.",
-      "cost_usd": 0.031054000000000002
+      "rationale": "Story 2 is livelier but internally contradictory and factually wrong: it says 2021 deaths fell to 103,901 (actually the 2020 figure) while also stating 151,463 died in 2021, and it adds an unsupported claim about rising vaccination rates and expert warnings. Story 1 reports the figures accurately and consistently, which outweighs its flatter prose.",
+      "cost_usd": 0.015410999999999998
     },
     {
       "pair_id": "P014",
       "criteria": {
         "relevance_informativeness": "story_1",
-        "structure_coherence": "story_1",
+        "structure_coherence": "tie",
         "narrative_quality": "tie",
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2's headline says '6 Million' and frames 2020 as the endpoint with a 'significant drop,' ignoring the 2021 figure of 6.85 million and mischaracterizing the smooth gradual decline; it also conflates death counts with a 'mortality rate.' Story 1 reports the full 2000-2021 span accurately with a correct ~43% decline, though both are similarly plain in narrative style.",
-      "cost_usd": 0.032115
+      "rationale": "Story 2's headline says '6 Million' and calls 2020 a 'significant drop' when it was a routine yearly decline, and it ignores the latest year (2021), while also conflating the count with a 'mortality rate'. Story 1 reports the full 2000–2021 span with accurate figures and a correct ~43% decline.",
+      "cost_usd": 0.015054999999999999
     },
     {
       "pair_id": "P015",
       "criteria": {
-        "relevance_informativeness": "tie",
+        "relevance_informativeness": "story_2",
         "structure_coherence": "tie",
         "narrative_quality": "tie",
         "factual_correctness": "story_2"
       },
       "overall": "story_2",
-      "rationale": "Both stories cover the same arc with similar structure and modest insight, but Story 1 misstates the post-2010 pace as 'just over 4,000 deaths per year' (the actual average is roughly 1,400) and calls the decline 'consistent' despite the 2005 uptick. Story 2's figures — the ~50,000 drop from 2000 to 2010 and the 29,255 to 16,265 range — all match the table.",
-      "cost_usd": 0.039763999999999994
+      "rationale": "Story 1 misstates the post-2010 pace as \"just over 4,000 deaths per year\" (the actual average is roughly 1,500) and calls the trend \"consistent\" despite the 2005 uptick, while Story 2's figures (the ~50,000 drop from 2000–2010 and the 29,255→16,265 span) all check out against the table. Both are similarly organized and plainly written, so accuracy decides it.",
+      "cost_usd": 0.024022
     },
     {
       "pair_id": "P016",
       "criteria": {
         "relevance_informativeness": "story_2",
         "structure_coherence": "tie",
-        "narrative_quality": "story_1",
+        "narrative_quality": "tie",
         "factual_correctness": "story_2"
       },
       "overall": "story_2",
-      "rationale": "Story 1 is livelier but misstates the data: the 2000–2011 period was not a steady decline, the '500% increase from just three years prior' does not match 2021's 30,402 (a ~31-fold rise), and the pandemic drop and vaccination-focus claims are loose or unsupported. Story 2 tracks the table accurately and adds a sensible caveat about the 2024 spike, though its 'reporting dynamics' explanation is also not evidenced in the data.",
-      "cost_usd": 0.050987
+      "rationale": "Story 1 is livelier but makes several unsupported claims — a 'steady decline from 2000 to 2011' contradicted by the 2004 spike, a '500% increase from three years prior' when 2021's 30,402 to 2024's 941,893 is roughly thirtyfold, and speculation about vaccination programs shifting focus. Story 2 stays within the table, adds the incidence figures, and reaches a comparably clear arc, so it wins on accuracy and informativeness while the two are even on structure and readability.",
+      "cost_usd": 0.051217
     },
     {
       "pair_id": "P017",
@@ -208,32 +207,32 @@
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier but rests on several false claims — there was no steady decline from 2000 to 2011, and the 2021-to-2024 jump is roughly 3,000%, not 500%, plus an unsupported causal claim about vaccination focus. Story 1 is dry and misstates the 2000–2019 range (actually ~117k–250k), but its errors are fewer and smaller, so it edges ahead overall.",
-      "cost_usd": 0.052068
+      "rationale": "Story 2 is livelier and offers more interpretation, but it misstates a \"steady decline from 2000 to 2011\" (2004 and 2008–2011 rose), calls the 2021→2024 jump a \"500% increase\" when it is roughly 3,000%, and adds an unsupported causal claim about vaccination focus. Story 1 has one clear error (the 2000–2019 range is 116,598–250,330, not 199,000–250,000) and a debatable \"pre-pandemic\" comparison, but is otherwise faithful to the table, so it wins overall on accuracy.",
+      "cost_usd": 0.050047999999999995
     },
     {
       "pair_id": "P018",
       "criteria": {
-        "relevance_informativeness": "story_1",
+        "relevance_informativeness": "tie",
         "structure_coherence": "tie",
         "narrative_quality": "story_2",
         "factual_correctness": "story_1"
       },
       "overall": "story_1",
-      "rationale": "Story 2 is livelier but introduces unsupported claims — a '150,000–175,000' band that misstates the actual 116,000–250,000 range, 'peaks near 250,000 during mid-decade years' misattributing the 2004/2012 spikes, and 'in late 2024 alone' implying sub-annual detail the yearly table does not contain. Story 1 sticks precisely to the figures and correctly frames the 2021 trough and 2024 surge, so its accuracy outweighs Story 2's stylistic flair (both ignore the 2025 decline).",
-      "cost_usd": 0.024957499999999997
+      "rationale": "Story 2 is livelier but introduces unsupported specifics — a '150,000–175,000' baseline that misstates the actual 116k–250k range, 'peaks near 250,000 during mid-decade years' (the 250k peaks are 2004 and 2012), and 'in late 2024 alone' for what is annual data. Story 1 characterizes the same surge accurately, so its factual reliability outweighs Story 2's rhetorical flair; both equally ignore the 2025 fall-back.",
+      "cost_usd": 0.0228525
     },
     {
       "pair_id": "P019",
       "criteria": {
         "relevance_informativeness": "story_2",
-        "structure_coherence": "tie",
-        "narrative_quality": "story_2",
+        "structure_coherence": "story_2",
+        "narrative_quality": "tie",
         "factual_correctness": "story_2"
       },
       "overall": "story_2",
-      "rationale": "Story 1 contains multiple errors — a 'nearly half a million' peak in 2012 (actually 250,330), 'under thirty thousand' in 2021 (30,402), a stated range contradicting its own low, and 'more than six times' any other year (actually about 3.8x) — while Story 2's figures, ranges, and the ~4x comparison all check out and it additionally uses the incidence-per-million column. Story 1's vivid prose does not compensate for its unreliability and muddled 2025 framing.",
-      "cost_usd": 0.042844
+      "rationale": "Story 1 is more colorful but riddled with errors — it calls 2012 'nearly half a million' (it was 250,330), claims the 2024 spike was 'more than six times' any other year (it was under four), and states a range of 69,605–250,330 that contradicts its own mention of 2021's 30,402. Story 2 states every figure and ratio accurately, adds the incidence dimension, and closes its arc cleanly, so it wins on all criteria except raw stylistic flair.",
+      "cost_usd": 0.047124000000000006
     },
     {
       "pair_id": "P020",
@@ -244,8 +243,8 @@
         "factual_correctness": "story_2"
       },
       "overall": "story_2",
-      "rationale": "Story 1 contains multiple fabrications — a claimed 37% year-on-year rise (actual jump is roughly six-fold from 163,400), an invented 'six months' timeframe, a 9.9 per million baseline taken from 2020 rather than 2023, a false claim of steady decline, and unsupported assertions about lethality. Story 2 accurately characterizes the historical range, the 2020–21 trough, the 2024 peak and the 2025 decline, and reads coherently with appropriately hedged interpretation.",
-      "cost_usd": 0.035840000000000004
+      "rationale": "Story 1 is riddled with errors: cases never fell to 'low single digits', the 2024 jump over 2023's 163,400 is roughly 476% not 37%, the 9.9 figure belongs to 2020 not 2023, pandemic years were not 26-40 per million, and it invents claims about lethality and a 'six month' window. Story 2 accurately characterizes the historical range, the 2020-21 trough, the 2024 peak and the 2025 decline, with a clear and appropriately measured arc.",
+      "cost_usd": 0.035845
     }
   ]
 }

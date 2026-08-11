@@ -1,0 +1,7 @@
+model,correct,total,pct,source
+GPT-4 (paper),,,25.2,paper
+LlaMa2-13B (paper),,,20.7,paper
+LlaMa2-7B (paper),,,18.8,paper
+GPT-3.5 (paper),,,14.6,paper
+qwen3.5:4b,1,115,0.9,ours
+gemma4:12b,14,115,12.2,ours
