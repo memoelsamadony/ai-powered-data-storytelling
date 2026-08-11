@@ -4,6 +4,9 @@
  * pipeline reads the full merged tables (see source attributions).
  */
 
+import { measlesYears, measlesMetrics, measlesCountryStats } from "./country-stats/measles";
+import { whoYears, whoMetrics, whoCountryStats } from "./country-stats/who-health";
+
 export type FailureMode = "alarmism" | "over-optimism";
 
 export interface DatasetSeriesPoint {
@@ -12,6 +15,34 @@ export interface DatasetSeriesPoint {
   primary: number;
   /** Secondary metric (e.g. MCV1 coverage %, or life expectancy). */
   secondary: number;
+}
+
+/** One mapped or disclosed measure in a dataset's country table. */
+export interface CountryMetric {
+  /** Stable key; indexes into CountryStat.series. */
+  key: string;
+  label: string;
+  unit: string;
+  /** Picks the colour ramp: alarm-ward or calm-ward. */
+  polarity: "higher-is-worse" | "higher-is-better";
+  /**
+   * Four ascending class breaks → five bins. Declared, never computed from the
+   * visible year: with a year scrubber, recomputed bins would make a country
+   * change colour because the scale moved rather than because its value did.
+   */
+  breaks: [number, number, number, number];
+  /** Decimal places for display. Default 0. */
+  decimals?: number;
+  /** false = shown in the tooltip and table, never mapped. Default true. */
+  mappable?: boolean;
+}
+
+/** One country's figures, columnar: metric key → value per countryYears index. */
+export interface CountryStat {
+  /** ISO 3166-1 alpha-3 — joins to WorldShape.id in lib/data/world-geo.ts. */
+  iso3: string;
+  name: string;
+  series: Record<string, (number | null)[]>;
 }
 
 export interface Dataset {
@@ -38,6 +69,16 @@ export interface Dataset {
   series: DatasetSeriesPoint[];
   /** A few preview rows shown as a table on the dataset/generate pages. */
   previewRows: { country: string; year: number; cases: string; coverage: string }[];
+  /**
+   * The map's own timeline — deliberately coarser than `series`, because the
+   * country figures are anchored to years with published values rather than
+   * interpolated across every point of the world trend.
+   */
+  countryYears?: number[];
+  countryMetrics?: CountryMetric[];
+  countryStats?: CountryStat[];
+  /** Attribution shown under the map. */
+  countrySourceNote?: string;
 }
 
 export const datasets: Dataset[] = [
@@ -85,6 +126,10 @@ export const datasets: Dataset[] = [
       { country: "India", year: 2023, cases: "39,617", coverage: "89%" },
       { country: "Yemen", year: 2023, cases: "31,406", coverage: "67%" },
     ],
+    countryYears: measlesYears,
+    countryMetrics: measlesMetrics,
+    countryStats: measlesCountryStats,
+    countrySourceNote: "WHO / WUENIC · illustrative country sample",
   },
   {
     id: "who-health",
@@ -122,6 +167,10 @@ export const datasets: Dataset[] = [
       { country: "Sub-Saharan Africa", year: 2022, cases: "70.5", coverage: "61.0 yrs" },
       { country: "Europe", year: 2022, cases: "4.3", coverage: "78.2 yrs" },
     ],
+    countryYears: whoYears,
+    countryMetrics: whoMetrics,
+    countryStats: whoCountryStats,
+    countrySourceNote: "WHO Global Health Observatory / UN IGME · illustrative country sample",
   },
 ];
 
