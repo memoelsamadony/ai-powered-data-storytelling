@@ -127,6 +127,94 @@ TIERS: dict[str, Tier] = {
         judge="gemma4:31b",
         sizes={"qwen3.6:35b": 23.0, "gemma4:31b": 19.0},
     ),
+    "g1b": Tier(
+        id="g1b",
+        label="G1B (1B generator)",
+        description=(
+            "Generator-size ladder, rung 1. Moderator and judge held fixed so the only moving part is how capable the writer is."
+        ),
+        generator="llama3.2:1b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:9b",
+        sizes={"llama3.2:1b": 1.3, "gemma4:31b": 19.0, "qwen3.5:9b": 6.0},
+    ),
+    "g3b": Tier(
+        id="g3b",
+        label="G3B (3B generator)",
+        description=(
+            "Generator-size ladder, rung 2."
+        ),
+        generator="llama3.2:3b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:9b",
+        sizes={"llama3.2:3b": 2.0, "gemma4:31b": 19.0, "qwen3.5:9b": 6.0},
+    ),
+    "g4b": Tier(
+        id="g4b",
+        label="G4B (4B generator)",
+        description=(
+            "Generator-size ladder, rung 3. qwen3.5:4b is the generator the interim report named."
+        ),
+        generator="qwen3.5:4b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:9b",
+        sizes={"qwen3.5:4b": 3.4, "gemma4:31b": 19.0, "qwen3.5:9b": 6.0},
+    ),
+    "g8b": Tier(
+        id="g8b",
+        label="G8B (8B generator)",
+        description=(
+            "Generator-size ladder, rung 4. Same generator as the old mid tier, but judged by a model that did not write the moderation."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:9b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:31b": 19.0, "qwen3.5:9b": 6.0},
+    ),
+    "m12b": Tier(
+        id="m12b",
+        label="M12B (12B moderator)",
+        description=(
+            "Moderator-size ladder, rung 1. gemma4 has no 8B tag; 12B is the smallest rung the family offers."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:12b",
+        judge="qwen3.5:9b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:12b": 8.1, "qwen3.5:9b": 6.0},
+    ),
+    "m26b": Tier(
+        id="m26b",
+        label="M26B (26B moderator)",
+        description=(
+            "Moderator-size ladder, rung 2."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:26b",
+        judge="qwen3.5:9b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:26b": 16.0, "qwen3.5:9b": 6.0},
+    ),
+    "m31b": Tier(
+        id="m31b",
+        label="M31B (31B moderator)",
+        description=(
+            "Moderator-size ladder, rung 3. Same pairing as m26b/m12b so the rungs are directly comparable."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:9b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:31b": 19.0, "qwen3.5:9b": 6.0},
+    ),
+    "m31b-selfjudge": Tier(
+        id="m31b-selfjudge",
+        label="M31B self-judging (P0.1 control)",
+        description=(
+            "Identical to m31b except the judge IS the moderator. Kept deliberately: the difference between this tier and m31b is the size of the self-assessment bias."
+        ),
+        generator="llama3.1:8b",
+        moderator="gemma4:31b",
+        judge="gemma4:31b",
+        sizes={"llama3.1:8b": 4.9, "gemma4:31b": 19.0},
+    ),
 }
 
 DEFAULT_TIER = "demo"

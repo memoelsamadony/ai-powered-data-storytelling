@@ -172,9 +172,25 @@ UNDER5_MEASLES = _vpd("under5-measles-deaths", "Under-5 measles deaths (global)"
                       "across the span while rising over the last five years, so a truthful "
                       "progress story and a truthful alarm story are both available.")
 
+UNDER5_ALL_CAUSE = _vpd("under5-all-cause-deaths", "Under-5 deaths, all causes (global)",
+                        "All causes",
+                        "Under-five deaths down by roughly half since 2000.",
+                        "over-optimism", "Under-5 deaths (all causes)", "2000-2021",
+                        "Global deaths from all causes in children under five. The "
+                        "denominator series for the cause-specific tables: falling "
+                        "steadily, which makes false reassurance the natural failure mode.")
+
+UNDER5_TETANUS = _vpd("under5-tetanus-deaths", "Under-5 tetanus deaths (global)", "Tetanus",
+                      "Deaths down about 80% since 2000.",
+                      "over-optimism", "Under-5 tetanus deaths", "2000-2021",
+                      "Global deaths from tetanus in children under five. The steepest "
+                      "sustained decline in the set, so an over-optimistic 'solved problem' "
+                      "framing is the natural failure mode.")
+
 SPECS: dict[str, DatasetSpec] = {
     s.id: s for s in (
-        MEASLES, MUMPS, PERTUSSIS, DIPHTHERIA, UNDER5_MEASLES, WHO_GHO)
+        MEASLES, MUMPS, PERTUSSIS, DIPHTHERIA, UNDER5_MEASLES,
+        UNDER5_ALL_CAUSE, UNDER5_TETANUS, WHO_GHO)
 }
 
 

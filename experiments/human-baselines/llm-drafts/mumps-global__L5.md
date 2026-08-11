@@ -5,21 +5,24 @@ series: mumps-global
 datapack: experiments/human-baselines/datapacks/mumps-global.txt
 datapack_sha256: b043cf89ad43
 target_words: 140
-word_count: 152
+word_count: 146
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: 262cd494a6f7
+original_story_sha256: a59612628907
+pass1_story_sha256: 262cd494a6f7
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Global mumps rate falls to its lowest in 26 years of records
+# Mumps rate hits a 26-year low as global cases fall again
 
-Reported mumps cases around the world fell for a second straight year in 2025, to 234,954. That is down from 245,062 in 2024 and from 387,586 in 2023, a drop of about 39 percent in two years.
+Reported mumps cases fell again last year. Worldwide, 234,954 were counted in 2025, down from 245,062 in 2024. Go back one more year, to 387,586 in 2023, and the two-year drop works out at about 39 percent.
 
-The rate fell further still. In 2025 there were 41.2 reported cases per million people, the lowest figure in records going back to 2000. It beats the previous low of 43.4, set in 2021.
+Measured against population, the fall is sharper. The 2025 rate was 41.2 reported cases per million people. Nothing in the record, which starts in 2000, is lower. The old floor was 43.4, from 2021.
 
-The longer view is steeper. Mumps peaked at 726,638 reported cases in 2011. Last year's total was roughly a third of that. The rate has fallen even more sharply: it stood at 316.8 per million in 2000, close to eight times the 2025 level.
+Zoom out further. In 2011 the world reported 726,638 mumps cases, the highest year on file. The 2025 count was about a third of that. The rate has come down harder still: 316.8 per million in 2000, more than seven times where it sits now.
 
-The record splits neatly in two. In every year from 2000 to 2018, reported cases topped 300,000. In every year since 2019, they have stayed below 400,000, and four of those seven years came in under 250,000.
+One more pattern. Every year from 2000 through 2018 came in above 300,000 reported cases. Since 2019, none has topped 400,000, and four of those seven years didn't reach 250,000.

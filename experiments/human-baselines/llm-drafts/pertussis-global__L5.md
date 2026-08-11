@@ -5,21 +5,24 @@ series: pertussis-global
 datapack: experiments/human-baselines/datapacks/pertussis-global.txt
 datapack_sha256: 2440adfee99e
 target_words: 140
-word_count: 141
+word_count: 148
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: 57b06d40ed58
+original_story_sha256: 3c7d3f80ab87
+pass1_story_sha256: 57b06d40ed58
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Pertussis cases fell steeply in 2025, but stayed above every year before 2024
+# Pertussis cases fell 72 percent in 2025 and were still the second highest since 2000
 
-Reported pertussis cases around the world dropped to 265,317 in 2025, down from 941,893 the year before. That is a fall of 676,576 cases, or about 72 percent in a single year.
+The world logged 265,317 pertussis cases in 2025. The year before, the count was 941,893. In twelve months, 676,576 cases fell off the tally, close to 72 percent of the total.
 
-Even after that drop, 2025 is the second highest year in a run of figures going back to 2000. Only 2024 was higher. The previous peak, 250,330 cases in 2012, has now been passed.
+It's still a big number. Only one year since 2000 beats 2025, and that's 2024. Before then the busiest was 2012, at 250,330 cases. 2025 is past that now.
 
-The 2024 total still stands out. It was nearly six times the 163,400 cases reported in 2023, and more than 30 times the 30,402 counted in 2021, the quietest year in the whole series.
+2024 stands apart. It ran to nearly six times the 163,400 cases reported in 2023. Against 2021 the gap is wider still. That year brought 30,402 cases, the lowest of the 26 listed, and 2024 was more than 30 times it.
 
-Measured against population, 2025 works out at 37.3 cases per million people. In 2021 the figure was 4.6. In 2024 it reached 137.1, the highest in the table. Every year from 2000 to 2019 sat between 20.1 and 41.1 per million.
+Rates say the same thing. 2025 works out at 37.3 cases per million people. Back in 2021 the rate was 4.6; by 2024 it had climbed to 137.1, higher than any other year here. And from 2000 through 2019 it never left the 20.1 to 41.1 band.

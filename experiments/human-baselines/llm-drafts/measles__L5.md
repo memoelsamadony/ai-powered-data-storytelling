@@ -5,21 +5,24 @@ series: measles
 datapack: experiments/human-baselines/datapacks/measles.txt
 datapack_sha256: 1e2b99634284
 target_words: 140
-word_count: 141
+word_count: 142
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: 432e6b762421
+original_story_sha256: 89d3a0e541fa
+pass1_story_sha256: 432e6b762421
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Measles cases have risen more than fivefold since 2021
+# Measles cases are more than five times the 2021 low
 
-Reported measles cases worldwide reached 675,533 in 2024. That is the highest figure in the series since 2019, and more than five times the 123,152 cases reported in 2021, the lowest year in the record.
+The world logged 675,533 reported measles cases in 2024. You have to go back to 2019 to find a bigger one. Against 2021, the quietest year on the table at 123,152, that's more than five times as many.
 
-The climb was steep in 2023, when cases more than tripled from 206,775 to 669,083. In 2024 they edged up again, by 6,450.
+Most of the jump landed in one year. Cases ran from 206,775 in 2022 to 669,083 in 2023, more than triple. Last year added 6,450 on top of that, barely a nudge.
 
-First-dose vaccination coverage stood at 84% in 2024. Herd immunity needs about 95%, so the world sits 11 points short. Coverage peaked at 86% in 2018 and 2019. The longer view is kinder: in 1980, when coverage was 16%, there were 3,852,242 reported cases, nearly six times the 2024 total.
+First-dose coverage sat at 84% in 2024, 11 points under the roughly 95% herd immunity takes. The best the record shows is 86%, in 2018 and 2019. In 1980, coverage was 16% and the world reported 3,852,242 cases, nearly six times last year's total.
 
-Country figures for 2024 vary widely. Nigeria reported 65.8 cases per million, against 12.9 in India and 7.6 in Germany. Nigeria's first-dose coverage was 57%, against 96% in Germany and 97% in India.
+Country by country, 2024 looked different. Nigeria reported 65.8 cases per million against India's 12.9 and Germany's 7.6. Nigeria's first-dose coverage was 57%. Germany's was 96%, India's 97%.

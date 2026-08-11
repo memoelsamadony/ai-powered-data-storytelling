@@ -5,21 +5,24 @@ series: mumps-global
 datapack: experiments/human-baselines/datapacks/mumps-global.txt
 datapack_sha256: b043cf89ad43
 target_words: 145
-word_count: 142
+word_count: 150
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: 086f6ae1e430
+original_story_sha256: ea58d2e73cad
+pass1_story_sha256: 086f6ae1e430
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Mumps is at its lowest rate in 26 years of figures
+# Mumps ends 26 years of figures at its lowest rate
 
-In 2011 the world logged 726,638 mumps cases, the highest in a series that runs from 2000. Fourteen years later the count is 234,954, a fall of roughly two thirds.
+The worst year in this table is 2011, when the world logged 726,638 mumps cases. Nothing in the run, which begins in 2000, comes close. Fourteen years on the count reads 234,954, roughly two thirds lower.
 
-The rate tells a starker story. Incidence stood at 316.8 per million in 2000 and at 41.2 per million in 2025, the lowest reading in the whole run and roughly an eighth of where it started.
+Measured as a rate, the shift is wider still. Incidence began the series at 316.8 per million and finishes at 41.2 in 2025, the lowest reading anywhere in the 26 years, and something close to an eighth of where it started.
 
-The recent years are not a smooth glide. Cases bottomed at 169,898 in 2019, the fewest in the series, then climbed to 387,586 by 2023, the most since 2018. Two years later they are back down to 234,954, a drop of 39 percent.
+Recent years wobble, though. Cases hit their floor in 2019 at 169,898, fewer than in any other year, then rose again to 387,586 by 2023, the biggest total since 2018. Two years of falling followed, back to 234,954, or 39 percent below 2023.
 
-So the series ends with two different quiet years. By raw count, 2019 remains the lowest. By rate, the quietest year is the last one on the list, 2025, at 41.2 per million.
+Which leaves two candidates for the quietest year. Count the cases and 2019 wins. Watch the rate and it's 2025, the last line on the list, at 41.2 per million.

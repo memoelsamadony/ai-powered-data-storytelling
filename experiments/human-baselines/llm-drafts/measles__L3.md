@@ -5,21 +5,24 @@ series: measles
 datapack: experiments/human-baselines/datapacks/measles.txt
 datapack_sha256: 1e2b99634284
 target_words: 145
-word_count: 141
+word_count: 152
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: 5daec4280a7d
+original_story_sha256: 7bd9a7e02806
+pass1_story_sha256: 5daec4280a7d
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Measles cases have climbed more than fivefold since 2021
+# From a record low in 2021, measles cases have climbed more than fivefold
 
-In 2021 the world reported 123,152 measles cases, the lowest figure in a record that starts in 1980 at 3,852,242. Three years later the count stood at 675,533, more than five times as many.
+The world's measles count bottomed out in 2021 at 123,152, the smallest figure in a record that opens in 1980 with 3,852,242 cases. Three years later it stood at 675,533, more than five times as high.
 
-The climb was uneven. 2022 brought 206,775. The following year more than tripled it, to 669,083. Then 2024 added just 6,450 on top, a rise of about one percent, yet still the largest annual total since 2019 and its 873,373 cases.
+2022 came in at 206,775; by 2023 the count had more than tripled, to 669,083. And 2024? Just 6,450 cases on top, about one percent, which barely registers until you notice it's still the heaviest year since 2019, when 873,373 cases were reported.
 
-First-dose vaccination coverage has barely shifted: 84% in 2024, against 81% in 2021, and still below the 86% of 2018 and 2019.
+First-dose coverage, through all of that, has hardly budged: 81% in 2021, 84% in 2024, still short of the 86% recorded in 2018 and again in 2019.
 
-Country figures for 2024 sit far apart. India counted 18,530 cases, more than Nigeria's 14,999, but per million people Nigeria's 65.8 is roughly five times India's 12.9 and nearly nine times Germany's 7.6. Germany, with 645 cases, reports 96% coverage; India 97%; Nigeria 57%.
+The 2024 country figures scatter. India logged 18,530 cases, more than Nigeria's 14,999, but weigh them by population and Nigeria's 65.8 per million is roughly five times India's 12.9, nearly nine times Germany's 7.6. Germany's 645 cases come alongside 96% coverage; India reports 97%, Nigeria 57%.

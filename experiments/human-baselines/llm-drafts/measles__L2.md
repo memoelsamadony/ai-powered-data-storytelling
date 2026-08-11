@@ -5,19 +5,22 @@ series: measles
 datapack: experiments/human-baselines/datapacks/measles.txt
 datapack_sha256: 1e2b99634284
 target_words: 135
-word_count: 136
+word_count: 146
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: f944b6efe0d7
+original_story_sha256: 8e716caf0429
+pass1_story_sha256: f944b6efe0d7
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Measles cases have risen more than fivefold since 2021
+# Measles cases rose more than fivefold in three years while coverage barely moved
 
-The world reported 123,152 measles cases in 2021, the lowest figure in this series, which stretches back to 1980. Three years later the count was 675,533, more than five times as many. Most of that jump came in a single step, from 206,775 in 2022 to 669,083 in 2023.
+The story starts in 2021. The world reported 123,152 measles cases, the lowest count anywhere in this series, which goes back to 1980. By 2024 it was 675,533, more than five times as many. The bulk of that rise landed in a single step: 206,775 cases in 2022, then 669,083 in 2023.
 
-Coverage of the first measles vaccine dose barely moved over the same stretch, from 81% in 2021 to 84% in 2024. Herd immunity needs roughly 95% first-dose coverage, and the world has never reached that in these figures; the highest is 86%, in 2018 and 2019.
+Vaccination barely budged while that happened. First-dose coverage went from 81% to 84% between 2021 and 2024. The number worth holding onto is 95%, roughly what herd immunity needs, and the world has never reached it in these figures. Its best is 86%, in 2018 and 2019.
 
-The 2024 country snapshot shows why raw counts mislead. India reported 18,530 cases and Nigeria 14,999, so India looks worse. Adjusted for population, Nigeria's rate of 65.8 cases per million is five times India's 12.9, and nearly nine times Germany's 7.6.
+One more thing, because raw totals can fool you. India reported 18,530 cases in 2024 and Nigeria 14,999, so India looks like the bigger problem. Adjusted for population, it flips: Nigeria's 65.8 cases per million is five times India's 12.9, and more than eight times Germany's 7.6.
