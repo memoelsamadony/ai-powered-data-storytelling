@@ -19,7 +19,7 @@ export const faithfulness = {
 /* ---- Analytical correctness: per-operation accuracy (higher is better) ---- */
 export const perOperation = {
   caption:
-    "Reading and computing operations improve sharply with scale — but the causal operation scores 0% for both models. Causal reasoning is a capability wall, not a size problem.",
+    "Reading and computing operations improve sharply with scale, but the causal operation scores 0% for both models. Causal reasoning is a capability wall, not a size problem.",
   unit: "accuracy %",
   operations: [
     { op: "Lookup", small: 71, large: 95 },
@@ -35,7 +35,7 @@ export const perOperation = {
 /* ---- Masked-number prediction (sub-30% regime) ---- */
 export const maskedNumber = {
   caption:
-    "Reconstructing a human analyst's key numbers stays in the paper's sub-30% regime — strong models still fail most analytical numbers.",
+    "Reconstructing a human analyst's key numbers stays in the paper's sub-30% regime: strong models still fail most analytical numbers.",
   unit: "% of masked numbers correctly predicted",
   series: [
     { model: "gemma 12B", value: 12.2 },
@@ -46,7 +46,7 @@ export const maskedNumber = {
 /* ---- Tone calibration (the novel metric) ---- */
 export const toneCalibration = {
   caption:
-    "The novel metric: an LLM-judge alarmism rating (1–5) measured before vs after moderation, plus the count of emotive spans removed — with faithfulness re-checked afterwards to confirm the edit preserved the facts.",
+    "The novel metric: an LLM-judge alarmism rating (1–5) measured before vs after moderation, plus the count of emotive spans removed, with faithfulness re-checked afterwards to confirm the edit preserved the facts.",
   alarmismBefore: 4.6,
   alarmismAfter: 2.1,
   scaleMax: 5,
@@ -58,7 +58,7 @@ export const toneCalibration = {
 /* ---- Text-similarity metrics (human vs LLM-moderated) — illustrative ---- */
 export const textSimilarity = {
   caption:
-    "Surface-overlap scores comparing the LLM-moderated story against the human baseline. Useful as a signal, but they reward wording overlap, not faithfulness or tone — which is why our metric set goes beyond them.",
+    "Surface-overlap scores comparing the LLM-moderated story against the human baseline. Useful as a signal, but they reward wording overlap, not faithfulness or tone, which is why our metric set goes beyond them.",
   illustrative: true,
   series: [
     { metric: "BLEU", value: 0.31 },

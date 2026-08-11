@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 const stepMeta = [
   { title: "Choose a dataset", desc: "Pick the data your story is built from. Each one fails in a different tonal direction." },
-  { title: "The human baseline", desc: "Write or import the human-authored story — the yardstick the LLM is measured against." },
+  { title: "The human baseline", desc: "Write or import the human-authored story, the yardstick the LLM is measured against." },
   { title: "Run the agentic pipeline", desc: "Generate → moderate tone → factual check, all on the same numbers." },
   { title: "Compare & evaluate", desc: "Human, raw, and moderated stories side by side, with the metrics." },
 ];
@@ -80,7 +80,7 @@ export function GenerateExperience() {
       const words = humanText.trim() ? humanText.trim().split(/\s+/).length : 0;
       return words ? `${words} words` : "Not written yet";
     }
-    if (i === 2) return generated ? "Pipeline complete — 3 stages" : "Not run yet";
+    if (i === 2) return generated ? "Pipeline complete: 3 stages" : "Not run yet";
     if (i === 3 && story) {
       const moved = story.aiModerated.alarmismRating - story.aiRaw.alarmismRating;
       return `Tone pulled ${moved > 0 ? "up" : "down"} ${Math.abs(moved).toFixed(1)}`;

@@ -61,7 +61,7 @@ export function DatasetPicker({
           </span>
           <h3 className="mt-4 font-serif text-lg text-faint">Upload your own</h3>
           <p className="mt-1.5 text-xs leading-relaxed text-faint">
-            Connecting custom CSV uploads to the Python pipeline is future work — pick a built-in
+            Connecting custom CSV uploads to the Python pipeline is future work. Pick a built-in
             dataset for now.
           </p>
         </div>
@@ -112,7 +112,7 @@ export function DatasetPicker({
             <span className="font-medium text-ink">{selected.failureModeLabel}.</span>{" "}
             {selected.failureMode === "alarmism"
               ? "The moderator must pull an over-alarmist story down without losing real urgency."
-              : "The moderator must keep the gravity — the remaining gap, the reversal — rather than flatten it into false reassurance."}
+              : "The moderator must keep the gravity (the remaining gap, the reversal) rather than flatten it into false reassurance."}
           </p>
         </div>
       )}

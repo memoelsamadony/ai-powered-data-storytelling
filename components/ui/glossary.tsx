@@ -31,7 +31,7 @@ export function Glossary({
           <div key={it.term} className="text-[0.78rem] leading-relaxed">
             <dt className="inline font-medium text-navy">{it.term}</dt>
             <dd className="inline text-muted">
-              {" — "}
+              {": "}
               {it.def}
               {it.caveat && <span className="text-faint"> {it.caveat}</span>}
             </dd>

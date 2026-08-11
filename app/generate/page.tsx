@@ -6,7 +6,7 @@ import { GenerateExperience } from "@/components/generate/generate-experience";
 export const metadata: Metadata = {
   title: "Generate a story",
   description:
-    "Pick a dataset, write a human baseline, then run the agentic pipeline — generate, moderate tone, and fact-check — and compare the stories with metrics.",
+    "Pick a dataset, write a human baseline, then run the agentic pipeline (generate, moderate tone, and fact-check) and compare the stories with metrics.",
 };
 
 export default function GeneratePage() {
@@ -20,7 +20,7 @@ export default function GeneratePage() {
             data story.
           </>
         }
-        intro="A four-step studio that mirrors the project pipeline. The data, models, and stories shown here are realistic samples — the same flow your Python backend will drive."
+        intro="A four-step studio that mirrors the project pipeline. The data, models, and stories shown here are realistic samples, and the same flow your Python backend will drive."
       />
       <Section className="py-14 sm:py-16">
         <Container>

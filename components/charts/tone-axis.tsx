@@ -65,8 +65,8 @@ type VariantKey = "human" | "raw" | "moderated";
 
 const VARIANTS: { key: VariantKey; label: string; color: string }[] = [
   { key: "human", label: "Human baseline", color: C.human },
-  { key: "raw", label: "LLM — raw", color: C.raw },
-  { key: "moderated", label: "LLM — tone-moderated", color: C.moderated },
+  { key: "raw", label: "LLM: raw", color: C.raw },
+  { key: "moderated", label: "LLM: tone-moderated", color: C.moderated },
 ];
 
 interface HoverState {
@@ -242,7 +242,7 @@ export function ToneAxis({ rows }: { rows: ToneAxisRow[] }) {
                       style={{ cursor: "pointer" }}
                       tabIndex={0}
                       role="button"
-                      aria-label={`${row.label} — ${VARIANTS.find((v) => v.key === key)!.label}: ${row[key].value.toFixed(1)} of 5`}
+                      aria-label={`${row.label}, ${VARIANTS.find((v) => v.key === key)!.label}, ${row[key].value.toFixed(1)} of 5`}
                       onMouseEnter={show}
                       onMouseLeave={hide}
                       onFocus={show}

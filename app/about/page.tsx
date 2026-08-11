@@ -22,11 +22,11 @@ export default function AboutPage() {
         kicker="About the project"
         title={
           <>
-            Surveying AI data storytelling — and adding the piece it&apos;s{" "}
+            Surveying AI data storytelling, and adding the piece it&apos;s{" "}
             <span className="brand-gradient-text italic">missing</span>.
           </>
         }
-        intro="Data storytelling combines analysis, visualization, and narrative. LLMs can now generate such stories automatically — but fluent text is not necessarily faithful, and framing changes how an audience interprets the data. We contribute the capability the literature does not yet address: an agent that moderates a narrative's emotional tone."
+        intro="Data storytelling combines analysis, visualization, and narrative. LLMs can now generate such stories automatically, but fluent text is not necessarily faithful, and framing changes how an audience interprets the data. We contribute the capability the literature does not yet address: an agent that moderates a narrative's emotional tone."
       />
 
       {/* Contribution */}
@@ -57,7 +57,7 @@ export default function AboutPage() {
             <SectionHeader
               kicker="Literature survey"
               title="The systems we build on"
-              intro="A multi-source check confirmed the gap: across these systems, agentic verification always targets facts — never the affective tone of the narrative."
+              intro="A multi-source check confirmed the gap: across these systems, agentic verification always targets facts, never the affective tone of the narrative."
             />
           </Reveal>
 
