@@ -5,21 +5,24 @@ series: under5-measles-deaths
 datapack: experiments/human-baselines/datapacks/under5-measles-deaths.txt
 datapack_sha256: a829979c9739
 target_words: 140
-word_count: 126
+word_count: 146
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: 800a30804e41
+original_story_sha256: 6400f168684b
+pass1_story_sha256: 800a30804e41
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Measles deaths in young children fell by four fifths, then stopped falling
+# Measles deaths among the world's youngest fell hard, then flattened out
 
-In 2002, measles killed 848,272 children under five around the world, the highest figure in a count that runs from 2000 to 2021. By 2012 the toll had fallen to 148,430, a drop of more than four fifths in ten years.
+The worst year for young children in this count was 2002. Measles killed 848,272 of them before their fifth birthday, more than in any other year between 2000 and 2021. A decade later the number was 148,430. In ten years the toll had shrunk by more than four fifths.
 
-Then the fall stopped. Every year since has landed between 103,901 and 190,190. The 2021 figure, 151,463, is almost exactly the 2012 figure, just 3,033 higher.
+What happened after that is a long plateau. Since 2012 no year has gone above 190,190 or below 103,901, and the 2021 count of 151,463 sits just 3,033 above where 2012 left off. Nine years, and the needle barely moved.
 
-The last two years move in opposite directions. 2020 was the lowest year in the series, at 103,901. 2021 came in 47,562 higher, a rise of about 46 percent in a single year, though still short of 2019's 168,887.
+The two most recent years pull apart. 2020 is the lowest in the whole series at 103,901. A year later the figure was 47,562 higher, up about 46 percent, though it didn't reach 2019's 168,887.
 
-Over the whole span, the yearly toll fell from 756,332 in 2000 to 151,463 in 2021, roughly four fifths lower.
+Zoom out and the span still reads as a steep decline: 756,332 deaths in 2000, 151,463 in 2021, roughly four fifths fewer.

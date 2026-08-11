@@ -5,19 +5,22 @@ series: under5-measles-deaths
 datapack: experiments/human-baselines/datapacks/under5-measles-deaths.txt
 datapack_sha256: a829979c9739
 target_words: 135
-word_count: 144
+word_count: 135
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: 900bb7d3185f
+original_story_sha256: 81690d538ccf
+pass1_story_sha256: 900bb7d3185f
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Global child measles deaths fell by four-fifths, then stalled
+# Child measles deaths fell four-fifths, then went sideways
 
-The series opens in 2000 at 756,332 measles deaths among children under five worldwide. It climbed for two more years to 848,272 in 2002, the highest in the record, then fell hard. By 2012 it was down to 148,430, a drop of about 82 percent in a decade.
+Worldwide, 756,332 children under five died of measles in 2000. The count kept rising for two more years and topped out at 848,272 in 2002, the highest figure in the series. Ten years later it stood at 148,430, roughly 82 percent lower.
 
-If you stopped reading the series at 2012, the story would look like a straight win. It does not continue that way. Every year since has landed between 103,901 and 190,190, bouncing up and down with no clear direction. The lowest point in the whole 22-year record came in 2020, at 103,901.
+After that, the falling stops. Every year from 2013 on lands somewhere between 103,901 and 190,190, up one year and down the next, no trend to speak of. The lowest figure in the whole 22-year record belongs to 2020: 103,901.
 
-The most recent year, 2021, brought 151,463 deaths, roughly 46 percent above 2020 and the second-highest total of the past eight years. Measured against 2000, that is about a fifth as many. The long decline is real; it just has not moved much lately.
+The last year on the sheet is 2021, at 151,463 deaths. Against 2020 that's a jump of about 46 percent, and only 2019 was higher in the past eight years. Set beside 2000, though, you're looking at roughly a fifth as many. The long fall was real. It just hasn't gone anywhere lately.

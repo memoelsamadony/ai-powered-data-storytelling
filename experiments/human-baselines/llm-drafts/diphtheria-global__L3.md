@@ -5,19 +5,22 @@ series: diphtheria-global
 datapack: experiments/human-baselines/datapacks/diphtheria-global.txt
 datapack_sha256: 509117c7a221
 target_words: 145
-word_count: 158
+word_count: 145
 llm_drafted: true
-draft_model: claude-opus, isolated subagent, construct-free pack-only prompt
+draft_model: claude-opus, isolated subagent; pass 1 draft + pass 2 style revision
 draft_generated_at: 2026-08-10
 edited_by_human: false
-original_story_sha256: b316f1e148f0
+original_story_sha256: 732f6a3fa0c5
+pass1_story_sha256: b316f1e148f0
+humanized_at: 2026-08-11
+humanize_pass: 2
 provenance: claude-draft, pending human edit
 ---
 
-# Global diphtheria cases climb to their highest in 26 years of records
+# Diphtheria cases climb from a 26-year low to a 26-year high
 
-In 2000 the world reported 11,625 diphtheria cases. By 2006 that number had fallen to 4,333, the lowest in the whole 26-year run, and it stayed under 6,000 for the next seven years. Incidence never rose above 0.9 per million across that stretch.
+The world reported 11,625 diphtheria cases in 2000. By 2006 the count had sunk to 4,333, lower than any other year in this 26-year record, and it held under 6,000 every year through 2013. Incidence never topped 0.9 per million across that quiet stretch.
 
-Then the line turned. At 4,535, 2015 was the last year in the series to come in below 5,000. Cases climbed to 7,102 in 2016, 8,819 in 2017, 16,911 in 2018 and 22,989 in 2019. Three quieter years followed, none above 10,137, before 2023 brought 24,782 and an incidence of 4.2 per million, the highest rate in the table.
+The last year under 5,000 was 2015, at 4,535. What follows reads like a staircase: 7,102 in 2016, 8,819 the year after, 16,911 in 2018, 22,989 in 2019. Three calmer years intervened, the highest of them 10,137. In 2023 the count reached 24,782, at 4.2 per million, the steepest rate in the table.
 
-The two years since have gone higher still on counts: 25,147 in 2024 and 30,205 in 2025. That last figure is the largest in the series, roughly seven times the 4,333 recorded in 2006 and about a fifth above 2024. Incidence in 2025 stood at 4 per million, double the 2 per million logged in 2000.
+It hasn't stopped there. 2024 came in at 25,147 and 2025 at 30,205, the largest count in the series, about a fifth above the year before and roughly seven times 2006's 4,333. Incidence in 2025 sat at 4 per million, double the 2 per million recorded in 2000.
