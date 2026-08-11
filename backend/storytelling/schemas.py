@@ -52,9 +52,36 @@ class ReferenceLine(Schema):
     label: str
 
 
+class CountryMetric(Schema):
+    """One mapped or disclosed measure in a dataset's country table.
+
+    Mirrors ``CountryMetric`` in lib/data/datasets.ts. ``breaks`` are declared
+    here rather than computed from the visible year: the map has a year
+    scrubber, and recomputed bins would recolour a country because the scale
+    moved rather than because its own figure did.
+    """
+
+    key: str
+    label: str
+    unit: str
+    polarity: Literal["higher-is-worse", "higher-is-better"]
+    breaks: tuple[float, float, float, float]
+    decimals: int = 0
+    mappable: bool = True
+
+
+class CountryStat(Schema):
+    """One country's figures, columnar: metric key -> value per country_years index."""
+
+    iso3: str
+    name: str
+    series: dict[str, list[float | None]]
+
+
 class Dataset(Schema):
     id: str
     name: str
+    short_name: str
     tagline: str
     role: Literal["primary", "secondary"]
     failure_mode: FailureMode
@@ -71,6 +98,14 @@ class Dataset(Schema):
     reference_line: ReferenceLine | None = None
     series: list[DatasetSeriesPoint]
     preview_rows: list[DatasetPreviewRow]
+    # The map's own timeline, coarser than `series`: country figures are anchored
+    # to years the source publishes rather than interpolated across every point.
+    # Absent (None) for a dataset with no country table, which is what tells the
+    # frontend to render no map at all.
+    country_years: list[int] | None = None
+    country_metrics: list[CountryMetric] | None = None
+    country_stats: list[CountryStat] | None = None
+    country_source_note: str | None = None
 
 
 # --------------------------------------------------------------------------

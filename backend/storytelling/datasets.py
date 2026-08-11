@@ -22,6 +22,8 @@ from pathlib import Path
 import pandas as pd
 
 from .schemas import (
+    CountryMetric,
+    CountryStat,
     Dataset,
     DatasetPreviewRow,
     DatasetSeriesPoint,
@@ -39,6 +41,7 @@ class DatasetSpec:
 
     id: str
     name: str
+    short_name: str
     tagline: str
     role: str
     failure_mode: str
@@ -58,12 +61,22 @@ class DatasetSpec:
     reference_line: tuple[float, str] | None = None
     spotlight: list[str] = field(default_factory=list)
     series_years: list[int] = field(default_factory=list)
+    # Country map. `country_years` are anchor years read straight from the table,
+    # never interpolated here; the frontend fills the gaps at render time and
+    # marks every filled year as an estimate. `country_cols` maps each declared
+    # metric key to the CSV column it is read from, so the map and the agent
+    # prompts are grounded in the same table.
+    country_years: list[int] = field(default_factory=list)
+    country_metrics: list[CountryMetric] = field(default_factory=list)
+    country_cols: dict[str, str] = field(default_factory=dict)
+    country_source_note: str = ""
 
 
 MEASLES = DatasetSpec(
     id="measles",
     name="Measles × Vaccination Coverage",
-    tagline="Coverage stalled below herd immunity - and cases came back.",
+    short_name="Measles × MCV1",
+    tagline="Coverage stalled below herd immunity, and cases came back.",
     role="primary",
     failure_mode="alarmism",
     failure_mode_label="Natural failure mode: alarmism",
@@ -73,7 +86,7 @@ MEASLES = DatasetSpec(
     description=(
         "Merged measles case counts with first-dose measles vaccine (MCV1) coverage "
         "and population, by country and year. Global coverage has plateaued below the "
-        "~95% herd-immunity threshold, and case counts rebounded - a story whose "
+        "~95% herd-immunity threshold, and case counts rebounded, a story whose "
         "natural failure mode is alarmism, so the moderator must pull an over-alarmist "
         "narrative down without losing real urgency."
     ),
@@ -89,6 +102,43 @@ MEASLES = DatasetSpec(
     spotlight=["Germany", "Nigeria", "United States", "India"],
     series_years=[1980, 1985, 1990, 1995, 2000, 2005, 2010,
                   2015, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+    country_years=[1990, 2000, 2010, 2019, 2023],
+    country_metrics=[
+        CountryMetric(
+            key="cases_per_million",
+            label="Reported measles cases",
+            unit="per million people",
+            polarity="higher-is-worse",
+            breaks=(1, 10, 50, 200),
+            # One decimal, unlike the sample data this replaces: the real table
+            # runs down to 0.1 per million, and rounding those to "0" would
+            # report an outbreak-free claim the figure does not make.
+            decimals=1,
+        ),
+        CountryMetric(
+            key="mcv1_coverage",
+            label="MCV1 coverage",
+            unit="%",
+            polarity="higher-is-better",
+            breaks=(70, 85, 92, 95),
+        ),
+        CountryMetric(
+            key="cases",
+            label="Reported cases",
+            unit="cases",
+            polarity="higher-is-worse",
+            breaks=(100, 1000, 10000, 50000),
+            # Never mapped: a choropleth of raw counts is a population map,
+            # where India and Nigeria are darkest whatever happened that year.
+            mappable=False,
+        ),
+    ],
+    country_cols={
+        "cases_per_million": "incidence_per_million",
+        "mcv1_coverage": "mcv1_pct",
+        "cases": "measles_cases",
+    },
+    country_source_note="OWID / WHO / WUENIC, merged project table: every reporting country",
 )
 
 # The secondary dataset from the interim report (WHO Global Health Observatory:
@@ -97,9 +147,13 @@ MEASLES = DatasetSpec(
 # both directions. The CSV has not been collected yet; once it lands in
 # DATA_DIR this registry entry starts serving with no other code change.
 WHO_GHO = DatasetSpec(
-    id="who-gho",
+    # The id matches lib/data/datasets.ts. The two sides used to disagree
+    # ("who-gho" here, "who-health" there), which would have served the same
+    # dataset under two ids the moment its CSV landed.
+    id="who-health",
     name="Child Mortality × Life Expectancy",
-    tagline="Real progress - with a reversal and a gap the headline hides.",
+    short_name="WHO child mortality",
+    tagline="Real progress, with a reversal and a gap the headline hides.",
     role="secondary",
     failure_mode="over-optimism",
     failure_mode_label="Natural failure mode: over-optimism",
@@ -108,8 +162,8 @@ WHO_GHO = DatasetSpec(
     sources=["WHO Global Health Observatory"],
     description=(
         "Under-five mortality and life expectancy trends. A hope/progress story whose "
-        "failure mode is false reassurance, so the moderator must keep the gravity - "
-        "the remaining inequality and the COVID-era reversal - rather than flatten it."
+        "failure mode is false reassurance, so the moderator must keep the gravity, "
+        "the remaining inequality and the COVID-era reversal, rather than flatten it."
     ),
     csv="who_gho_tidy.csv",
     primary_label="Under-5 mortality",
@@ -119,6 +173,29 @@ WHO_GHO = DatasetSpec(
     primary_col="under5_mortality",
     secondary_col="life_expectancy",
     aggregate_row="World",
+    country_years=[1990, 2000, 2010, 2019, 2022],
+    country_metrics=[
+        CountryMetric(
+            key="under5_mortality",
+            label="Under-5 mortality",
+            unit="per 1,000 live births",
+            polarity="higher-is-worse",
+            breaks=(5, 15, 40, 80),
+        ),
+        CountryMetric(
+            key="life_expectancy",
+            label="Life expectancy",
+            unit="years",
+            polarity="higher-is-better",
+            breaks=(60, 67, 73, 79),
+            decimals=1,
+        ),
+    ],
+    country_cols={
+        "under5_mortality": "under5_mortality",
+        "life_expectancy": "life_expectancy",
+    },
+    country_source_note="WHO Global Health Observatory / UN IGME: every reporting country",
 )
 
 SPECS: dict[str, DatasetSpec] = {s.id: s for s in (MEASLES, WHO_GHO)}
@@ -154,6 +231,76 @@ def _fmt_pct(value: float | None) -> str:
     if value is None or pd.isna(value):
         return "n/a"
     return f"{value:g}%"
+
+
+# --------------------------------------------------------------------------
+# Country figures for the map
+# --------------------------------------------------------------------------
+
+# A country row, as opposed to the aggregates sharing the table. Every aggregate
+# in the merged CSV is coded OWID_*, WHO_* or left blank (the UNICEF regions), so
+# an exact three-letter code is what separates a country from a region. Checked
+# against the data rather than assumed: 212 codes match, and none of them is an
+# aggregate.
+_ISO3 = r"[A-Z]{3}"
+
+
+@functools.lru_cache(maxsize=4)
+def country_payload(
+    dataset_id: str,
+) -> tuple[list[int], list[CountryMetric], list[CountryStat], str] | None:
+    """Per-country figures at the spec's anchor years, read from the CSV.
+
+    Returns ``None`` when the dataset declares no country table or the table
+    cannot supply one, which is what makes the frontend render no map rather
+    than an empty one.
+
+    Nothing is interpolated here. Only years the source actually publishes are
+    sent, and a gap stays ``None`` so the map can hatch it as missing instead of
+    colouring it with a guess.
+    """
+    spec = SPECS[dataset_id]
+    if not spec.country_years or not spec.country_metrics:
+        return None
+
+    df = load_frame(dataset_id)
+    if "code" not in df.columns:
+        return None
+
+    # Tolerate a table that does not carry every declared measure yet: drop the
+    # metrics it cannot fill rather than failing the whole dataset endpoint.
+    metrics = [m for m in spec.country_metrics if spec.country_cols.get(m.key) in df.columns]
+    if not metrics:
+        return None
+
+    years = spec.country_years
+    rows = df[df["code"].astype(str).str.fullmatch(_ISO3) & df["year"].isin(years)]
+    rows = rows.drop_duplicates(subset=["code", "year"], keep="last")
+
+    stats: list[CountryStat] = []
+    for code, group in rows.groupby("code"):
+        indexed = group.set_index("year")
+        series: dict[str, list[float | None]] = {}
+        has_value = False
+        for metric in metrics:
+            column = spec.country_cols[metric.key]
+            values: list[float | None] = []
+            for year in years:
+                value = indexed[column].get(year) if year in indexed.index else None
+                if value is None or pd.isna(value):
+                    values.append(None)
+                else:
+                    values.append(round(float(value), metric.decimals))
+                    has_value = True
+            series[metric.key] = values
+        if not has_value:
+            continue  # a country present in the table but blank at every anchor year
+        stats.append(CountryStat(iso3=str(code), name=str(group["country"].iloc[0]), series=series))
+
+    if not stats:
+        return None
+    stats.sort(key=lambda c: c.name)
+    return years, metrics, stats, spec.country_source_note
 
 
 # --------------------------------------------------------------------------
@@ -202,9 +349,12 @@ def get_dataset(dataset_id: str) -> Dataset:
             )
         )
 
+    countries = country_payload(dataset_id)
+
     return Dataset(
         id=spec.id,
         name=spec.name,
+        short_name=spec.short_name,
         tagline=spec.tagline,
         role=spec.role,  # type: ignore[arg-type]
         failure_mode=spec.failure_mode,  # type: ignore[arg-type]
@@ -225,6 +375,10 @@ def get_dataset(dataset_id: str) -> Dataset:
         ),
         series=series,
         preview_rows=preview,
+        country_years=countries[0] if countries else None,
+        country_metrics=countries[1] if countries else None,
+        country_stats=countries[2] if countries else None,
+        country_source_note=countries[3] if countries else None,
     )
 
 

@@ -33,7 +33,7 @@ Ollama must be running (`http://localhost:11434`).
 |---|---|---|
 | GET  | `/api/health` | Ollama status, RAM, per-tier runnability |
 | GET  | `/api/datasets` | Datasets that actually have a CSV |
-| GET  | `/api/datasets/{id}` | One dataset incl. series + preview rows |
+| GET  | `/api/datasets/{id}` | One dataset incl. series, preview rows + country figures |
 | POST | `/api/runs` | Start a run: `{datasetId, tier}` → `runId` |
 | POST | `/api/runs/{id}/generate` | Stage 1 → the raw `ToneVariant` |
 | POST | `/api/runs/{id}/moderate` | Stage 2 → full `StorySet` with `emotiveSpans` |
@@ -74,6 +74,42 @@ place, and it needs a frontend change:
   whose CSV exists. Today that is `measles` only — the WHO GHO secondary dataset
   is registered in `datasets.py` and starts serving the moment
   `who_gho_tidy.csv` lands in `emotional-tone-moderation/data/`.
+
+  Because of that, `getDatasets()` in `lib/api.ts` does **not** simply return
+  what this API sends. The backend wins for every id it serves and the typed
+  mocks fill only the ids it does not, so the interface keeps both datasets and
+  keeps its argument, which needs a story that tempts alarmism *and* one that
+  tempts false reassurance. The merge is per dataset and never per field: a
+  dataset carrying a real trend line under illustrative country figures would be
+  the harder thing to spot and the worse thing to publish.
+
+### Country figures for the map
+
+`Dataset` carries `countryYears`, `countryMetrics`, `countryStats` and
+`countrySourceNote`, mirroring `lib/data/datasets.ts`. They are `null` for a
+dataset with no country table, which is what makes the frontend render no map
+rather than an empty one.
+
+Three things about that payload are deliberate:
+
+* **Anchor years only.** `countryYears` are years the source actually publishes.
+  Nothing is interpolated here; the map fills the gaps at render time and marks
+  every filled year as an estimate.
+* **Breaks are declared, not computed.** They live in the metric, so scrubbing
+  the year cannot recolour a country whose own figure did not move.
+* **A missing year stays `null`** rather than being carried forward, so the map
+  can hatch it as absent instead of colouring it with a guess.
+
+Country rows are separated from the aggregates sharing the CSV by an exact
+three-letter code: every aggregate in the merged table is coded `OWID_*`,
+`WHO_*`, or left blank. Checked against the data, not assumed. For `measles`
+this serves **211 countries** against the 32-country illustrative sample the
+mocks carry, and the source note under the map says which of the two is on
+screen.
+
+Note the id: this registry used to call the secondary dataset `who-gho` while
+the frontend called it `who-health`. They now agree on `who-health`, so the two
+sides cannot serve the same dataset under two ids once its CSV lands.
 
 ## Scaling to the larger models
 
