@@ -20,7 +20,7 @@ export default function GeneratePage() {
             data story.
           </>
         }
-        intro="A four-step studio that mirrors the project pipeline. The data, models, and stories shown here are realistic samples, and the same flow your Python backend will drive."
+        intro="A four-step studio that runs the project pipeline. With the Django backend up, the models named on each stage card are the ones that actually wrote what you read; without it the studio falls back to sample stories and says so above."
       />
       <Section className="py-14 sm:py-16">
         <Container>
