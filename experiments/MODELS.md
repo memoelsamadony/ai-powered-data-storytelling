@@ -32,7 +32,34 @@ a judge on this machine without `sudo sysctl iogpu.wired_limit_mb=28672`.
 | `gemma4:12b` | 7.6 GB | moderator, ladder rung 1 |
 | `gemma4:26b` | ~16 GB | moderator, ladder rung 2 |
 | `gemma4:31b` | 19 GB | moderator, ladder rung 3; the original moderator |
-| `qwen3.6:35b` | 23 GB | too large to judge within the 22 GB ceiling; kept for the `large` tier generator |
+| `qwen3.6:35b` | 23 GB | MoE moderator, `x35b`. Measured 4%/96% CPU/GPU at 40.9 tok/s, see below |
+
+### Measured: the 22 GB ceiling is not the constraint it looks like
+
+`manage.py tiers` warns that `qwen3.6:35b` (23.9 GB) exceeds the 22.0 GB usable
+limit and suggests `sudo sysctl iogpu.wired_limit_mb=28672`. That warning
+predicts a CPU spill and a crawl. Measured on 2026-08-11, it does neither in
+any way that matters:
+
+| | `gemma4:31b` | `qwen3.6:35b` |
+|---|---|---|
+| architecture | `gemma4`, dense | `qwen35moe`, **Mixture of Experts** |
+| parameters | 31.3B | 36.0B |
+| resident | 20 GB, 100% GPU | 24 GB, **4%/96% CPU/GPU** |
+| generation | ~9.5 tok/s | **40.9 tok/s** |
+| moderate stage | 116-145 s | **34.6 s** |
+
+Only 4% of the model lands on CPU, and the run is roughly four times *faster*
+than the smaller dense model. The reason is in the architecture row: MoE keeps
+all 36B of weights resident, which is where the 24 GB comes from, but activates
+only a fraction of them per token, so memory footprint and compute cost come
+apart. A ceiling stated in gigabytes says nothing about speed for a sparse
+model.
+
+Practical consequence: the sysctl is **not needed** to run `x35b`, and
+`qwen3.6:35b` is the cheapest large moderator available here, not the most
+expensive. `gemma4:26b` is dense at 25.8B and pays close to full price for a
+result no better than 31B's.
 
 ### What does not exist
 

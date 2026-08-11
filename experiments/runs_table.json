@@ -868,5 +868,295 @@
       }
     },
     "seconds_total": 234.5
+  },
+  {
+    "run": "e061abb3-676e-472a-a3fb-7bca062bc139",
+    "dataset": "pertussis-global",
+    "tier": "x9b",
+    "generator": "llama3.1:8b",
+    "moderator": "qwen3.5:9b",
+    "local_judge": "qwen3.5:4b",
+    "self_judging": false,
+    "alarmism_raw_local": 3.0,
+    "alarmism_moderated_local": 2.0,
+    "alarmism_delta_local": -1.0,
+    "emotive_spans": 7,
+    "flagged_claims": 0,
+    "groundedness_raw": "2/6",
+    "groundedness_moderated": "6/6",
+    "numeric_retention": 0.333,
+    "year_retention": 0.875,
+    "added_unsupported": 1,
+    "rewrite_fraction": 0.906,
+    "chrf_raw_vs_mod": 0.4502,
+    "words_raw": 125,
+    "words_moderated": 129,
+    "word_ratio": 1.032,
+    "selection_ratio_raw": 1.0,
+    "selection_flipped_raw": false,
+    "selection_ratio_moderated": 1.0,
+    "hedge_raw": 0.0,
+    "hedge_moderated": 0.88,
+    "superlative_raw": 1.82,
+    "superlative_moderated": 0.0,
+    "numeric_density_raw": 15.45,
+    "numeric_density_moderated": 18.58,
+    "cv_sentence_raw": 0.4016,
+    "cv_sentence_moderated": 0.2775,
+    "stages": {
+      "generate": {
+        "model": "llama3.1:8b",
+        "seconds": 12.7
+      },
+      "judge_raw": {
+        "model": "qwen3.5:4b",
+        "seconds": 6.1
+      },
+      "moderate": {
+        "model": "qwen3.5:9b",
+        "seconds": 34.4
+      },
+      "judge_moderated": {
+        "model": "qwen3.5:4b",
+        "seconds": 2.6
+      },
+      "factcheck": {
+        "model": "qwen3.5:9b",
+        "seconds": 30.7
+      }
+    },
+    "seconds_total": 86.5
+  },
+  {
+    "run": "faf34f8c-3769-4483-8b52-774a7b8b33a2",
+    "dataset": "pertussis-global",
+    "tier": "x35b",
+    "generator": "llama3.1:8b",
+    "moderator": "qwen3.6:35b",
+    "local_judge": "qwen3.5:4b",
+    "self_judging": false,
+    "alarmism_raw_local": 3.0,
+    "alarmism_moderated_local": 2.0,
+    "alarmism_delta_local": -1.0,
+    "emotive_spans": 5,
+    "flagged_claims": 0,
+    "groundedness_raw": "2/6",
+    "groundedness_moderated": "9/10",
+    "numeric_retention": 0.333,
+    "year_retention": 0.75,
+    "added_unsupported": 1,
+    "rewrite_fraction": 0.843,
+    "chrf_raw_vs_mod": 0.3622,
+    "words_raw": 125,
+    "words_moderated": 92,
+    "word_ratio": 0.736,
+    "selection_ratio_raw": 1.0,
+    "selection_flipped_raw": false,
+    "selection_ratio_moderated": 1.0,
+    "hedge_raw": 0.0,
+    "hedge_moderated": 0.0,
+    "superlative_raw": 1.82,
+    "superlative_moderated": 0.0,
+    "numeric_density_raw": 15.45,
+    "numeric_density_moderated": 35.62,
+    "cv_sentence_raw": 0.4016,
+    "cv_sentence_moderated": 0.5007,
+    "stages": {
+      "generate": {
+        "model": "llama3.1:8b",
+        "seconds": 6.0
+      },
+      "judge_raw": {
+        "model": "qwen3.5:4b",
+        "seconds": 6.2
+      },
+      "moderate": {
+        "model": "qwen3.6:35b",
+        "seconds": 34.6
+      },
+      "judge_moderated": {
+        "model": "qwen3.5:4b",
+        "seconds": 5.8
+      },
+      "factcheck": {
+        "model": "qwen3.6:35b",
+        "seconds": 27.2
+      }
+    },
+    "seconds_total": 79.8
+  },
+  {
+    "run": "99a3c97a-d360-44ad-a27b-1108b268c092",
+    "dataset": "pertussis-global",
+    "tier": "q4b",
+    "generator": "qwen3.5:4b",
+    "moderator": "gemma4:31b",
+    "local_judge": "qwen3.5:4b",
+    "self_judging": false,
+    "alarmism_raw_local": 4.5,
+    "alarmism_moderated_local": 3.0,
+    "alarmism_delta_local": -1.5,
+    "emotive_spans": 5,
+    "flagged_claims": 0,
+    "groundedness_raw": "7/7",
+    "groundedness_moderated": "6/6",
+    "numeric_retention": 0.714,
+    "year_retention": 1.0,
+    "added_unsupported": 0,
+    "rewrite_fraction": 0.608,
+    "chrf_raw_vs_mod": 0.5168,
+    "words_raw": 77,
+    "words_moderated": 71,
+    "word_ratio": 0.922,
+    "selection_ratio_raw": 101.4906,
+    "selection_flipped_raw": false,
+    "selection_ratio_moderated": 101.4906,
+    "hedge_raw": 2.9,
+    "hedge_moderated": 3.17,
+    "superlative_raw": 0.0,
+    "superlative_moderated": 0.0,
+    "numeric_density_raw": 20.29,
+    "numeric_density_moderated": 19.05,
+    "cv_sentence_raw": 0.4026,
+    "cv_sentence_moderated": 0.5171,
+    "stages": {
+      "generate": {
+        "model": "qwen3.5:4b",
+        "seconds": 8.1
+      },
+      "judge_raw": {
+        "model": "qwen3.5:4b",
+        "seconds": 3.2
+      },
+      "moderate": {
+        "model": "gemma4:31b",
+        "seconds": 99.6
+      },
+      "judge_moderated": {
+        "model": "qwen3.5:4b",
+        "seconds": 21.2
+      },
+      "factcheck": {
+        "model": "gemma4:31b",
+        "seconds": 91.6
+      }
+    },
+    "seconds_total": 223.7
+  },
+  {
+    "run": "a626f724-7296-4102-843e-5b8ed20befce",
+    "dataset": "pertussis-global",
+    "tier": "q9b",
+    "generator": "qwen3.5:9b",
+    "moderator": "gemma4:31b",
+    "local_judge": "qwen3.5:4b",
+    "self_judging": false,
+    "alarmism_raw_local": 4.0,
+    "alarmism_moderated_local": 3.0,
+    "alarmism_delta_local": -1.0,
+    "emotive_spans": 7,
+    "flagged_claims": 0,
+    "groundedness_raw": "4/4",
+    "groundedness_moderated": "8/8",
+    "numeric_retention": 0.5,
+    "year_retention": 0.75,
+    "added_unsupported": 0,
+    "rewrite_fraction": 0.871,
+    "chrf_raw_vs_mod": 0.4075,
+    "words_raw": 126,
+    "words_moderated": 107,
+    "word_ratio": 0.849,
+    "selection_ratio_raw": 0.3851,
+    "selection_flipped_raw": false,
+    "selection_ratio_moderated": 1.0,
+    "hedge_raw": 0.0,
+    "hedge_moderated": 3.16,
+    "superlative_raw": 1.68,
+    "superlative_moderated": 2.11,
+    "numeric_density_raw": 8.4,
+    "numeric_density_moderated": 17.89,
+    "cv_sentence_raw": 0.5556,
+    "cv_sentence_moderated": 0.5368,
+    "stages": {
+      "generate": {
+        "model": "qwen3.5:9b",
+        "seconds": 12.3
+      },
+      "judge_raw": {
+        "model": "qwen3.5:4b",
+        "seconds": 5.8
+      },
+      "moderate": {
+        "model": "gemma4:31b",
+        "seconds": 103.6
+      },
+      "judge_moderated": {
+        "model": "qwen3.5:4b",
+        "seconds": 6.0
+      },
+      "factcheck": {
+        "model": "gemma4:31b",
+        "seconds": 96.9
+      }
+    },
+    "seconds_total": 224.6
+  },
+  {
+    "run": "e92c0f3c-60cd-4ba2-afe1-e2d5274c3931",
+    "dataset": "pertussis-global",
+    "tier": "q2b",
+    "generator": "qwen3.5:2b",
+    "moderator": "gemma4:31b",
+    "local_judge": "qwen3.5:4b",
+    "self_judging": false,
+    "alarmism_raw_local": 4.0,
+    "alarmism_moderated_local": 4.0,
+    "alarmism_delta_local": 0.0,
+    "emotive_spans": 10,
+    "flagged_claims": 0,
+    "groundedness_raw": "7/7",
+    "groundedness_moderated": "9/9",
+    "numeric_retention": 0.286,
+    "year_retention": 0.667,
+    "added_unsupported": 0,
+    "rewrite_fraction": 0.87,
+    "chrf_raw_vs_mod": 0.4225,
+    "words_raw": 158,
+    "words_moderated": 135,
+    "word_ratio": 0.854,
+    "selection_ratio_raw": 17.022,
+    "selection_flipped_raw": false,
+    "selection_ratio_moderated": 1.0,
+    "hedge_raw": 1.97,
+    "hedge_moderated": 1.67,
+    "superlative_raw": 0.66,
+    "superlative_moderated": 0.83,
+    "numeric_density_raw": 6.58,
+    "numeric_density_moderated": 18.33,
+    "cv_sentence_raw": 0.5184,
+    "cv_sentence_moderated": 0.4205,
+    "stages": {
+      "generate": {
+        "model": "qwen3.5:2b",
+        "seconds": 6.3
+      },
+      "judge_raw": {
+        "model": "qwen3.5:4b",
+        "seconds": 6.2
+      },
+      "moderate": {
+        "model": "gemma4:31b",
+        "seconds": 135.5
+      },
+      "judge_moderated": {
+        "model": "qwen3.5:4b",
+        "seconds": 6.1
+      },
+      "factcheck": {
+        "model": "gemma4:31b",
+        "seconds": 103.2
+      }
+    },
+    "seconds_total": 257.3
   }
 ]

@@ -23,6 +23,11 @@ Opus 5, applied blind offline (`export_for_judging.py`).
 | under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 295 |
 | under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 738 |
 | under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | `qwen3.5:4b` | no | 234 |
+| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | `qwen3.5:4b` | no | 86 |
+| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | `qwen3.5:4b` | no | 80 |
+| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | `qwen3.5:4b` | no | 224 |
+| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | `qwen3.5:4b` | no | 225 |
+| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | `qwen3.5:4b` | no | 257 |
 
 ## B. Tone
 
@@ -43,6 +48,11 @@ Opus 5, applied blind offline (`export_for_judging.py`).
 | under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.0 | 2.0 | 0.0 | 6 |
 | under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2.0 | 2.0 | 0.0 | 6 |
 | under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 1.5 | 2.0 | 0.5 | 5 |
+| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | 3.0 | 2.0 | -1.0 | 7 |
+| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | 3.0 | 2.0 | -1.0 | 5 |
+| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | 4.5 | 3.0 | -1.5 | 5 |
+| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | 4.0 | 3.0 | -1.0 | 7 |
+| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | 4.0 | 4.0 | 0.0 | 10 |
 
 ## C. Faithfulness of the moderation
 
@@ -67,6 +77,11 @@ not moderation. `added_unsup` counts figures the moderator invented.
 | under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 3/4 | 4/5 | 0.75 | 1.0 | 0 | 0.683 | 105->97 |
 | under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 2/6 | 5/8 | 0.75 | 1.0 | 1 | 0.659 | 114->97 |
 | under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 4/6 | 5/7 | 0.5 | 1.0 | 0 | 0.826 | 107->77 |
+| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | 2/6 | 6/6 | 0.333 | 0.875 | 1 | 0.906 | 125->129 |
+| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | 2/6 | 9/10 | 0.333 | 0.75 | 1 | 0.843 | 125->92 |
+| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | 7/7 | 6/6 | 0.714 | 1.0 | 0 | 0.608 | 77->71 |
+| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | 4/4 | 8/8 | 0.5 | 0.75 | 0 | 0.871 | 126->107 |
+| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | 7/7 | 9/9 | 0.286 | 0.667 | 0 | 0.87 | 158->135 |
 
 ## D. Framing and style
 
@@ -90,3 +105,8 @@ trend of the whole series: near 1 mirrors it, negative points the other way.
 | under5-measles-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 1.0 | False | 1.02->0.0 | 0.0->0.0 | 10.2->13.48 |
 | under5-all-cause-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 1.0364 | False | 0.92->1.12 | 0.0->0.0 | 6.42->10.11 |
 | under5-tetanus-deaths | `g8b` | `llama3.1:8b` | `gemma4:31b` | 1.0 | False | 2.11->1.52 | 0.0->0.0 | 17.89->25.76 |
+| pertussis-global | `x9b` | `llama3.1:8b` | `qwen3.5:9b` | 1.0 | False | 0.0->0.88 | 1.82->0.0 | 15.45->18.58 |
+| pertussis-global | `x35b` | `llama3.1:8b` | `qwen3.6:35b` | 1.0 | False | 0.0->0.0 | 1.82->0.0 | 15.45->35.62 |
+| pertussis-global | `q4b` | `qwen3.5:4b` | `gemma4:31b` | 101.4906 | False | 2.9->3.17 | 0.0->0.0 | 20.29->19.05 |
+| pertussis-global | `q9b` | `qwen3.5:9b` | `gemma4:31b` | 0.3851 | False | 0.0->3.16 | 1.68->2.11 | 8.4->17.89 |
+| pertussis-global | `q2b` | `qwen3.5:2b` | `gemma4:31b` | 17.022 | False | 1.97->1.67 | 0.66->0.83 | 6.58->18.33 |

@@ -67,7 +67,7 @@ difference could be sampling noise. The addendum's Aligned Rank Transform and
 Wilcoxon plans all assume repeats that do not exist yet. Minimum credible
 design is 5 runs per cell.
 
-### L4. The alarmism delta mostly measures the generator's temperament. **OPEN, and it is the founding finding**
+### L4. The alarmism delta mostly measures the generator's temperament. **OPEN. The first attempt to test it was confounded; see L18**
 
 Across the three original measles runs the moderated story landed on 2.0
 regardless of where the generator started. When the generator already writes
@@ -76,6 +76,42 @@ metric reports a property of the generator rather than of the moderator. The
 generator ladder (1B/3B/4B/8B) exists to test exactly this: if smaller
 generators write hotter copy, the delta should grow as the generator shrinks.
 Until that lands, "the moderator works" is not supported by a near-zero delta.
+
+---
+
+### L18. The generator ladder mixed families, and correcting it reversed the result. **RESOLVED 2026-08-11**
+
+The first generator ladder paired `llama3.2:1b`, `llama3.2:3b`, `qwen3.5:4b`
+and `llama3.1:8b`. Two families and two llama generations, so "size" was never
+the only moving part. On that ladder the 8B rung produced the calmest raw story
+(3.0) and the smaller rungs ran hot (4.0 to 4.5), which read as "smaller
+generators write more alarmist copy".
+
+`qwen3.5` is the only family here with a full ladder, so the same experiment was
+re-run inside it, moderator and judge unchanged, same dataset and seed:
+
+| Generator | Params | Raw | Moderated | Delta |
+|---|---|---|---|---|
+| `qwen3.5:2b` | 2B | 4.0 | 4.0 | **0.0** |
+| `qwen3.5:4b` | 4B | 4.5 | 3.0 | -1.5 |
+| `qwen3.5:9b` | 9B | 4.0 | 3.0 | -1.0 |
+
+**Within one family, generator size has no effect on raw alarmism.** 2B, 4B and
+9B all land between 4.0 and 4.5. So does `llama3.2:1b` and `llama3.2:3b`, at
+4.0. The single calm outlier in the whole set is `llama3.1:8b` at 3.0, and it is
+also the only llama-3.1 model tested.
+
+The original reading was therefore a **family effect misread as a size effect**.
+What can be said is narrower and still useful: most small instruct models write
+this series at roughly 4.0, and `llama3.1:8b` writes it calmer. Whether that is
+scale or lineage cannot be settled without `qwen3.5:27b`, the rung that would
+show whether a larger qwen also calms down.
+
+A second observation from the same table: `qwen3.5:2b` is the only run where
+moderation did nothing to the rating (4.0 -> 4.0) despite the moderator marking
+10 emotive spans, the most of any run. The moderator edited the text and did not
+move the tone, which is a distinct failure from "no edit" and is exactly what
+`rewrite_intensity` was added to separate.
 
 ---
 

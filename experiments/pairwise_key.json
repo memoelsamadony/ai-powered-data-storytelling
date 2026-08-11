@@ -1,0 +1,185 @@
+{
+  "position_seed": 20260811,
+  "key": [
+    {
+      "pair_id": "P001",
+      "run": "0e24b6fd-52fe-44ba-b616-1d899182d5df",
+      "dataset": "measles",
+      "tier": "mid",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P002",
+      "run": "9239bbfd-d17a-4a72-9d5e-3c59cca86409",
+      "dataset": "pertussis-global",
+      "tier": "mid",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P003",
+      "run": "d53a7c27-2104-43ac-accd-9a6b53ee534c",
+      "dataset": "pertussis-global",
+      "tier": "m31b-selfjudge",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P004",
+      "run": "ad549d9a-36b7-4b0a-87f4-f737fcecc684",
+      "dataset": "pertussis-global",
+      "tier": "g8b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P005",
+      "run": "ebdfb279-338c-4488-938f-e21363f35b5f",
+      "dataset": "pertussis-global",
+      "tier": "g1b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P006",
+      "run": "f8186e42-ff85-4760-863f-3b1b4f9b42ae",
+      "dataset": "pertussis-global",
+      "tier": "g3b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P007",
+      "run": "063f23d7-40ce-42df-bba1-2616878a99ff",
+      "dataset": "pertussis-global",
+      "tier": "g4b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P008",
+      "run": "501f5794-136b-405c-949d-2448cf86bd31",
+      "dataset": "pertussis-global",
+      "tier": "m12b",
+      "story_1_is": "raw",
+      "story_2_is": "moderated",
+      "position_flipped": false
+    },
+    {
+      "pair_id": "P009",
+      "run": "10908df4-026c-4bdd-b6b1-bc177f182f7d",
+      "dataset": "pertussis-global",
+      "tier": "m26b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P010",
+      "run": "aadbe056-49bd-47f8-9ed8-50f608d6d43d",
+      "dataset": "measles",
+      "tier": "g8b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P011",
+      "run": "7ae6a2ce-ccde-4b25-8579-3d759f841b10",
+      "dataset": "mumps-global",
+      "tier": "g8b",
+      "story_1_is": "raw",
+      "story_2_is": "moderated",
+      "position_flipped": false
+    },
+    {
+      "pair_id": "P012",
+      "run": "5dae0881-9f6d-4664-a363-56b0e4a7f33e",
+      "dataset": "diphtheria-global",
+      "tier": "g8b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P013",
+      "run": "64c4f9c3-135c-4529-8806-742cde0e6a22",
+      "dataset": "under5-measles-deaths",
+      "tier": "g8b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P014",
+      "run": "5f8a2b14-2a69-4e47-b91b-b261822bb0a6",
+      "dataset": "under5-all-cause-deaths",
+      "tier": "g8b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P015",
+      "run": "75748240-206a-464c-a19d-c36cc867619c",
+      "dataset": "under5-tetanus-deaths",
+      "tier": "g8b",
+      "story_1_is": "raw",
+      "story_2_is": "moderated",
+      "position_flipped": false
+    },
+    {
+      "pair_id": "P016",
+      "run": "e061abb3-676e-472a-a3fb-7bca062bc139",
+      "dataset": "pertussis-global",
+      "tier": "x9b",
+      "story_1_is": "raw",
+      "story_2_is": "moderated",
+      "position_flipped": false
+    },
+    {
+      "pair_id": "P017",
+      "run": "faf34f8c-3769-4483-8b52-774a7b8b33a2",
+      "dataset": "pertussis-global",
+      "tier": "x35b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P018",
+      "run": "99a3c97a-d360-44ad-a27b-1108b268c092",
+      "dataset": "pertussis-global",
+      "tier": "q4b",
+      "story_1_is": "moderated",
+      "story_2_is": "raw",
+      "position_flipped": true
+    },
+    {
+      "pair_id": "P019",
+      "run": "a626f724-7296-4102-843e-5b8ed20befce",
+      "dataset": "pertussis-global",
+      "tier": "q9b",
+      "story_1_is": "raw",
+      "story_2_is": "moderated",
+      "position_flipped": false
+    },
+    {
+      "pair_id": "P020",
+      "run": "e92c0f3c-60cd-4ba2-afe1-e2d5274c3931",
+      "dataset": "pertussis-global",
+      "tier": "q2b",
+      "story_1_is": "raw",
+      "story_2_is": "moderated",
+      "position_flipped": false
+    }
+  ]
+}
