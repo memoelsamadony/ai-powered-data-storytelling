@@ -3,17 +3,30 @@
 /**
  * G1 — the dataset chart that sits beside a story.
  *
- * Two measures, two panels, ONE x-axis. This is the honest replacement for the
- * dual-axis `DatasetChart` (defect D1): stacked panels give the same visual
- * juxtaposition without letting an arbitrary alignment of two y-scales invent a
- * correlation. The 95% herd-immunity line stays dashed because it genuinely is
- * a threshold — and now it is the only dashed thing on the page (defect D4).
+ * ONE plot, ONE y-axis, both measures drawn together. The two measures carry
+ * different units, so they are projected onto a shared 0–100% scale rather than
+ * given two y-scales: a dual axis lets an arbitrary alignment of two scales
+ * invent a correlation that is not in the data (that chart still exists as
+ * `DatasetChart`, kept deliberately as the misleading exemplar — defect D1 in
+ * FRONTEND_PLAN.md §1.3). The projection here is fixed, declared in the legend,
+ * and never chosen to make the lines meet:
  *
- * Chart contract: one y-axis per plot, tokens not literals, solid hairline
- * grid, hover by default, table-view twin. FRONTEND_PLAN.md §2.
+ *   • a series already measured in % keeps its true value  (MCV1 coverage)
+ *   • any other series is drawn as a share of its own peak  (measles cases,
+ *     where the 1980 maximum is 100%)
+ *
+ * That rule is what keeps the two things the surrounding stories argue about
+ * legible: coverage plateaus visibly *short* of the dashed 95% herd-immunity
+ * line (only possible because coverage is not rescaled), and the 2019 case
+ * spike still reads as a spike. Indexing both series to t0 instead would push
+ * coverage to 525% of its 1980 value and flatten the case line into the floor.
+ *
+ * Chart contract: one y-axis, tokens not literals, solid hairline grid, a
+ * legend whenever two series share a plot, hover by default, table-view twin.
+ * FRONTEND_PLAN.md §2.
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Area,
   CartesianGrid,
@@ -25,11 +38,76 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { Dataset } from "@/lib/data/datasets";
+import type { Dataset, DatasetSeriesPoint } from "@/lib/data/datasets";
 import * as t from "@/lib/charts/tokens";
 
-/** Shared so the two panels' plot areas line up exactly. */
-const Y_WIDTH = 52;
+const Y_WIDTH = 46;
+const Y_TICKS = [0, 25, 50, 75, 100];
+
+/** How one measure is mapped onto the shared axis. */
+type Convention = "native" | "share-of-peak";
+
+interface PlotRow extends DatasetSeriesPoint {
+  /** Position on the shared 0–100 axis. Raw values stay for tooltip + table. */
+  primaryPlot: number;
+  secondaryPlot: number;
+}
+
+interface SeriesSpec {
+  label: string;
+  unit: string;
+  color: string;
+  convention: Convention;
+  /** Year holding the peak — only meaningful for `share-of-peak`. */
+  peakYear: number;
+  peakValue: number;
+  /** The most recent true value, shown in the legend so it needs no hover. */
+  latest: number;
+  latestYear: number;
+}
+
+/** A series already expressed in % is left alone; anything else is normalised. */
+function conventionFor(unit: string): Convention {
+  return unit.trim() === "%" ? "native" : "share-of-peak";
+}
+
+function specFor(
+  series: DatasetSeriesPoint[],
+  key: "primary" | "secondary",
+  label: string,
+  unit: string,
+  color: string,
+): SeriesSpec {
+  const peak = series.reduce((best, p) => (p[key] > best[key] ? p : best), series[0]);
+  const last = series[series.length - 1];
+  return {
+    label,
+    unit,
+    color,
+    convention: conventionFor(unit),
+    peakYear: peak.year,
+    peakValue: peak[key],
+    latest: last[key],
+    latestYear: last.year,
+  };
+}
+
+function project(value: number, spec: SeriesSpec): number {
+  if (spec.convention === "native") return value;
+  return spec.peakValue ? (value / spec.peakValue) * 100 : 0;
+}
+
+/** The short note that tells the reader what the shared axis means per series. */
+function conventionNote(spec: SeriesSpec): string {
+  return spec.convention === "native"
+    ? `true ${spec.unit}`
+    : `% of the ${spec.peakYear} peak`;
+}
+
+function formatValue(value: number, unit: string): string {
+  const n = Number.isInteger(value) ? value.toLocaleString() : value.toFixed(1);
+  return unit === "%" ? `${n}%` : `${n} ${unit}`;
+}
 
 export function StoryChart({
   dataset,
@@ -39,50 +117,60 @@ export function StoryChart({
 }: {
   dataset: Dataset;
   height?: number;
-  /** Drop the panel headers where the surrounding card already names the data. */
+  /** Tightens the legend where the surrounding card already names the data. */
   compact?: boolean;
   showTable?: boolean;
 }) {
-  const topH = Math.round(height * 0.52);
-  const bottomH = height - topH;
+  const { rows, primary, secondary } = useMemo(() => {
+    const p = specFor(dataset.series, "primary", dataset.primaryLabel, dataset.primaryUnit, t.alarm);
+    const s = specFor(dataset.series, "secondary", dataset.secondaryLabel, dataset.secondaryUnit, t.brandBlue);
+    const r: PlotRow[] = dataset.series.map((point) => ({
+      ...point,
+      primaryPlot: project(point.primary, p),
+      secondaryPlot: project(point.secondary, s),
+    }));
+    return { rows: r, primary: p, secondary: s };
+  }, [dataset]);
+
+  /**
+   * The threshold is declared against the secondary measure, so it may only be
+   * drawn while that measure sits on the axis at its true value. Normalised, a
+   * 95% line would land at 110% of the plotted maximum and mean nothing.
+   */
+  const showReference = !!dataset.referenceLine && secondary.convention === "native";
 
   return (
     <figure className="m-0">
-      {!compact && <PanelLabel color={t.alarm} label={dataset.primaryLabel} unit={dataset.primaryUnit} />}
-      <ResponsiveContainer width="100%" height={topH}>
-        <ComposedChart data={dataset.series} margin={{ top: 6, right: 12, bottom: 0, left: 0 }} syncId={dataset.id}>
+      <ChartLegend specs={[primary, secondary]} compact={compact} />
+
+      <ResponsiveContainer width="100%" height={height}>
+        <ComposedChart data={rows} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
           <defs>
             <linearGradient id={`sc-primary-${dataset.id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={t.alarm} stopOpacity={0.18} />
+              <stop offset="0%" stopColor={t.alarm} stopOpacity={0.14} />
               <stop offset="100%" stopColor={t.alarm} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke={t.grid} vertical={false} />
-          <XAxis dataKey="year" tick={false} axisLine={t.axisLineProps} height={1} />
-          <YAxis tick={t.monoTick} tickLine={false} axisLine={false} width={Y_WIDTH} />
-          <Area
-            type="monotone"
-            dataKey="primary"
-            stroke={t.alarm}
-            strokeWidth={2}
-            fill={`url(#sc-primary-${dataset.id})`}
-            name={dataset.primaryLabel}
-            dot={false}
-            activeDot={{ r: 4, stroke: t.surface, strokeWidth: 2 }}
-          />
-          <Tooltip content={<StoryTooltip dataset={dataset} />} cursor={{ stroke: t.navy, strokeOpacity: 0.15 }} />
-        </ComposedChart>
-      </ResponsiveContainer>
 
-      <div className={compact ? "mt-2" : "mt-3"}>
-        {!compact && <PanelLabel color={t.brandBlue} label={dataset.secondaryLabel} unit={dataset.secondaryUnit} />}
-      </div>
-      <ResponsiveContainer width="100%" height={bottomH}>
-        <ComposedChart data={dataset.series} margin={{ top: 6, right: 12, bottom: 4, left: 0 }} syncId={dataset.id}>
           <CartesianGrid stroke={t.grid} vertical={false} />
-          <XAxis dataKey="year" tick={t.monoTick} tickLine={false} axisLine={t.axisLineProps} minTickGap={24} />
-          <YAxis tick={t.monoTick} tickLine={false} axisLine={false} width={Y_WIDTH} domain={["auto", "auto"]} />
-          {dataset.referenceLine && (
+          <XAxis
+            dataKey="year"
+            tick={t.monoTick}
+            tickLine={false}
+            axisLine={t.axisLineProps}
+            minTickGap={24}
+          />
+          <YAxis
+            tick={t.monoTick}
+            tickLine={false}
+            axisLine={false}
+            width={Y_WIDTH}
+            domain={[0, 100]}
+            ticks={Y_TICKS}
+            tickFormatter={(v: number) => `${v}%`}
+          />
+
+          {showReference && dataset.referenceLine && (
             <ReferenceLine
               y={dataset.referenceLine.value}
               stroke={t.calm}
@@ -98,21 +186,81 @@ export function StoryChart({
               }}
             />
           )}
-          <Line
+
+          {/* Drawn first, so the thin secondary line stays legible on top of it. */}
+          <Area
             type="monotone"
-            dataKey="secondary"
-            stroke={t.brandBlue}
+            dataKey="primaryPlot"
+            stroke={t.alarm}
             strokeWidth={2}
-            name={dataset.secondaryLabel}
+            fill={`url(#sc-primary-${dataset.id})`}
+            name={primary.label}
             dot={false}
             activeDot={{ r: 4, stroke: t.surface, strokeWidth: 2 }}
           />
-          <Tooltip content={<StoryTooltip dataset={dataset} />} cursor={{ stroke: t.navy, strokeOpacity: 0.15 }} />
+          <Line
+            type="monotone"
+            dataKey="secondaryPlot"
+            stroke={t.brandBlue}
+            strokeWidth={2}
+            name={secondary.label}
+            dot={false}
+            activeDot={{ r: 4, stroke: t.surface, strokeWidth: 2 }}
+          />
+
+          <Tooltip
+            content={<StoryTooltip primary={primary} secondary={secondary} />}
+            cursor={{ stroke: t.navy, strokeOpacity: 0.15 }}
+          />
         </ComposedChart>
       </ResponsiveContainer>
 
+      {!compact && (
+        <figcaption className="mt-2 text-[0.7rem] leading-relaxed text-faint">
+          Two measures, one axis. {sentenceForAxis(primary, secondary)} Hover for the real
+          figures, or read them in the table.
+        </figcaption>
+      )}
+
       {showTable && <SeriesTable dataset={dataset} />}
     </figure>
+  );
+}
+
+/** Spells out the projection in words, so the axis is never taken on trust. */
+function sentenceForAxis(primary: SeriesSpec, secondary: SeriesSpec): string {
+  /* Labels keep their own casing: lowercasing them would render MCV1 as mcv1. */
+  const parts = [primary, secondary].map((s) =>
+    s.convention === "native"
+      ? `${s.label} keeps its true percentage`
+      : `${s.label} is scaled against its ${s.peakYear} peak of ${formatValue(s.peakValue, s.unit)}`,
+  );
+  return `${parts[0]}; ${parts[1]}.`;
+}
+
+/**
+ * A legend is mandatory once two series share a plot — identity may never rest
+ * on colour alone. It carries the latest true value too, so the headline figure
+ * is readable without hovering.
+ */
+function ChartLegend({ specs, compact }: { specs: SeriesSpec[]; compact: boolean }) {
+  return (
+    <ul className={`m-0 flex list-none flex-col gap-1 p-0 ${compact ? "mb-2" : "mb-3"}`}>
+      {specs.map((s) => (
+        <li key={s.label} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <span
+            className="h-2.5 w-2.5 shrink-0 translate-y-0.5 rounded-full"
+            style={{ background: s.color }}
+          />
+          <span className="text-xs font-medium text-ink">{s.label}</span>
+          <span className="font-mono text-[0.65rem] text-faint">{conventionNote(s)}</span>
+          <span className="ml-auto font-mono text-[0.68rem] text-muted [font-variant-numeric:tabular-nums]">
+            {formatValue(s.latest, s.unit)}
+            <span className="text-faint"> · {s.latestYear}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -158,28 +306,20 @@ export function SeriesTable({ dataset }: { dataset: Dataset }) {
   );
 }
 
-function PanelLabel({ color, label, unit }: { color: string; label: string; unit: string }) {
-  return (
-    <div className="mb-1 flex items-baseline gap-2">
-      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: color }} />
-      <span className="text-xs font-medium text-ink">{label}</span>
-      <span className="font-mono text-[0.65rem] text-faint">{unit}</span>
-    </div>
-  );
-}
-
 interface TooltipPayload {
-  payload?: { year: number; primary: number; secondary: number };
+  payload?: PlotRow;
 }
 
 function StoryTooltip({
   active,
   payload,
-  dataset,
+  primary,
+  secondary,
 }: {
   active?: boolean;
   payload?: TooltipPayload[];
-  dataset: Dataset;
+  primary: SeriesSpec;
+  secondary: SeriesSpec;
 }) {
   if (!active || !payload?.length) return null;
   const p = payload[0].payload;
@@ -188,19 +328,25 @@ function StoryTooltip({
     <div className="rounded-xl border border-hairline bg-surface/95 px-3.5 py-3 text-xs shadow-lg backdrop-blur">
       <p className="font-mono text-[0.7rem] font-semibold text-navy">{p.year}</p>
       <div className="mt-2 space-y-1.5">
-        <Row color={t.alarm} label={dataset.primaryLabel} value={`${p.primary.toLocaleString()} ${dataset.primaryUnit}`} />
-        <Row color={t.brandBlue} label={dataset.secondaryLabel} value={`${p.secondary} ${dataset.secondaryUnit}`} />
+        <Row spec={primary} value={p.primary} plotted={p.primaryPlot} />
+        <Row spec={secondary} value={p.secondary} plotted={p.secondaryPlot} />
       </div>
     </div>
   );
 }
 
-function Row({ color, label, value }: { color: string; label: string; value: string }) {
+/** True value first; the plotted share only where the two differ. */
+function Row({ spec, value, plotted }: { spec: SeriesSpec; value: number; plotted: number }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="h-2 w-2 rounded-full" style={{ background: color }} />
-      <span className="text-muted">{label}</span>
-      <span className="ml-auto font-mono font-medium text-ink">{value}</span>
+      <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: spec.color }} />
+      <span className="text-muted">{spec.label}</span>
+      <span className="ml-auto whitespace-nowrap font-mono font-medium text-ink [font-variant-numeric:tabular-nums]">
+        {formatValue(value, spec.unit)}
+        {spec.convention === "share-of-peak" && (
+          <span className="font-normal text-faint"> · {plotted.toFixed(1)}% of peak</span>
+        )}
+      </span>
     </div>
   );
 }

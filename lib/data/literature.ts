@@ -24,7 +24,7 @@ export const surveyedSystems: SurveyedSystem[] = [
     name: "DataNarrative",
     yearVenue: "2024 · EMNLP",
     type: "LLM, two agents (generate + verify)",
-    role: "Closest precedent — we swap its factual verifier for an emotional moderator.",
+    role: "Closest precedent: we swap its factual verifier for an emotional moderator.",
   },
   {
     name: "MDSF",
@@ -63,7 +63,7 @@ export const references: Reference[] = [
   { id: 1, authors: "J. Segel and J. Heer", title: "Narrative Visualization: Telling Stories with Data", venue: "IEEE TVCG 16(6), 2010" },
   { id: 2, authors: "J. Hullman and N. Diakopoulos", title: "Visualization Rhetoric: Framing Effects in Narrative Visualization", venue: "IEEE TVCG 17(12), 2011" },
   { id: 3, authors: "M. T. Islam et al.", title: "DataNarrative: Automated Data-Driven Storytelling with Visualizations and Texts", venue: "EMNLP 2024 · arXiv:2408.05346" },
-  { id: 4, authors: "—", title: "MDSF: A Multimodal Data Storytelling Framework", venue: "2025 · arXiv:2501.01014" },
+  { id: 4, authors: "Anon.", title: "MDSF: A Multimodal Data Storytelling Framework", venue: "2025 · arXiv:2501.01014" },
   { id: 5, authors: "Aodeng et al.", title: "InReAcTable: Interactive Visual Data Stories from Tables via a ReAct Agent", venue: "UIST 2025 · arXiv:2508.18174" },
   { id: 6, authors: "L. Shen, H. Li, Y. Wang, H. Qu", title: "From Data to Story (Data Director)", venue: "IEEE VIS (Gen4DS) 2024 · arXiv:2408.03876" },
   { id: 7, authors: "Z. Kasner and O. Dušek", title: "Beyond Traditional Benchmarks: Analyzing Behaviors of Open LLMs on Data-to-Text Generation", venue: "ACL 2024 · arXiv:2401.10186" },

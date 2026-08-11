@@ -29,7 +29,7 @@ export default function HowItWorksPage() {
             A generator–critic pipeline, retrained for <span className="brand-gradient-text italic">tone</span>.
           </>
         }
-        intro="We follow the generate-then-verify pattern of prior systems — but swap the factual verifier for a moderator that audits emotional framing, with a lightweight factual check kept alongside."
+        intro="We follow the generate-then-verify pattern of prior systems, but swap the factual verifier for a moderator that audits emotional framing, with a lightweight factual check kept alongside."
       />
 
       {/* The gap */}
@@ -90,7 +90,7 @@ export default function HowItWorksPage() {
                   </span>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-muted">
-                  Cases rebounded as coverage stalled. The pull is toward panic — so the moderator
+                  Cases rebounded as coverage stalled. The pull is toward panic, so the moderator
                   must remove the alarmism without erasing the real urgency.
                 </p>
                 <div className="mt-6 border-t border-hairline pt-6">
@@ -108,7 +108,7 @@ export default function HowItWorksPage() {
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-muted">
                   Decades of genuine progress tempt the model toward triumph. Here the moderator must
-                  keep the gravity — the remaining gap, the COVID-era reversal — not flatten it.
+                  keep the gravity (the remaining gap, the COVID-era reversal), not flatten it.
                 </p>
                 <div className="mt-6 border-t border-hairline pt-6">
                   <ToneToggle alarmist={who.twoTones.alarmist} calibrated={who.twoTones.calibrated} />
@@ -130,7 +130,7 @@ export default function HowItWorksPage() {
                   A tone agent is not a fact-checker.
                 </h2>
                 <p className="mt-5 text-lg leading-relaxed text-muted">
-                  In one real run on the measles data, the small model wrote fluent but emotive text —
+                  In one real run on the measles data, the small model wrote fluent but emotive text,
                   and hallucinated a case count. The moderator stripped the alarmism and, by
                   re-grounding the narrative, quietly corrected the number.
                 </p>
@@ -161,7 +161,7 @@ export default function HowItWorksPage() {
                   </div>
                   <div className="mt-4 flex items-center gap-2 text-sm text-deep-teal">
                     <RotateCcw className="h-4 w-4" />
-                    Re-grounded silently by the moderator — caught explicitly by the factual check.
+                    Re-grounded silently by the moderator, caught explicitly by the factual check.
                   </div>
                 </div>
               </Card>

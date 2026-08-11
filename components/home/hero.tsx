@@ -50,8 +50,8 @@ export function Hero() {
             className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted"
           >
             A general LLM writes a data story. An agentic LLM moderates its{" "}
-            <span className="font-medium text-ink">emotional tone</span> — pulling alarmism
-            down without losing real urgency — while a factual check keeps the numbers honest.
+            <span className="font-medium text-ink">emotional tone</span>, pulling alarmism
+            down without losing real urgency, while a factual check keeps the numbers honest.
             It&apos;s the capability the literature doesn&apos;t yet address.
           </motion.p>
 
@@ -98,7 +98,7 @@ function HeroVisual() {
       >
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-alarm-soft px-2.5 py-1 font-mono text-[0.62rem] font-medium uppercase tracking-wide text-alarm-ink">
-            <Sparkles className="h-3 w-3" /> LLM — raw
+            <Sparkles className="h-3 w-3" /> LLM: raw
           </span>
         </div>
         <p className="mt-3 font-serif text-lg leading-snug text-ink">
