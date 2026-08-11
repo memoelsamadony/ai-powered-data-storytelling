@@ -16,6 +16,7 @@ import {
   textSimilarity,
   userStudy,
 } from "@/lib/data/metrics";
+import { getResults } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Results & evaluation",
@@ -23,7 +24,21 @@ export const metadata: Metadata = {
     "Faithfulness, analytical correctness, the novel tone-calibration metric, text-similarity scores, and a planned user study, all grounded in offline reproductions.",
 };
 
-export default function ResultsPage() {
+// The measured block is read per request; the reproduction figures are static
+// but arrive on the same call.
+export const dynamic = "force-dynamic";
+
+export default async function ResultsPage() {
+  const live = await getResults();
+  // Backend figures win where they exist. Where they do not, the page keeps its
+  // own constants, and `sourceNote` says which of the two the reader is looking
+  // at rather than leaving them to assume.
+  const faith = live?.faithfulness ?? null;
+  const faithSeries = faith?.series ?? faithfulness.series;
+  const faithSourceNote = faith
+    ? `Computed from ${faith.source}`
+    : "Figures from the interim report; the backend is not reachable.";
+
   return (
     <>
       <PageHero
@@ -49,11 +64,11 @@ export default function ResultsPage() {
             <Reveal>
               <MetricCard
                 title="Faithfulness"
-                unit={faithfulness.unit}
-                caption={faithfulness.caption}
+                unit={faith?.unit ?? faithfulness.unit}
+                caption={`${faith?.caption ?? faithfulness.caption} ${faithSourceNote}`}
                 hint="Lower is better"
               >
-                <FaithfulnessChart data={faithfulness.series} />
+                <FaithfulnessChart data={faithSeries} />
               </MetricCard>
             </Reveal>
             <Reveal delay={0.1}>
@@ -196,8 +211,101 @@ export default function ResultsPage() {
         </Container>
       </Section>
 
+      {/* Everything above is study evidence. This is what the runs on this
+          machine actually show, kept separate and carrying its own n, because a
+          mean over a handful of demo runs is not a result and must not be able
+          to read like one. */}
+      {live && live.measured.runsComplete > 0 && (
+        <Section className="border-t border-hairline bg-surface-soft/40">
+          <Container>
+            <Reveal>
+              <SectionHeader
+                kicker="This deployment"
+                title="What the runs on this machine show"
+                intro="Measured from the pipeline runs stored in the backend, not from the study. Small samples, shown with their sample size."
+              />
+              <Card className="mt-8 p-6 sm:p-8">
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  <RunStat
+                    label="Completed runs"
+                    value={String(live.measured.runsComplete)}
+                    sub={live.measured.byTier.map((t) => `${t.runs} ${t.tier}`).join(" · ")}
+                  />
+                  <RunStat
+                    label="Alarmism, before → after"
+                    value={
+                      live.measured.alarmismBefore !== null
+                        ? `${live.measured.alarmismBefore} → ${live.measured.alarmismAfter}`
+                        : "not measured"
+                    }
+                    sub={`mean over n = ${live.measured.alarmismN}`}
+                  />
+                  <RunStat
+                    label="Edits per run"
+                    value={live.measured.editsPerRun !== null ? String(live.measured.editsPerRun) : "—"}
+                    sub={live.measured.editsByCategory
+                      .filter((c) => c.count > 0)
+                      .map((c) => `${c.label} ${c.count}`)
+                      .join(" · ")}
+                  />
+                  <RunStat
+                    label="Facts preserved"
+                    value={
+                      live.measured.factsPreservedRate !== null
+                        ? `${live.measured.factsPreservedRate}%`
+                        : "—"
+                    }
+                    sub={`of n = ${live.measured.factsCheckedN} checked runs`}
+                  />
+                </div>
+
+                {live.measured.stageTimings.length > 0 && (
+                  <div className="mt-8 border-t border-hairline pt-6">
+                    <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                      Median seconds per stage
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
+                      {live.measured.stageTimings.map((t) => (
+                        <span key={`${t.stage}-${t.model}`} className="text-sm text-muted">
+                          <span className="text-navy">{t.stage}</span>{" "}
+                          <span className="font-mono text-xs">{t.medianSeconds}s</span>{" "}
+                          <span className="text-faint">
+                            ({t.model}, n={t.runs})
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {live.unavailable.map((note) => (
+                  <p
+                    key={note}
+                    className="mt-6 rounded-lg border border-hairline bg-surface-soft/70 px-3 py-2.5 text-[0.72rem] leading-relaxed text-muted"
+                  >
+                    <strong className="font-medium text-navy">Not served here.</strong> {note}
+                  </p>
+                ))}
+              </Card>
+            </Reveal>
+          </Container>
+        </Section>
+      )}
+
       <CtaBand />
     </>
+  );
+}
+
+/** Plain figure with its sample size. Distinct from `Stat` below, which is the
+ *  icon-and-tone badge the study sections use. */
+function RunStat({ label, value, sub }: { label: string; value: string; sub?: string }) {
+  return (
+    <div>
+      <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">{label}</p>
+      <p className="mt-1.5 font-serif text-2xl text-navy">{value}</p>
+      {sub && <p className="mt-1 text-xs text-muted">{sub}</p>}
+    </div>
   );
 }
 

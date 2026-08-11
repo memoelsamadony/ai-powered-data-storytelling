@@ -177,6 +177,57 @@ export async function generateStory(datasetId: string, tier = "mid"): Promise<Ge
   );
 }
 
+// ------------------------------------------------------------------- results
+
+export interface FaithfulnessPoint {
+  model: string;
+  value: number;
+  note: string;
+  tone: "good" | "warn" | "bad";
+}
+
+export interface Results {
+  /** Computed from the runs in the backend's own database. */
+  measured: {
+    runsTotal: number;
+    runsComplete: number;
+    byTier: { tier: string; runs: number }[];
+    alarmismBefore: number | null;
+    alarmismAfter: number | null;
+    alarmismN: number;
+    editsPerRun: number | null;
+    editsByCategory: { category: string; label: string; count: number }[];
+    factsPreservedRate: number | null;
+    factsCheckedN: number;
+    stageTimings: { stage: string; model: string; runs: number; medianSeconds: number }[];
+  };
+  /** Read from the committed reproduction CSVs, naming its source file. */
+  faithfulness: {
+    caption: string;
+    unit: string;
+    source: string;
+    series: FaithfulnessPoint[];
+  } | null;
+  /** Figures the backend deliberately does not serve, and why. */
+  unavailable: string[];
+}
+
+/**
+ * Null when the backend is unreachable, like `getHealth`. No mock shape is
+ * substituted: the page's own constants are already the fallback, and they are
+ * labelled as such, so inventing a second set here would only blur which is
+ * which.
+ */
+export async function getResults(): Promise<Results | null> {
+  try {
+    return await call<Results>("/results");
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api] results unavailable:", err);
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------- comparison
 
 export interface ComparisonMetrics {
