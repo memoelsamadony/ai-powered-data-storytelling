@@ -252,6 +252,47 @@ def group(slide, x, y, w, h, title, why, rows, *, accent=DEEP_TEAL, cost=None):
          Inches(h - 0.4), runs, spacing=1.12)
 
 
+PARTS = [
+    ("The research, and the problem it found", "Mahmoud"),
+    ("What we built, and how we measure it", "Okasha"),
+    ("What the reader sees, and how we chose the pair", "Elsaadani"),
+    ("The result, the agent, and the system", "Ramadan"),
+]
+
+
+def divider(prs, idx: int, note: str):
+    """A break between sections, doubling as a progress checkpoint.
+
+    Four speakers means three handovers, and a handover with no slide change is
+    where a talk stalls: the room does not know a new person is starting and the
+    new person has no beat to start on. The rail also answers "how much is left",
+    which an audience tracks whether or not you tell them.
+    """
+    title, who = PARTS[idx]
+    s = blank(prs)
+    rect(s, 0, 0, W, H, fill=DEEP_NAVY)
+    rect(s, 0, 0, Inches(0.16), H, fill=TEAL)
+    text(s, Inches(1.1), Inches(2.35), Inches(11.0), Inches(0.4),
+         [(f"PART {idx + 1} OF {len(PARTS)}", 12, True, TEAL, HEAD, 0)])
+    text(s, Inches(1.1), Inches(2.85), Inches(10.6), Inches(1.1),
+         [(title, 34, True, WHITE, HEAD, 0)], spacing=1.08)
+    text(s, Inches(1.1), Inches(4.15), Inches(10.6), Inches(0.4),
+         [(who, 15, True, RGBColor(0x8A, 0x9C, 0xB8), BODY, 0)])
+    # the rail
+    seg = 2.62
+    for i, (label, _) in enumerate(PARTS):
+        x = 1.1 + i * (seg + 0.22)
+        done = i <= idx
+        rect(s, Inches(x), Inches(5.35), Inches(seg), Pt(5),
+             fill=TEAL if done else RGBColor(0x2B, 0x4A, 0x84))
+        text(s, Inches(x), Inches(5.55), Inches(seg), Inches(0.5),
+             [(label.split(",")[0], 10.5, i == idx,
+               WHITE if i == idx else RGBColor(0x6B, 0x7D, 0x9B), BODY, 0)],
+             spacing=1.12)
+    notes(s, note)
+    return s
+
+
 def build() -> Presentation:
     prs = Presentation()
     prs.slide_width, prs.slide_height = W, H
@@ -291,13 +332,22 @@ Good afternoon. We turn a public-health table into a written story. The part we
 want to defend today is the second agent: it reads that story and pulls the
 emotional tone back to what the evidence supports.
 
-Four sections, then a live demo.
+Four parts, then a live demo.
 
 DELIVERY: do not read the names, they are on the slide. Go straight to the
 sentence about the second agent.
 """)
 
-    # -- 2  the research --------------------------------------------------
+    # -- 2  divider -------------------------------------------------------
+    divider(prs, 0, """
+SPEAKER 1 - Mahmoud   [0:05]   running total 0:20   ~15 words
+
+First: what the field already does, and the gap we found in it.
+
+DELIVERY: one line, then move. A divider is a beat, not a slide to present.
+""")
+
+    # -- 3  the research --------------------------------------------------
     s = blank(prs)
     heading(s, "The research", "Seven systems surveyed, three reproduced")
     text(s, Inches(0.75), Inches(2.3), Inches(5.9), Inches(0.3),
@@ -325,8 +375,8 @@ sentence about the second agent.
          "gemma4:12b left ~18% of outputs with a semantic error, against the "
          "paper's >80%. A 4B model regressed to 52%."),
         ("DataTales — data narration",
-         "Reading operations climb with scale (rate-of-change 43% → 89%, 4B to "
-         "12B). The causal operation scored 0% for both."),
+         "Reading operations climb with scale: rate-of-change goes 43% → 89% "
+         "from a 4B model to a 12B one."),
         ("DataNarrative — architecture",
          "Reproduced the generate-and-verify pattern. It is the shape our own "
          "pipeline adapts."),
@@ -343,29 +393,27 @@ sentence about the second agent.
            "faithful at stating data, and every critic agent in the literature "
            "checks facts. So another fact-checker is not the gap.", 13, True,
            NAVY, BODY, 0)])
-    chrome(s, 2)
+    chrome(s, 3)
     notes(s, """
-SPEAKER 1 - Mahmoud   [0:50]   running total 1:05   ~125 words
+SPEAKER 1 - Mahmoud   [0:45]   running total 1:05   ~112 words
 
 We surveyed seven systems. On the left: the non-LLM baselines, then the ones
 closest to us - DataNarrative, Data Director, MDSF - all of which pair a
 generator with a critic agent.
 
 On the right, the three we reproduced ourselves rather than cited. Kasner and
-Dušek's faithfulness method: a modern 12B model left about 18 percent of
-outputs with a semantic error where the paper reported over 80. DataTales: the
-reading operations climb steeply with model size. And we rebuilt DataNarrative's
-generate-and-verify architecture, which is the shape ours adapts.
+Dušek's faithfulness method: a modern 12B model left about 18 percent of outputs
+with a semantic error where the paper reported over 80. DataTales, where reading
+operations climb steeply with model size. And DataNarrative's generate-and-verify
+architecture, which is the shape ours adapts.
 
-That gave us the sentence at the bottom. Open models are already fairly faithful
-at stating data, and every critic in the literature checks facts. So another
-fact-checker is not where the gap is.
+That gave us the sentence at the bottom.
 
-DELIVERY: do not read the paper list. Say "seven systems, three we re-ran
+DELIVERY: do not read the paper list. Say "seven surveyed, three we re-ran
 ourselves" and go to the bottom bar. That sentence is the slide.
 """)
 
-    # -- 3  the problem ---------------------------------------------------
+    # -- 4  the problem ---------------------------------------------------
     s = blank(prs)
     heading(s, "The problem", "Everyone checks the facts. Nobody checks the tone.")
     bullets(s, Inches(0.75), Inches(2.45), Inches(6.35), [
@@ -393,9 +441,9 @@ ourselves" and go to the bottom bar. That sentence is the slide.
         ("Same table. Same facts. A different reader reaction.", 12, False, MUTED,
          BODY, 6),
     ], spacing=1.15)
-    chrome(s, 3)
+    chrome(s, 4)
     notes(s, """
-SPEAKER 1 - Mahmoud   [0:40]   running total 1:45   ~100 words   >>> HAND TO OKASHA
+SPEAKER 1 - Mahmoud   [0:40]   running total 1:45   ~98 words   >>> HAND TO OKASHA
 
 So here is the problem we noticed.
 
@@ -409,70 +457,93 @@ literature can tell them apart.
 
 Okasha will show you what we built for that.
 
-DELIVERY: read both quotes out loud, slowly. This is the motivation and it
-lands in ten seconds if you actually perform the contrast.
+DELIVERY: read both quotes out loud, slowly. This is the motivation and it lands
+in ten seconds if you actually perform the contrast.
 """)
 
-    # -- 4  the fix -------------------------------------------------------
+    # -- 5  divider -------------------------------------------------------
+    divider(prs, 1, """
+SPEAKER 2 - Okasha   [0:05]   running total 1:50   ~15 words
+
+Thank you. I will take the system itself, and then how we put a number on tone.
+
+DELIVERY: your first words as a new speaker. Say them to the room, not the
+screen.
+""")
+
+    # -- 6  the system ----------------------------------------------------
     s = blank(prs)
-    heading(s, "Our fix", "Four agents. Only the second one is new.")
-    steps = [
-        ("1", "GENERATE", "llama3.1:8b",
-         "Writes the story from an evidence\npack built out of the table."),
-        ("2", "MODERATE", "gemma4:31b",
-         "Rewrites for tone only. Keeps the\nnumbers, drops the catastrophising."),
-        ("3", "FACT-CHECK", "local verifier",
-         "Checks the stated numbers back\nagainst the table."),
-        ("4", "SELECT CHARTS", "local model",
-         "Ranks pre-validated figures the\ntable can honestly carry."),
-    ]
-    for i, (num, cap, model, desc) in enumerate(steps):
-        x = 0.75 + i * 3.05
-        col = [BLUE, TEAL, NAVY, DEEP_TEAL][i]
-        rect(s, Inches(x), Inches(2.4), Inches(2.72), Inches(1.95), fill=SOFT)
-        rect(s, Inches(x), Inches(2.4), Inches(2.72), Pt(4), fill=col)
-        text(s, Inches(x + 0.22), Inches(2.62), Inches(2.3), Inches(1.6), [
-            (f"{num}   {cap}", 10, True, MUTED, HEAD, 0),
-            (model, 15, True, col, HEAD, 4),
-            (desc, 11, False, INK, BODY, 4)], spacing=1.14)
-        if i < 3:
-            text(s, Inches(x + 2.76), Inches(3.1), Inches(0.3), Inches(0.4),
-                 [("›", 22, True, BORDER, HEAD, 0)])
-    rect(s, Inches(3.8), Inches(4.42), Inches(2.72), Inches(0.34), fill=TEAL)
-    text(s, Inches(3.8), Inches(4.47), Inches(2.72), Inches(0.3),
-         [("THE CONTRIBUTION", 10, True, WHITE, HEAD, 0)], align=PP_ALIGN.CENTER)
-    text(s, Inches(0.75), Inches(5.1), Inches(5.9), Inches(1.4), [
-        ("Two datasets, because tone fails both ways.", 13.5, True, NAVY, BODY, 0),
+    heading(s, "Our fix", "One generator, one agentic moderator, one independent judge")
+    # Generator
+    rect(s, Inches(0.75), Inches(2.4), Inches(3.0), Inches(1.5), fill=SOFT)
+    rect(s, Inches(0.75), Inches(2.4), Inches(3.0), Pt(4), fill=BLUE)
+    text(s, Inches(0.99), Inches(2.62), Inches(2.55), Inches(1.2), [
+        ("1   GENERATE", 10, True, MUTED, HEAD, 0),
+        ("llama3.1:8b", 15, True, BLUE, HEAD, 4),
+        ("Writes the first-draft story from\nan evidence pack built out of\nthe table.",
+         11, False, INK, BODY, 4)], spacing=1.14)
+    # The moderator, three jobs on one model
+    rect(s, Inches(4.15), Inches(2.4), Inches(5.15), Inches(2.72), fill=SOFT)
+    rect(s, Inches(4.15), Inches(2.4), Inches(5.15), Pt(4), fill=TEAL)
+    text(s, Inches(4.42), Inches(2.62), Inches(4.6), Inches(0.6), [
+        ("2   THE AGENTIC ROLE — ONE MODEL, THREE JOBS", 10, True, MUTED, HEAD, 0),
+        ("gemma4:31b", 15, True, DEEP_TEAL, HEAD, 4)], spacing=1.14)
+    for i, (job, desc, star) in enumerate([
+        ("Moderates tone", "rewrites the framing, keeps the numbers", True),
+        ("Fact-checks", "every stated number back against the table", False),
+        ("Selects the charts", "ranks figures the table can honestly carry", False),
+    ]):
+        y = 3.42 + i * 0.55
+        rect(s, Inches(4.42), Inches(y), Pt(2.5), Inches(0.44),
+             fill=TEAL if star else BORDER)
+        text(s, Inches(4.62), Inches(y), Inches(4.5), Inches(0.44), [
+            (f"{job}   ", 12, True, NAVY if star else INK, BODY, 0)], spacing=1.0)
+        text(s, Inches(4.62), Inches(y + 0.21), Inches(4.5), Inches(0.24), [
+            (desc + ("   ← the contribution" if star else ""), 10.5, star,
+             DEEP_TEAL if star else MUTED, BODY, 0)])
+    # Judge
+    rect(s, Inches(9.7), Inches(2.4), Inches(2.88), Inches(1.5), fill=SOFT)
+    rect(s, Inches(9.7), Inches(2.4), Inches(2.88), Pt(4), fill=NAVY)
+    text(s, Inches(9.94), Inches(2.62), Inches(2.45), Inches(1.2), [
+        ("3   JUDGE", 10, True, MUTED, HEAD, 0),
+        ("Claude Opus", 15, True, NAVY, HEAD, 4),
+        ("Rates each story blind. Evaluation\nonly — not part of the product\nloop.",
+         11, False, INK, BODY, 4)], spacing=1.14)
+    rect(s, Inches(0.75), Inches(5.3), Inches(5.9), Inches(1.28), fill=SOFT)
+    rect(s, Inches(0.75), Inches(5.3), Pt(3.5), Inches(1.28), fill=NAVY)
+    text(s, Inches(1.02), Inches(5.48), Inches(5.4), Inches(1.0), [
+        ("Same model, separate stages", 12.5, True, NAVY, BODY, 0),
+        ("The moderator is the agentic role here, so the agentic reading of a "
+         "table belongs to it too. The stages stay separate, so a tone number is "
+         "still measuring one change — and one 19–23 GB load is paid per run "
+         "instead of per stage.", 11.5, False, INK, BODY, 4)], spacing=1.14)
+    text(s, Inches(7.15), Inches(5.32), Inches(5.43), Inches(1.3), [
+        ("Two datasets, because tone fails both ways.", 12.5, True, NAVY, BODY, 0),
         ("Measles × MCV1 coverage (9,959 rows, 1980–2024) invites alarmism. WHO "
          "child mortality invites the opposite failure, false reassurance, where "
          "the agent must keep the inequality and the COVID reversal visible.",
-         12, False, INK, BODY, 4)], spacing=1.16)
-    rect(s, Inches(7.15), Inches(5.02), Inches(5.43), Inches(1.5), fill=SOFT)
-    rect(s, Inches(7.15), Inches(5.02), Pt(3.5), Inches(1.5), fill=NAVY)
-    text(s, Inches(7.45), Inches(5.2), Inches(4.95), Inches(1.2), [
-        ("Why chart selection is a separate agent", 12.5, True, NAVY, BODY, 0),
-        ("Hanging it off the moderator would entangle our one novel claim with "
-         "an unrelated feature: every tone number afterwards would be measuring "
-         "two changes at once.", 11.5, False, INK, BODY, 4)], spacing=1.14)
-    chrome(s, 4)
+         11.5, False, INK, BODY, 4)], spacing=1.14)
+    chrome(s, 6)
     notes(s, """
-SPEAKER 2 - Okasha   [0:35]   running total 2:20   ~88 words
+SPEAKER 2 - Okasha   [0:33]   running total 2:23   ~82 words
 
-Four agents. A local model generates the story from an evidence pack. A second
-rewrites it for tone only. A third checks the numbers back against the table.
-A fourth picks the charts.
+Three roles, but only two local models.
 
-Only the second one is new. Everything else exists to make it measurable.
+A generator writes the draft. Then the moderator - and in this project the
+moderator is the agentic role, so it does three jobs on the same weights: it
+rewrites the tone, that is our contribution, it fact-checks every number back
+against the table, and it picks the charts.
 
-And note the fourth is deliberately not the moderator. If tone moderation also
-chose the charts, every tone number afterwards would be measuring two changes at
-once, and the one claim we are making would be confounded.
+Same model, separate stages. That matters twice: a tone number still measures
+one change, and we pay one twenty-gigabyte model load per run instead of three.
 
-DELIVERY: signpost slide, keep moving. The separation point is worth five
-seconds because it pre-empts an obvious question.
+Claude Opus judges, and only judges.
+
+DELIVERY: "one model, three jobs" is the line. Do not call chart selection a
+fourth model - it is not.
 """)
 
-    # -- 5  the instrument ------------------------------------------------
+    # -- 7  the instrument ------------------------------------------------
     s = blank(prs)
     heading(s, "The instrument", "Two axes, and both ends of each are failures")
     text(s, Inches(0.75), Inches(2.35), Inches(5.85), Inches(3.4), [
@@ -503,9 +574,9 @@ seconds because it pre-empts an obvious question.
            f"{agg['human_optimism_median']:.1f}, so the human band — not the "
            "rubric midpoint — is the target we report against.", 12, False,
            INK, BODY, 0)], spacing=1.16)
-    chrome(s, 5)
+    chrome(s, 7)
     notes(s, f"""
-SPEAKER 2 - Okasha   [0:40]   running total 3:00   ~100 words
+SPEAKER 2 - Okasha   [0:38]   running total 3:01   ~95 words
 
 To measure tone you need a scale. Every story gets two: alarmism and optimism,
 one to five each.
@@ -514,18 +585,17 @@ Both ends of each are failures. Five catastrophises, one is flat and hides real
 stakes. So an agent cannot win by draining the feeling out of a story.
 
 Two honest notes. The rubric calls three calibrated, but our human writers sit
-at {agg['human_alarmism_median']:.1f} and {agg['human_optimism_median']:.1f} - so
-the human band is what we report against, not the midpoint.
+at {agg['human_alarmism_median']:.1f} and {agg['human_optimism_median']:.1f}, so
+the human band is what we report against.
 
-And blinding cost us. Scoring each story alone doubles the calls and gives up
-the direct comparison. We paid that to stop telling the judge which story was
-the treatment.
+And blinding cost us: scoring each story alone doubles the calls and gives up
+the direct comparison.
 
-DELIVERY: "both ends are failures" is the sentence that must land. Pause after
-it. Point at the blue human marks when you say the second note.
+DELIVERY: "both ends are failures" must land. Pause after it. Point at the blue
+human marks on the second note.
 """)
 
-    # -- 6  metrics, the system -------------------------------------------
+    # -- 8  metrics part 1 ------------------------------------------------
     s = blank(prs)
     heading(s, "Metrics · part 1", "What we measure about the system")
     group(s, 0.75, 2.3, 5.9, 1.95, "Tone — the contribution",
@@ -546,31 +616,30 @@ it. Point at the blue human marks when you say the second note.
           [("chrF++", "character n-grams; our ranking metric"),
            ("BLEU 1-4, ROUGE-L", "n-gram and longest-common-subsequence overlap"),
            ("METEOR, unigram F1", "stem and synonym aware")], accent=DEEP_TEAL)
-    group(s, 6.9, 4.45, 5.68, 2.1, "Analytical operations — from the DataTales re-run",
-          "Accuracy per kind of claim, which is how we learned the causal case is hard.",
-          [("lookup, comparison", "reading a value, ranking two"),
-           ("trend, rate of change", "direction and slope over a window"),
-           ("causal", "why it happened — scored 0%, and that is a "
-            "groundedness measure against a masked reference, not a verdict on "
-            "reasoning")], accent=NAVY)
+    group(s, 6.9, 4.42, 5.68, 2.16, "Analytical operations — from the DataTales re-run",
+          "Not every claim is equally hard, so we score accuracy per kind of claim.",
+          [("lookup", "reading a single value off the table"),
+           ("comparison", "ranking two values against each other"),
+           ("trend", "which way a series moves across a window"),
+           ("rate of change", "how steeply it moves"),
+           ("causal", "why it moved — the hardest, and the one we treat with "
+            "most caution")], accent=NAVY)
     text(s, Inches(0.75), Inches(6.68), Inches(11.8), Inches(0.28),
-         [("Two different things are called “trend”: trend selection above is a "
-           "cherry-picking check on one story; trend below is an accuracy "
-           "category from the benchmark re-run.", 10, False, MUTED, BODY, 0)])
-    chrome(s, 6)
+         [("“Trend” appears twice: trend selection (bottom left) is a "
+           "cherry-picking check on one story; trend (bottom right) is an "
+           "accuracy category from the benchmark.", 10, False, MUTED, BODY, 0)])
+    chrome(s, 8)
     notes(s, """
-SPEAKER 2 - Okasha   [0:30]   running total 3:30   ~80 words   >>> HAND TO ELSAADANI
+SPEAKER 2 - Okasha   [0:28]   running total 3:29   ~70 words   >>> HAND TO ELSAADANI
 
 Four families of metric, and only the first one needs a model.
 
 Tone is the contribution and it is judged. Faithfulness is computed in code, for
-free, on every run - including a cherry-picking check that asks whether the
-window the story chose points the same way as the whole series. Similarity is
-against the human stories. And the operation accuracies come from our DataTales
-re-run.
+free, on every run - including a cherry-picking check on which window the story
+chose. Similarity is against our human stories. And the operation accuracies
+come from the DataTales re-run.
 
-One warning: two different things here are called trend. The footnote says which
-is which.
+Careful: two of these share the word trend. The footnote says which is which.
 
 Elsaadani takes the reader-facing half.
 
@@ -578,7 +647,16 @@ DELIVERY: do NOT read the metric names. Name the four families and the fact
 that three of them cost nothing to compute. The slide is the handout.
 """)
 
-    # -- 7  metrics, the reader -------------------------------------------
+    # -- 9  divider -------------------------------------------------------
+    divider(prs, 2, """
+SPEAKER 3 - Elsaadani   [0:05]   running total 3:34   ~15 words
+
+My half: what a reader is actually shown, and how we picked the model pair.
+
+DELIVERY: a beat, then straight into the next slide.
+""")
+
+    # -- 10  metrics part 2 -----------------------------------------------
     s = blank(prs)
     heading(s, "Metrics · part 2", "What the reader is shown, and why")
     group(s, 0.75, 2.3, 5.9, 2.35, "In the app, next to the story",
@@ -615,41 +693,41 @@ that three of them cost nothing to compute. The slide is the handout.
         ("Same underlying numbers in places. Different job.", 11.5, True,
          DEEP_TEAL, BODY, 6),
     ], spacing=1.15)
-    chrome(s, 7)
+    chrome(s, 10)
     notes(s, """
-SPEAKER 3 - Elsaadani   [0:25]   running total 3:55   ~63 words
+SPEAKER 3 - Elsaadani   [0:24]   running total 3:58   ~60 words
 
 Not every metric is for us. These are for the reader.
 
 The app shows the tone rating, the human band, and every emotive span the
 moderator removed, classified by what kind of edit it was. That is why the
-interface shows a diff rather than just a cleaner paragraph - so a reader can
-audit the rewrite instead of trusting it.
+interface shows a diff rather than just a cleaner paragraph - a reader can audit
+the rewrite instead of trusting it.
 
-The user-study axes on the right are designed and not run.
+The user-study axes are designed and not run.
 
-DELIVERY: this slide sets up the demo. Say "you will see these in a moment".
+DELIVERY: this sets up the demo. Say "you will see these in a moment".
 """)
 
-    # -- 8  fig10 ---------------------------------------------------------
+    # -- 11  fig10 --------------------------------------------------------
     fullbleed(prs, "fig10.png", """
-SPEAKER 3 - Elsaadani   [0:25]   running total 4:20   ~63 words
+SPEAKER 3 - Elsaadani   [0:24]   running total 4:22   ~60 words
 
 Now, how we picked the pair.
 
-Fourteen generator-and-moderator combinations. Six of them tie on tone - all hit
-exactly 2.0 - so tone alone cannot choose. We broke the tie on faithfulness: how
-many of the raw story's figures survive the rewrite.
+Fourteen generator-and-moderator combinations. Six tie on tone - all land on
+exactly 2.0 - so tone alone cannot choose between them. We broke the tie on
+faithfulness: how many of the raw story's figures survive the rewrite.
 
-On one run each, qwen 4b looked best at 71 percent against llama 8b's 50.
+On one run each, qwen 4b looked best, 71 percent against llama 8b's 50.
 
 DELIVERY: do not read the table. Point at the green block of ties, then at the
-"figures kept" column. Twenty-five seconds.
+"figures kept" column.
 """)
 
-    # -- 9  fig13 ---------------------------------------------------------
+    # -- 12  fig13 --------------------------------------------------------
     fullbleed(prs, "fig13.png", f"""
-SPEAKER 3 - Elsaadani   [0:55]   running total 5:15   ~138 words   >>> HAND TO RAMADAN
+SPEAKER 3 - Elsaadani   [0:51]   running total 5:13   ~128 words   >>> HAND TO RAMADAN
 
 Then we ran both five times, at different seeds. It reverses.
 
@@ -662,52 +740,58 @@ Seeds have to differ, by the way. Two of our tiers were the same configuration
 at the same seed and produced byte-identical text - that is determinism, not a
 repeat.
 
-So the pipeline we ship is llama3.1:8b generating, gemma4:31b moderating.
+So the pipeline we ship is llama3.1:8b generating and gemma4:31b moderating.
 
-And the lower half is the more interesting finding: the moderator lands on 2.10
+The lower half is the more interesting finding: the moderator lands on 2.10
 either way. It converges on the same tone regardless of who wrote the draft.
 
-Ahmed Ramadan will show you where that sits next to a person.
-
 DELIVERY: the strongest slide in the deck. Own the mistake. "Our recommendation
-had been backwards" is the line - say it plainly and do not soften it.
+had been backwards" is the line - say it plainly.
 """)
 
-    # -- 10  fig9 ---------------------------------------------------------
+    # -- 13  divider ------------------------------------------------------
+    divider(prs, 3, """
+SPEAKER 4 - Ramadan   [0:05]   running total 5:18   ~15 words
+
+Last part: where that lands against a person, and how the agent works inside.
+
+DELIVERY: a beat. Then fig9 is the payoff slide of the whole talk.
+""")
+
+    # -- 14  fig9 ---------------------------------------------------------
     fullbleed(prs, "fig9.png", f"""
-SPEAKER 4 - Ramadan   [0:45]   running total 6:00   ~112 words
+SPEAKER 4 - Ramadan   [0:42]   running total 6:00   ~105 words
 
 This is the result. The four of us wrote {D['n_human']} stories by hand from the
-same evidence packs, five per series, before seeing any machine output. The
-green band is where those human writers sit.
+same evidence packs, five per series, before seeing any machine output. The green
+band is where those human writers sit.
 
 Red is the raw story, blue is after moderation. On every one of the five series
 the arrow lands on or inside the human band.
 
 Overall {agg['alarmism_raw_mean']:.2f} to {agg['alarmism_moderated_mean']:.2f},
 against a human median of {agg['human_alarmism_median']:.2f}, over
-{D['n_runs_human']} runs that have a human counterpart.
+{D['n_runs_human']} runs with a human counterpart.
 
-And the honest caveat, on the slide rather than hidden: our human stories carry
-no headline and the machine stories do. Headlines concentrate alarmism, so every
-gap you see is a lower bound.
+The caveat is on the slide rather than hidden: our human stories carry no
+headline and the machine ones do, so every gap is a lower bound.
 
-DELIVERY: say the three numbers slowly and then stop talking. That trio is the
-thesis of the project.
+DELIVERY: say the three numbers slowly, then stop talking.
 """)
 
-    # -- 11  the chart agent ----------------------------------------------
+    # -- 15  inside the agent ---------------------------------------------
     s = blank(prs)
-    heading(s, "Inside the fourth agent", "How a local model picks charts without hallucinating one")
+    heading(s, "Inside the moderator's third job",
+            "How an 8B-class local model picks charts without hallucinating one")
     layers = [
         ("applicability.py", "WHICH FORMS THE DATA CAN CARRY",
          "Computed from column types. Exhaustive, instant, no tokens, and it "
          "cannot propose a map for a table with no geography.", "closed  ·  free",
          BLUE),
         ("select.py", "WHICH ARE WORTH SHOWING, AND WHY",
-         "The model picks an index out of candidates that are already drawable "
-         "and already encoded against real columns. Its job is ranking and prose.",
-         "open  ·  a model", TEAL),
+         "The moderator picks an index out of candidates that are already "
+         "drawable and encoded against real columns. Its job is ranking and prose.",
+         "open  ·  the model", TEAL),
         ("validate.py", "WHETHER THE RESULT IS HONEST",
          "A rejected spec is not dropped silently: the validator's own errors go "
          "back to the model for one retry.", "closed  ·  free", NAVY),
@@ -729,7 +813,7 @@ thesis of the project.
         ("Applicability is a closed question over column types, so computing it "
          "beats asking. That shrinks the prompt from seventeen forms with their "
          "rules to a handful of pre-validated candidates — which is what makes "
-         "this reliable on an 8B local model rather than only on a frontier one.",
+         "this reliable on a local model rather than only on a frontier one.",
          11.5, False, INK, BODY, 4)], spacing=1.15)
     rect(s, Inches(7.15), Inches(4.82), Inches(5.43), Inches(1.62), fill=SOFT)
     rect(s, Inches(7.15), Inches(4.82), Pt(3.5), Inches(1.62), fill=WARN)
@@ -738,30 +822,29 @@ thesis of the project.
         ("The contract defines seven chart tools plus three read tools, and the "
          "build emits a JSON schema shaped to drop straight in as an MCP "
          "inputSchema. That is a written design, not something running today — "
-         "the selector currently takes one structured call.", 11.5, False, INK,
-         BODY, 4)], spacing=1.14)
-    chrome(s, 11)
+         "selection is one structured call.", 11.5, False, INK, BODY, 4)],
+        spacing=1.14)
+    chrome(s, 15)
     notes(s, """
-SPEAKER 4 - Ramadan   [0:40]   running total 6:40   ~100 words
+SPEAKER 4 - Ramadan   [0:37]   running total 6:37   ~92 words
 
-The fourth agent, briefly, because it is the part people ask about.
+The moderator's third job, briefly, because it is what people ask about.
 
 Choosing a chart splits into three questions. Which forms can this table carry -
-that is closed, decided from column types in code, so it cannot hallucinate a
-map for a table with no geography. Which of those are worth showing - that is
-editorial, and that is the model. And is the result honest - closed again, and a
-rejected spec goes back for one retry.
+closed, decided from column types in code, so it cannot hallucinate a map for a
+table with no geography. Which are worth showing - editorial, and that is the
+model. Is the result honest - closed again, and a rejected spec goes back for one
+retry.
 
-That split is why an 8B local model can do this reliably.
+That split is why a local model can do this reliably.
 
-One honest note: the tool surface is specified and MCP-shaped. It is a design,
-not something running today.
+One honest note: the tool surface is specified and MCP-shaped. A design, not
+something running today.
 
-DELIVERY: say "specified, not wired" out loud. Do not imply we have an MCP
-server; someone will ask to see it.
+DELIVERY: say "specified, not wired" out loud. Someone will ask to see it.
 """)
 
-    # -- 12  the whole system, into the demo ------------------------------
+    # -- 16  whole system into the demo -----------------------------------
     s = blank(prs)
     rect(s, 0, 0, W, H, fill=DEEP_NAVY)
     rect(s, 0, 0, Inches(0.16), H, fill=TEAL)
@@ -771,14 +854,14 @@ server; someone will ask to see it.
     ])
     chain = [("Table", "9,959 rows"), ("Evidence pack", "computed"),
              ("Raw story", "llama3.1:8b"), ("Moderated", "gemma4:31b"),
-             ("Fact-check", "verifier"), ("Charts", "selector agent"),
+             ("Fact-check", "same model"), ("Charts", "same model"),
              ("Judged", "Opus, blind")]
     for i, (step, sub) in enumerate(chain):
         x = 0.95 + i * 1.72
         rect(s, Inches(x), Inches(2.75), Inches(1.5), Inches(0.85),
              fill=RGBColor(0x12, 0x2C, 0x5E))
         rect(s, Inches(x), Inches(2.75), Inches(1.5), Pt(3),
-             fill=TEAL if i in (3, 5) else RGBColor(0x2B, 0x4A, 0x84))
+             fill=TEAL if i in (3, 4, 5) else RGBColor(0x2B, 0x4A, 0x84))
         text(s, Inches(x + 0.12), Inches(2.95), Inches(1.26), Inches(0.6), [
             (step, 11.5, True, WHITE, BODY, 0),
             (sub, 9, False, RGBColor(0x8A, 0x9C, 0xB8), BODY, 1)],
@@ -788,7 +871,7 @@ server; someone will ask to see it.
                  [("›", 15, True, RGBColor(0x2B, 0x4A, 0x84), HEAD, 0)],
                  align=PP_ALIGN.CENTER)
     text(s, Inches(0.95), Inches(3.78), Inches(11.5), Inches(0.3),
-         [("teal = the two agents a reader sees the output of", 10, False,
+         [("teal = the three stages that run on the moderator model", 10, False,
            RGBColor(0x8A, 0x9C, 0xB8), BODY, 0)])
     text(s, Inches(1.1), Inches(4.5), Inches(11.0), Inches(1.5), [
         ("LIVE DEMO  ·  3:30", 12, True, TEAL, HEAD, 0),
@@ -799,22 +882,21 @@ server; someone will ask to see it.
          RGBColor(0x8A, 0x9C, 0xB8), BODY, 8),
     ], spacing=1.2)
     notes(s, """
-SPEAKER 4 - Ramadan   [0:20]   running total 7:00   ~50 words   >>> DEMO
+SPEAKER 4 - Ramadan   [0:20]   running total 6:57   ~50 words   >>> DEMO
 
 That is the whole system. A table becomes an evidence pack, a local model writes
-the story, the tone agent rewrites it, a verifier checks the numbers, the
-selector picks the figures, and Opus judges the result blind.
+the story, and the moderator model rewrites the tone, checks the numbers and
+picks the figures. Opus judges it blind.
 
 Everything except the judge runs on this laptop.
 
 Let me show you.
 
 DELIVERY: 20 seconds, then switch. The browser should ALREADY be open on the
-dataset page. Full click path and the fallback are in SPEAKER-SCRIPT.md - the
-one rule is that you never click Generate and wait.
+dataset page. Never click Generate and wait - see SPEAKER-SCRIPT.md.
 """)
 
-    # -- 13  closing ------------------------------------------------------
+    # -- 17  closing ------------------------------------------------------
     s = blank(prs)
     rect(s, 0, 0, W, H, fill=WHITE)
     rect(s, 0, 0, W, Inches(0.16), fill=TEAL)
@@ -843,7 +925,7 @@ one rule is that you never click Generate and wait.
         ("github.com/memoelsamadony/ai-powered-data-storytelling  ·  Thank you — "
          "questions welcome", 12.5, True, NAVY, BODY, 8),
     ], spacing=1.16)
-    chrome(s, 13)
+    chrome(s, 17)
     notes(s, """
 CLOSING - whoever finishes the demo   [0:15]
 
@@ -1033,7 +1115,14 @@ def write_script(prs: Presentation) -> Path:
         note = s.notes_slide.notes_text_frame.text.strip()
         head, _, rest = note.partition("\n")
         pic = any(sh.shape_type == 13 for sh in s.shapes)
-        title = "figure, full bleed" if pic else "layout"
+        on_slide = " ".join(sh.text_frame.text for sh in s.shapes
+                            if sh.has_text_frame)
+        if pic:
+            title = "figure, full bleed"
+        elif re.search(r"PART \d+ OF \d+", on_slide):
+            title = "section divider — hand over here"
+        else:
+            title = "layout"
         L += [f"### Slide {i} - {title}", "", f"`{head}`", ""]
         for block in rest.strip().split("\n\n"):
             block = " ".join(block.split())
