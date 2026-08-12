@@ -11,6 +11,7 @@
  */
 
 import { unstable_rethrow } from "next/navigation";
+import type { ChartPayload } from "@/lib/charts/spec";
 
 import { datasets as mockDatasets, getDataset, type Dataset } from "@/lib/data/datasets";
 import type {
@@ -273,6 +274,59 @@ export async function compareStories(
   } catch (err) {
     unstable_rethrow(err);
     console.warn("[api] scoring unavailable:", err);
+    return null;
+  }
+}
+
+// -------------------------------------------------------------------- charts
+
+/** How a column got its type. Present so a wrong inference is visible. */
+export interface ChartColumnReport {
+  key: string;
+  label: string;
+  type: string;
+  /** "declared" when the registry or the header named it, "inferred" otherwise. */
+  basis: string;
+  evidence: string;
+  missing: number;
+  distinct: number;
+}
+
+export interface ChartSuggestion {
+  charts: ChartPayload[];
+  columns: ChartColumnReport[];
+  /** Shape changes made before charting: a melt, a row cap, a renamed column. */
+  notes: string[];
+  candidatesConsidered: number;
+  model: string;
+  source: string;
+}
+
+/**
+ * The figures worth drawing for one table, chosen on the backend.
+ *
+ * Null rather than a fallback, for the same reason `compareStories` is: a
+ * suggested figure is a claim that a model looked at this data and judged this
+ * form right for it. A canned chart is not a degraded version of that, it is a
+ * different claim. The caller says the selector was unavailable instead of
+ * quietly showing figures nobody chose.
+ *
+ * Takes minutes on the large tier - one Ollama call, on hardware that can hold
+ * one model at a time - so callers should not put it in a blocking render path
+ * without saying what is happening.
+ */
+export async function suggestCharts(
+  source: { datasetId: string } | { uploadId: string },
+  { n = 3, tier = "demo", seed }: { n?: number; tier?: string; seed?: number } = {},
+): Promise<ChartSuggestion | null> {
+  try {
+    return await call<ChartSuggestion>("/charts/suggest", {
+      method: "POST",
+      body: JSON.stringify({ ...source, n, tier, seed }),
+    });
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api] chart selection unavailable:", err);
     return null;
   }
 }

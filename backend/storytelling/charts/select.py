@@ -121,8 +121,19 @@ def _candidate_list(candidates: list[Candidate]) -> str:
         enc = ", ".join(f"{k}={v}" for k, v in c.encoding.items() if v)
         where = f" from {c.source}" if c.source else ""
         line = f"{i}. {c.form}{where} [{enc}] - {FORM_RULES[c.form].describe}"
+        settings = dict(c.modifiers)
         if c.transform:
-            line += f" (transform: {c.transform})"
+            settings["transform"] = c.transform
+        # The EFFECTIVE value, not just the explicitly set one. Stating only the
+        # explicit settings leaves the model free to invent the rest: given a
+        # bar with no orientation named, qwen3.5:4b wrote "Horizontal bars
+        # provide an immediate ranking" under a spec that draws them vertically.
+        # A default the model cannot see is a default it will guess at.
+        if "orientation" in FORM_RULES[c.form].allows:
+            settings.setdefault("orientation", "vertical")
+        if settings:
+            line += " (this figure will render with: " + ", ".join(
+                f"{k}={v}" for k, v in settings.items()) + ")"
         line += f"\n   fits because: {c.because}"
         for note in c.notes:
             line += f"\n   note: {note}"
@@ -145,8 +156,11 @@ def _prompt(sources: list[FrameSource], candidates: list[Candidate], n: int,
         "  title      plain, specific, no more than about 10 words",
         "  subtitle   optional, one clause",
         "  caption    optional, what the reader should notice",
-        "  rationale  why THIS form over the alternatives. Shown to the reader "
-        "under the figure as 'Why this form:', so write it for them.",
+        "  rationale  why THIS form over the alternatives, in one or two "
+        "sentences. The page already prints the words 'Why this form:' above "
+        "it, so do not repeat them; start with the reason itself. Write for the "
+        "reader. Describe only what the figure will actually render with, as "
+        "listed, and state no number that is not given above.",
     ]
     if retry_errors:
         parts += [

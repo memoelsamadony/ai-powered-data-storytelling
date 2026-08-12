@@ -28,6 +28,7 @@ from .charts.applicability import (
     apply_slice,
     candidates_across,
     candidates_for,
+    spec_of,
 )
 from .charts.frames import country_frame_of, world_frame_of
 from .charts.profile import MAX_FRAME_ROWS, frame_from_dataframe, profile_of_frame
@@ -374,16 +375,46 @@ class ApplicabilityTests(TestCase):
         sources = charts_http.sources_for_dataset(ds.get_dataset("measles"))
         for candidate in candidates_across(sources):
             frame = next(s.frame for s in sources if s.name == candidate.source)
-            spec = ChartSpec(
-                form=candidate.form,
-                encoding={**candidate.encoding} if "measures" in candidate.encoding
-                else {**candidate.encoding, "measures": []},
-                transform=candidate.transform,
-                title="T", rationale="R",
-            )
+            # spec_of, not a hand-built ChartSpec: it is what select.py calls,
+            # so this covers the candidate's own modifiers too. A modifier the
+            # form does not allow is an error, not a silent drop.
+            spec = spec_of(candidate, title="T", rationale="R")
             result = validate_spec(spec, apply_slice(frame, candidate))
             with self.subTest(form=candidate.form, source=candidate.source):
                 self.assertTrue(result.ok, f"{candidate.form}: {result.errors}")
+
+    def test_a_candidate_only_sets_modifiers_its_form_allows(self):
+        sources = charts_http.sources_for_dataset(ds.get_dataset("measles"))
+        for candidate in candidates_across(sources):
+            for name in candidate.modifiers:
+                with self.subTest(form=candidate.form, modifier=name):
+                    self.assertIn(name, FORM_RULES[candidate.form].allows)
+
+    def test_long_category_names_get_a_horizontal_bar(self):
+        """Otherwise the model describes one and the spec draws the other."""
+        frame = _frame(
+            [
+                {"key": "country", "label": "Country", "type": "nominal"},
+                {"key": "v", "label": "V", "type": "quantitative"},
+            ],
+            [{"country": "Democratic Republic of the Congo", "v": 1.0},
+             {"country": "United Republic of Tanzania", "v": 2.0}],
+        )
+        source = FrameSource("t", frame, profile_of_frame(frame))
+        bar = next(c for c in candidates_for(source) if c.form == "bar")
+        self.assertEqual(bar.modifiers.get("orientation"), "horizontal")
+
+    def test_short_category_names_leave_orientation_unset(self):
+        frame = _frame(
+            [
+                {"key": "country", "label": "Country", "type": "nominal"},
+                {"key": "v", "label": "V", "type": "quantitative"},
+            ],
+            [{"country": "Chad", "v": 1.0}, {"country": "Peru", "v": 2.0}],
+        )
+        source = FrameSource("t", frame, profile_of_frame(frame))
+        bar = next(c for c in candidates_for(source) if c.form == "bar")
+        self.assertEqual(bar.modifiers, {})
 
     def test_a_measure_split_of_mixed_units_only_offers_indexed_and_faceted(self):
         """The dual-axis defect, arriving through long format."""

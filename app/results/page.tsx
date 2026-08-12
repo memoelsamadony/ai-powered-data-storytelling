@@ -15,7 +15,9 @@ import {
   maskedNumber as staticMaskedNumber,
   userStudy,
 } from "@/lib/data/metrics";
-import { getResults } from "@/lib/api";
+import { getResults, suggestCharts } from "@/lib/api";
+import { SuggestedCharts } from "@/components/charts/suggested-charts";
+import { datasets as fallbackDatasets } from "@/lib/data/datasets";
 
 export const metadata: Metadata = {
   title: "Results & evaluation",
@@ -27,8 +29,39 @@ export const metadata: Metadata = {
 // but arrive on the same call.
 export const dynamic = "force-dynamic";
 
-export default async function ResultsPage() {
-  const live = await getResults();
+/**
+ * `?dataset=<id>` or `?upload=<uuid>` adds the chosen figures for that table.
+ *
+ * Opt-in rather than always-on, and that is not timidity. Selection is a real
+ * Ollama call on hardware that holds one model at a time, so it costs seconds
+ * on the demo tier and minutes on the large one. Running it on every visit
+ * would make the evaluation page - which is otherwise a fast read over
+ * committed CSVs - wait on a model nobody asked for.
+ *
+ * In Next 16 `searchParams` is a Promise and has to be awaited; the synchronous
+ * object is the older API.
+ */
+export default async function ResultsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
+  const datasetId = one(params.dataset);
+  const uploadId = one(params.upload);
+
+  const [live, suggestion] = await Promise.all([
+    getResults(),
+    datasetId
+      ? suggestCharts({ datasetId })
+      : uploadId
+        ? suggestCharts({ uploadId })
+        : Promise.resolve(null),
+  ]);
+  const charted = datasetId || uploadId;
+  const chartedLabel =
+    fallbackDatasets.find((d) => d.id === datasetId)?.shortName ?? datasetId;
 
   // The reproduction blocks exist twice, and both are the same numbers: the
   // backend reads the committed CSVs per request, the generated module is
@@ -385,6 +418,31 @@ export default async function ResultsPage() {
                   </p>
                 ))}
               </Card>
+            </Reveal>
+          </Container>
+        </Section>
+      )}
+
+      {charted && (
+        <Section className="border-t border-hairline">
+          <Container>
+            <Reveal>
+              <SectionHeader
+                kicker="Suggested figures"
+                title={
+                  uploadId
+                    ? "What this uploaded table can honestly show"
+                    : `What the ${chartedLabel} data can honestly show`
+                }
+                intro={
+                  "Which forms are available was computed from the column types. " +
+                  "The model ranked those and wrote the reasoning under each figure; " +
+                  "it could not reach for a form the data cannot carry."
+                }
+              />
+              <div className="mt-10">
+                <SuggestedCharts suggestion={suggestion} />
+              </div>
             </Reveal>
           </Container>
         </Section>

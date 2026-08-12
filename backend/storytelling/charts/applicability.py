@@ -111,6 +111,9 @@ class Candidate:
     slice_arg: object = None
     #: Modifiers this candidate must carry to be honest (e.g. bump wants rank).
     transform: str | None = None
+    #: Spec modifiers the candidate sets itself, e.g. a horizontal bar. Only
+    #: ones FORM_RULES[form].allows, or validate_spec rejects the result.
+    modifiers: dict[str, object] = field(default_factory=dict)
     #: Machine-written seed for the model's rationale. Not shown to the reader.
     because: str = ""
     notes: list[str] = field(default_factory=list)
@@ -123,32 +126,60 @@ class Candidate:
         return "|".join(parts) + f"|{self.slice}|{self.transform or ''}"
 
 
-def _usable_split(c: ColumnProfile, row_count: int) -> bool:
-    """A nominal column worth splitting a series by.
+def _is_category(c: ColumnProfile) -> bool:
+    """A nominal column usable as a CATEGORY AXIS - the x of a bar chart.
 
-    High cardinality is not itself disqualifying: that is what the `top_n` cut
-    on each candidate exists for. What disqualifies a column is being an
-    identifier, i.e. nearly one distinct value per row.
+    One bar per value, so one row per value is the ideal case rather than a
+    disqualifying one.
     """
-    if c.type not in ("nominal", "geo") or c.distinct < 2:
-        return False
-    if row_count and c.distinct > row_count * MAX_SPLIT_RATIO:
-        return False
-    return True
+    return c.type in ("nominal", "geo") and c.distinct >= 2
 
 
-def _is_incommensurable(frame: ChartFrame, split: ColumnProfile,
-                        measure_key: str) -> bool:
-    """Do the split's groups hold different KINDS of quantity in one column?
+def _is_series_split(c: ColumnProfile, row_count: int) -> bool:
+    """A nominal column usable as a SERIES SPLIT - the colour of a line chart.
+
+    Stricter than a category, and the distinction is not pedantry. A series
+    needs several points to BE a line, so a column with one row per value gives
+    one-point series: a legitimate bar chart and a meaningless line. Rejecting
+    it here while `_is_category` still accepts it is what lets a snapshot table
+    (one row per country, no time axis) get bars without also getting lines.
+
+    High cardinality alone is not disqualifying - that is what the `top_n` cut
+    exists for. Being an identifier is.
+    """
+    if not _is_category(c):
+        return False
+    return not (row_count and c.distinct > row_count * MAX_SPLIT_RATIO)
+
+
+def _longest_value(frame: ChartFrame, key: str) -> int:
+    """The longest label in a column, for deciding bar orientation."""
+    longest = 0
+    for row in frame.rows:
+        value = row.get(key)
+        if value is not None:
+            longest = max(longest, len(str(value)))
+    return longest
+
+
+def _incommensurable_ratio(frame: ChartFrame, split: ColumnProfile,
+                           measure_key: str) -> float | None:
+    """How far apart the split's groups are, or None if they are comparable.
 
     Two signals, both required. The column must NAME a measure discriminator,
     and its groups must actually differ by orders of magnitude. Either alone is
     wrong: `country` differs hugely in magnitude while staying one unit, and a
     column called `metric` whose two metrics are both percentages shares an axis
     perfectly well.
+
+    Returns the ratio rather than a bool so the caller can put the real number
+    in front of the model. Measured: told only that the measures "differ in
+    magnitude", qwen3.5:4b wrote "two measures differing by ~3,000x" into a
+    reader-facing rationale for a table whose true ratio is 44.8. A model with
+    no number will invent one, and this is the cheapest possible fix.
     """
     if not (_MEASURE_SPLIT.match(split.key) or _MEASURE_SPLIT.match(split.label)):
-        return False
+        return None
 
     split_key = split.key
     peaks: dict[str, float] = {}
@@ -163,8 +194,9 @@ def _is_incommensurable(frame: ChartFrame, split: ColumnProfile,
 
     usable = [p for p in peaks.values() if p > 0]
     if len(usable) < 2:
-        return False
-    return max(usable) / min(usable) > INCOMMENSURABLE_RATIO
+        return None
+    ratio = max(usable) / min(usable)
+    return ratio if ratio > INCOMMENSURABLE_RATIO else None
 
 
 def _split_candidate(form: str, encoding: dict[str, object],
@@ -195,20 +227,25 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
     measures = profile.measures
     temporal = profile.temporal
     geo = [c for c in profile.columns if c.type == "geo"]
-    nominal = [
-        c for c in profile.columns
-        if c.type == "nominal" and _usable_split(c, profile.row_count)
+    categories = [c for c in profile.columns if c.type == "nominal" and _is_category(c)]
+    splits = [
+        c for c in categories if _is_series_split(c, profile.row_count)
     ]
 
     out: list[Candidate] = []
     t = temporal[0] if temporal else None
-    split = nominal[0] if nominal else None
+    #: `split` colours a series; `category` is an axis of bars. Often the same
+    #: column, but not on a snapshot table, where only the latter applies.
+    split = splits[0] if splits else None
+    category = categories[0] if categories else None
 
     # Does the split mix units inside one measure column? If so, every form that
     # shares one linear axis across it is off the table, the indexed one aside.
-    mixed = bool(
-        split and measures and _is_incommensurable(frame, split, measures[0].key)
+    ratio = (
+        _incommensurable_ratio(frame, split, measures[0].key)
+        if split and measures else None
     )
+    mixed = ratio is not None
     shared_axis_ok = not mixed
 
     # --- Trend over time -------------------------------------------------
@@ -216,19 +253,24 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
         if mixed and split:
             m = measures[0]
             # The contract's own worked example, section 8.
+            spread = f"{ratio:.0f}x" if ratio else "orders of magnitude"
             out.append(Candidate(
                 form="line",
                 encoding={"x": t.key, "y": m.key, "color": split.key},
                 transform="indexed",
-                because=(f"{split.label} mixes quantities of different magnitude in "
-                         f"{m.label}; indexing is what lets them share an axis"),
+                because=(f"the groups in {split.label} peak {spread} apart in "
+                         f"{m.label}; indexing is what lets them share an axis. "
+                         f"The measured ratio is {spread} - do not state another "
+                         "number"),
                 notes=[f"Each series is indexed to 100 at its first {t.label}, so they "
                        "share one axis and neither is rescaled to meet the other."],
             ))
             out.append(Candidate(
                 form="line",
                 encoding={"x": t.key, "y": m.key, "facet": split.key},
-                because=f"one panel per {split.label}, each on its own scale",
+                because=(f"one panel per {split.label}, each on its own scale; they "
+                         f"peak {spread} apart and cannot share one. The measured "
+                         f"ratio is {spread} - do not state another number"),
             ))
         else:
             for m in measures[:2]:
@@ -252,22 +294,31 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
                 ))
 
     # --- Magnitude across categories -------------------------------------
-    if split and measures and shared_axis_ok:
+    if category and measures and shared_axis_ok:
         m = measures[0]
+        # "Horizontal is the only readable option once category names are long"
+        # (MODIFIER_DOC in catalog.ts). Decided from the labels rather than left
+        # to the model, which otherwise describes a horizontal bar in its
+        # rationale while emitting a spec that draws a vertical one.
+        long_names = _longest_value(frame, category.key) > 12
         for form in ("bar", "lollipop"):
             out.append(Candidate(
-                form=form, encoding={"x": split.key, "y": m.key},
+                form=form, encoding={"x": category.key, "y": m.key},
+                modifiers={"orientation": "horizontal"} if long_names else {},
                 slice="latest" if t else "none", slice_arg=(t.key if t else None),
-                because=(f"{m.label} compared across {split.label}" if form == "bar"
+                because=(f"{m.label} compared across {category.label}"
+                         if form == "bar"
                          else f"a ranked comparison of {m.label}, where bar area "
                               "would overstate the difference"),
             ))
 
         if t:
+            # The heatmap's `y` is the row dimension, not a series, so it takes
+            # the category for the same reason the bar does.
             out.append(_split_candidate(
-                "heatmap", {"x": t.key, "y": split.key, "color": m.key},
-                split, m, cap=25,
-                because=f"{split.label} x {t.label} at full resolution",
+                "heatmap", {"x": t.key, "y": category.key, "color": m.key},
+                category, m, cap=25,
+                because=f"{category.label} x {t.label} at full resolution",
             ))
 
     # --- Change between two points ---------------------------------------
@@ -341,7 +392,7 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
     # Meaningful only when y holds one kind of quantity, and only interesting
     # when each x-slice holds enough items to have a spread at all.
     if measures and shared_axis_ok:
-        x = t or split
+        x = t or category
         m = measures[0]
         if x and profile.row_count >= 3 * max(1, x.distinct):
             for form in ("beeswarm", "box", "ridgeline"):
@@ -471,5 +522,6 @@ def spec_of(candidate: Candidate, *, title: str, rationale: str, **copy) -> Char
         transform=candidate.transform,
         title=title,
         rationale=rationale,
+        **candidate.modifiers,  # type: ignore[arg-type]
         **copy,
     )
