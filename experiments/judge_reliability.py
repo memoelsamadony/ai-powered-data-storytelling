@@ -43,6 +43,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django  # noqa: E402
 
 django.setup()
+sys.path.insert(0, str(HERE))
+from safe_write import add_force_flag, write_json, write_text  # noqa: E402
 from django.db import close_old_connections  # noqa: E402
 from storytelling import datasets as ds, judge  # noqa: E402
 from storytelling.models import Run  # noqa: E402
@@ -99,6 +101,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--passes", type=int, default=3)
     ap.add_argument("--workers", type=int, default=3)
+    add_force_flag(ap)
     a = ap.parse_args()
     if not judge.is_available():
         print("no 'claude' on PATH", file=sys.stderr)
@@ -181,9 +184,8 @@ def main() -> int:
         "ratings": {k: v for k, v in alarm.items()},
         "figure": "presentation/figures/fig13.svg",
     }
-    dest = HERE / "exp_json" / "exp-judge-reliability.json"
-    dest.parent.mkdir(exist_ok=True)
-    dest.write_text(json.dumps(res, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(HERE / "exp_json" / "exp-judge-reliability.json", res,
+               force=a.force, quiet=True)
 
     al = res["alarmism"]
     print(f"\nALARMISM  ICC(2,1) {al['icc_2_1']}   Krippendorff alpha "

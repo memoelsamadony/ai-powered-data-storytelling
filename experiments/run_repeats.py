@@ -33,6 +33,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django  # noqa: E402
 
 django.setup()
+sys.path.insert(0, str(HERE))
+from safe_write import add_force_flag, write_json, write_text  # noqa: E402
 from storytelling import faithfulness, ollama_client as oc, services  # noqa: E402
 from storytelling.models import Run, RunStatus  # noqa: E402
 from storytelling.services import _dataset_values  # noqa: E402
@@ -87,6 +89,7 @@ def main() -> int:
     ap.add_argument("--tier", action="append", required=True)
     ap.add_argument("--dataset", default="pertussis-global")
     ap.add_argument("--n", type=int, default=5)
+    add_force_flag(ap)
     a = ap.parse_args()
 
     out = {}
@@ -115,8 +118,7 @@ def main() -> int:
     # finished five-seed set; that happened once and the set had to be rebuilt
     # from the database.
     dest = HERE / "exp_json" / f"exp-repeats-{'-'.join(a.tier)}.json"
-    dest.parent.mkdir(exist_ok=True)
-    dest.write_text(json.dumps({
+    payload = {
         "experiment": "Repeats at distinct seeds, to put a variance on the ranking",
         "question": "Is the gap between the top combinations bigger than the "
                     "run-to-run noise of a single combination?",
@@ -128,8 +130,8 @@ def main() -> int:
                               "byte-identical text.",
         "configs": out,
         "figure": "presentation/figures/fig13.svg",
-    }, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"\nwrote {dest.relative_to(HERE)}")
+    }
+    write_json(dest, payload, force=a.force)
     return 0
 
 

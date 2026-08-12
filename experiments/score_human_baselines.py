@@ -39,6 +39,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django  # noqa: E402
 
 django.setup()
+sys.path.insert(0, str(HERE))
+from safe_write import add_force_flag, write_json, write_text  # noqa: E402
 from storytelling import datasets as ds, judge, metrics, textstats  # noqa: E402
 from storytelling.models import Run  # noqa: E402
 from storytelling.services import _dataset_values  # noqa: E402
@@ -125,6 +127,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-judge", action="store_true")
     ap.add_argument("--workers", type=int, default=3)
+    add_force_flag(ap)
     a = ap.parse_args()
 
     stories = [parse(p) for p in sorted(PILOT.glob("*__human.md"))]
@@ -159,7 +162,7 @@ def main() -> int:
             for k, v in machine.items()
         },
     }
-    OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(OUT, payload, force=a.force, quiet=True)
 
     judged = [r for r in rows if r.get("opus_alarmism") is not None]
     print(f"\nwrote {OUT.name}: {len(rows)} stories, {len(judged)} judged\n")

@@ -31,6 +31,7 @@ figure it feeds.
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import statistics as st
@@ -44,6 +45,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django  # noqa: E402
 
 django.setup()
+sys.path.insert(0, str(HERE))
+from safe_write import add_force_flag, write_json, write_text  # noqa: E402
 from storytelling import faithfulness, metrics, ollama_client as oc  # noqa: E402
 from storytelling.models import Run, StageResult  # noqa: E402
 from storytelling.services import _dataset_values  # noqa: E402
@@ -158,21 +161,22 @@ def row(run: Run) -> dict:
 
 
 def write(name: str, payload: dict) -> None:
-    OUTDIR.mkdir(exist_ok=True)
-    (OUTDIR / f"{name}.json").write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"  wrote exp_json/{name}.json")
+    write_json(OUTDIR / f"{name}.json", payload, force=ARGS.force)
 
 
 def main() -> int:
+    global ARGS
+    ap = argparse.ArgumentParser()
+    add_force_flag(ap)
+    ARGS = ap.parse_args()
     runs = [r for r in Run.objects.all().order_by("created_at")
             if r.raw_paragraphs and r.moderated_paragraphs and r.opus_raw_alarmism is not None]
     rows = [row(r) for r in runs]
-    (HERE / "human_vs_machine.json").write_text(
-        json.dumps({"n_runs": len(rows), "rank_series": RANK_SERIES,
-                    "similarity_excludes_machine_headline": True,
-                    "runs": rows}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"wrote human_vs_machine.json ({len(rows)} runs)\n")
+    write_json(HERE / "human_vs_machine.json",
+               {"n_runs": len(rows), "rank_series": RANK_SERIES,
+                "similarity_excludes_machine_headline": True, "runs": rows},
+               force=ARGS.force)
+    print()
 
     ladder = [r for r in rows if r["dataset"] == RANK_SERIES]
     ladder.sort(key=lambda r: (r["alarmism"]["gap_moderated"] is None,
