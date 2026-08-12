@@ -22,6 +22,30 @@ import { cn } from "@/lib/utils";
  */
 type StepId = "dataset" | "human" | "run" | "compare";
 
+/**
+ * How an uploaded table was read, shown wherever its story is.
+ *
+ * The mapping is the only guard between an inferred column choice and a reader
+ * who takes the story at face value, so it cannot live solely on the card that
+ * uploaded the file - by the time the story is on screen that card is folded
+ * away, and the story never says which column it is about.
+ */
+function InferredMapping({ upload }: { upload: api.UploadedDataset }) {
+  return (
+    <div className="mb-6 rounded-xl border border-hairline bg-surface-soft/50 px-4 py-3">
+      <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+        Uploaded table · {upload.originalName}
+      </p>
+      <p className="mt-1.5 text-xs leading-relaxed text-muted">{upload.mapping}</p>
+      {upload.mappingNotes.map((n) => (
+        <p key={n} className="mt-1 text-[0.68rem] leading-relaxed text-faint">
+          · {n}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 const ALL_STEPS: { id: StepId; title: string; desc: string }[] = [
   { id: "dataset", title: "Choose a dataset", desc: "Pick the data your story is built from. Each one fails in a different tonal direction, and you can bring your own table." },
   { id: "human", title: "The human baseline", desc: "Write or import the human-authored story, the yardstick the LLM is measured against." },
@@ -463,7 +487,13 @@ export function GenerateExperience() {
                         dataset={dataset}
                       />
                     )}
-                    {meta.id === "run" && story && dataset && (
+                    {upload && (meta.id === "run" || meta.id === "compare") && (
+                      <InferredMapping upload={upload} />
+                    )}
+                    {/* `story` is null for an upload until its first run
+                        finishes, and the runner is what finishes it. Gating on
+                        the story here left the upload wizard unable to start. */}
+                    {meta.id === "run" && dataset && (story || upload) && (
                       <PipelineRunner
                         story={story}
                         dataset={dataset}

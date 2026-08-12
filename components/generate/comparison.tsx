@@ -173,6 +173,12 @@ export function Comparison({
       }
     : null;
 
+  // `metrics` can exist while carrying no similarity rows: a run with no human
+  // baseline has nothing to compare against, and `compare` returns an empty list
+  // rather than six rows of 0.0. Keying the panel off `metrics` alone drew an
+  // empty chart captioned "scored".
+  const scoredSimilarity = !!metrics && metrics.textSimilarity.length > 0;
+
   /* Derived from the fact-checker's own output rather than hardcoded. */
   const flagged = story.factualCheck.filter((f) => f.status === "flagged").length;
   const corrected = story.factualCheck.filter((f) => f.status === "corrected").length;
@@ -316,7 +322,11 @@ export function Comparison({
             <section className="rounded-xl border border-hairline bg-surface-soft/30 p-5">
               <p className="text-sm font-medium text-navy">Text similarity</p>
               <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                {metrics ? "Moderated vs your baseline · scored" : "Not scored yet"}
+                {!human
+                  ? "Not applicable · no baseline"
+                  : scoredSimilarity
+                    ? "Moderated vs your baseline · scored"
+                    : "Not scored yet"}
               </p>
               {/* There used to be a fallback here that drew BLEU 0.31 /
                   ROUGE-L 0.48 / METEOR 0.41 whenever scoring had not happened,
@@ -324,9 +334,9 @@ export function Comparison({
                   An unscored pair has no scores; the empty state says so, the
                   same way the tone meter says "not measured". */}
               <div className="mt-2">
-                {metrics ? (
+                {scoredSimilarity ? (
                   <SimpleBarChart
-                    data={metrics.textSimilarity.map((m) => ({ label: m.metric, value: m.value }))}
+                    data={metrics!.textSimilarity.map((m) => ({ label: m.metric, value: m.value }))}
                     color="#1e66b8"
                     domainMax={1}
                     decimals={2}
@@ -335,10 +345,12 @@ export function Comparison({
                 ) : (
                   <div className="flex h-[150px] flex-col items-center justify-center rounded-lg border border-dashed border-hairline bg-surface-soft/40 px-4 text-center">
                     <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                      No score yet
+                      {human ? "No score yet" : "Nothing to compare against"}
                     </p>
                     <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                      Write a baseline above and the backend scores it against the moderated story.
+                      {human
+                        ? "Write a baseline above and the backend scores it against the moderated story."
+                        : "Every one of these measures the machine text against a human baseline, and an uploaded table has none. There is no step above to write one in - so this is absent rather than zero."}
                     </p>
                   </div>
                 )}

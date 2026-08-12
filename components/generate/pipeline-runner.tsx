@@ -45,7 +45,18 @@ export function PipelineRunner({
   onComplete,
   onReset,
 }: {
-  story: StorySet;
+  /**
+   * The story to show before the run produces one - the mock, for a registry
+   * dataset. Null for an uploaded table, which has no mock and cannot have one:
+   * `getStorySet` answers an unknown id with the measles story, and showing that
+   * under an uploaded file's name is the failure this project exists to catch.
+   *
+   * Nullable rather than required, because this component is what STARTS the
+   * run. Requiring a story to render it meant an upload could never be run at
+   * all: no story until the pipeline goes, and no way to start the pipeline
+   * until there is a story.
+   */
+  story: StorySet | null;
   dataset: Dataset;
   /**
    * When supplied, each stage is awaited against the real backend and the phase
@@ -75,16 +86,18 @@ export function PipelineRunner({
   const [charts, setCharts] = useState<ChartSuggestion | null>(null);
   const isLive = !!stages;
 
-  // Render whatever the backend has produced so far; fall back to the mock.
+  // Render whatever the backend has produced so far; fall back to the mock,
+  // which an uploaded table does not have. Everything that reads it sits behind
+  // the `view &&` gate below, which in live mode waits for the first stage.
   const view = live ?? story;
   // No band without a judged human baseline: the band is drawn *around* that
   // rating, so inventing one would draw a target where none was measured. An
   // uploaded table has no baseline at all, which is the same absence.
-  const bands: ReturnType<typeof humanBands> = view.human
+  const bands: ReturnType<typeof humanBands> = view?.human
     ? humanBands(view.human)
     : { alarmism: undefined, optimism: undefined };
 
-  const rawBody = view.aiRaw.paragraphs.join("\n\n");
+  const rawBody = view?.aiRaw.paragraphs.join("\n\n") ?? "";
 
   const stageState = (id: keyof typeof stageIcons): "pending" | "running" | "done" => {
     const order: Phase[] = ["idle", "generate", "charts", "moderate", "factcheck", "done"];
@@ -269,7 +282,7 @@ export function PipelineRunner({
 
       {/* Once the run starts, the data stays on screen beside every stage —
           the chart is no longer a dataset preview that vanishes (defect D2). */}
-      {phase !== "idle" && (!isLive || live) && (
+      {phase !== "idle" && (!isLive || live) && view && (
         <div className="grid gap-6 lg:grid-cols-[1fr_310px] lg:items-start">
           <div className="min-w-0 space-y-6">
 
