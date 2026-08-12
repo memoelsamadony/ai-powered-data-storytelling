@@ -29,6 +29,8 @@ from ninja.errors import HttpError
 
 from . import datasets as ds
 from . import judge as judge_mod
+from .charts import http as charts_http
+from .charts import select as charts_select
 from . import ollama_client as oc
 from . import results as results_mod
 from . import services
@@ -390,3 +392,67 @@ def compare(request, payload: CompareIn):
         run.human_text = payload.human_text
         run.save(update_fields=["human_text"])
     return services.compare(run, payload.human_text)
+
+
+# --------------------------------------------------------------------------
+# Charts
+# --------------------------------------------------------------------------
+
+
+@post("/charts/suggest", response=charts_http.ChartSuggestOut, exclude_none=True)
+def suggest_charts(request, payload: charts_http.ChartSuggestIn):
+    """Pick the figures worth drawing for a dataset, registry or uploaded.
+
+    Deliberately NOT a stage on a run, and deliberately not part of
+    ``/moderate``. The moderator rewrites a story's tone and is the thing the
+    project measures; chart selection reads a table and chooses geometry. They
+    share no input, no output and no failure mode, and folding one into the
+    other would make every future tone number a measurement of two changes.
+
+    ``exclude_none=True`` is load-bearing rather than tidiness. ``validateSpec``
+    on the frontend rejects any modifier the form does not honour and tests for
+    presence, not value, so a spec that carries ``stack: null`` for a line chart
+    comes back as a refusal panel. See charts/spec.py for the measurement.
+    """
+    if bool(payload.dataset_id) == bool(payload.upload_id):
+        raise HttpError(400, "Give exactly one of datasetId or uploadId.")
+
+    tier = oc.resolve_tier(payload.tier)
+    plan = oc.tier_plan(tier)
+    if not plan["runnable"]:
+        missing = [m for m in tier.distinct_models if m not in plan["installed"]]
+        raise HttpError(
+            409, f"Tier '{payload.tier}' needs models not pulled: {', '.join(missing)}"
+        )
+
+    if payload.dataset_id:
+        if payload.dataset_id not in ds.SPECS:
+            raise HttpError(404, f"Unknown dataset '{payload.dataset_id}'")
+        sources = charts_http.sources_for_dataset(ds.get_dataset(payload.dataset_id))
+        source_label = f"dataset:{payload.dataset_id}"
+    else:
+        record = get_object_or_404(UploadedDataset, id=payload.upload_id)
+        sources = charts_http.sources_for_upload(record)
+        source_label = f"upload:{record.original_name}"
+
+    # The generator model, not the moderator: this writes copy about a table,
+    # which is the generator's job description. Using the moderator would also
+    # make the tier's moderator/judge separation meaningless for this call.
+    model = tier.generator
+
+    selection = charts_select.select_charts(
+        sources, model=model, n=max(1, min(payload.n, 6)), seed=payload.seed,
+    )
+
+    notes: list[str] = []
+    for source in sources:
+        notes.extend(source.profile.notes)
+
+    return charts_http.ChartSuggestOut(
+        charts=selection.charts,
+        columns=charts_http.report_columns(sources),
+        notes=notes,
+        candidates_considered=selection.considered,
+        model=model,
+        source=source_label,
+    )
