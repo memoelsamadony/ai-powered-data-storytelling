@@ -55,6 +55,12 @@ MAX_CANDIDATES = 14
 #: `line` with no colour channel, which draws 211 countries as one zigzag.
 MAX_SPLIT_RATIO = 0.6
 
+#: The maps need no filtering: a choropleth looks each code up in its geometry
+#: and simply fails to match "OWID_WRL", so an aggregate is already absent from
+#: the drawing. Every other form turns a row into a mark sitting beside the
+#: other marks, and there the aggregate has to go.
+FORMS_THAT_IGNORE_AGGREGATES = ("choropleth", "bivariateChoropleth")
+
 #: How many bars stay readable at once. A category axis has no `maxSeries` in
 #: FORM_RULES - that governs colour - so nothing capped it, and a real upload
 #: (227 OWID entities) produced a 225-bar chart. Cut and declared, like every
@@ -118,8 +124,8 @@ class Candidate:
     #: Modifiers this candidate must carry to be honest (e.g. bump wants rank).
     transform: str | None = None
     #: Geo column whose non-ISO3 rows (World, continents, income groups) must be
-    #: dropped before this figure. Set on the forms that RANK places against one
-    #: another, where an aggregate would sit above every country it contains.
+    #: dropped before this figure. Set on every form that draws places as
+    #: comparable marks; see FORMS_THAT_IGNORE_AGGREGATES for the exceptions.
     drop_aggregates_on: str | None = None
     #: Spec modifiers the candidate sets itself, e.g. a horizontal bar. Only
     #: ones FORM_RULES[form].allows, or validate_spec rejects the result.
@@ -232,6 +238,74 @@ def _split_candidate(form: str, encoding: dict[str, object],
     )
 
 
+#: Why they go, stated correctly.
+#:
+#: An earlier version of this said "an aggregate outranks every country inside
+#: it". That is true of a COUNT and false of a RATE, and this table is a rate:
+#: TB incidence per 100k puts World 59th of 225, below Kiribati at 945. The
+#: reason to drop them was never the ordering - it is that a world total is not
+#: a peer of a country, so putting them on one axis compares two different kinds
+#: of thing and invites the reader to read a rank off it.
+_AGGREGATE_NOTE = (
+    "{n} rows that are not individual countries (world totals, continents, "
+    "income groups) are excluded: they are aggregates of the other rows, not "
+    "peers of them, so a position among them would not mean anything."
+)
+
+
+def _label_of(profile: DatasetProfile, key: str) -> str:
+    for c in profile.columns:
+        if c.key == key:
+            return c.label
+    return key
+
+
+def _fmt(value: object) -> str:
+    """A slice value as a reader would write it: 2024, not 2024.0."""
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value)
+
+
+def _slice_note(frame: ChartFrame, candidate: Candidate) -> str | None:
+    """What this candidate's cut removed, in the reader's words."""
+    def newest(key: str) -> object | None:
+        values = [r.get(key) for r in frame.rows if r.get(key) is not None]
+        return max(values, key=_sort_key) if values else None
+
+    if candidate.slice == "latest":
+        key = candidate.slice_arg
+        value = newest(key) if key else None
+        return f"Shows {_fmt(value)} only, the most recent value." if value else None
+
+    if candidate.slice == "ranked_latest":
+        x_key = candidate.slice_arg[0]
+        value = newest(x_key) if x_key else None
+        return f"Shows {_fmt(value)} only, the most recent value." if value else None
+
+    if candidate.slice == "top_n":
+        item_key, measure, n = candidate.slice_arg
+        distinct = len({str(r.get(item_key)) for r in frame.rows
+                        if r.get(item_key) is not None})
+        if distinct <= n:
+            return None
+        if any("largest" in n_ or "highest" in n_ for n_ in candidate.notes):
+            return None  # _split_candidate already said it
+        return (f"Shows the {n} highest of {distinct} by {measure.replace('_', ' ')}, "
+                "which is an editorial choice rather than the whole table.")
+
+    if candidate.slice == "endpoints":
+        x_key = candidate.slice_arg[0]
+        values = [r.get(x_key) for r in frame.rows if r.get(x_key) is not None]
+        if len({str(v) for v in values}) < 2:
+            return None
+        first, last = min(values, key=_sort_key), max(values, key=_sort_key)
+        return (f"Compares {_fmt(first)} against {_fmt(last)} only; everything "
+                "between them is left out by the form.")
+
+    return None
+
+
 def _aggregate_rows(frame: ChartFrame, geo_key: str) -> int:
     """Rows whose geo code is not a country: World, continents, income groups."""
     return sum(
@@ -335,14 +409,11 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
                          f"not fit on one axis, so this shows the highest {MAX_BARS} "
                          f"by {m.label}.")
         if aggregates:
-            notes.append(f"{aggregates} rows that are not individual countries "
-                         "(world totals, continents, income groups) are excluded, "
-                         "because an aggregate outranks every country inside it.")
+            notes.append(_AGGREGATE_NOTE.format(n=aggregates))
         for form in ("bar", "lollipop"):
             out.append(Candidate(
                 form=form, encoding={"x": category.key, "y": m.key},
                 modifiers={"orientation": "horizontal"} if long_names else {},
-                drop_aggregates_on=geo_key,
                 slice=("ranked_latest" if crowded else ("latest" if t else "none")),
                 slice_arg=((t.key if t else None, category.key, m.key, MAX_BARS)
                            if crowded else (t.key if t else None)),
@@ -361,7 +432,6 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
                 category, m, cap=25,
                 because=f"{category.label} x {t.label} at full resolution",
             )
-            heat.drop_aggregates_on = geo_key
             out.append(heat)
 
     # --- Change between two points ---------------------------------------
@@ -389,7 +459,11 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
     if len(measures) >= 2:
         a, b = measures[0], measures[1]
         enc: dict[str, object] = {"x": a.key, "y": b.key}
-        if split:
+        # Colour only when the reader could tell the series apart. A scatter of
+        # 225 countries with 225 hues is not a legend, it is a warning; and
+        # cutting to the 3 the form carries would throw away the relationship
+        # the figure exists to show. So the points stay and the colour goes.
+        if split and split.distinct <= (FORM_RULES["scatter"].max_series or 3):
             enc["color"] = split.key
         out.append(Candidate(
             form="scatter", encoding=dict(enc),
@@ -453,6 +527,29 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
             enc["x"] = t.key
         out.append(Candidate(form="statTile", encoding=enc,
                              because=f"{m.label} as a single headline number"))
+
+    # Every cut says so. Until this ran centrally, only the cuts made through
+    # `_split_candidate` carried a note: a bivariate map showed 2024 alone with
+    # an empty caption, and a connected scatter quietly kept 3 countries out of
+    # 227. A figure that silently drops most of the table is the failure this
+    # whole module is meant to avoid.
+    for c in out:
+        note = _slice_note(frame, c)
+        if note and note not in c.notes:
+            c.notes.append(note)
+
+    # Every form that draws a place as a mark beside other places, which is all
+    # of them but the maps. Done once here rather than per candidate, because
+    # the first pass set it on bar/lollipop/heatmap only and left "World" as a
+    # point in the middle of a 225-country scatter.
+    if geo_key and aggregates:
+        for c in out:
+            if c.form in FORMS_THAT_IGNORE_AGGREGATES:
+                continue
+            c.drop_aggregates_on = geo_key
+            note = _AGGREGATE_NOTE.format(n=aggregates)
+            if note not in c.notes:
+                c.notes.append(note)
 
     seen: set[str] = set()
     unique: list[Candidate] = []

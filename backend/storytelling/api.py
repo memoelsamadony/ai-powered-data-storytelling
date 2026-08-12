@@ -443,10 +443,16 @@ def suggest_charts(request, payload: charts_http.ChartSuggestIn):
         sources = charts_http.sources_for_upload(record)
         source_label = f"upload:{record.original_name}"
 
-    # The generator model, not the moderator: this writes copy about a table,
-    # which is the generator's job description. Using the moderator would also
-    # make the tier's moderator/judge separation meaningless for this call.
-    model = tier.generator
+    # The MODERATOR model, by design decision: in this project the moderator is
+    # the agentic role - it moderates tone and runs the factual check - so the
+    # agentic reading of a table belongs to it too. That is a choice about which
+    # model runs, and it is NOT the same as folding chart selection into
+    # ``stage_moderate``: the stages stay separate, so a tone measurement is
+    # still a measurement of one change.
+    #
+    # Overridable so the two can be compared on the same table without editing
+    # the tier, which is how the generator/moderator comparison was run.
+    model = payload.model or tier.moderator
 
     selection = charts_select.select_charts(
         sources, model=model, n=max(1, min(payload.n, 6)), seed=payload.seed,

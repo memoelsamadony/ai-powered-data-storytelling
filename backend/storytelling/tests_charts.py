@@ -561,6 +561,76 @@ class RealUploadShapeTests(TestCase):
         bar = next(c for c in candidates_for(source) if c.form == "bar")
         self.assertTrue(apply_slice(frame, bar).rows)
 
+    def test_aggregates_go_from_every_form_that_draws_places_as_marks(self):
+        """The first pass covered bar/lollipop/heatmap only, which left "World"
+        as a point in the middle of a 225-country scatter."""
+        source = self._owid_shaped()
+        for candidate in candidates_for(source):
+            if candidate.form in ("choropleth", "bivariateChoropleth"):
+                continue
+            with self.subTest(form=candidate.form):
+                entities = {
+                    r["Entity"] for r in apply_slice(source.frame, candidate).rows
+                }
+                self.assertNotIn("World", entities)
+
+    def test_the_exclusion_is_justified_by_peerhood_not_by_rank(self):
+        """The note used to say an aggregate outranks every country inside it.
+        True of a count, false of a rate: TB incidence per 100k puts World 59th
+        of 225, below Kiribati. The reason is that it is not a peer."""
+        source = self._owid_shaped()
+        bar = next(c for c in candidates_for(source) if c.form == "bar")
+        note = next(n for n in bar.notes if "not individual countries" in n)
+        self.assertIn("not peers of them", note)
+        self.assertNotIn("outranks", note)
+
+    def test_a_scatter_of_many_places_drops_the_colour_channel(self):
+        """225 hues is not a legend. Cutting to the 3 the form carries would
+        throw away the relationship the figure exists to show, so colour goes
+        and every point stays."""
+        source = self._owid_shaped()
+        scatter = next(
+            (c for c in candidates_for(source) if c.form == "scatter"), None
+        )
+        if scatter is not None:
+            self.assertIsNone(scatter.encoding.get("color"))
+
+    def test_a_scatter_of_few_places_keeps_it(self):
+        columns = [
+            {"key": "place", "label": "Place", "type": "nominal"},
+            {"key": "a", "label": "A", "type": "quantitative"},
+            {"key": "b", "label": "B", "type": "quantitative"},
+        ]
+        rows = [{"place": p, "a": float(i), "b": float(i * 2)}
+                for i, p in enumerate(("X", "Y"))
+                for _ in range(3)]
+        frame = ChartFrame(columns=columns, rows=rows)
+        source = FrameSource("t", frame, profile_of_frame(frame))
+        scatter = next(c for c in candidates_for(source) if c.form == "scatter")
+        self.assertEqual(scatter.encoding.get("color"), "place")
+
+    def test_every_cut_says_so(self):
+        """A figure that silently drops most of the table is the failure this
+        module exists to avoid."""
+        source = self._owid_shaped()
+        for candidate in candidates_for(source):
+            if candidate.slice == "none":
+                continue
+            with self.subTest(form=candidate.form, cut=candidate.slice):
+                self.assertTrue(
+                    candidate.notes,
+                    f"{candidate.form} cuts with '{candidate.slice}' and says nothing",
+                )
+
+    def test_a_latest_only_figure_names_the_year(self):
+        """The bivariate map showed 2024 alone under an empty caption."""
+        source = self._owid_shaped()
+        latest = next(
+            c for c in candidates_for(source)
+            if c.slice in ("latest", "ranked_latest")
+        )
+        self.assertTrue(any("2024" in n for n in latest.notes), latest.notes)
+
     def test_the_map_still_sees_every_row(self):
         """Aggregates are dropped only where places are RANKED. A choropleth
         looks each code up and simply fails to match the ones that are not

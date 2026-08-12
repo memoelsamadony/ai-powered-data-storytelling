@@ -30,6 +30,9 @@ class ChartSuggestIn(Schema):
     upload_id: str | None = None
     n: int = 3
     tier: str = "demo"
+    #: Overrides the tier's moderator for this call. For comparing models on the
+    #: same table; leave unset in normal use.
+    model: str | None = None
     #: Passed to Ollama. Fixing it makes a run repeatable while the model stays
     #: resident; it does NOT survive an eviction, because a cold load re-reads
     #: the weights and the sampler starts from a different place. See
