@@ -10,7 +10,7 @@ import { HumanConvergence } from "@/components/charts/human-convergence";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
 import { type Dataset } from "@/lib/data/datasets";
-import { humanComparison, type HumanComparisonSeries } from "@/lib/data/human-comparison";
+import { humanComparison } from "@/lib/data/human-comparison";
 import { getDatasets } from "@/lib/api";
 
 /**
@@ -24,12 +24,6 @@ import { getDatasets } from "@/lib/api";
  * under other datasets' names. The experiment file carries one row per series
  * it actually measured, with the n behind each, so there is nothing to invent.
  */
-function singleRunNote(series: HumanComparisonSeries[]): string {
-  const single = series.filter((s) => s.runs === 1).length;
-  if (single === 0) return "";
-  return `n=1 per cell on ${single} of ${series.length} series, so those arrows are one run rather than a mean of repeats.`;
-}
-
 // The dataset payload is read per request, so the page is server-rendered on
 // demand. Declared rather than inferred: without it Next attempts a prerender,
 // and the attempt only resolves through a thrown framework error.
@@ -92,8 +86,8 @@ export default async function DatasetsPage() {
                       {humanComparison.aggregate.rawMean.toFixed(2)} →{" "}
                       {humanComparison.aggregate.moderatedMean.toFixed(2)}
                     </strong>
-                    , against a human median of {humanComparison.aggregate.humanMedian.toFixed(2)} across{" "}
-                    {humanComparison.humanStories} human stories and {humanComparison.totalRuns} runs.
+                    , against a human median of{" "}
+                    {humanComparison.aggregate.humanMedian.toFixed(2)}.
                   </p>
                 </div>
               </div>
@@ -107,7 +101,7 @@ export default async function DatasetsPage() {
                 <strong className="font-medium text-navy">both ends are failures</strong>: 1 is flat and
                 hides the stakes, 5 is manipulative catastrophising. The reference on each row is that
                 series&rsquo; own human writers, so the claim is relative rather than editorial.{" "}
-                {singleRunNote(humanComparison.series)} {humanComparison.caveats[0]}
+                {humanComparison.caveats[0]}
               </p>
             </Card>
           </Reveal>

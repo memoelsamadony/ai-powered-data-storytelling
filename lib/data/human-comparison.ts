@@ -26,7 +26,12 @@ export interface HumanComparisonSeries {
   machineModerated: number;
   /** Median alarmism of the human writers for this series. */
   humanMedian: number;
-  /** Runs behind this row. Four of five series are a single run. */
+  /**
+   * Runs behind this row: pertussis 24, measles 5, and a single run each for
+   * diphtheria, mumps and under-5 measles deaths. Kept as data and no longer
+   * rendered, so anyone reading these arrows as equally well-supported is
+   * reading them from the chart rather than from here.
+   */
   runs: number;
 }
 

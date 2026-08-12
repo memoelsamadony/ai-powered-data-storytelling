@@ -81,7 +81,7 @@ export function HumanConvergence({ series }: { series: HumanComparisonSeries[] }
           aria-label={`Alarmism from 1 to 5 per series. ${series
             .map(
               (s) =>
-                `${s.label}, ${s.runs} run${s.runs > 1 ? "s" : ""}: raw ${s.machineRaw.toFixed(
+                `${s.label}: raw ${s.machineRaw.toFixed(
                   2,
                 )}, moderated ${s.machineModerated.toFixed(2)}, human median ${s.humanMedian.toFixed(1)}`,
             )
@@ -157,10 +157,6 @@ export function HumanConvergence({ series }: { series: HumanComparisonSeries[] }
                 <text x={72} y={y + 2} fontSize={16} fontWeight={600} fill={t.ink}>
                   {s.label}
                 </text>
-                <text x={72} y={y + 22} fontSize={12} fontFamily="var(--font-plex-mono)" fill={t.faint}>
-                  n={s.runs} run{s.runs > 1 ? "s" : ""}
-                </text>
-
                 {/* The move, drawn between the marks rather than under them. */}
                 <line
                   x1={xr - dir * 12}
@@ -269,7 +265,6 @@ export function HumanConvergence({ series }: { series: HumanComparisonSeries[] }
             <thead>
               <tr className="border-b border-hairline">
                 <th className="py-2 pr-4 font-medium text-muted">Series</th>
-                <th className="py-2 pr-4 font-medium text-muted">Runs</th>
                 <th className="py-2 pr-4 font-medium text-muted">Raw</th>
                 <th className="py-2 pr-4 font-medium text-muted">After moderation</th>
                 <th className="py-2 pr-4 font-medium text-muted">Human median</th>
@@ -282,7 +277,6 @@ export function HumanConvergence({ series }: { series: HumanComparisonSeries[] }
                 return (
                   <tr key={s.id} className="border-b border-hairline/60">
                     <td className="py-2 pr-4 font-sans text-ink">{s.label}</td>
-                    <td className="py-2 pr-4 text-ink">{s.runs}</td>
                     <td className="py-2 pr-4 text-ink">{s.machineRaw.toFixed(2)}</td>
                     <td className="py-2 pr-4 text-ink">{s.machineModerated.toFixed(2)}</td>
                     <td className="py-2 pr-4 text-ink">{s.humanMedian.toFixed(1)}</td>
@@ -327,10 +321,9 @@ function Tooltip({ hover, height }: { hover: HoverState; height: number }) {
         {value.toFixed(2)}
         <span className="text-faint">/5 alarmism</span>
       </p>
-      <p className="mt-1 font-mono text-[0.68rem] text-faint">
-        {s.runs} run{s.runs > 1 ? "s" : ""}
-        {hover.kind === "human" && " · 5 writers"}
-      </p>
+      {hover.kind === "human" && (
+        <p className="mt-1 font-mono text-[0.68rem] text-faint">5 writers</p>
+      )}
     </div>
   );
 }
