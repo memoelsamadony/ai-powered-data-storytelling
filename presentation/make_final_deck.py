@@ -999,31 +999,32 @@ dataset page. Never click Generate and wait - see SPEAKER-SCRIPT.md.
     s = blank(prs)
     rect(s, 0, 0, W, H, fill=WHITE)
     rect(s, 0, 0, W, Inches(0.16), fill=TEAL)
-    text(s, Inches(1.1), Inches(1.15), Inches(11.2), Inches(2.4), [
+    text(s, Inches(1.1), Inches(1.35), Inches(11.2), Inches(2.0), [
         ("What we can defend", 13, True, DEEP_TEAL, HEAD, 0),
-        ("A second agent can move a generated data story onto the tone level of "
-         "a person writing from the same table —", 26, True, NAVY, HEAD, 10),
-        ("without losing the numbers, and at a cost in readability we can state.",
-         26, True, NAVY, HEAD, 2),
-    ], spacing=1.2)
+        ("A second agent reaches the human tone level,", 34, True, NAVY, HEAD, 12),
+        ("keeps the numbers, and costs some readability.", 34, True, NAVY, HEAD, 2),
+        ("All three are measured, not asserted — one number each.", 15, False,
+         MUTED, BODY, 12),
+    ], spacing=1.14)
     for i, (label, v, lab) in enumerate([
         ("The result",
          f"{agg['alarmism_raw_mean']:.2f} → {agg['alarmism_moderated_mean']:.2f}",
-         f"alarmism, against a human median of {agg['human_alarmism_median']:.2f}"),
+         f"alarmism, raw to moderated, over {D['n_runs_human']} runs. "
+         f"Human median {agg['human_alarmism_median']:.2f}."),
         ("The instrument", f"{rel['alarmism']['icc_2_1']:.3f}",
-         "ICC, so every number above has an error bar"),
+         f"ICC over {rel['passes']} blind passes: the judge agrees with itself, "
+         "so the move above is real."),
         ("The cost", f"{crit['narrative_quality'].get('raw', 0)}/{n}",
-         "pairs where the raw story still read better"),
+         "blind pairs where the unmoderated story read better as writing."),
     ]):
         card(s, Inches(1.1 + i * 3.75), Inches(3.95), Inches(3.45), Inches(1.7),
              label, v, lab, accent=[DEEP_TEAL, BLUE, WARN][i])
     text(s, Inches(1.1), Inches(5.95), Inches(11.2), Inches(0.85), [
-        ("What we are not claiming: one judge family agreeing with itself, not a "
-         "panel. No user study. Twenty-five human stories from five writer slots, "
-         "not a controlled writer design.", 12, False, MUTED, BODY, 0),
-        ("Everything in this deck is generated from the experiment files in the "
-         "repository, so the numbers and the slides cannot drift apart.", 12,
-         False, MUTED, BODY, 6),
+        ("Not claimed: a judge panel, a user study, or a controlled writer "
+         "design. One judge family, 25 stories, five writer slots.", 12.5, False,
+         MUTED, BODY, 0),
+        ("Every number here is read from the experiment files at build time, so "
+         "the slides cannot drift from the data.", 12.5, False, MUTED, BODY, 7),
     ], spacing=1.16)
     chrome(s, 19)
     notes(s, """
