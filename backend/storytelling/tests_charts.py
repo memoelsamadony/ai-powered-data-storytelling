@@ -34,6 +34,7 @@ from .charts.applicability import (
 from .charts.frames import country_frame_of, world_frame_of
 from .charts.profile import MAX_FRAME_ROWS, frame_from_dataframe, profile_of_frame
 from .charts.spec import CHART_FORMS, FORM_RULES, ChartFrame, ChartSpec
+from .charts.select import Pick
 from .charts.validate import validate_spec
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "docs" / "chart-schema.json"
@@ -680,6 +681,33 @@ class SourceParityTests(TestCase):
         uploaded = self._round_trip(world)
         for c in candidates_for(uploaded):
             self.assertTrue(c.transform == "indexed" or c.encoding.get("facet"))
+
+
+class PickSchemaOrderTests(TestCase):
+    """``question`` must be decoded before ``index``, and must stay off the wire.
+
+    Both are load-bearing and both are invisible in review. Grammar-constrained
+    decoding fills fields in schema order, so moving ``question`` after
+    ``index`` turns it from a commitment into a justification written after the
+    fact - which is exactly the version that did not work: measured, the same
+    instruction in prose alone left qwen3.5:27b picking a choropleth and a
+    bivariate choropleth of one measure on two of four runs.
+    """
+
+    def test_question_is_decoded_before_index(self):
+        fields = list(Pick.model_json_schema(by_alias=True)["properties"])
+        self.assertLess(
+            fields.index("question"), fields.index("index"),
+            "the question must be committed to before the figure that answers it",
+        )
+
+    def test_question_is_required(self):
+        required = Pick.model_json_schema(by_alias=True)["required"]
+        self.assertIn("question", required)
+
+    def test_question_never_reaches_the_frontend(self):
+        """It is a reasoning aid, not copy. ChartSpec is the whole wire format."""
+        self.assertNotIn("question", ChartSpec.model_json_schema(by_alias=True)["properties"])
 
 
 class ChartEndpointTests(TestCase):

@@ -58,6 +58,16 @@ SYSTEM = (
 class Pick(Schema):
     """One chosen figure. ``index`` refers to the candidate list in the prompt."""
 
+    #: What a reader walks away having answered. Declared BEFORE ``index`` on
+    #: purpose: fields are decoded in schema order, so the model states a
+    #: question and then finds a figure for it, instead of taking a figure and
+    #: reverse-engineering a justification. Never shown to the reader - it
+    #: exists so the model can see its own earlier questions while writing the
+    #: next one, which is the only way "different question" is checkable from
+    #: inside the generation. Asking for variety in prose could not do this:
+    #: measured, qwen3.5:27b kept a choropleth and a bivariate choropleth of
+    #: the same measure under an instruction that named the failure exactly.
+    question: str
     index: int
     title: str
     subtitle: str = ""
@@ -150,9 +160,19 @@ def _prompt(sources: list[FrameSource], candidates: list[Candidate], n: int,
         _candidate_list(candidates),
         "",
         f"Choose the {n} that tell this data's story best, most important first.",
-        "Prefer variety: three near-identical figures waste the reader's time.",
+        "Write each figure's question FIRST, then choose the figure that "
+        "answers it. Every question must be different from the ones you have "
+        "already written - check it against them before you commit to it. "
+        "Sameness is about the question, not the shape: a map coloured by two "
+        "measures and a scatter of those same two measures look nothing alike "
+        "and both answer 'do these two move together', so at most one of them "
+        "belongs. Two figures of the same measure over the same places are one "
+        "question, however differently they are drawn.",
         "",
         "For each, write:",
+        "  question   the one thing a reader answers from this figure, in a "
+        "short sentence. Not shown to them; it is how you keep the three "
+        "figures from collapsing into one.",
         "  title      plain, specific, no more than about 10 words",
         "  subtitle   optional, one clause",
         "  caption    optional, what the reader should notice",
