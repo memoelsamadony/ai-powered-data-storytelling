@@ -694,3 +694,90 @@ class BlindJudgeRunTests(TestCase):
         self.assertEqual(seen, [["raw body"], ["moderated body"]])
         self.assertEqual(run.opus_raw_alarmism, 3.0)
         self.assertEqual(run.opus_moderated_optimism, 2.0)
+
+
+class HumanBaselineJudgingTests(TestCase):
+    """Saving a baseline judges it, and every failure mode leaves it honest."""
+
+    def setUp(self):
+        self.run = Run.objects.create(dataset_id="measles", tier="demo")
+        self.url = f"/api/runs/{self.run.id}/human"
+
+    @staticmethod
+    def _score(alarmism=2.4, optimism=3.1):
+        return judge.StoryScore(alarmism=alarmism, optimism=optimism,
+                                rationale="r", cost_usd=0.02, duration_s=1.5)
+
+    def _post(self, text, title="T"):
+        return self.client.post(self.url, {"humanText": text, "humanTitle": title},
+                                content_type="application/json")
+
+    def test_saving_a_baseline_judges_it_on_both_axes(self):
+        with mock.patch.object(judge, "is_available", return_value=True), \
+             mock.patch.object(judge, "score_story", return_value=self._score()) as scored:
+            self.assertEqual(self._post("A human story.").status_code, 200)
+        scored.assert_called_once()
+        self.run.refresh_from_db()
+        self.assertEqual((self.run.human_alarmism, self.run.human_optimism), (2.4, 3.1))
+        self.assertTrue(StageResult.objects.filter(
+            run=self.run, stage=StageResult.Stage.JUDGE_OPUS_HUMAN).exists())
+
+    def test_resaving_identical_text_does_not_pay_for_a_second_opinion(self):
+        # A re-judge of the same words would differ by the judge's own wobble
+        # and read as an edit the writer never made.
+        with mock.patch.object(judge, "is_available", return_value=True), \
+             mock.patch.object(judge, "score_story", return_value=self._score()) as scored:
+            self._post("Same words.")
+            self._post("Same words.")
+            self.assertEqual(scored.call_count, 1)
+
+    def test_edited_text_is_rejudged(self):
+        with mock.patch.object(judge, "is_available", return_value=True), \
+             mock.patch.object(judge, "score_story",
+                               side_effect=[self._score(2.0, 2.0), self._score(4.0, 1.0)]) as scored:
+            self._post("First version.")
+            self._post("Second, quite different version.")
+            self.assertEqual(scored.call_count, 2)
+        self.run.refresh_from_db()
+        self.assertEqual(self.run.human_alarmism, 4.0)
+
+    def test_an_unreachable_judge_still_saves_the_text_and_rates_nothing(self):
+        with mock.patch.object(judge, "is_available", return_value=True), \
+             mock.patch.object(judge, "score_story",
+                               side_effect=judge.JudgeUnavailable("cli gone")):
+            self.assertEqual(self._post("Kept regardless.").status_code, 200)
+        self.run.refresh_from_db()
+        self.assertEqual(self.run.human_text, "Kept regardless.")
+        self.assertIsNone(self.run.human_alarmism)
+        self.assertIsNone(self.run.human_optimism)
+
+    def test_a_failed_rejudge_does_not_leave_the_old_rating_on_new_text(self):
+        """The rating must never describe text that is no longer stored."""
+        with mock.patch.object(judge, "is_available", return_value=True), \
+             mock.patch.object(judge, "score_story", return_value=self._score(2.0, 2.0)):
+            self._post("Original.")
+        with mock.patch.object(judge, "is_available", return_value=True), \
+             mock.patch.object(judge, "score_story",
+                               side_effect=judge.JudgeUnavailable("down")):
+            self._post("Replaced by something else entirely.")
+        self.run.refresh_from_db()
+        self.assertEqual(self.run.human_text, "Replaced by something else entirely.")
+        self.assertIsNone(self.run.human_alarmism)
+
+    def test_empty_text_is_never_sent_to_the_judge(self):
+        with mock.patch.object(judge, "is_available", return_value=True), \
+             mock.patch.object(judge, "score_story") as scored:
+            self._post("   ")
+            scored.assert_not_called()
+
+    def test_compare_withholds_the_rating_when_the_text_it_describes_changed(self):
+        from . import services
+        self.run.human_text = "Stored baseline."
+        self.run.human_alarmism = 2.5
+        self.run.raw_paragraphs = ["raw"]
+        self.run.moderated_paragraphs = ["moderated"]
+        self.run.save()
+        same = services.compare(self.run, "Stored baseline.")
+        self.assertEqual(same.alarmism_human, 2.5)
+        edited = services.compare(self.run, "Edited in the browser, never judged.")
+        self.assertIsNone(edited.alarmism_human)

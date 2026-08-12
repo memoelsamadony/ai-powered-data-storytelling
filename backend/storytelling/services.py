@@ -214,7 +214,7 @@ def _human_variant(run: Run) -> ToneVariant:
         author="Human author",
         title=run.human_title or "Human baseline",
         alarmism_rating=run.human_alarmism,
-        optimism_rating=None,
+        optimism_rating=run.human_optimism,
         paragraphs=paragraphs or ["No human baseline has been written yet."],
     )
 
@@ -341,6 +341,12 @@ def compare(run: Run, human_text: str = "") -> ComparisonMetrics:
     * Missing alarmism ratings were rendered as 0.0. They are now None.
     """
     reference = human_text or run.human_text
+    # The caller may pass text the run has not been judged on: the interface
+    # re-scores whenever the baseline is edited, and the stored rating belongs
+    # to whatever was last saved. Reporting that rating next to similarity
+    # figures computed from different words would put two instruments in one
+    # panel, so the rating is withheld rather than paired with the wrong text.
+    rating_matches_text = reference == run.human_text
     candidate = "\n\n".join(run.moderated_paragraphs)
     raw_text = "\n\n".join(run.raw_paragraphs)
 
@@ -368,7 +374,7 @@ def compare(run: Run, human_text: str = "") -> ComparisonMetrics:
         text_similarity=similarity,
         alarmism_before=run.raw_alarmism,
         alarmism_after=run.moderated_alarmism,
-        alarmism_human=run.human_alarmism,
+        alarmism_human=run.human_alarmism if rating_matches_text else None,
         optimism_before=run.raw_optimism,
         optimism_after=run.moderated_optimism,
         emotive_spans_removed=len(run.emotive_spans),
