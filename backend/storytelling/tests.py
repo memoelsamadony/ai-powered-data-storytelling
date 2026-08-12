@@ -781,3 +781,34 @@ class HumanBaselineJudgingTests(TestCase):
         self.assertEqual(same.alarmism_human, 2.5)
         edited = services.compare(self.run, "Edited in the browser, never judged.")
         self.assertIsNone(edited.alarmism_human)
+
+
+class ListRunsFilterTests(TestCase):
+    """`GET /api/runs` must filter by the camelCase name the wire actually uses.
+
+    Regression: the endpoint declared `dataset_id` while every caller sends
+    `datasetId`, so the filter bound nothing and the response carried every
+    dataset's runs. `tier` masked it - that name is identical in both
+    conventions - so the answer looked filtered while the studio replayed one
+    dataset's story under another dataset's name.
+    """
+
+    def setUp(self):
+        Run.objects.create(dataset_id="measles", tier="demo", status="done")
+        Run.objects.create(dataset_id="measles", tier="demo", status="done")
+        Run.objects.create(dataset_id="who-health", tier="demo", status="done")
+        Run.objects.create(dataset_id="who-health", tier="mid", status="done")
+
+    def _ids(self, query):
+        res = self.client.get(f"/api/runs?{query}")
+        self.assertEqual(res.status_code, 200)
+        return sorted(r["datasetId"] for r in res.json())
+
+    def test_dataset_id_filters_on_the_camel_case_name(self):
+        self.assertEqual(self._ids("datasetId=who-health"), ["who-health", "who-health"])
+
+    def test_dataset_and_tier_narrow_together(self):
+        self.assertEqual(self._ids("datasetId=who-health&tier=demo"), ["who-health"])
+
+    def test_no_dataset_returns_every_dataset(self):
+        self.assertEqual(len(self._ids("tier=demo")), 3)

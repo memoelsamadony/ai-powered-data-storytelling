@@ -266,9 +266,21 @@ def get_run(request, run_id: str):
 
 
 @get("/runs", response=list[RunRef])
-def list_runs(request, dataset_id: str = Query(None), tier: str = Query(None),
-              completed_only: bool = Query(True)):
-    """Cached runs. This is what the demo serves when Ollama is not on hand."""
+def list_runs(request, dataset_id: str = Query(None, alias="datasetId"),
+              tier: str = Query(None),
+              completed_only: bool = Query(True, alias="completedOnly")):
+    """Cached runs. This is what the demo serves when Ollama is not on hand.
+
+    The aliases are load-bearing. Everything else here serialises camelCase, so
+    a caller sends `datasetId`, and without the alias django-ninja binds
+    `dataset_id` from nothing, leaves it None and silently drops the filter -
+    answering a request for one dataset with every dataset's runs. `tier`
+    hid it, because that name is the same in both conventions, so the response
+    looked filtered.
+
+    A studio replaying that answer shows one dataset's story under another
+    dataset's name, which is the exact failure this project exists to catch.
+    """
     qs = Run.objects.all()
     if dataset_id:
         qs = qs.filter(dataset_id=dataset_id)
