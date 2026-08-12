@@ -39,7 +39,7 @@ export const generatedFaithfulness: FaithfulnessResults =
 
 export const generatedPerOperation: PerOperationResults =
   {
-    "caption": "Reproducing the DataTales finding that accuracy falls as analytical complexity rises, on 30 equity-market reports judged against the source table. Scale closes the gap on reading and computing - trend goes from 40.5% to 87.3% between the 4B and the 12B - but the causal operation stays at 0% for both. That is a capability wall, not a size problem.",
+    "caption": "Reproducing the DataTales finding that accuracy falls as analytical complexity rises, on 30 equity-market reports judged against the source table. Scale closes the gap on reading and computing - trend goes from 40.5% to 87.3% between the 4B and the 12B - while the causal operation stays at 0% for both. Read that last row as groundedness rather than reasoning: a causal claim points outside a table of prices and volumes, so the table cannot confirm it either way. What it shows is that both models state off-table causes with the same confidence as on-table facts, which is what a factual check downstream has to catch.",
     "unit": "accuracy %, correct of attempted",
     "source": "reproductions/paper9-datatales/per_operation.csv",
     "models": ["qwen3.5:4b", "gemma4:12b"],
