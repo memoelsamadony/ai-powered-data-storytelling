@@ -208,8 +208,16 @@ export function Comparison({
               </p>
             </div>
             {moved === null ? (
+              /* Three different reasons the move cannot be stated, and they used
+                 to read as one. "No judge was reachable" was printed even when
+                 both machine stories had been judged and only the baseline was
+                 missing, which is the common case and not a judge failure. */
               <p className="text-sm text-muted">
-                No judge was reachable for this run, so the tone was not measured.
+                {raw === null || moderated === null
+                  ? "No judge was reachable for this run, so the tone was not measured."
+                  : humanRating === null && !story.human.paragraphs.join("").trim()
+                    ? "Write a human baseline above to see where the moderated story landed against it."
+                    : "The baseline was not judged, so there is no band to measure the move against. Both machine stories were scored."}
               </p>
             ) : (
               <p className="text-sm text-muted">

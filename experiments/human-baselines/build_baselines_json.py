@@ -9,10 +9,11 @@ Two sibling sets are deliberately NOT read here:
 * ``llm-drafts/`` held 25 model-drafted stories and was deleted on 2026-08-12
   (hashes in ``DELETED-LLM-DRAFTS.md``). Mixing machine text into a file named
   baselines.json only ever created a chance to forget which rows were which.
-* ``pilot-stories/`` holds hand-rewrites of those drafts. Its own README bars
-  it from this script and from the ``H`` computation in ASSIGNMENT.md S6,
-  because the writers saw a machine draft first. Score it with
-  ``experiments/score_human_baselines.py``, which keeps that caveat attached.
+* ``pilot-stories/`` holds 25 team-written stories. They are real human writing,
+  but not the S6 shape: five interchangeable writer slots per series rather than
+  four named writers with a stable cross-series identity, so folding them in
+  here would confound a writer's habits with a series' direction of truth.
+  Score them with ``experiments/score_human_baselines.py`` instead.
 
 So every entry in ``baselines.json`` is a blind, from-scratch human story, and
 a similarity metric computed against this file means what its name says.

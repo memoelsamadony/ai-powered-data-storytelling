@@ -1,0 +1,65 @@
+{
+  "experiment": "Machine stories against the team's human stories",
+  "question": "After moderation, how far is a machine story from a person writing from the same evidence pack, on tone and on wording?",
+  "judge": "claude/opus, blind, one call per story, two axes",
+  "series": [
+    "diphtheria-global",
+    "measles",
+    "mumps-global",
+    "pertussis-global",
+    "under5-measles-deaths"
+  ],
+  "n_human_stories": 25,
+  "n_runs": 32,
+  "aggregate": {
+    "alarmism_raw_mean": 3.737,
+    "alarmism_moderated_mean": 2.091,
+    "optimism_raw_mean": 2.151,
+    "optimism_moderated_mean": 2.603,
+    "human_alarmism_median": 2.0,
+    "human_optimism_median": 2.5
+  },
+  "per_series": {
+    "diphtheria-global": {
+      "human_alarmism_median": 2.0,
+      "human_optimism_median": 2.0,
+      "machine_raw_alarmism_mean": 3.5,
+      "machine_moderated_alarmism_mean": 2.5,
+      "n_runs": 1
+    },
+    "measles": {
+      "human_alarmism_median": 2.3,
+      "human_optimism_median": 2.7,
+      "machine_raw_alarmism_mean": 3.12,
+      "machine_moderated_alarmism_mean": 1.9,
+      "n_runs": 5
+    },
+    "mumps-global": {
+      "human_alarmism_median": 1.8,
+      "human_optimism_median": 2.5,
+      "machine_raw_alarmism_mean": 2.5,
+      "machine_moderated_alarmism_mean": 1.8,
+      "n_runs": 1
+    },
+    "pertussis-global": {
+      "human_alarmism_median": 2.0,
+      "human_optimism_median": 2.5,
+      "machine_raw_alarmism_mean": 4.17,
+      "machine_moderated_alarmism_mean": 2.13,
+      "n_runs": 24
+    },
+    "under5-measles-deaths": {
+      "human_alarmism_median": 1.8,
+      "human_optimism_median": 2.5,
+      "machine_raw_alarmism_mean": 3.2,
+      "machine_moderated_alarmism_mean": 2.0,
+      "n_runs": 1
+    }
+  },
+  "caveats": [
+    "The human stories carry no headline; machine stories are judged with one. Headlines concentrate alarmism, so the human column is flattered and the gap is a lower bound.",
+    "Similarity is computed on bodies only, for the same reason.",
+    "Five interchangeable writer slots per series, not the four named writers ASSIGNMENT.md S6 wants, so this is not H."
+  ],
+  "figure": "presentation/figures/fig9.svg"
+}

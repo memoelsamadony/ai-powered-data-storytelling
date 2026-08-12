@@ -1,0 +1,84 @@
+{
+  "experiment": "Repeats at distinct seeds, to put a variance on the ranking",
+  "question": "Is the gap between the top combinations bigger than the run-to-run noise of a single combination?",
+  "dataset": "pertussis-global",
+  "n_per_config": 1,
+  "seeds": [
+    101
+  ],
+  "why_distinct_seeds": "Repeats at a fixed seed measure determinism, not stability: g4b and q4b share a seed and produced byte-identical text.",
+  "configs": {
+    "q27b": {
+      "label": "qwen3.5:27b x gemma4:31b",
+      "dataset": "pertussis-global",
+      "runs": [
+        {
+          "run": "befd4fa0-d2f1-4ef4-9609-8bc944a23a7d",
+          "seed": 101,
+          "alarmism_raw": 4.3,
+          "alarmism_moderated": 2.0,
+          "optimism_raw": 1.7,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 0.75,
+          "added_unsupported": 0,
+          "emotive_spans": 10,
+          "seconds": 292.2
+        }
+      ],
+      "summary": {
+        "config": "qwen3.5:27b x gemma4:31b",
+        "alarmism_raw": {
+          "n": 1,
+          "mean": 4.3,
+          "sd": 0.0,
+          "min": 4.3,
+          "max": 4.3,
+          "values": [
+            4.3
+          ]
+        },
+        "alarmism_moderated": {
+          "n": 1,
+          "mean": 2.0,
+          "sd": 0.0,
+          "min": 2.0,
+          "max": 2.0,
+          "values": [
+            2.0
+          ]
+        },
+        "numeric_retention": {
+          "n": 1,
+          "mean": 0.75,
+          "sd": 0.0,
+          "min": 0.75,
+          "max": 0.75,
+          "values": [
+            0.75
+          ]
+        },
+        "emotive_spans": {
+          "n": 1,
+          "mean": 10.0,
+          "sd": 0.0,
+          "min": 10,
+          "max": 10,
+          "values": [
+            10
+          ]
+        },
+        "seconds": {
+          "n": 1,
+          "mean": 292.2,
+          "sd": 0.0,
+          "min": 292.2,
+          "max": 292.2,
+          "values": [
+            292.2
+          ]
+        }
+      }
+    }
+  },
+  "figure": "presentation/figures/fig13.svg"
+}

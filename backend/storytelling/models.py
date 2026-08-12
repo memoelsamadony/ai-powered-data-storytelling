@@ -71,9 +71,14 @@ class Run(models.Model):
     # The human baseline, submitted from the interface (task (c) in the report).
     human_text = models.TextField(blank=True)
     human_title = models.CharField(max_length=300, blank=True)
-    # P0.2: judged on the same rubric as every other story. Previously a
+    # P0.2: judged on the same rubric as every other story, by the same blind
+    # Claude call, so judge bias cancels when the two are compared. Previously a
     # hardcoded 2.5 was rendered in the interface as if it were a measurement.
+    # Null means "no baseline, or the judge was unreachable" - never a default,
+    # because the human rating is the centre of the target band the moderated
+    # story is measured against.
     human_alarmism = models.FloatField(null=True, blank=True)
+    human_optimism = models.FloatField(null=True, blank=True)
 
     error = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -135,6 +140,7 @@ class StageResult(models.Model):
         # telemetry instead of collapsing onto a single stage key.
         JUDGE_OPUS_RAW = "judge_opus_raw", "Judge (Claude, raw)"
         JUDGE_OPUS_MODERATED = "judge_opus_moderated", "Judge (Claude, moderated)"
+        JUDGE_OPUS_HUMAN = "judge_opus_human", "Judge (Claude, human baseline)"
 
     run = models.ForeignKey(Run, related_name="stages", on_delete=models.CASCADE)
     stage = models.CharField(max_length=24, choices=Stage)

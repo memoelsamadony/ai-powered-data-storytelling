@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<pattern id="hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+  <rect width="8" height="8" fill="#2a78d6" fill-opacity="0.22"/>
+  <line x1="0" y1="0" x2="0" y2="8" stroke="#2a78d6" stroke-width="3"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"/>
+</marker>
+<marker id="arrowblue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#2a78d6"/>
+</marker>
+
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">Five seeds per cell, and the recommendation flips</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Same two configurations, run five times each at distinct seeds, pertussis-global.</text>
+<line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
+<text x="72" y="208" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">NUMERIC RETENTION - the share of the raw story's figures that survive moderation</text>
+<line x1="420.0" y1="238" x2="420.0" y2="470" stroke="#e1e0d9" stroke-width="2"/>
+<text x="420.0" y="496" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">0%</text>
+<line x1="610.0" y1="238" x2="610.0" y2="470" stroke="#e1e0d9" stroke-width="2"/>
+<text x="610.0" y="496" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">25%</text>
+<line x1="800.0" y1="238" x2="800.0" y2="470" stroke="#e1e0d9" stroke-width="2"/>
+<text x="800.0" y="496" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<line x1="990.0" y1="238" x2="990.0" y2="470" stroke="#e1e0d9" stroke-width="2"/>
+<text x="990.0" y="496" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">75%</text>
+<line x1="1180.0" y1="238" x2="1180.0" y2="470" stroke="#e1e0d9" stroke-width="2"/>
+<text x="1180.0" y="496" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">100%</text>
+<text x="72" y="286" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">qwen3.5:4b x gemma4:31b</text>
+<text x="72" y="312" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">n=5 seeds</text>
+<line x1="673.08" y1="290" x2="1053.08" y2="290" stroke="#c3c2b7" stroke-width="10" stroke-linecap="round"/>
+<circle cx="962.64" cy="290" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="926.9200000000001" cy="290" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="800.0" cy="290" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="1053.08" cy="290" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="673.08" cy="290" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<line x1="883.144" y1="268" x2="883.144" y2="312" stroke="#0b0b0b" stroke-width="3"/>
+<text x="883.144" y="258" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">61%</text>
+<circle cx="962.64" cy="290" r="11" fill="none" stroke="#d03b3b" stroke-width="3" stroke-dasharray="3 3"/>
+<text x="962.64" y="334" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">n=1 said 71%</text>
+<text x="72" y="394" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">llama3.1:8b x gemma4:31b</text>
+<text x="72" y="420" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">n=5 seeds</text>
+<line x1="926.9200000000001" y1="398" x2="1180.0" y2="398" stroke="#c3c2b7" stroke-width="10" stroke-linecap="round"/>
+<circle cx="1180.0" cy="398" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="1071.32" cy="398" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="1180.0" cy="398" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="926.9200000000001" cy="398" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<circle cx="1180.0" cy="398" r="7" fill="#2a78d6" fill-opacity="0.75"/>
+<line x1="1107.6480000000001" y1="376" x2="1107.6480000000001" y2="420" stroke="#0b0b0b" stroke-width="3"/>
+<text x="1107.6480000000001" y="366" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="middle" letter-spacing="0">90%</text>
+<circle cx="800.0" cy="398" r="11" fill="none" stroke="#d03b3b" stroke-width="3" stroke-dasharray="3 3"/>
+<text x="800.0" y="442" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">n=1 said 50%</text>
+<rect x="1240" y="250" width="290" height="286" fill="#d03b3b" fill-opacity="0.06" rx="6"/>
+<text x="1262" y="284" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">The ranking was</text>
+<text x="1262" y="310" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="bold" text-anchor="start" letter-spacing="0">backwards</text>
+<text x="1262" y="346" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">One run each had put</text>
+<text x="1262" y="370" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:4b ahead on</text>
+<text x="1262" y="394" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">retention, 71% to 50%.</text>
+<text x="1262" y="418" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Five seeds each reverse</text>
+<text x="1262" y="442" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">it: 61% to 91%.</text>
+<text x="1262" y="466" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0"></text>
+<text x="1262" y="490" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Welch t = -2.70, p = 0.029,</text>
+<text x="1262" y="514" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Cohen d = 1.71.</text>
+<text x="72" y="560" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">MODERATED ALARMISM - where the moderator leaves the story</text>
+<line x1="420.0" y1="590" x2="420.0" y2="720" stroke="#e1e0d9" stroke-width="2"/>
+<text x="420.0" y="746" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">1.0</text>
+<line x1="610.0" y1="590" x2="610.0" y2="720" stroke="#e1e0d9" stroke-width="2"/>
+<text x="610.0" y="746" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">1.5</text>
+<line x1="800.0" y1="590" x2="800.0" y2="720" stroke="#e1e0d9" stroke-width="2"/>
+<text x="800.0" y="746" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<line x1="990.0" y1="590" x2="990.0" y2="720" stroke="#e1e0d9" stroke-width="2"/>
+<text x="990.0" y="746" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
+<line x1="1180.0" y1="590" x2="1180.0" y2="720" stroke="#e1e0d9" stroke-width="2"/>
+<text x="1180.0" y="746" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">3.0</text>
+<text x="72" y="632" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:4b x gemma4:31b</text>
+<line x1="610.0" y1="626" x2="990.0" y2="626" stroke="#c3c2b7" stroke-width="8" stroke-linecap="round"/>
+<circle cx="800.0" cy="626" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="800.0" cy="626" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="990.0" cy="626" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="990.0" cy="626" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="610.0" cy="626" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<line x1="838.0" y1="610" x2="838.0" y2="642" stroke="#0b0b0b" stroke-width="3"/>
+<text x="854.0" y="632" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">2.10</text>
+<text x="72" y="688" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b x gemma4:31b</text>
+<line x1="800.0" y1="682" x2="990.0" y2="682" stroke="#c3c2b7" stroke-width="8" stroke-linecap="round"/>
+<circle cx="800.0" cy="682" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="800.0" cy="682" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="800.0" cy="682" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="990.0" cy="682" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<circle cx="800.0" cy="682" r="6" fill="#1baf7a" fill-opacity="0.8"/>
+<line x1="838.0" y1="666" x2="838.0" y2="698" stroke="#0b0b0b" stroke-width="3"/>
+<text x="854.0" y="688" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">2.10</text>
+<text x="1240" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Identical: 2.10 both, p = 1.00.</text>
+<text x="1240" y="686" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">The moderator converges on the</text>
+<text x="1240" y="712" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">same tone whoever wrote the draft.</text>
+
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Seeds differ deliberately: repeats at a fixed seed replay the same text and measure determinism, not stability. Judge noise is not the source of this spread - three</text>
+<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">independent passes over the same story agree to ICC 0.99, mean spread 0.08, against a run-to-run alarmism spread of 0.42. The variance is the generator's, not the</text>
+<text x="72" y="874" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">judge's.</text>
+</svg>

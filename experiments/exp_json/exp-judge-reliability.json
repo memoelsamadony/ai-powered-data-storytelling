@@ -1,0 +1,444 @@
+{
+  "experiment": "Judge self-consistency over three independent passes",
+  "question": "How much does the same judge disagree with itself on the same story, and is that smaller than the effects reported?",
+  "judge": "claude/opus, blind, one story per call",
+  "passes": 3,
+  "n_stories": 64,
+  "independence": "Separate stateless calls, no shared context. Same model and prompt throughout, so this is self-consistency and an upper bound on agreement with a different judge, not inter-rater reliability between independent raters.",
+  "alarmism": {
+    "icc_2_1": 0.9914,
+    "krippendorff_alpha": 0.9913,
+    "mean_spread": 0.084,
+    "median_spread": 0.0,
+    "max_spread": 0.5,
+    "identical_all_passes": 41,
+    "within_0_5": 64
+  },
+  "optimism": {
+    "icc_2_1": 0.9826,
+    "krippendorff_alpha": 0.9824,
+    "mean_spread": 0.098
+  },
+  "least_stable_stories": [
+    {
+      "id": "f8186e42-ff85-4760-863f-3b1b4f9b42ae:moderated",
+      "dataset": "pertussis-global",
+      "tier": "g3b",
+      "kind": "moderated",
+      "ratings": [
+        2.0,
+        2.0,
+        2.5
+      ],
+      "spread": 0.5
+    },
+    {
+      "id": "5f8a2b14-2a69-4e47-b91b-b261822bb0a6:raw",
+      "dataset": "under5-all-cause-deaths",
+      "tier": "g8b",
+      "kind": "raw",
+      "ratings": [
+        2.0,
+        2.5,
+        2.0
+      ],
+      "spread": 0.5
+    },
+    {
+      "id": "5f8a2b14-2a69-4e47-b91b-b261822bb0a6:moderated",
+      "dataset": "under5-all-cause-deaths",
+      "tier": "g8b",
+      "kind": "moderated",
+      "ratings": [
+        2.3,
+        2.0,
+        2.5
+      ],
+      "spread": 0.5
+    },
+    {
+      "id": "029ce8c4-931a-495c-ae54-f00ac29b1e04:raw",
+      "dataset": "who-health",
+      "tier": "demo",
+      "kind": "raw",
+      "ratings": [
+        2.5,
+        2.0,
+        2.0
+      ],
+      "spread": 0.5
+    },
+    {
+      "id": "d46f56c8-dc92-4903-8665-24939cbd6f7a:moderated",
+      "dataset": "measles",
+      "tier": "demo",
+      "kind": "moderated",
+      "ratings": [
+        2.0,
+        1.5,
+        2.0
+      ],
+      "spread": 0.5
+    },
+    {
+      "id": "d53a7c27-2104-43ac-accd-9a6b53ee534c:moderated",
+      "dataset": "pertussis-global",
+      "tier": "m31b-selfjudge",
+      "kind": "moderated",
+      "ratings": [
+        2.0,
+        2.0,
+        2.3
+      ],
+      "spread": 0.3
+    },
+    {
+      "id": "7ae6a2ce-ccde-4b25-8579-3d759f841b10:moderated",
+      "dataset": "mumps-global",
+      "tier": "g8b",
+      "kind": "moderated",
+      "ratings": [
+        1.5,
+        1.8,
+        1.5
+      ],
+      "spread": 0.3
+    },
+    {
+      "id": "9239bbfd-d17a-4a72-9d5e-3c59cca86409:moderated",
+      "dataset": "pertussis-global",
+      "tier": "mid",
+      "kind": "moderated",
+      "ratings": [
+        2.5,
+        2.5,
+        2.7
+      ],
+      "spread": 0.2
+    }
+  ],
+  "cost_usd": 3.246,
+  "ratings": {
+    "0e24b6fd-52fe-44ba-b616-1d899182d5df:raw": [
+      2.5,
+      2.5,
+      2.5
+    ],
+    "0e24b6fd-52fe-44ba-b616-1d899182d5df:moderated": [
+      2.5,
+      2.5,
+      2.5
+    ],
+    "9239bbfd-d17a-4a72-9d5e-3c59cca86409:raw": [
+      4.0,
+      4.0,
+      4.0
+    ],
+    "9239bbfd-d17a-4a72-9d5e-3c59cca86409:moderated": [
+      2.5,
+      2.5,
+      2.7
+    ],
+    "d53a7c27-2104-43ac-accd-9a6b53ee534c:raw": [
+      4.0,
+      3.9,
+      4.0
+    ],
+    "d53a7c27-2104-43ac-accd-9a6b53ee534c:moderated": [
+      2.0,
+      2.0,
+      2.3
+    ],
+    "ad549d9a-36b7-4b0a-87f4-f737fcecc684:raw": [
+      4.0,
+      4.0,
+      4.0
+    ],
+    "ad549d9a-36b7-4b0a-87f4-f737fcecc684:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "ebdfb279-338c-4488-938f-e21363f35b5f:raw": [
+      4.3,
+      4.3,
+      4.3
+    ],
+    "ebdfb279-338c-4488-938f-e21363f35b5f:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "f8186e42-ff85-4760-863f-3b1b4f9b42ae:raw": [
+      4.5,
+      4.6,
+      4.6
+    ],
+    "f8186e42-ff85-4760-863f-3b1b4f9b42ae:moderated": [
+      2.0,
+      2.0,
+      2.5
+    ],
+    "063f23d7-40ce-42df-bba1-2616878a99ff:raw": [
+      4.6,
+      4.6,
+      4.6
+    ],
+    "063f23d7-40ce-42df-bba1-2616878a99ff:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "501f5794-136b-405c-949d-2448cf86bd31:raw": [
+      4.0,
+      4.0,
+      4.0
+    ],
+    "501f5794-136b-405c-949d-2448cf86bd31:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "10908df4-026c-4bdd-b6b1-bc177f182f7d:raw": [
+      4.0,
+      4.0,
+      4.0
+    ],
+    "10908df4-026c-4bdd-b6b1-bc177f182f7d:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "aadbe056-49bd-47f8-9ed8-50f608d6d43d:raw": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "aadbe056-49bd-47f8-9ed8-50f608d6d43d:moderated": [
+      1.5,
+      1.5,
+      1.5
+    ],
+    "7ae6a2ce-ccde-4b25-8579-3d759f841b10:raw": [
+      2.6,
+      2.5,
+      2.6
+    ],
+    "7ae6a2ce-ccde-4b25-8579-3d759f841b10:moderated": [
+      1.5,
+      1.8,
+      1.5
+    ],
+    "5dae0881-9f6d-4664-a363-56b0e4a7f33e:raw": [
+      3.5,
+      3.6,
+      3.5
+    ],
+    "5dae0881-9f6d-4664-a363-56b0e4a7f33e:moderated": [
+      2.5,
+      2.5,
+      2.5
+    ],
+    "64c4f9c3-135c-4529-8806-742cde0e6a22:raw": [
+      3.2,
+      3.4,
+      3.2
+    ],
+    "64c4f9c3-135c-4529-8806-742cde0e6a22:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "5f8a2b14-2a69-4e47-b91b-b261822bb0a6:raw": [
+      2.0,
+      2.5,
+      2.0
+    ],
+    "5f8a2b14-2a69-4e47-b91b-b261822bb0a6:moderated": [
+      2.3,
+      2.0,
+      2.5
+    ],
+    "75748240-206a-464c-a19d-c36cc867619c:raw": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "75748240-206a-464c-a19d-c36cc867619c:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "e061abb3-676e-472a-a3fb-7bca062bc139:raw": [
+      3.8,
+      4.0,
+      4.0
+    ],
+    "e061abb3-676e-472a-a3fb-7bca062bc139:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "faf34f8c-3769-4483-8b52-774a7b8b33a2:raw": [
+      4.0,
+      4.0,
+      4.0
+    ],
+    "faf34f8c-3769-4483-8b52-774a7b8b33a2:moderated": [
+      1.5,
+      1.5,
+      1.5
+    ],
+    "99a3c97a-d360-44ad-a27b-1108b268c092:raw": [
+      4.6,
+      4.5,
+      4.5
+    ],
+    "99a3c97a-d360-44ad-a27b-1108b268c092:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "a626f724-7296-4102-843e-5b8ed20befce:raw": [
+      4.4,
+      4.4,
+      4.4
+    ],
+    "a626f724-7296-4102-843e-5b8ed20befce:moderated": [
+      2.3,
+      2.4,
+      2.5
+    ],
+    "e92c0f3c-60cd-4ba2-afe1-e2d5274c3931:raw": [
+      4.8,
+      4.7,
+      4.7
+    ],
+    "e92c0f3c-60cd-4ba2-afe1-e2d5274c3931:moderated": [
+      2.5,
+      2.5,
+      2.4
+    ],
+    "8d7d4230-5860-4d6a-9357-41cd01d1c769:raw": [
+      3.6,
+      3.6,
+      3.6
+    ],
+    "8d7d4230-5860-4d6a-9357-41cd01d1c769:moderated": [
+      1.5,
+      1.5,
+      1.5
+    ],
+    "029ce8c4-931a-495c-ae54-f00ac29b1e04:raw": [
+      2.5,
+      2.0,
+      2.0
+    ],
+    "029ce8c4-931a-495c-ae54-f00ac29b1e04:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "d46f56c8-dc92-4903-8665-24939cbd6f7a:raw": [
+      4.0,
+      4.0,
+      4.0
+    ],
+    "d46f56c8-dc92-4903-8665-24939cbd6f7a:moderated": [
+      2.0,
+      1.5,
+      2.0
+    ],
+    "47bae193-cdcd-40f7-b6eb-e5e4f1b78aaa:raw": [
+      3.4,
+      3.4,
+      3.4
+    ],
+    "47bae193-cdcd-40f7-b6eb-e5e4f1b78aaa:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "d9793720-9637-42b5-b85b-6c1fd3f9907d:raw": [
+      4.2,
+      4.2,
+      4.2
+    ],
+    "d9793720-9637-42b5-b85b-6c1fd3f9907d:moderated": [
+      2.3,
+      2.3,
+      2.3
+    ],
+    "766c3877-d035-445f-a9e7-a8d49dc54d0c:raw": [
+      4.3,
+      4.3,
+      4.3
+    ],
+    "766c3877-d035-445f-a9e7-a8d49dc54d0c:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "1a20dcdb-f2d9-4a45-9589-46f807a6743b:raw": [
+      4.3,
+      4.3,
+      4.3
+    ],
+    "1a20dcdb-f2d9-4a45-9589-46f807a6743b:moderated": [
+      2.5,
+      2.5,
+      2.5
+    ],
+    "124c9d59-b8cf-4ac9-88f4-325821801fa2:raw": [
+      4.2,
+      4.2,
+      4.0
+    ],
+    "124c9d59-b8cf-4ac9-88f4-325821801fa2:moderated": [
+      2.5,
+      2.5,
+      2.5
+    ],
+    "c377a420-ecd8-4df1-9f94-567ef730a143:raw": [
+      3.6,
+      3.5,
+      3.4
+    ],
+    "c377a420-ecd8-4df1-9f94-567ef730a143:moderated": [
+      1.5,
+      1.5,
+      1.5
+    ],
+    "e64fc8c1-cf4d-40d6-8dfc-8e8635803233:raw": [
+      3.8,
+      3.8,
+      3.8
+    ],
+    "e64fc8c1-cf4d-40d6-8dfc-8e8635803233:moderated": [
+      2.3,
+      2.3,
+      2.2
+    ],
+    "9e40c53a-eb4c-43d1-9ffd-68efaf41de76:raw": [
+      4.0,
+      3.8,
+      4.0
+    ],
+    "9e40c53a-eb4c-43d1-9ffd-68efaf41de76:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "3720cfd9-39b3-4b71-b1bc-02d053c179a5:raw": [
+      3.8,
+      3.7,
+      3.7
+    ],
+    "3720cfd9-39b3-4b71-b1bc-02d053c179a5:moderated": [
+      2.0,
+      2.0,
+      2.0
+    ]
+  },
+  "figure": "presentation/figures/fig13.svg"
+}

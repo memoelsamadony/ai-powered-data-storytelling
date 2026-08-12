@@ -243,6 +243,24 @@ TIERS: dict[str, Tier] = {
         judge="qwen3.5:4b",
         sizes={"qwen3.5:9b": 6.6, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
     ),
+    "q27b": Tier(
+        id="q27b",
+        label="Q27B (qwen3.5:27b generator, within-family ladder)",
+        description=(
+            "Within-family generator ladder rung 4, and the rung L18 has been "
+            "missing. The ladder so far (2b/4b/9b) showed no size effect on raw "
+            "alarmism, while the one calm generator in the whole set is "
+            "llama3.1:8b - so 'calm' looked like a family trait rather than a "
+            "scale one. A large qwen that also writes calmly would overturn "
+            "that; one that runs hot like its smaller siblings confirms it. "
+            "17 GB generator against a 19 GB moderator, so the two cannot be "
+            "co-resident and each stage loads and unloads."
+        ),
+        generator="qwen3.5:27b",
+        moderator="gemma4:31b",
+        judge="qwen3.5:4b",
+        sizes={"qwen3.5:27b": 17.0, "gemma4:31b": 19.0, "qwen3.5:4b": 3.4},
+    ),
     "x9b": Tier(
         id="x9b",
         label="X9B (qwen3.5:9b moderator, cross-family control)",

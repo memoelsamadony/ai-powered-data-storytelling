@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<pattern id="hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+  <rect width="8" height="8" fill="#2a78d6" fill-opacity="0.22"/>
+  <line x1="0" y1="0" x2="0" y2="8" stroke="#2a78d6" stroke-width="3"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"/>
+</marker>
+<marker id="arrowblue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#2a78d6"/>
+</marker>
+
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">The moderated story wins on everything except readability</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">20 blinded pairs, position randomised, Claude Opus deciding each criterion.</text>
+<line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
+<text x="72" y="248" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">Factual correctness</text>
+<path d="M 520 222 L 1276.0 222 Q 1280.0 222 1280.0 226 L 1280.0 256 Q 1280.0 260 1276.0 260 L 520 260 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="900.0" y="248" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">100%</text>
+<text x="72" y="344" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">Relevance &amp; informativeness</text>
+<path d="M 520 318 L 1048.0 318 Q 1052.0 318 1052.0 322 L 1052.0 352 Q 1052.0 356 1048.0 356 L 520 356 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="786.0" y="344" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">70%</text>
+<path d="M 1052.0 318 L 1276.0 318 Q 1280.0 318 1280.0 322 L 1280.0 352 Q 1280.0 356 1276.0 356 L 1052.0 356 Z" fill="#c3c2b7" fill-opacity="1.0" />
+<text x="1166.0" y="344" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">30%</text>
+<text x="72" y="440" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">Structure &amp; coherence</text>
+<path d="M 520 414 L 706.0 414 Q 710.0 414 710.0 418 L 710.0 448 Q 710.0 452 706.0 452 L 520 452 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="615.0" y="440" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">25%</text>
+<path d="M 710.0 414 L 1276.0 414 Q 1280.0 414 1280.0 418 L 1280.0 448 Q 1280.0 452 1276.0 452 L 710.0 452 Z" fill="#c3c2b7" fill-opacity="1.0" />
+<text x="995.0" y="440" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">75%</text>
+<text x="72" y="536" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">Narrative quality</text>
+<path d="M 520 510 L 668.0 510 Q 672.0 510 672.0 514 L 672.0 544 Q 672.0 548 668.0 548 L 520 548 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="596.0" y="536" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">20%</text>
+<path d="M 672.0 510 L 820.0 510 Q 824.0 510 824.0 514 L 824.0 544 Q 824.0 548 820.0 548 L 672.0 548 Z" fill="#c3c2b7" fill-opacity="1.0" />
+<text x="748.0" y="536" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">20%</text>
+<path d="M 824.0 510 L 1276.0 510 Q 1280.0 510 1280.0 514 L 1280.0 544 Q 1280.0 548 1276.0 548 L 824.0 548 Z" fill="#eb6834" fill-opacity="1.0" />
+<text x="1052.0" y="536" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">60%</text>
+<text x="1300" y="536" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#eb6834" font-weight="bold" text-anchor="start" letter-spacing="0">the cost</text>
+<text x="72" y="632" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">OVERALL</text>
+<path d="M 520 606 L 1276.0 606 Q 1280.0 606 1280.0 610 L 1280.0 640 Q 1280.0 644 1276.0 644 L 520 644 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="900.0" y="632" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">100%</text>
+<path d="M 520 696 L 546 696 Q 550 696 550 700 L 550 712 Q 550 716 546 716 L 520 716 Z" fill="#2a78d6" fill-opacity="1.0" />
+<text x="562" y="712" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">moderated wins</text>
+<path d="M 770 696 L 796 696 Q 800 696 800 700 L 800 712 Q 800 716 796 716 L 770 716 Z" fill="#c3c2b7" fill-opacity="1.0" />
+<text x="812" y="712" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">tie</text>
+<path d="M 1020 696 L 1046 696 Q 1050 696 1050 700 L 1050 712 Q 1050 716 1046 716 L 1020 716 Z" fill="#eb6834" fill-opacity="1.0" />
+<text x="1062" y="712" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">raw wins</text>
+
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">The judge is never told which story was moderated, and which one is shown first is decided by a coin flip per pair. Narrative quality is the one criterion the raw story</text>
+<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">wins, and it wins it three times as often: this system buys calibration and accuracy by spending engagement, and a deck that hides that row is selling rather than</text>
+<text x="72" y="874" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">reporting.</text>
+</svg>

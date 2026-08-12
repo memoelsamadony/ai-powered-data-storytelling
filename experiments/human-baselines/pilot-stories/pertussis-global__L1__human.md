@@ -1,7 +1,6 @@
 ---
-writer: L1                     # anonymized pilot participant; per-series numbering, not a consistent ID across series
+writer: L1                     # anonymized author; per-series numbering, not a consistent ID across series
 series: pertussis-global
-source_draft: experiments/human-baselines/llm-drafts/pertussis-global__L1.md   # starting draft this was rewritten from by hand
 datapack: experiments/human-baselines/datapacks/pertussis-global.txt
 word_count: 183
 written_by: human

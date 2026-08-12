@@ -49,34 +49,40 @@ direction. This is why the authoritative rating is Claude Opus 5, run blinded
 and offline (`experiments/export_for_judging.py`); the local judge is retained
 only as a secondary rater for an agreement statistic.
 
-### L2. A human reference exists now, but it is a pilot, not the protocol set. **PARTLY CLOSED 2026-08-12**
+### L2. A human reference set exists and is genuine; it is still not the S6 shape. **PARTLY CLOSED 2026-08-12, label corrected the same day**
 
-`experiments/human-baselines/pilot-stories/` holds 25 human-written stories, 5
-per series, and they are scored on the same blind Opus judge as everything else
-(`experiments/score_human_baselines.py`). That is enough to answer the question
-the project could not answer at all before: where do the machine stories sit
-relative to a person writing from the same evidence pack.
+`experiments/human-baselines/pilot-stories/` holds 25 stories, 5 per series,
+written by the project team from the evidence packs, and scored on the same
+blind two-axis Claude judge as everything else
+(`experiments/score_human_baselines.py`). That answers the question the project
+could not answer at all before: where machine stories sit relative to a person
+writing from the same data.
 
-Three reasons it is not yet the baseline `ASSIGNMENT.md` specifies, all from
-`pilot-stories/README.md`:
+**Correction, 2026-08-12.** This entry previously described the set as
+hand-rewrites of LLM drafts, following a README and a `source_draft:` frontmatter
+field that shipped with the stories. The authors say that is wrong: these are
+their own writing, not derived from machine text. The false pointers have been
+removed. The consequence is not cosmetic - on the strength of that label this
+file suppressed every similarity metric against the set and the results writeup
+carried a leakage caveat it did not need. **Similarity metrics against this set
+are usable.** The lesson worth keeping: a provenance claim that arrives with the
+data is still a claim, and this one was propagated into four documents before
+anyone asked the people who wrote the stories.
 
-1. **Not blind.** Every writer rewrote an LLM draft rather than starting from
-   the pack, so the machine's framing leaked into the reference set. Similarity
-   metrics against it are therefore still contaminated, and only the *tone*
-   numbers are safe to use.
-2. **Not from scratch**, so `BRIEF.md` rule 2 is violated by construction.
-3. **Wrong shape for `H`.** S6 wants four named writers with stable identity
-   across series; this set has five interchangeable slots per series. Nothing
-   in the repo computes `H` from it, and nothing should.
+What remains true, and limits what the set can be used for:
 
-The old `llm-drafts/` set, which was Claude-authored throughout, has been
-deleted (`DELETED-LLM-DRAFTS.md`), so the repo no longer contains a
-machine-written set that could be mistaken for a baseline.
+1. **Wrong shape for `H`.** `ASSIGNMENT.md` S6 wants four named writers with a
+   stable identity across series, so no writer's habits get confounded with one
+   series' direction of truth. This set has five interchangeable slots per
+   series. Nothing computes `H` from it, and `build_baselines_json.py` still
+   reads only `stories/`.
+2. **No headlines**, so the judge scores humans on body text and machines on
+   headline plus body. Headlines are where alarmism concentrates, so the human
+   figures are if anything flattered and the gap is a lower bound.
+3. **Lengths uncontrolled**, several outside the 110-170 band in `BRIEF.md`.
 
-One asymmetry to keep in view: the pilot stories have no headline, so the judge
-scores body-only text for humans and headline-plus-body for machines. Headlines
-are where alarmism concentrates, so the human figures are, if anything,
-flattered relative to the machine ones.
+The old `llm-drafts/` set, which really was Claude-authored throughout, is
+deleted (`DELETED-LLM-DRAFTS.md`).
 
 ### L3. n = 1 per cell. **OPEN**
 
@@ -99,7 +105,7 @@ Until that lands, "the moderator works" is not supported by a near-zero delta.
 
 ---
 
-### L18. The generator ladder mixed families, and correcting it reversed the result. **RESOLVED 2026-08-11**
+### L18. Family, not size: the missing qwen rung is in. **CLOSED 2026-08-12**
 
 The first generator ladder paired `llama3.2:1b`, `llama3.2:3b`, `qwen3.5:4b`
 and `llama3.1:8b`. Two families and two llama generations, so "size" was never
@@ -127,11 +133,69 @@ this series at roughly 4.0, and `llama3.1:8b` writes it calmer. Whether that is
 scale or lineage cannot be settled without `qwen3.5:27b`, the rung that would
 show whether a larger qwen also calms down.
 
+**The ladder is complete.** `qwen3.5:27b` was pulled and run on the same series
+and seed, and it writes as hot as its small siblings: raw alarmism **4.3**,
+against 4.8 / 4.6 / 4.5 for 2b / 4b / 9b. Scaling a qwen up by more than 13x
+does not buy the calm that `llama3.1:8b` shows at 3.98 over five seeds. That
+settles it: **the one calm generator in the set is a family trait, not a size
+effect**, and the original "smaller generators write hotter copy" reading was a
+family effect misread as a scale one.
+
 A second observation from the same table: `qwen3.5:2b` is the only run where
 moderation did nothing to the rating (4.0 -> 4.0) despite the moderator marking
 10 emotive spans, the most of any run. The moderator edited the text and did not
 move the tone, which is a distinct failure from "no edit" and is exactly what
 `rewrite_intensity` was added to separate.
+
+---
+
+### L19. Judging the studio's human baseline creates a user-controlled yardstick. **OPEN, introduced 2026-08-12**
+
+The interface now sends the baseline a user types to the same blind Claude judge
+that scores the machine stories, because without a human rating the comparison
+panel has no band and reports nothing. That fixes a real defect and introduces
+four threats, none fatal, all worth naming before a number from this panel is
+quoted anywhere.
+
+**1. The band is n=1 and the judge's own wobble is the same size as the band.**
+`humanBands` draws a target of +/-0.5 around the human rating. That rating is a
+single Claude call with no repeats. The test-retest in `OPUS-JUDGE-RESULTS.md`
+measured a maximum drift of **0.5 points** on unchanged text, so re-judging the
+same baseline could move the target by the full half-width of the band. "Landed
+in the human band" is therefore a soft verdict, not a measurement, until the
+baseline is judged more than once and the median taken.
+
+**2. Provenance is unverified, and the yardstick is user-controlled.** Whatever
+is pasted into the box is labelled "Human baseline" and scored as one, including
+text generated by another model. The studio cannot tell the difference and does
+not claim to. This is a demo affordance, not a protocol baseline: the sets with
+known provenance are `human-baselines/pilot-stories/` (team-written, see L2) and
+`stories/` (the blind S6 protocol, still being collected). Nothing in the studio
+feeds `H`. L2 is also the cautionary case here - a provenance label that nobody
+verified survived in four documents.
+
+A smaller case of the same thing: the baseline is free text reaching an
+instructable model, so a determined user can write text aimed at the judge
+rather than at the reader. The blast radius is one demo run's own target band,
+and the rating is clamped to 1-5, so the worst outcome is a person fooling their
+own comparison.
+
+**3. Headline asymmetry, again.** The title field is optional. A baseline saved
+without one is judged on body text while the machine stories are judged on
+headline plus body, and headlines are where alarmism concentrates. Same caveat
+as the pilot set in L2, and deliberately not equalised: stripping the machine
+headline would hide a real part of what the generator produced.
+
+**4. Length is uncontrolled.** A 40-word baseline and a 150-word machine story
+are scored on the same scale with no length term, and L8 already records that
+several measures move with length.
+
+**What the design gets right**, and the reason this is a net gain: all three
+stories go through the *same* blind single-story call, so any bias the judge has
+applies equally to the human and the machine text and largely cancels in the
+difference. Ratings are also never inferred from stale text - saving edited text
+clears the old rating before re-judging, and `compare` withholds the rating
+entirely when it is handed baseline text the run was not judged on.
 
 ---
 

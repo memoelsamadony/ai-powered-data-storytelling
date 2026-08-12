@@ -24,6 +24,8 @@ sys.path.insert(0, str(HERE.parent / "backend"))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django  # noqa: E402
 django.setup()
+sys.path.insert(0, str(HERE))
+from safe_write import add_force_flag, write_json, write_text  # noqa: E402
 from storytelling import faithfulness, metrics, ollama_client as oc, textstats  # noqa: E402
 from storytelling.models import Run, StageResult  # noqa: E402
 from storytelling.services import _dataset_values  # noqa: E402
@@ -234,6 +236,7 @@ def md(rows: list[dict]) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", action="store_true")
+    add_force_flag(ap)
     a = ap.parse_args()
     runs = [r for r in Run.objects.all().order_by("created_at")
             if (r.raw_paragraphs and r.moderated_paragraphs)]
@@ -244,11 +247,9 @@ def main() -> int:
         except Exception as exc:  # a half-written run must not kill the table
             print(f"skip {r.id} ({r.dataset_id}/{r.tier}): {exc}", file=sys.stderr)
     if a.json:
-        (HERE / "runs_table.json").write_text(
-            json.dumps(rows, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        print(f"wrote runs_table.json ({len(rows)} runs)")
+        write_json(HERE / "runs_table.json", rows, force=a.force)
     else:
-        (HERE / "RUNS.md").write_text(md(rows), encoding="utf-8")
+        write_text(HERE / "RUNS.md", md(rows), force=a.force)
         print(md(rows))
     return 0
 

@@ -1,7 +1,6 @@
 ---
-writer: L1                     # anonymized pilot participant; per-series numbering, not a consistent ID across series
+writer: L1                     # anonymized author; per-series numbering, not a consistent ID across series
 series: mumps-global
-source_draft: experiments/human-baselines/llm-drafts/mumps-global__L1.md   # starting draft this was rewritten from by hand
 datapack: experiments/human-baselines/datapacks/mumps-global.txt
 word_count: 173
 written_by: human

@@ -1,33 +1,38 @@
-# Pilot stories — not the ASSIGNMENT.md human baseline set
+# The team's human-written stories
 
-25 stories (5 series x 5 anonymized writers, `L1`-`L5`), moved here from the
-project's main directory. Each was produced by a person rewriting the
-matching LLM draft (`source_draft` in the frontmatter) by hand — not written
-from scratch, and not collected under the blind four-writer protocol in
-`../ASSIGNMENT.md` / `../BRIEF.md`.
+25 stories, 5 series x 5 anonymized authors (`L1`-`L5`), written by the project
+team from the evidence packs in `../datapacks/`.
 
-Concretely, this set differs from the real human baseline in three ways:
+**These are human writing.** An earlier version of this README described them as
+hand-rewrites of machine drafts, and every file carried a `source_draft:`
+pointer into the since-deleted `llm-drafts/` directory. That was wrong. The
+claim was never verified against the authors, it propagated into `LOOPHOLES.md`,
+`OPUS-JUDGE-RESULTS.md` and `BRIEF.md`, and it was corrected on 2026-08-12 on the
+authors' word. The `source_draft:` lines are gone; `datapack:` is the real
+source each author worked from.
 
-- **Not blind.** `BRIEF.md` rule 1 requires a writer to never see a
-  machine-written story on their series before submitting. Every story here
-  started from one.
-- **Not from-scratch.** `BRIEF.md` rule 2 rules out any LLM involvement "at
-  any point, for any part of it." These began as an LLM draft.
-- **Wrong shape for `H`.** `ASSIGNMENT.md` S6 defines `H` as the median over
-  four specific anchor stories, one per named writer, each writing exactly
-  the series they were assigned (so no writer's habits get confounded with a
-  series' direction of truth). This set has five interchangeable writer slots
-  per series instead, with no cross-series identity — `L1` in `measles` is
-  not necessarily `L1` in `diphtheria-global`.
+Why the correction matters rather than being bookkeeping: a reference set
+described as machine-derived cannot carry a similarity metric. Every "distance
+to human writing" number was suppressed on the strength of that label, and the
+tone figures were published with a leakage caveat they did not need.
 
-**Do not point `build_baselines_json.py` at this directory, and do not feed
-any of it into the `H` computation in `ASSIGNMENT.md` S6.** It exists for
-exercising the pipeline (word counts, judge scoring, moderation) with
-plausible human-shaped text while the real `stories/` submissions are still
-being collected.
+## What is still true about this set
 
-Several are outside the 110-170 accepted word range (see `word_count` in
-each file's frontmatter) — expected, since they were never trimmed to
-`BRIEF.md`'s length target. None of the 25 have a headline; `BRIEF.md`
-requires one and none was added here, since writing one would mean an LLM
-originating that piece of the text.
+- **Not the `ASSIGNMENT.md` S6 shape.** That protocol wants four named writers
+  with a stable identity across series, so no author's habits get confounded
+  with one series' direction of truth. This set has five interchangeable slots
+  per series: `L1` in `measles` is not necessarily `L1` in `diphtheria-global`.
+  Nothing here computes `H`, and `build_baselines_json.py` still reads only
+  `../stories/`.
+- **No headlines.** `BRIEF.md` asks for one and none was written. The judge
+  therefore scores these on body text while machine stories are scored on
+  headline plus body, and headlines are where alarmism concentrates. Recorded
+  rather than equalised.
+- **Lengths vary.** Several sit outside the 110-170 word range in `BRIEF.md`
+  (see `word_count` per file); they were not trimmed to a target.
+
+## How they are used
+
+`experiments/score_human_baselines.py` scores all 25 on the same blind two-axis
+Claude judge as the machine stories, and prints them beside the machine means.
+Results in `../../OPUS-JUDGE-RESULTS.md`.

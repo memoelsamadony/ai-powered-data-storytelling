@@ -6,11 +6,12 @@ and never a human baseline; keeping them invited exactly the misreading their ow
 labels existed to prevent. The real reference set is `pilot-stories/` (hand-written)
 and, when the blind protocol completes, `stories/`.
 
-They are recorded here rather than simply erased because each pilot story names its
-`source_draft:` in frontmatter. Without this table that pointer would be unresolvable,
-and a hand-rewrite whose starting text cannot be identified is a weaker artefact than
-one whose starting text is identified and deleted. The content is recoverable from git
-history at commit `21b9969`.
+They were recorded here because the stories in `pilot-stories/` each carried a
+`source_draft:` pointer at one of them. **That pointer was wrong** - those stories are
+the team's own writing, not rewrites (see `pilot-stories/README.md`), and the field has
+been removed. This table is kept anyway: it is the only remaining index of a set that
+existed, was scored, and was cited in `RESULTS.md` before deletion. The content is
+recoverable from git history at commit `21b9969`.
 
 | file | bytes | sha256 |
 |---|---|---|

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import logging
 import re
+import time
 
 from django.shortcuts import get_object_or_404
 from ninja import File, NinjaAPI, Query
@@ -33,7 +34,7 @@ from . import ollama_client as oc
 from . import results as results_mod
 from . import services
 from . import uploads as uploads_mod
-from .models import Run, RunStatus, UploadedDataset
+from .models import Run, RunStatus, StageResult, UploadedDataset
 from .schemas import (
     ComparisonMetrics,
     CompareIn,
@@ -366,15 +367,67 @@ def run_edits(request, run_id: str):
 
 @post("/runs/{run_id}/human", response=RunRef)
 def save_human_story(request, run_id: str, payload: HumanStoryIn):
-    """Persist the human baseline written in the interface (report task (c)).
+    """Persist the human baseline written in the interface, and judge it.
 
-    Without this the human story lives only in React state and can never be
-    scored against the LLM output.
+    Judged here rather than left unrated, because the human rating is not
+    decoration: the comparison draws a target band of +/-0.5 around it, so an
+    unrated baseline means the whole tone panel has no yardstick and reports
+    nothing. It goes through the same blind single-story Claude call as the
+    machine stories, which is what makes the three ratings comparable - any bias
+    the judge has applies equally to all of them and cancels in the difference.
+
+    Three behaviours worth stating, because each one is a way this could lie:
+
+    * **Re-saving identical text does not re-judge.** A second opinion on the
+      same words would differ by up to the judge's own wobble and look like an
+      edit that never happened.
+    * **Changed text clears the old ratings first.** If the judge is then
+      unreachable, the row holds no rating at all rather than a rating of text
+      that no longer exists.
+    * **A judge failure is not a save failure.** The text is the user's work and
+      is kept regardless; the rating is null and renders as "not measured".
     """
     run = get_object_or_404(Run, id=run_id)
-    run.human_text = payload.human_text
-    run.human_title = payload.human_title
-    run.save(update_fields=["human_text", "human_title"])
+    text, title = payload.human_text, payload.human_title
+    unchanged = (text == run.human_text and title == run.human_title
+                 and run.human_alarmism is not None)
+
+    run.human_text, run.human_title = text, title
+    if not unchanged:
+        run.human_alarmism = run.human_optimism = None
+    run.save(update_fields=["human_text", "human_title",
+                            "human_alarmism", "human_optimism"])
+
+    if text.strip() and not unchanged and judge_mod.is_available():
+        started = time.perf_counter()
+        try:
+            score = judge_mod.score_story(
+                ds.build_prompt_table(run.dataset_id),
+                title,
+                [p.strip() for p in text.split("\n\n") if p.strip()],
+            )
+        except judge_mod.JudgeUnavailable as exc:
+            # Caught here on purpose. Letting it reach the module-level 503
+            # handler would report a failed save for a save that committed.
+            log.warning("human baseline left unjudged for run %s: %s", run.id, exc)
+            StageResult.objects.create(
+                run=run, stage=StageResult.Stage.JUDGE_OPUS_HUMAN,
+                model=f"claude/{judge_mod.DEFAULT_MODEL}",
+                duration_s=round(time.perf_counter() - started, 2),
+                payload={"error": str(exc)},
+            )
+        else:
+            run.human_alarmism = score.alarmism
+            run.human_optimism = score.optimism
+            run.save(update_fields=["human_alarmism", "human_optimism"])
+            StageResult.objects.create(
+                run=run, stage=StageResult.Stage.JUDGE_OPUS_HUMAN,
+                model=f"claude/{judge_mod.DEFAULT_MODEL}",
+                duration_s=round(score.duration_s, 2),
+                payload={"alarmism": score.alarmism, "optimism": score.optimism,
+                         "rationale": score.rationale},
+                usage={"cost_usd": score.cost_usd} if score.cost_usd is not None else {},
+            )
     return RunRef(run_id=str(run.id), dataset_id=run.dataset_id, tier=run.tier, status=run.status)
 
 
