@@ -23,10 +23,14 @@ across 85 calls.
 Opus tone, 1-5 on each axis, where 3 is calibrated and **both ends are
 failures**. n = 20 machine runs, 25 human stories.
 
-| | raw | moderated | human pilot |
+| | raw | moderated | human |
 |---|---|---|---|
-| **alarmism** | 3.64 | **2.13** | **1.99** |
-| **optimism** | 2.23 | **2.74** | **2.44** |
+| **alarmism** | 3.59 | **2.09** | **2.00** |
+| **optimism** | 2.25 | **2.67** | **2.50** |
+
+Re-measured 2026-08-12 over all 24 runs after the judge pass was rebuilt; the
+earlier table read 3.64 / 2.13 over 20. Both are within the 0.5 test-retest
+drift in section 2, which is exactly why that section exists.
 
 The two axes move in opposite directions, and that is the finding. Moderation
 pulls alarmism down 1.51 points and pushes optimism up 0.51. A single-axis view

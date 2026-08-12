@@ -1,0 +1,1494 @@
+{
+  "experiment": "Which generator and which moderator get closest to human tone",
+  "question": "Ranked on distance from the human median alarmism, on one series.",
+  "dataset": "pertussis-global",
+  "n_per_cell": 1,
+  "grid_shape": "L-shaped, not factorial: generators were varied against gemma4:31b and moderators against llama3.1:8b, so the best-generator x best-moderator cell was never run.",
+  "generator_arm": [
+    {
+      "run": "ebdfb279-338c-4488-938f-e21363f35b5f",
+      "dataset": "pertussis-global",
+      "tier": "g1b",
+      "generator": "llama3.2:1b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.3,
+        "moderated": 2.0,
+        "human_median": 2.0,
+        "gap_raw": 2.3,
+        "gap_moderated": 0.0
+      },
+      "optimism": {
+        "raw": 4.0,
+        "moderated": 2.5,
+        "human_median": 2.5,
+        "gap_raw": 1.5,
+        "gap_moderated": 0.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3217,
+          "chrf_mean": 0.3042,
+          "rouge_l_max": 0.194,
+          "rouge_l_mean": 0.1708,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.2737,
+              "rouge_l": 0.1627,
+              "bleu2": 0.0273
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3141,
+              "rouge_l": 0.1643,
+              "bleu2": 0.0545
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.2957,
+              "rouge_l": 0.1661,
+              "bleu2": 0.0273
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3157,
+              "rouge_l": 0.1667,
+              "bleu2": 0.0273
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3217,
+              "rouge_l": 0.194,
+              "bleu2": 0.0364
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.3556,
+          "chrf_mean": 0.3251,
+          "rouge_l_max": 0.1859,
+          "rouge_l_mean": 0.1725,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.292,
+              "rouge_l": 0.1672,
+              "bleu2": 0.098
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3284,
+              "rouge_l": 0.1618,
+              "bleu2": 0.1078
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.312,
+              "rouge_l": 0.1859,
+              "bleu2": 0.1078
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3375,
+              "rouge_l": 0.1786,
+              "bleu2": 0.1275
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3556,
+              "rouge_l": 0.1692,
+              "bleu2": 0.1471
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.333,
+        "added_unsupported": 0,
+        "groundedness_raw": 0.3333333333333333,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 6,
+      "seconds_ollama": 221.1
+    },
+    {
+      "run": "063f23d7-40ce-42df-bba1-2616878a99ff",
+      "dataset": "pertussis-global",
+      "tier": "g4b",
+      "generator": "qwen3.5:4b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.6,
+        "moderated": 2.0,
+        "human_median": 2.0,
+        "gap_raw": 2.6,
+        "gap_moderated": 0.0
+      },
+      "optimism": {
+        "raw": 1.4,
+        "moderated": 2.5,
+        "human_median": 2.5,
+        "gap_raw": 1.1,
+        "gap_moderated": 0.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.2654,
+          "chrf_mean": 0.2526,
+          "rouge_l_max": 0.1818,
+          "rouge_l_mean": 0.1707,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.2246,
+              "rouge_l": 0.171,
+              "bleu2": 0.1071
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.2583,
+              "rouge_l": 0.1575,
+              "bleu2": 0.119
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.2511,
+              "rouge_l": 0.1753,
+              "bleu2": 0.0952
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.2634,
+              "rouge_l": 0.1679,
+              "bleu2": 0.1429
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.2654,
+              "rouge_l": 0.1818,
+              "bleu2": 0.1548
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.2854,
+          "chrf_mean": 0.2604,
+          "rouge_l_max": 0.1974,
+          "rouge_l_mean": 0.1819,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.2284,
+              "rouge_l": 0.1846,
+              "bleu2": 0.1467
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.2657,
+              "rouge_l": 0.1878,
+              "bleu2": 0.1467
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.2618,
+              "rouge_l": 0.1736,
+              "bleu2": 0.1333
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.2607,
+              "rouge_l": 0.166,
+              "bleu2": 0.16
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.2854,
+              "rouge_l": 0.1974,
+              "bleu2": 0.2
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.714,
+        "added_unsupported": 0,
+        "groundedness_raw": 1.0,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 5,
+      "seconds_ollama": 194.4
+    },
+    {
+      "run": "99a3c97a-d360-44ad-a27b-1108b268c092",
+      "dataset": "pertussis-global",
+      "tier": "q4b",
+      "generator": "qwen3.5:4b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.6,
+        "moderated": 2.0,
+        "human_median": 2.0,
+        "gap_raw": 2.6,
+        "gap_moderated": 0.0
+      },
+      "optimism": {
+        "raw": 1.4,
+        "moderated": 2.5,
+        "human_median": 2.5,
+        "gap_raw": 1.1,
+        "gap_moderated": 0.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.2654,
+          "chrf_mean": 0.2526,
+          "rouge_l_max": 0.1818,
+          "rouge_l_mean": 0.1707,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.2246,
+              "rouge_l": 0.171,
+              "bleu2": 0.1071
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.2583,
+              "rouge_l": 0.1575,
+              "bleu2": 0.119
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.2511,
+              "rouge_l": 0.1753,
+              "bleu2": 0.0952
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.2634,
+              "rouge_l": 0.1679,
+              "bleu2": 0.1429
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.2654,
+              "rouge_l": 0.1818,
+              "bleu2": 0.1548
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.2854,
+          "chrf_mean": 0.2604,
+          "rouge_l_max": 0.1974,
+          "rouge_l_mean": 0.1819,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.2284,
+              "rouge_l": 0.1846,
+              "bleu2": 0.1467
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.2657,
+              "rouge_l": 0.1878,
+              "bleu2": 0.1467
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.2618,
+              "rouge_l": 0.1736,
+              "bleu2": 0.1333
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.2607,
+              "rouge_l": 0.166,
+              "bleu2": 0.16
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.2854,
+              "rouge_l": 0.1974,
+              "bleu2": 0.2
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.714,
+        "added_unsupported": 0,
+        "groundedness_raw": 1.0,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 5,
+      "seconds_ollama": 229.9
+    },
+    {
+      "run": "ad549d9a-36b7-4b0a-87f4-f737fcecc684",
+      "dataset": "pertussis-global",
+      "tier": "g8b",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.0,
+        "moderated": 2.3,
+        "human_median": 2.0,
+        "gap_raw": 2.0,
+        "gap_moderated": 0.3
+      },
+      "optimism": {
+        "raw": 1.5,
+        "moderated": 2.7,
+        "human_median": 2.5,
+        "gap_raw": 1.0,
+        "gap_moderated": 0.2
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3584,
+          "chrf_mean": 0.3345,
+          "rouge_l_max": 0.1895,
+          "rouge_l_mean": 0.1625,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3156,
+              "rouge_l": 0.1603,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3283,
+              "rouge_l": 0.1481,
+              "bleu2": 0.0551
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.332,
+              "rouge_l": 0.1701,
+              "bleu2": 0.0709
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3383,
+              "rouge_l": 0.1443,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3584,
+              "rouge_l": 0.1895,
+              "bleu2": 0.0866
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.3943,
+          "chrf_mean": 0.3689,
+          "rouge_l_max": 0.1856,
+          "rouge_l_mean": 0.1695,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3247,
+              "rouge_l": 0.1489,
+              "bleu2": 0.0968
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.389,
+              "rouge_l": 0.1633,
+              "bleu2": 0.1452
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3675,
+              "rouge_l": 0.1856,
+              "bleu2": 0.1129
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3692,
+              "rouge_l": 0.1722,
+              "bleu2": 0.1048
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3943,
+              "rouge_l": 0.1773,
+              "bleu2": 0.1048
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.5,
+        "added_unsupported": 0,
+        "groundedness_raw": 0.3333333333333333,
+        "groundedness_moderated": 0.8571428571428571
+      },
+      "emotive_spans": 8,
+      "seconds_ollama": 274.1
+    },
+    {
+      "run": "a626f724-7296-4102-843e-5b8ed20befce",
+      "dataset": "pertussis-global",
+      "tier": "q9b",
+      "generator": "qwen3.5:9b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.4,
+        "moderated": 2.4,
+        "human_median": 2.0,
+        "gap_raw": 2.4,
+        "gap_moderated": 0.4
+      },
+      "optimism": {
+        "raw": 1.6,
+        "moderated": 2.6,
+        "human_median": 2.5,
+        "gap_raw": 0.9,
+        "gap_moderated": 0.1
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3417,
+          "chrf_mean": 0.327,
+          "rouge_l_max": 0.1678,
+          "rouge_l_mean": 0.1455,
+          "closest_writer": "L2",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.2988,
+              "rouge_l": 0.1406,
+              "bleu2": 0.0391
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3417,
+              "rouge_l": 0.1678,
+              "bleu2": 0.0703
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3313,
+              "rouge_l": 0.1559,
+              "bleu2": 0.0625
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3215,
+              "rouge_l": 0.1373,
+              "bleu2": 0.0312
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3417,
+              "rouge_l": 0.1259,
+              "bleu2": 0.0547
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.3822,
+          "chrf_mean": 0.3583,
+          "rouge_l_max": 0.2131,
+          "rouge_l_mean": 0.1912,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3098,
+              "rouge_l": 0.1611,
+              "bleu2": 0.0796
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3789,
+              "rouge_l": 0.212,
+              "bleu2": 0.1416
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3422,
+              "rouge_l": 0.2,
+              "bleu2": 0.0973
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3786,
+              "rouge_l": 0.2131,
+              "bleu2": 0.1239
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3822,
+              "rouge_l": 0.1697,
+              "bleu2": 0.115
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.5,
+        "added_unsupported": 0,
+        "groundedness_raw": 1.0,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 7,
+      "seconds_ollama": 232.1
+    },
+    {
+      "run": "f8186e42-ff85-4760-863f-3b1b4f9b42ae",
+      "dataset": "pertussis-global",
+      "tier": "g3b",
+      "generator": "llama3.2:3b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.6,
+        "moderated": 2.5,
+        "human_median": 2.0,
+        "gap_raw": 2.6,
+        "gap_moderated": 0.5
+      },
+      "optimism": {
+        "raw": 1.2,
+        "moderated": 2.5,
+        "human_median": 2.5,
+        "gap_raw": 1.3,
+        "gap_moderated": 0.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3684,
+          "chrf_mean": 0.3417,
+          "rouge_l_max": 0.1712,
+          "rouge_l_mean": 0.1573,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3104,
+              "rouge_l": 0.1442,
+              "bleu2": 0.0522
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.341,
+              "rouge_l": 0.1579,
+              "bleu2": 0.0448
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3412,
+              "rouge_l": 0.1595,
+              "bleu2": 0.0672
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3475,
+              "rouge_l": 0.1538,
+              "bleu2": 0.0522
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3684,
+              "rouge_l": 0.1712,
+              "bleu2": 0.0746
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.4026,
+          "chrf_mean": 0.3695,
+          "rouge_l_max": 0.215,
+          "rouge_l_mean": 0.1863,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3288,
+              "rouge_l": 0.1656,
+              "bleu2": 0.0775
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3755,
+              "rouge_l": 0.1873,
+              "bleu2": 0.0853
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3629,
+              "rouge_l": 0.1824,
+              "bleu2": 0.0698
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3778,
+              "rouge_l": 0.215,
+              "bleu2": 0.1008
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.4026,
+              "rouge_l": 0.1812,
+              "bleu2": 0.124
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.2,
+        "added_unsupported": 0,
+        "groundedness_raw": 0.4,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 8,
+      "seconds_ollama": 262.7
+    },
+    {
+      "run": "e92c0f3c-60cd-4ba2-afe1-e2d5274c3931",
+      "dataset": "pertussis-global",
+      "tier": "q2b",
+      "generator": "qwen3.5:2b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.8,
+        "moderated": 2.5,
+        "human_median": 2.0,
+        "gap_raw": 2.8,
+        "gap_moderated": 0.5
+      },
+      "optimism": {
+        "raw": 1.2,
+        "moderated": 2.5,
+        "human_median": 2.5,
+        "gap_raw": 1.3,
+        "gap_moderated": 0.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3812,
+          "chrf_mean": 0.3592,
+          "rouge_l_max": 0.1858,
+          "rouge_l_mean": 0.1596,
+          "closest_writer": "L4",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3257,
+              "rouge_l": 0.1371,
+              "bleu2": 0.0182
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3688,
+              "rouge_l": 0.1552,
+              "bleu2": 0.0485
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3517,
+              "rouge_l": 0.1506,
+              "bleu2": 0.0242
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3812,
+              "rouge_l": 0.1691,
+              "bleu2": 0.0606
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3686,
+              "rouge_l": 0.1858,
+              "bleu2": 0.0364
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.4067,
+          "chrf_mean": 0.3839,
+          "rouge_l_max": 0.2112,
+          "rouge_l_mean": 0.1992,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3437,
+              "rouge_l": 0.1763,
+              "bleu2": 0.0694
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.4,
+              "rouge_l": 0.2102,
+              "bleu2": 0.0903
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3664,
+              "rouge_l": 0.1994,
+              "bleu2": 0.0625
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.4029,
+              "rouge_l": 0.2112,
+              "bleu2": 0.125
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.4067,
+              "rouge_l": 0.1987,
+              "bleu2": 0.0972
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.286,
+        "added_unsupported": 0,
+        "groundedness_raw": 1.0,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 10,
+      "seconds_ollama": 264.2
+    }
+  ],
+  "moderator_arm": [
+    {
+      "run": "10908df4-026c-4bdd-b6b1-bc177f182f7d",
+      "dataset": "pertussis-global",
+      "tier": "m26b",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:26b",
+      "alarmism": {
+        "raw": 4.0,
+        "moderated": 2.0,
+        "human_median": 2.0,
+        "gap_raw": 2.0,
+        "gap_moderated": 0.0
+      },
+      "optimism": {
+        "raw": 1.5,
+        "moderated": 2.5,
+        "human_median": 2.5,
+        "gap_raw": 1.0,
+        "gap_moderated": 0.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3584,
+          "chrf_mean": 0.3345,
+          "rouge_l_max": 0.1895,
+          "rouge_l_mean": 0.1625,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3156,
+              "rouge_l": 0.1603,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3283,
+              "rouge_l": 0.1481,
+              "bleu2": 0.0551
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.332,
+              "rouge_l": 0.1701,
+              "bleu2": 0.0709
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3383,
+              "rouge_l": 0.1443,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3584,
+              "rouge_l": 0.1895,
+              "bleu2": 0.0866
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.376,
+          "chrf_mean": 0.354,
+          "rouge_l_max": 0.1849,
+          "rouge_l_mean": 0.1713,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3224,
+              "rouge_l": 0.1742,
+              "bleu2": 0.04
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3619,
+              "rouge_l": 0.1627,
+              "bleu2": 0.072
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3599,
+              "rouge_l": 0.1849,
+              "bleu2": 0.072
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.35,
+              "rouge_l": 0.165,
+              "bleu2": 0.056
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.376,
+              "rouge_l": 0.1696,
+              "bleu2": 0.056
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.333,
+        "added_unsupported": 0,
+        "groundedness_raw": 0.3333333333333333,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 5,
+      "seconds_ollama": 96.2
+    },
+    {
+      "run": "e061abb3-676e-472a-a3fb-7bca062bc139",
+      "dataset": "pertussis-global",
+      "tier": "x9b",
+      "generator": "llama3.1:8b",
+      "moderator": "qwen3.5:9b",
+      "alarmism": {
+        "raw": 4.0,
+        "moderated": 2.0,
+        "human_median": 2.0,
+        "gap_raw": 2.0,
+        "gap_moderated": 0.0
+      },
+      "optimism": {
+        "raw": 1.5,
+        "moderated": 3.5,
+        "human_median": 2.5,
+        "gap_raw": 1.0,
+        "gap_moderated": 1.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3584,
+          "chrf_mean": 0.3345,
+          "rouge_l_max": 0.1895,
+          "rouge_l_mean": 0.1625,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3156,
+              "rouge_l": 0.1603,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3283,
+              "rouge_l": 0.1481,
+              "bleu2": 0.0551
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.332,
+              "rouge_l": 0.1701,
+              "bleu2": 0.0709
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3383,
+              "rouge_l": 0.1443,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3584,
+              "rouge_l": 0.1895,
+              "bleu2": 0.0866
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.3885,
+          "chrf_mean": 0.3701,
+          "rouge_l_max": 0.2,
+          "rouge_l_mean": 0.1871,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3485,
+              "rouge_l": 0.1893,
+              "bleu2": 0.0909
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3734,
+              "rouge_l": 0.1921,
+              "bleu2": 0.0682
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3602,
+              "rouge_l": 0.1605,
+              "bleu2": 0.0682
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3801,
+              "rouge_l": 0.1935,
+              "bleu2": 0.0758
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3885,
+              "rouge_l": 0.2,
+              "bleu2": 0.0682
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.333,
+        "added_unsupported": 1,
+        "groundedness_raw": 0.3333333333333333,
+        "groundedness_moderated": 1.0
+      },
+      "emotive_spans": 7,
+      "seconds_ollama": 92.8
+    },
+    {
+      "run": "ad549d9a-36b7-4b0a-87f4-f737fcecc684",
+      "dataset": "pertussis-global",
+      "tier": "g8b",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:31b",
+      "alarmism": {
+        "raw": 4.0,
+        "moderated": 2.3,
+        "human_median": 2.0,
+        "gap_raw": 2.0,
+        "gap_moderated": 0.3
+      },
+      "optimism": {
+        "raw": 1.5,
+        "moderated": 2.7,
+        "human_median": 2.5,
+        "gap_raw": 1.0,
+        "gap_moderated": 0.2
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3584,
+          "chrf_mean": 0.3345,
+          "rouge_l_max": 0.1895,
+          "rouge_l_mean": 0.1625,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3156,
+              "rouge_l": 0.1603,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3283,
+              "rouge_l": 0.1481,
+              "bleu2": 0.0551
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.332,
+              "rouge_l": 0.1701,
+              "bleu2": 0.0709
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3383,
+              "rouge_l": 0.1443,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3584,
+              "rouge_l": 0.1895,
+              "bleu2": 0.0866
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.3943,
+          "chrf_mean": 0.3689,
+          "rouge_l_max": 0.1856,
+          "rouge_l_mean": 0.1695,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3247,
+              "rouge_l": 0.1489,
+              "bleu2": 0.0968
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.389,
+              "rouge_l": 0.1633,
+              "bleu2": 0.1452
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3675,
+              "rouge_l": 0.1856,
+              "bleu2": 0.1129
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3692,
+              "rouge_l": 0.1722,
+              "bleu2": 0.1048
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3943,
+              "rouge_l": 0.1773,
+              "bleu2": 0.1048
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.5,
+        "added_unsupported": 0,
+        "groundedness_raw": 0.3333333333333333,
+        "groundedness_moderated": 0.8571428571428571
+      },
+      "emotive_spans": 8,
+      "seconds_ollama": 274.1
+    },
+    {
+      "run": "501f5794-136b-405c-949d-2448cf86bd31",
+      "dataset": "pertussis-global",
+      "tier": "m12b",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:12b",
+      "alarmism": {
+        "raw": 4.0,
+        "moderated": 2.4,
+        "human_median": 2.0,
+        "gap_raw": 2.0,
+        "gap_moderated": 0.4
+      },
+      "optimism": {
+        "raw": 1.5,
+        "moderated": 2.6,
+        "human_median": 2.5,
+        "gap_raw": 1.0,
+        "gap_moderated": 0.1
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3584,
+          "chrf_mean": 0.3345,
+          "rouge_l_max": 0.1895,
+          "rouge_l_mean": 0.1625,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3156,
+              "rouge_l": 0.1603,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3283,
+              "rouge_l": 0.1481,
+              "bleu2": 0.0551
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.332,
+              "rouge_l": 0.1701,
+              "bleu2": 0.0709
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3383,
+              "rouge_l": 0.1443,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3584,
+              "rouge_l": 0.1895,
+              "bleu2": 0.0866
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.4079,
+          "chrf_mean": 0.3901,
+          "rouge_l_max": 0.2105,
+          "rouge_l_mean": 0.1857,
+          "closest_writer": "L2",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3678,
+              "rouge_l": 0.1818,
+              "bleu2": 0.0833
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.4079,
+              "rouge_l": 0.1902,
+              "bleu2": 0.0962
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3836,
+              "rouge_l": 0.2105,
+              "bleu2": 0.0705
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3886,
+              "rouge_l": 0.1677,
+              "bleu2": 0.0513
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.4027,
+              "rouge_l": 0.1783,
+              "bleu2": 0.0769
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.5,
+        "added_unsupported": 0,
+        "groundedness_raw": 0.3333333333333333,
+        "groundedness_moderated": 0.8
+      },
+      "emotive_spans": 6,
+      "seconds_ollama": 314.9
+    },
+    {
+      "run": "faf34f8c-3769-4483-8b52-774a7b8b33a2",
+      "dataset": "pertussis-global",
+      "tier": "x35b",
+      "generator": "llama3.1:8b",
+      "moderator": "qwen3.6:35b",
+      "alarmism": {
+        "raw": 4.0,
+        "moderated": 1.5,
+        "human_median": 2.0,
+        "gap_raw": 2.0,
+        "gap_moderated": 0.5
+      },
+      "optimism": {
+        "raw": 1.5,
+        "moderated": 3.5,
+        "human_median": 2.5,
+        "gap_raw": 1.0,
+        "gap_moderated": 1.0
+      },
+      "similarity_to_human": {
+        "raw": {
+          "n_humans": 5,
+          "chrf_max": 0.3584,
+          "chrf_mean": 0.3345,
+          "rouge_l_max": 0.1895,
+          "rouge_l_mean": 0.1625,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.3156,
+              "rouge_l": 0.1603,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.3283,
+              "rouge_l": 0.1481,
+              "bleu2": 0.0551
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.332,
+              "rouge_l": 0.1701,
+              "bleu2": 0.0709
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3383,
+              "rouge_l": 0.1443,
+              "bleu2": 0.063
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.3584,
+              "rouge_l": 0.1895,
+              "bleu2": 0.0866
+            }
+          ]
+        },
+        "moderated": {
+          "n_humans": 5,
+          "chrf_max": 0.339,
+          "chrf_mean": 0.321,
+          "rouge_l_max": 0.2082,
+          "rouge_l_mean": 0.1887,
+          "closest_writer": "L5",
+          "per_writer": [
+            {
+              "writer": "L1",
+              "chrf": 0.2954,
+              "rouge_l": 0.1742,
+              "bleu2": 0.1373
+            },
+            {
+              "writer": "L2",
+              "chrf": 0.329,
+              "rouge_l": 0.1912,
+              "bleu2": 0.1471
+            },
+            {
+              "writer": "L3",
+              "chrf": 0.3061,
+              "rouge_l": 0.2082,
+              "bleu2": 0.1471
+            },
+            {
+              "writer": "L4",
+              "chrf": 0.3356,
+              "rouge_l": 0.1929,
+              "bleu2": 0.1765
+            },
+            {
+              "writer": "L5",
+              "chrf": 0.339,
+              "rouge_l": 0.1769,
+              "bleu2": 0.1765
+            }
+          ]
+        }
+      },
+      "faithfulness": {
+        "numeric_retention": 0.333,
+        "added_unsupported": 1,
+        "groundedness_raw": 0.3333333333333333,
+        "groundedness_moderated": 0.9
+      },
+      "emotive_spans": 5,
+      "seconds_ollama": 89.2
+    }
+  ],
+  "ranking": [
+    {
+      "tier": "m31b-selfjudge",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.0,
+      "gap_to_human": 0.0,
+      "chrf_max_to_human": 0.3943,
+      "numeric_retention": 0.5,
+      "added_unsupported": 0,
+      "seconds": 268.2
+    },
+    {
+      "tier": "g1b",
+      "generator": "llama3.2:1b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.0,
+      "gap_to_human": 0.0,
+      "chrf_max_to_human": 0.3556,
+      "numeric_retention": 0.333,
+      "added_unsupported": 0,
+      "seconds": 221.1
+    },
+    {
+      "tier": "g4b",
+      "generator": "qwen3.5:4b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.0,
+      "gap_to_human": 0.0,
+      "chrf_max_to_human": 0.2854,
+      "numeric_retention": 0.714,
+      "added_unsupported": 0,
+      "seconds": 194.4
+    },
+    {
+      "tier": "m26b",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:26b",
+      "moderated_alarmism": 2.0,
+      "gap_to_human": 0.0,
+      "chrf_max_to_human": 0.376,
+      "numeric_retention": 0.333,
+      "added_unsupported": 0,
+      "seconds": 96.2
+    },
+    {
+      "tier": "x9b",
+      "generator": "llama3.1:8b",
+      "moderator": "qwen3.5:9b",
+      "moderated_alarmism": 2.0,
+      "gap_to_human": 0.0,
+      "chrf_max_to_human": 0.3885,
+      "numeric_retention": 0.333,
+      "added_unsupported": 1,
+      "seconds": 92.8
+    },
+    {
+      "tier": "q4b",
+      "generator": "qwen3.5:4b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.0,
+      "gap_to_human": 0.0,
+      "chrf_max_to_human": 0.2854,
+      "numeric_retention": 0.714,
+      "added_unsupported": 0,
+      "seconds": 229.9
+    },
+    {
+      "tier": "g8b",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.3,
+      "gap_to_human": 0.3,
+      "chrf_max_to_human": 0.3943,
+      "numeric_retention": 0.5,
+      "added_unsupported": 0,
+      "seconds": 274.1
+    },
+    {
+      "tier": "m12b",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:12b",
+      "moderated_alarmism": 2.4,
+      "gap_to_human": 0.4,
+      "chrf_max_to_human": 0.4079,
+      "numeric_retention": 0.5,
+      "added_unsupported": 0,
+      "seconds": 314.9
+    },
+    {
+      "tier": "q9b",
+      "generator": "qwen3.5:9b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.4,
+      "gap_to_human": 0.4,
+      "chrf_max_to_human": 0.3822,
+      "numeric_retention": 0.5,
+      "added_unsupported": 0,
+      "seconds": 232.1
+    },
+    {
+      "tier": "mid",
+      "generator": "llama3.1:8b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.5,
+      "gap_to_human": 0.5,
+      "chrf_max_to_human": 0.4234,
+      "numeric_retention": 0.75,
+      "added_unsupported": 0,
+      "seconds": 291.0
+    },
+    {
+      "tier": "g3b",
+      "generator": "llama3.2:3b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.5,
+      "gap_to_human": 0.5,
+      "chrf_max_to_human": 0.4026,
+      "numeric_retention": 0.2,
+      "added_unsupported": 0,
+      "seconds": 262.7
+    },
+    {
+      "tier": "x35b",
+      "generator": "llama3.1:8b",
+      "moderator": "qwen3.6:35b",
+      "moderated_alarmism": 1.5,
+      "gap_to_human": 0.5,
+      "chrf_max_to_human": 0.339,
+      "numeric_retention": 0.333,
+      "added_unsupported": 1,
+      "seconds": 89.2
+    },
+    {
+      "tier": "q2b",
+      "generator": "qwen3.5:2b",
+      "moderator": "gemma4:31b",
+      "moderated_alarmism": 2.5,
+      "gap_to_human": 0.5,
+      "chrf_max_to_human": 0.4067,
+      "numeric_retention": 0.286,
+      "added_unsupported": 0,
+      "seconds": 264.2
+    }
+  ],
+  "caveats": [
+    "n=1 per cell. No variance, so no ranking here is significant.",
+    "One series. pertussis-global is the hottest-writing series in the set.",
+    "Ranking deliberately excludes runs on other series: measles writes calm, so a tier that happened to run there would win on difficulty, not merit."
+  ],
+  "figure": "presentation/figures/fig10.svg"
+}
