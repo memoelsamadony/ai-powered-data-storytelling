@@ -165,6 +165,16 @@ class PackGroundingTests(UploadFixture):
                 round(value, 1), allowed, f"{value} appears in the pack but not the file",
             )
 
+    def test_pack_says_when_the_unit_is_unknown(self):
+        """The alternative is a model inventing one, which is measurable.
+
+        Without this line qwen3.5:4b narrated the unit-less tuberculosis column
+        as "187 cases every minute". It does not remove the invention, only its
+        worst form - see the note in `build_prompt_table`.
+        """
+        pack = ds.pack_text(str(self.store(OWID_SHAPED).id))
+        self.assertIn("states no unit", pack)
+
     def test_pack_never_offers_an_absent_value(self):
         pack = ds.pack_text(str(self.store(OWID_SHAPED).id))
         self.assertNotIn("n/a", pack)

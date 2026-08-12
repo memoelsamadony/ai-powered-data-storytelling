@@ -39,7 +39,10 @@ def _detect_year_range(frame: pd.DataFrame) -> str:
 
 
 def _detect_countries(frame: pd.DataFrame) -> int | None:
-    for name in ("country", "Country", "location", "Location"):
+    # "Entity" is what OWID exports call it, which is most of what gets uploaded
+    # here; without it the card silently drops the country count for exactly the
+    # tables that have one.
+    for name in ("country", "Country", "location", "Location", "entity", "Entity"):
         if name in frame.columns:
             return int(frame[name].nunique())
     return None

@@ -633,6 +633,25 @@ def build_prompt_table(dataset_id: str) -> str:
                 )
             lines.append(detail + rate_txt)
 
+    # A column whose name states no unit gets one invented for it. Measured on
+    # the WHO tuberculosis upload, whose incidence column is unit-less: the
+    # generator wrote "187 cases every minute", the moderator changed it to "per
+    # day", and the fact-checker passed both - it checks numbers, and 187.4 IS
+    # the figure. Saying the unit is unknown is a fact about the table, and the
+    # pack already carries guidance of this kind for the measles reference line.
+    #
+    # It REDUCES the invention rather than removing it: with the note, qwen3.5:4b
+    # stopped saying "every minute" and said "annually" instead. A story wants a
+    # unit and a 4B model will supply one, so listing more forbidden periods is a
+    # losing game. This is the honest cost of never inventing a unit from a
+    # column name, and it is a reason to read the mapping line before trusting an
+    # uploaded story.
+    if not spec.primary_unit:
+        lines.append(
+            f"Note: the source states no unit for {spec.primary_label}. Report the "
+            "figures as they are; do not describe them as a count per minute, day "
+            "or any other period."
+        )
     if spec.reference_line:
         lines.append(
             f"Context: herd immunity needs ~{spec.reference_line[0]:g}% first-dose coverage. "
