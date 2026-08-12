@@ -6,46 +6,24 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StoryChart } from "@/components/charts/story-chart";
 import { CountryMap } from "@/components/charts/country-map";
-import { ToneAxis, type ToneAxisRow } from "@/components/charts/tone-axis";
+import { HumanConvergence } from "@/components/charts/human-convergence";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
 import { type Dataset } from "@/lib/data/datasets";
-import { getStorySet } from "@/lib/data/stories";
+import { humanComparison } from "@/lib/data/human-comparison";
 import { getDatasets } from "@/lib/api";
 
 /**
- * Both datasets on one tone scale. Built in the Server Component and passed down
- * as plain props, the chart only needs `"use client"` for its hover layer.
+ * The tone figure is the experiment's own per-series output, read from
+ * `experiments/exp_json/exp-human-comparison.json` (the file the presentation's
+ * fig 9 is drawn from), not from the three sample stories in `stories.ts`.
  *
- * The stories stay mock here by design: this page compares *tone*, and the
- * ratings it plots are the ones the report cites. A live rating belongs to one
- * run of one tier, so plotting it here would change the argument every reload.
+ * It used to be built by looking up a story set per dataset. That silently
+ * borrowed the measles story for every dataset that had none, so once the
+ * backend served eight datasets the chart drew six rows of identical ratings
+ * under other datasets' names. The experiment file carries one row per series
+ * it actually measured, with the n behind each, so there is nothing to invent.
  */
-function toneRowsFor(datasets: Dataset[]): ToneAxisRow[] {
-  return datasets.flatMap((d) => {
-    const s = getStorySet(d.id);
-    const pick = (v: (typeof s)["human"]) => ({
-      value: v.alarmismRating,
-      title: v.title,
-      author: v.author,
-    });
-    const [human, raw, moderated] = [pick(s.human), pick(s.aiRaw), pick(s.aiModerated)];
-    // A row is three positions on one scale. If any of them was never
-    // measured, the row cannot be drawn without inventing the missing one.
-    if (human.value === null || raw.value === null || moderated.value === null) return [];
-    return [
-      {
-        id: d.id,
-        label: d.shortName,
-        tempts: `tempts ${d.failureMode}`,
-        human: { ...human, value: human.value },
-        raw: { ...raw, value: raw.value },
-        moderated: { ...moderated, value: moderated.value },
-      },
-    ];
-  });
-}
-
 // The dataset payload is read per request, so the page is server-rendered on
 // demand. Declared rather than inferred: without it Next attempts a prerender,
 // and the attempt only resolves through a thrown framework error.
@@ -63,7 +41,6 @@ export default async function DatasetsPage() {
   // fallback can only be older, and the source note under each map names the
   // table either way.
   const datasets = await getDatasets();
-  const toneRows = toneRowsFor(datasets);
 
   return (
     <>
@@ -99,28 +76,32 @@ export default async function DatasetsPage() {
                 </span>
                 <div>
                   <span className="kicker text-deep-teal">The whole argument, in one axis</span>
-                  <h2 className="mt-2 text-2xl text-navy">Why two datasets matter</h2>
+                  <h2 className="mt-2 text-2xl text-navy">
+                    Moderation moves machine stories onto the human level
+                  </h2>
                   <p className="mt-2 max-w-2xl text-pretty leading-relaxed text-muted">
-                    A moderator that only ever softens text would fail the second dataset. Plotted on a
-                    single tone scale, the two runs move in{" "}
-                    <strong className="font-medium text-navy">opposite directions</strong>: measles is
-                    pulled down out of catastrophising, child mortality is pulled up out of false
-                    reassurance, and both land in the same calibrated band.
+                    Alarmism 1 to 5, {humanComparison.judge.split(",")[0]} judging blind, one story at a
+                    time. Overall{" "}
+                    <strong className="font-medium text-navy">
+                      {humanComparison.aggregate.rawMean.toFixed(2)} →{" "}
+                      {humanComparison.aggregate.moderatedMean.toFixed(2)}
+                    </strong>
+                    , against a human median of{" "}
+                    {humanComparison.aggregate.humanMedian.toFixed(2)}.
                   </p>
                 </div>
               </div>
 
               <div className="mt-8 border-t border-hairline pt-8">
-                <ToneAxis rows={toneRows} />
+                <HumanConvergence series={humanComparison.series} />
               </div>
 
               <p className="mt-6 max-w-3xl text-pretty text-sm leading-relaxed text-muted">
                 Alarmism is an LLM-judge rating where{" "}
                 <strong className="font-medium text-navy">both ends are failures</strong>: 1 is flat and
-                hides the stakes, 5 is manipulative catastrophising. The calibrated band is an editorial
-                range, not a measured threshold. The WHO human baseline sits inside it at 2.8;
-                the measles one is judged 3.2, just outside and above the moderated LLM story
-                &mdash; the human author is the more alarmist of the two on that dataset.
+                hides the stakes, 5 is manipulative catastrophising. The reference on each row is that
+                series&rsquo; own human writers, so the claim is relative rather than editorial.{" "}
+                {humanComparison.caveats[0]}
               </p>
             </Card>
           </Reveal>

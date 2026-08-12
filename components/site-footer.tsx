@@ -9,6 +9,7 @@ const explore = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/datasets", label: "Datasets" },
   { href: "/results", label: "Results & evaluation" },
+  { href: "/reproductions", label: "Reproductions & model comparison" },
   { href: "/about", label: "About & team" },
 ];
 

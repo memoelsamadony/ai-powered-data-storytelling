@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"/>
+</marker>
+
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start">Redundancy was a prompt defect, and prose was not enough to fix it</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start">Twelve runs · two models · two tables · three prompts · seed 11 throughout</text>
+<line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
+<text x="680.0" y="214" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="middle">qwen · TB</text>
+<text x="920.0" y="214" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="middle">qwen · measles</text>
+<text x="1160.0" y="214" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="middle">gemma · TB</text>
+<text x="1400.0" y="214" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="middle">gemma · measles</text>
+<rect x="72" y="240" width="1456" height="148" rx="10" fill="#d03b3b" fill-opacity="0.05" stroke="none" stroke-width="0"/>
+<text x="100" y="284" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="24" fill="#0b0b0b" font-weight="bold" text-anchor="start">Baseline</text>
+<text x="100" y="318" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">"Prefer variety: three near-identical figures waste the</text>
+<text x="100" y="344" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">reader's time."</text>
+<text x="100" y="374" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#d03b3b" font-weight="bold" text-anchor="start">2 of 4 clean</text>
+<circle cx="680.0" cy="314" r="30" fill="#d03b3b" fill-opacity="0.14"/>
+<path d="M 669.0 303 l 22 22 M 691.0 303 l -22 22" stroke="#d03b3b" stroke-width="5" stroke-linecap="round"/>
+<circle cx="920.0" cy="314" r="30" fill="#d03b3b" fill-opacity="0.14"/>
+<path d="M 909.0 303 l 22 22 M 931.0 303 l -22 22" stroke="#d03b3b" stroke-width="5" stroke-linecap="round"/>
+<circle cx="1160.0" cy="314" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 1147.0 315 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="1400.0" cy="314" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 1387.0 315 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="72" y="404" width="1456" height="148" rx="10" fill="#d03b3b" fill-opacity="0.05" stroke="none" stroke-width="0"/>
+<text x="100" y="448" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="24" fill="#0b0b0b" font-weight="bold" text-anchor="start">Variant A · prose</text>
+<text x="100" y="482" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">"Each figure must answer a DIFFERENT question… judge that by</text>
+<text x="100" y="508" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">the question, not the shape."</text>
+<text x="100" y="538" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#d03b3b" font-weight="bold" text-anchor="start">2 of 4 clean</text>
+<circle cx="680.0" cy="478" r="30" fill="#d03b3b" fill-opacity="0.14"/>
+<path d="M 669.0 467 l 22 22 M 691.0 467 l -22 22" stroke="#d03b3b" stroke-width="5" stroke-linecap="round"/>
+<circle cx="920.0" cy="478" r="30" fill="#d03b3b" fill-opacity="0.14"/>
+<path d="M 909.0 467 l 22 22 M 931.0 467 l -22 22" stroke="#d03b3b" stroke-width="5" stroke-linecap="round"/>
+<circle cx="1160.0" cy="478" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 1147.0 479 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="1400.0" cy="478" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 1387.0 479 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="72" y="568" width="1456" height="148" rx="10" fill="#0ca30c" fill-opacity="0.05" stroke="none" stroke-width="0"/>
+<text x="100" y="612" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="24" fill="#0b0b0b" font-weight="bold" text-anchor="start">Variant B · schema</text>
+<text x="100" y="646" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">A required question field, decoded BEFORE the index, plus the</text>
+<text x="100" y="672" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">same instruction.</text>
+<text x="100" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#0ca30c" font-weight="bold" text-anchor="start">4 of 4 clean</text>
+<circle cx="680.0" cy="642" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 667.0 643 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="920.0" cy="642" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 907.0 643 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="1160.0" cy="642" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 1147.0 643 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="1400.0" cy="642" r="30" fill="#0ca30c" fill-opacity="0.14"/>
+<path d="M 1387.0 643 l 9 10 l 18 -20" stroke="#0ca30c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="72" y="740" width="712" height="118" rx="10" fill="#2a78d6" fill-opacity="0.09" stroke="none" stroke-width="0"/>
+<text x="100" y="782" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start">Why prose could not do it</text>
+<text x="100" y="814" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="start">The model had no place to put a question, so it had</text>
+<text x="100" y="838" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="start">nothing to compare the next figure against.</text>
+<rect x="816" y="740" width="712" height="118" rx="10" fill="#0ca30c" fill-opacity="0.11" stroke="none" stroke-width="0"/>
+<text x="844" y="782" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start">And a second thing fixed itself</text>
+<text x="844" y="814" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="start">Every over-claiming title disappeared. Asked for the</text>
+<text x="844" y="838" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="start">question first, both models titled the question, not an answer.</text>
+
+</svg>

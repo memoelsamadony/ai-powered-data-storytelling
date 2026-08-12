@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"/>
+</marker>
+
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start">The 0% causal row measures groundedness, not causal ability</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start">Corrected in results.py, app/results/page.tsx and lib/data/metrics.ts</text>
+<line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
+<rect x="72" y="180" width="712" height="250" rx="10" fill="#d03b3b" fill-opacity="0.08" stroke="none" stroke-width="0"/>
+<rect x="72" y="180" width="712" height="5" rx="2" fill="#d03b3b" fill-opacity="1.0" stroke="none" stroke-width="0"/>
+<text x="100" y="228" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="25" fill="#0b0b0b" font-weight="bold" text-anchor="start">What the page used to say</text>
+<text x="100" y="276" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">"Not one of the 21 causal claims across both runs</text>
+<text x="100" y="306" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">was supported by the table. Causal reasoning is a</text>
+<text x="100" y="336" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">capability wall, not a size problem."</text>
+<text x="100" y="366" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start"></text>
+<text x="100" y="396" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">Printed in a red banner, above every other metric.</text>
+<rect x="816" y="180" width="712" height="250" rx="10" fill="#0ca30c" fill-opacity="0.08" stroke="none" stroke-width="0"/>
+<rect x="816" y="180" width="712" height="5" rx="2" fill="#0ca30c" fill-opacity="1.0" stroke="none" stroke-width="0"/>
+<text x="844" y="228" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="25" fill="#0b0b0b" font-weight="bold" text-anchor="start">What the number can support</text>
+<text x="844" y="276" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">Both models state off-table causes with exactly</text>
+<text x="844" y="306" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">the confidence they state on-table facts.</text>
+<text x="844" y="336" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start"></text>
+<text x="844" y="366" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">That is a groundedness finding, and it is the</text>
+<text x="844" y="396" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">reason the factual check is its own agent.</text>
+<text x="72" y="500" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="25" fill="#0b0b0b" font-weight="bold" text-anchor="start">Why the stronger claim does not follow</text>
+<text x="96" y="542" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start">The source table is same-day OHLCV</text>
+<text x="620" y="542" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">open, high, low, close, volume. Five columns.</text>
+<text x="96" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start">Causation is not one of them</text>
+<text x="620" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">"fell amid inflation concerns" points outside the table by construction.</text>
+<text x="96" y="610" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start">So the row cannot exceed zero</text>
+<text x="620" y="610" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">however capable the model is - and a row that cannot exceed zero cannot</text>
+<text x="620" y="644" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">distinguish a capability ceiling from its own floor.</text>
+<rect x="72" y="692" width="1456" height="104" rx="10" fill="#fab219" fill-opacity="0.15" stroke="none" stroke-width="0"/>
+<text x="100" y="734" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="22" fill="#0b0b0b" font-weight="bold" text-anchor="start">And the denominator is 21 claims</text>
+<text x="100" y="768" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">13 from qwen3.5:4b, 8 from gemma4:12b. By the rule of three, none-correct-out-of-21 is consistent with a true rate near 14%.</text>
+<text x="72" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start">Four written records still carry the older wording and were deliberately left alone: RESULTS.md:143, reproductions/REPRODUCTIONS_SUMMARY.md:114,</text>
+<text x="72" y="850" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start">reproductions/paper9-datatales/REPORT_gemma4.md:30, presentation/figures/README.md:41.</text>
+</svg>
