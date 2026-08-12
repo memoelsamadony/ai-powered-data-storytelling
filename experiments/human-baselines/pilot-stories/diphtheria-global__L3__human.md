@@ -1,7 +1,6 @@
 ---
-writer: L3                     # anonymized pilot participant; per-series numbering, not a consistent ID across series
+writer: L3                     # anonymized author; per-series numbering, not a consistent ID across series
 series: diphtheria-global
-source_draft: experiments/human-baselines/llm-drafts/diphtheria-global__L3.md   # starting draft this was rewritten from by hand
 datapack: experiments/human-baselines/datapacks/diphtheria-global.txt
 word_count: 197
 written_by: human

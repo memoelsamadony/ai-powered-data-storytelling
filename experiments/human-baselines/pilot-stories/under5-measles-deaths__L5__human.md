@@ -1,7 +1,6 @@
 ---
-writer: L5                     # anonymized pilot participant; per-series numbering, not a consistent ID across series
+writer: L5                     # anonymized author; per-series numbering, not a consistent ID across series
 series: under5-measles-deaths
-source_draft: experiments/human-baselines/llm-drafts/under5-measles-deaths__L5.md   # starting draft this was rewritten from by hand
 datapack: experiments/human-baselines/datapacks/under5-measles-deaths.txt
 word_count: 166
 written_by: human

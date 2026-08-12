@@ -11,7 +11,7 @@ prerequisites for any earlier tone number to mean much, and all three now hold:
    falling series: a story that glosses over remaining harm scores a calm 2.0
    for alarmism while being exactly as miscalibrated.
 3. **A human reference set exists**, `experiments/human-baselines/pilot-stories/`,
-   25 stories scored on the same rubric by the same judge.
+   25 team-written stories scored on the same rubric by the same judge.
 
 Judge spend for everything below: **$1.69** of list-price-equivalent tokens
 across 85 calls.
@@ -60,14 +60,19 @@ the calibrated 3.0, in the direction the rubric calls "flat, hides real stakes".
 The moderator does not aim at calibrated; it aims at quiet, and it happens to
 land near where these human writers also sit.
 
-Caveats that travel with the human column, both from `pilot-stories/README.md`:
+Caveats that travel with the human column:
 
-- The pilot writers rewrote machine drafts by hand rather than writing blind
-  from the pack, so the machine's framing leaked in. Tone is the safest thing
-  to read off it; similarity metrics are not.
-- The pilot stories have **no headline**, so humans are judged on body text and
+- **Correction, 2026-08-12.** An earlier version of this file said the writers
+  had rewritten machine drafts, and therefore withheld every similarity metric
+  against them. That came from a README and a `source_draft:` field shipped with
+  the stories; the authors say it is wrong and these are their own writing. The
+  tone figures are unchanged, the leakage caveat is withdrawn, and **similarity
+  metrics against this set are usable**. See L2.
+- The stories have **no headline**, so humans are judged on body text and
   machines on headline plus body. Headlines are where alarmism concentrates, so
   the human column is if anything flattered and the gap is a lower bound.
+- Five interchangeable writer slots per series, not the four named writers
+  `ASSIGNMENT.md` S6 wants, so nothing here computes `H`.
 
 ---
 
@@ -176,8 +181,10 @@ comparison in section 3. All three are restored; `manage.py makemigrations
 - **The local judge has one axis**, so `raw_optimism` and `moderated_optimism`
   are null on locally-judged runs. Null renders as "not measured", not as a
   score.
-- **The human set is a pilot**, not the blind protocol set in `ASSIGNMENT.md`.
-  Nothing here computes `H`.
+- **The human set is not the S6 protocol set** in `ASSIGNMENT.md`: five
+  interchangeable writer slots per series rather than four named writers with a
+  stable cross-series identity. The writing is genuinely human; the *design* is
+  what falls short, so nothing here computes `H`.
 
 Per-run table: `experiments/RUNS.md`. Machine-readable: `runs_table.json`,
 `human_baseline_scores.json`, `pairwise_results.json`.

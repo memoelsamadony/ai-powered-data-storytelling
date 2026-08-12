@@ -1,5 +1,5 @@
 {
-  "note": "Pilot set: hand-rewritten from LLM drafts, not the blind from-scratch protocol in ASSIGNMENT.md. Not usable as H.",
+  "note": "Team-written stories, scored on the same blind two-axis judge as the machine text. Not the ASSIGNMENT.md S6 set (five interchangeable writer slots per series, not four named writers), so not usable as H. Provenance label corrected 2026-08-12: an earlier note called these rewrites of LLM drafts, which was wrong.",
   "judged_without_headline": true,
   "stories": [
     {

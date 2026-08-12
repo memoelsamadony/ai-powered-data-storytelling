@@ -6,11 +6,15 @@ another machine story, so "2.0 after moderation" had no external referent: it
 could mean calibrated, or it could mean the whole population sits low. A human
 story scored by the same blind judge on the same rubric supplies that referent.
 
-What this is not: the ASSIGNMENT.md baseline. ``pilot-stories/README.md`` is
-explicit that these were hand-rewritten from LLM drafts rather than written
-blind from scratch, so they cannot serve as ``H`` in the S6 sense, and nothing
-here computes ``H``. They are a human-shaped reference set, and the leakage
-from their source drafts is a caveat that travels with every number below.
+These are the team's own stories, written from the evidence packs. They are not
+the ASSIGNMENT.md ``H`` set, for a structural reason rather than a provenance
+one: S6 wants four named writers with a stable identity across series, and this
+set has five interchangeable slots per series, so a writer's habits would be
+confounded with a series' direction of truth. Nothing here computes ``H``.
+
+(Until 2026-08-12 this file said the stories were rewrites of LLM drafts, on the
+strength of a `source_draft:` field that shipped with them. That was wrong and
+is corrected; see L2. The scores are unaffected, the leakage caveat is not.)
 
     python3 experiments/score_human_baselines.py            # judge and measure
     python3 experiments/score_human_baselines.py --no-judge  # metrics only, free
@@ -142,8 +146,10 @@ def main() -> int:
 
     machine = machine_reference()
     payload = {
-        "note": ("Pilot set: hand-rewritten from LLM drafts, not the blind "
-                 "from-scratch protocol in ASSIGNMENT.md. Not usable as H."),
+        "note": ("Team-written stories, scored on the same blind two-axis judge "
+                 "as the machine text. Not the ASSIGNMENT.md S6 set (five "
+                 "interchangeable writer slots per series, not four named "
+                 "writers), so not usable as H."),
         "judged_without_headline": True,
         "stories": rows,
         "machine_reference_opus": {

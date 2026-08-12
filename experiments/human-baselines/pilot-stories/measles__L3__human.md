@@ -1,7 +1,6 @@
 ---
-writer: L3                     # anonymized pilot participant; per-series numbering, not a consistent ID across series
+writer: L3                     # anonymized author; per-series numbering, not a consistent ID across series
 series: measles
-source_draft: experiments/human-baselines/llm-drafts/measles__L3.md   # starting draft this was rewritten from by hand
 datapack: experiments/human-baselines/datapacks/measles.txt
 word_count: 163
 written_by: human

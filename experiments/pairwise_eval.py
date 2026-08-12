@@ -21,13 +21,15 @@ the results are not over-claimed:
    decides which story is shown first, and the mapping lives in the key file,
    so a position effect can be measured instead of assumed.
 
-2. **No gold reference story is shown.** The published protocol hands the
-   judge a reference story. The only human set in this repo,
-   `human-baselines/pilot-stories/`, was hand-rewritten *from* the machine
-   drafts, so handing it to the judge would be comparing the machine against an
-   edited version of itself. The judge therefore works from the evidence pack
-   alone, which makes "Relevance and Informativeness" a weaker criterion here
-   than in the paper. Flagged in the output rather than hidden.
+2. **No gold reference story is shown.** The published protocol hands the judge
+   a reference story. The human set in `human-baselines/pilot-stories/` could
+   now serve as one - it is genuine team writing, and the earlier reason for
+   withholding it (a provenance label that turned out to be wrong, see L2) no
+   longer applies. It is not wired in yet: the pairing is per-run and the human
+   set is per-series, so which of five stories becomes the reference is a
+   sampling decision nobody has made. Until then the judge works from the
+   evidence pack alone, which makes "Relevance and Informativeness" a weaker
+   criterion here than in the paper. Flagged in the output, not hidden.
 
 The fifth published criterion, *Visualization Specification Quality*, is
 reported as not-applicable: this pipeline produces prose, and the charts are
@@ -264,10 +266,10 @@ def score(results_path: Path) -> int:
             print(f"{t:<20}{d['moderated']:>10}{d['raw']:>10}{d['tie']:>10}")
 
     print("\nNot scored: " + NOT_APPLICABLE["visualization_quality"])
-    print("No gold reference story was shown to the judge: the human pilot set "
-          "is hand-rewritten from machine drafts,")
-    print("  so using it as the gold reference would compare the machine with "
-          "an edited version of itself.")
+    print("No gold reference story was shown to the judge. The team's human set "
+          "could serve as one; picking which")
+    print("  of five per-series stories becomes the reference is an open "
+          "sampling decision, so it is not wired in yet.")
     return 0
 
 
