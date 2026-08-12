@@ -79,63 +79,159 @@
 <text x="1180" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
 <text x="1330" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.285</text>
 <text x="1500" y="450" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">230</text>
-<text x="72" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g8b</text>
-<text x="200" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
-<text x="700" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.3</text>
-<text x="850" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.3</text>
-<text x="1010" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<rect x="64" y="467" width="1472" height="38" fill="#1baf7a" fill-opacity="0.09" rx="4"/>
+<text x="72" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g4b</text>
+<text x="200" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">qwen3.5:4b  x  gemma4:31b</text>
+<text x="700" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<text x="850" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">0.0</text>
+<text x="1010" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">71%</text>
 <text x="1180" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
-<text x="1330" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.394</text>
-<text x="1500" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">274</text>
-<text x="72" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">m12b</text>
-<text x="200" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:12b</text>
-<text x="700" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.4</text>
-<text x="850" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.4</text>
-<text x="1010" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<text x="1330" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.390</text>
+<text x="1500" y="492" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">241</text>
+<rect x="64" y="509" width="1472" height="38" fill="#1baf7a" fill-opacity="0.09" rx="4"/>
+<text x="72" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g4b</text>
+<text x="200" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">qwen3.5:4b  x  gemma4:31b</text>
+<text x="700" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<text x="850" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">0.0</text>
+<text x="1010" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">67%</text>
 <text x="1180" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
-<text x="1330" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.408</text>
-<text x="1500" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">315</text>
-<text x="72" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">q9b</text>
-<text x="200" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:9b  x  gemma4:31b</text>
-<text x="700" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.4</text>
-<text x="850" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.4</text>
-<text x="1010" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<text x="1330" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.231</text>
+<text x="1500" y="534" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">198</text>
+<rect x="64" y="551" width="1472" height="38" fill="#1baf7a" fill-opacity="0.09" rx="4"/>
+<text x="72" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g8b</text>
+<text x="200" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
+<text x="700" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<text x="850" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">0.0</text>
+<text x="1010" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">100%</text>
 <text x="1180" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
-<text x="1330" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.382</text>
-<text x="1500" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">232</text>
-<text x="72" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">mid</text>
-<text x="200" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
-<text x="700" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
-<text x="850" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
-<text x="1010" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">75%</text>
+<text x="1330" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.381</text>
+<text x="1500" y="576" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">327</text>
+<rect x="64" y="593" width="1472" height="38" fill="#1baf7a" fill-opacity="0.09" rx="4"/>
+<text x="72" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g8b</text>
+<text x="200" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
+<text x="700" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<text x="850" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">0.0</text>
+<text x="1010" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">86%</text>
 <text x="1180" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
-<text x="1330" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.423</text>
-<text x="1500" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">291</text>
-<text x="72" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g3b</text>
-<text x="200" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.2:3b  x  gemma4:31b</text>
-<text x="700" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
-<text x="850" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
-<text x="1010" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">20%</text>
+<text x="1330" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.348</text>
+<text x="1500" y="618" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">550</text>
+<rect x="64" y="635" width="1472" height="38" fill="#1baf7a" fill-opacity="0.09" rx="4"/>
+<text x="72" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g8b</text>
+<text x="200" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
+<text x="700" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<text x="850" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">0.0</text>
+<text x="1010" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">100%</text>
 <text x="1180" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
-<text x="1330" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.403</text>
-<text x="1500" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">263</text>
-<rect x="64" y="677" width="1472" height="38" fill="#d03b3b" fill-opacity="0.07" rx="4"/>
-<text x="72" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">x35b</text>
-<text x="200" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  qwen3.6:35b</text>
-<text x="700" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">1.5</text>
-<text x="850" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
-<text x="1010" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">33%</text>
-<text x="1180" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">1  invented</text>
-<text x="1330" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.339</text>
-<text x="1500" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">89</text>
-<text x="72" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">q2b</text>
-<text x="200" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:2b  x  gemma4:31b</text>
-<text x="700" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
-<text x="850" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
-<text x="1010" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">29%</text>
+<text x="1330" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.310</text>
+<text x="1500" y="660" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">620</text>
+<rect x="64" y="677" width="1472" height="38" fill="#1baf7a" fill-opacity="0.09" rx="4"/>
+<text x="72" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g8b</text>
+<text x="200" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
+<text x="700" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<text x="850" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">0.0</text>
+<text x="1010" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">100%</text>
+<text x="1180" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.422</text>
+<text x="1500" y="702" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">542</text>
+<rect x="64" y="719" width="1472" height="38" fill="#1baf7a" fill-opacity="0.09" rx="4"/>
+<text x="72" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">q27b</text>
+<text x="200" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">qwen3.5:27b  x  gemma4:31b</text>
+<text x="700" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.0</text>
+<text x="850" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">0.0</text>
+<text x="1010" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">75%</text>
 <text x="1180" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
-<text x="1330" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.407</text>
-<text x="1500" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">264</text>
+<text x="1330" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.365</text>
+<text x="1500" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">281</text>
+<text x="72" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g8b</text>
+<text x="200" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
+<text x="700" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.3</text>
+<text x="850" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.3</text>
+<text x="1010" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<text x="1180" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.394</text>
+<text x="1500" y="786" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">274</text>
+<text x="72" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">m12b</text>
+<text x="200" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:12b</text>
+<text x="700" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.4</text>
+<text x="850" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.4</text>
+<text x="1010" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<text x="1180" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.408</text>
+<text x="1500" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">315</text>
+<text x="72" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">q9b</text>
+<text x="200" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:9b  x  gemma4:31b</text>
+<text x="700" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.4</text>
+<text x="850" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.4</text>
+<text x="1010" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<text x="1180" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.382</text>
+<text x="1500" y="870" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">232</text>
+<text x="72" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">mid</text>
+<text x="200" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
+<text x="700" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
+<text x="850" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">75%</text>
+<text x="1180" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.423</text>
+<text x="1500" y="912" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">291</text>
+<text x="72" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g3b</text>
+<text x="200" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.2:3b  x  gemma4:31b</text>
+<text x="700" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
+<text x="850" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">20%</text>
+<text x="1180" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.403</text>
+<text x="1500" y="954" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">263</text>
+<rect x="64" y="971" width="1472" height="38" fill="#d03b3b" fill-opacity="0.07" rx="4"/>
+<text x="72" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">x35b</text>
+<text x="200" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  qwen3.6:35b</text>
+<text x="700" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">1.5</text>
+<text x="850" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">33%</text>
+<text x="1180" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">1  invented</text>
+<text x="1330" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.339</text>
+<text x="1500" y="996" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">89</text>
+<text x="72" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">q2b</text>
+<text x="200" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:2b  x  gemma4:31b</text>
+<text x="700" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
+<text x="850" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">29%</text>
+<text x="1180" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.407</text>
+<text x="1500" y="1038" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">264</text>
+<text x="72" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g4b</text>
+<text x="200" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:4b  x  gemma4:31b</text>
+<text x="700" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
+<text x="850" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">50%</text>
+<text x="1180" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.264</text>
+<text x="1500" y="1080" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">212</text>
+<text x="72" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g4b</text>
+<text x="200" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:4b  x  gemma4:31b</text>
+<text x="700" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
+<text x="850" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0ca30c" font-weight="normal" text-anchor="middle" letter-spacing="0">83%</text>
+<text x="1180" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.292</text>
+<text x="1500" y="1122" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">216</text>
+<rect x="64" y="1139" width="1472" height="38" fill="#d03b3b" fill-opacity="0.07" rx="4"/>
+<text x="72" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g4b</text>
+<text x="200" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">qwen3.5:4b  x  gemma4:31b</text>
+<text x="700" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">1.5</text>
+<text x="850" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">33%</text>
+<text x="1180" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#d03b3b" font-weight="normal" text-anchor="middle" letter-spacing="0">1  invented</text>
+<text x="1330" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.236</text>
+<text x="1500" y="1164" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">191</text>
+<text x="72" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">g8b</text>
+<text x="200" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="normal" text-anchor="start" letter-spacing="0">llama3.1:8b  x  gemma4:31b</text>
+<text x="700" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">2.5</text>
+<text x="850" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.5</text>
+<text x="1010" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#fab219" font-weight="normal" text-anchor="middle" letter-spacing="0">67%</text>
+<text x="1180" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1330" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.407</text>
+<text x="1500" y="1206" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">791</text>
 
 <text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Pertussis only, n=1 per cell, so none of these differences is significant: a ranking, not a test. g4b and q4b are the same configuration and produced byte-identical</text>
 <text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">text - a fixed seed replaying, not a repeat, so there are zero repeats anywhere here. The grid is L-shaped, not factorial: generators varied against gemma4:31b and</text>
