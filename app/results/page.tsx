@@ -15,7 +15,9 @@ import {
   maskedNumber as staticMaskedNumber,
   userStudy,
 } from "@/lib/data/metrics";
-import { getResults } from "@/lib/api";
+import { getResults, suggestCharts } from "@/lib/api";
+import { SuggestedCharts } from "@/components/charts/suggested-charts";
+import { datasets as fallbackDatasets } from "@/lib/data/datasets";
 
 export const metadata: Metadata = {
   title: "Results & evaluation",
@@ -27,8 +29,39 @@ export const metadata: Metadata = {
 // but arrive on the same call.
 export const dynamic = "force-dynamic";
 
-export default async function ResultsPage() {
-  const live = await getResults();
+/**
+ * `?dataset=<id>` or `?upload=<uuid>` adds the chosen figures for that table.
+ *
+ * Opt-in rather than always-on, and that is not timidity. Selection is a real
+ * Ollama call on hardware that holds one model at a time, so it costs seconds
+ * on the demo tier and minutes on the large one. Running it on every visit
+ * would make the evaluation page - which is otherwise a fast read over
+ * committed CSVs - wait on a model nobody asked for.
+ *
+ * In Next 16 `searchParams` is a Promise and has to be awaited; the synchronous
+ * object is the older API.
+ */
+export default async function ResultsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
+  const datasetId = one(params.dataset);
+  const uploadId = one(params.upload);
+
+  const [live, suggestion] = await Promise.all([
+    getResults(),
+    datasetId
+      ? suggestCharts({ datasetId })
+      : uploadId
+        ? suggestCharts({ uploadId })
+        : Promise.resolve(null),
+  ]);
+  const charted = datasetId || uploadId;
+  const chartedLabel =
+    fallbackDatasets.find((d) => d.id === datasetId)?.shortName ?? datasetId;
 
   // The reproduction blocks exist twice, and both are the same numbers: the
   // backend reads the committed CSVs per request, the generated module is
@@ -44,7 +77,15 @@ export default async function ResultsPage() {
   const measured = live?.measured ?? null;
   const toneMeasured =
     measured && measured.alarmismBefore !== null && measured.alarmismAfter !== null;
-  const causal = ops.rows.find((r) => r.operation === "causal");
+  // Both runs' causal claims. Kept as a computed total rather than the literal
+  // 21, so a re-run reproduction cannot leave the prose quoting a stale count.
+  const causalTotal = ops.rows
+    .filter((r) => r.operation === "causal")
+    .reduce((n, r) => n + r.total, 0);
+  // Rule of three: with no successes in n trials the 95% upper bound is ~3/n.
+  // Zero out of a handful is not the same claim as zero out of a thousand, and
+  // the page should not let a small denominator read like a hard ceiling.
+  const causalCeiling = causalTotal ? Math.round((3 / causalTotal) * 100) : 0;
 
   return (
     <>
@@ -64,7 +105,7 @@ export default async function ResultsPage() {
           <Reveal>
             <SectionHeader
               kicker="Faithfulness & analytical correctness"
-              title="Modern models state data well, and reason causally badly"
+              title="Modern models state data well, then reach outside it for causes"
             />
           </Reveal>
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
@@ -74,6 +115,25 @@ export default async function ResultsPage() {
                 unit={faith.unit}
                 caption={`${faith.caption} ${sourceNote(faith.source)}`}
                 hint="Lower is better"
+                explain={{
+                  measures: (
+                    <>
+                      The share of generated outputs holding{" "}
+                      <span className="font-medium text-ink">at least one</span> span a
+                      reference-free detector marks as a semantic error, re-run on the
+                      released Quintd-1 inputs.
+                    </>
+                  ),
+                  blind: (
+                    <>
+                      How wrong an output is. One misplaced word and a fabricated
+                      statistic both count once, and an output with five errors counts
+                      the same as an output with one, so this rises with the
+                      <span className="font-medium text-ink"> reach</span> of error and
+                      says nothing about its severity.
+                    </>
+                  ),
+                }}
               >
                 <FaithfulnessChart data={faith.series} />
               </MetricCard>
@@ -84,6 +144,24 @@ export default async function ResultsPage() {
                 unit={masked.unit}
                 caption={`${masked.caption} ${sourceNote(masked.source)}`}
                 hint="Higher is better"
+                explain={{
+                  measures: (
+                    <>
+                      How often a model recovers a number that was deleted from the
+                      reference text, given the table it came from. A cloze test for
+                      whether the figures are being read rather than guessed.
+                    </>
+                  ),
+                  blind: (
+                    <>
+                      Whether the numbers a model writes{" "}
+                      <span className="font-medium text-ink">unprompted</span> are right,
+                      which is the separate factuality figure. The muted bars are quoted
+                      from the paper and the others were re-run here, so read each group
+                      against itself rather than as one ranking.
+                    </>
+                  ),
+                }}
               >
                 <SimpleBarChart
                   data={masked.series.map((point) => ({
@@ -111,29 +189,34 @@ export default async function ResultsPage() {
                 unit={ops.unit}
                 caption={`${ops.caption} ${sourceNote(ops.source)}`}
                 hint="Higher is better"
+                explain={{
+                  measures: (
+                    <>
+                      Every analytical claim in a report is typed &mdash; lookup,
+                      comparison, subtraction, rate of change, trend, causal &mdash; and
+                      checked against the source table it was written from. The bar is
+                      the share of claims of that type the table supports.
+                    </>
+                  ),
+                  blind: (
+                    <>
+                      Whether an unsupported claim is{" "}
+                      <span className="font-medium text-ink">false</span>. That matters
+                      most in the causal row, which is {causalTotal} claims across both
+                      runs and none supported. The table is same-day prices and volumes,
+                      and causation is not a column in it, so &ldquo;fell amid inflation
+                      concerns&rdquo; points somewhere the table cannot follow and cannot
+                      score above zero however good the model is. Read it as
+                      groundedness, not reasoning: both models state off-table causes as
+                      confidently as on-table facts, which is the thing a factual check
+                      downstream has to catch. The counts are small enough to be careful
+                      with too &mdash; none correct out of {causalTotal} is still
+                      consistent with a true rate near {causalCeiling}%.
+                    </>
+                  ),
+                }}
               >
                 <OperationChart results={ops} />
-                <div className="mt-5 flex items-start gap-3 rounded-xl border border-alarm/30 bg-alarm-soft/40 p-4">
-                  <span className="mt-0.5 font-mono text-2xl font-semibold text-alarm">
-                    {causal ? `${causal.pct}%` : "0%"}
-                  </span>
-                  <p className="text-sm leading-relaxed text-muted">
-                    The <span className="font-medium text-ink">causal</span> operation scores zero for
-                    both model sizes
-                    {causal && (
-                      <>
-                        {" "}
-                        &mdash; not one of the{" "}
-                        {ops.rows
-                          .filter((r) => r.operation === "causal")
-                          .reduce((n, r) => n + r.total, 0)}{" "}
-                        causal claims across both runs was supported by the table
-                      </>
-                    )}
-                    . Causal reasoning is a capability wall, not a size problem. It&rsquo;s why a
-                    lightweight causal/factual check sits beside the tone agent.
-                  </p>
-                </div>
               </MetricCard>
             </div>
           </Reveal>
@@ -235,6 +318,31 @@ export default async function ResultsPage() {
                       </>
                     )}
                   </p>
+                  <dl className="mt-4 space-y-2.5 border-t border-hairline pt-4 text-sm leading-relaxed">
+                    <div>
+                      <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+                        What it measures
+                      </dt>
+                      <dd className="mt-1 text-muted">
+                        The same story judged twice, before and after moderation, on two
+                        1&ndash;5 axes. Alarmism runs from understated to catastrophising;
+                        optimism is its mirror, where 1 denies progress and 5 is false
+                        reassurance. Calibrated is the middle of both, so the target is
+                        the centre and not an end.
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+                        What it cannot tell you
+                      </dt>
+                      <dd className="mt-1 text-muted">
+                        Whether a reader would agree. The rating comes from a model, not
+                        a human panel, and one axis alone can mislead: the first live WHO
+                        run improved on alarmism while overshooting into a story that was
+                        under-calibrated on both, which only the second axis showed.
+                      </dd>
+                    </div>
+                  </dl>
                 </div>
               </div>
             </Card>
@@ -357,6 +465,34 @@ export default async function ResultsPage() {
                   />
                 </div>
 
+                <dl className="mt-6 space-y-2.5 border-t border-hairline pt-5 text-sm leading-relaxed">
+                  <div>
+                    <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+                      What these measure
+                    </dt>
+                    <dd className="mt-1 text-muted">
+                      Runs actually executed on this machine.{" "}
+                      <span className="font-medium text-ink">Edits per run</span> counts
+                      the emotive spans the moderator rewrote, split by category;{" "}
+                      <span className="font-medium text-ink">facts preserved</span> is the
+                      share of those runs where re-checking the moderated text flagged no
+                      claim the source table does not support.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+                      What they cannot tell you
+                    </dt>
+                    <dd className="mt-1 text-muted">
+                      Anything general. These are a handful of local runs on mixed
+                      datasets and tiers, not a sample drawn to answer a question, so they
+                      show the pipeline works end to end and carry no claim about how
+                      often it works. Every figure is shown with its own{" "}
+                      <span className="font-mono">n</span> for that reason.
+                    </dd>
+                  </div>
+                </dl>
+
                 {live.measured.stageTimings.length > 0 && (
                   <div className="mt-8 border-t border-hairline pt-6">
                     <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
@@ -390,6 +526,31 @@ export default async function ResultsPage() {
         </Section>
       )}
 
+      {charted && (
+        <Section className="border-t border-hairline">
+          <Container>
+            <Reveal>
+              <SectionHeader
+                kicker="Suggested figures"
+                title={
+                  uploadId
+                    ? "What this uploaded table can honestly show"
+                    : `What the ${chartedLabel} data can honestly show`
+                }
+                intro={
+                  "Which forms are available was computed from the column types. " +
+                  "The model ranked those and wrote the reasoning under each figure; " +
+                  "it could not reach for a form the data cannot carry."
+                }
+              />
+              <div className="mt-10">
+                <SuggestedCharts suggestion={suggestion} />
+              </div>
+            </Reveal>
+          </Container>
+        </Section>
+      )}
+
       <CtaBand />
     </>
   );
@@ -407,17 +568,29 @@ function RunStat({ label, value, sub }: { label: string; value: string; sub?: st
   );
 }
 
+/**
+ * One metric: the figure, the caption that sources it, and what it means.
+ *
+ * `explain` is not decoration. Every metric on this page is a proxy for
+ * something a reader actually cares about, and each proxy is wrong in its own
+ * specific way - a per-output rate that ignores severity, a score quoted from
+ * two different provenances, a check that a table cannot perform. A number
+ * shown without that is a number a reader will over-read, so the "what it
+ * cannot tell you" half is the part that earns the space.
+ */
 function MetricCard({
   title,
   unit,
   caption,
   hint,
+  explain,
   children,
 }: {
   title: string;
   unit: string;
   caption: string;
   hint?: string;
+  explain?: { measures: React.ReactNode; blind: React.ReactNode };
   children: React.ReactNode;
 }) {
   return (
@@ -435,6 +608,22 @@ function MetricCard({
       </div>
       <div className="mt-5">{children}</div>
       <p className="mt-5 text-sm leading-relaxed text-muted">{caption}</p>
+      {explain && (
+        <dl className="mt-5 space-y-2.5 border-t border-hairline pt-4 text-sm leading-relaxed">
+          <div>
+            <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+              What it measures
+            </dt>
+            <dd className="mt-1 text-muted">{explain.measures}</dd>
+          </div>
+          <div>
+            <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+              What it cannot tell you
+            </dt>
+            <dd className="mt-1 text-muted">{explain.blind}</dd>
+          </div>
+        </dl>
+      )}
     </Card>
   );
 }

@@ -119,6 +119,11 @@ function pct(value: number) {
 }
 
 const causalRow = perOperation.rows.find((r) => r.operation === "causal");
+/* Claims attempted across both runs, computed rather than written as 21, so a
+   re-run reproduction cannot leave the headline quoting a stale count. */
+const causalAttempted = perOperation.rows
+  .filter((r) => r.operation === "causal")
+  .reduce((n, r) => n + r.total, 0);
 const bestFaithful = faithfulness.series.reduce((a, b) => (a.value <= b.value ? a : b));
 const primary = datasets.find((d) => d.role === "primary") ?? datasets[0];
 
@@ -136,7 +141,11 @@ export const headlineStats = [
   {
     value: causalRow ? pct(causalRow.pct) : "0%",
     label: "causal-operation accuracy",
-    sub: "a capability wall for both model sizes",
+    /* Not "a capability wall": the operation is scored against a table of
+       prices and volumes, and causation is not a column in it, so the row
+       cannot rise above zero however capable the model is. What it shows is
+       that both models state off-table causes as confidently as facts. */
+    sub: `off-table causes, stated as fact: ${causalAttempted} claims, none the table could confirm`,
   },
   {
     value: maskedNumber.series.filter((s) => s.source === "ours").map((s) => pct(s.value)).join(" / "),

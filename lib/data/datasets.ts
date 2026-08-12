@@ -11,7 +11,10 @@
  * cached copy of the same figures rather than a different set of them.
  */
 
-import { generatedDatasets } from "./generated/datasets.generated";
+/* Explicit .ts extension: Node's type-stripping resolves value imports
+   literally, so without it nothing that reaches this file can be tested with
+   `node --test`. Type-only imports are erased and do not need one. */
+import { generatedDatasets } from "./generated/datasets.generated.ts";
 
 export type FailureMode = "alarmism" | "over-optimism";
 

@@ -30,6 +30,8 @@ from ninja.errors import HttpError
 
 from . import datasets as ds
 from . import judge as judge_mod
+from .charts import http as charts_http
+from .charts import select as charts_select
 from . import ollama_client as oc
 from . import results as results_mod
 from . import services
@@ -159,11 +161,18 @@ def get_dataset(request, dataset_id: str):
     return ds.get_dataset(dataset_id)
 
 
+# Two different capabilities, and conflating them is what would mislead. Charts
+# need the column TYPE, which the data answers for itself (charts/profile.py).
+# The story pipeline needs to know which column is the measure, which is the
+# comparison and what its class breaks are - editorial facts no table states -
+# so it still waits on the configuration step.
 UPLOAD_NOTE = (
-    "Stored and validated. Not yet generatable: the pipeline needs to know which "
-    "column is the measure, which is the comparison, and what its class breaks "
-    "are, and inferring that from column names is how an unlabelled figure ends "
-    "up in front of a reader. The configuration step comes first."
+    "Stored and validated. Figures can be suggested from it now: choosing a chart "
+    "needs only each column's type, which is readable from the data. Generating a "
+    "story is not available yet - the pipeline needs to know which column is the "
+    "measure, which is the comparison, and what its class breaks are, and inferring "
+    "that from column names is how an unlabelled figure ends up in front of a "
+    "reader. The configuration step comes first."
 )
 
 
@@ -187,6 +196,7 @@ def upload_dataset(request, file: UploadedFile = File(...)):
         countries=record.countries,
         preview_rows=uploads_mod.preview(record),
         wired=False,
+        chartable=True,
         note=UPLOAD_NOTE,
     )
 
@@ -443,3 +453,73 @@ def compare(request, payload: CompareIn):
         run.human_text = payload.human_text
         run.save(update_fields=["human_text"])
     return services.compare(run, payload.human_text)
+
+
+# --------------------------------------------------------------------------
+# Charts
+# --------------------------------------------------------------------------
+
+
+@post("/charts/suggest", response=charts_http.ChartSuggestOut, exclude_none=True)
+def suggest_charts(request, payload: charts_http.ChartSuggestIn):
+    """Pick the figures worth drawing for a dataset, registry or uploaded.
+
+    Deliberately NOT a stage on a run, and deliberately not part of
+    ``/moderate``. The moderator rewrites a story's tone and is the thing the
+    project measures; chart selection reads a table and chooses geometry. They
+    share no input, no output and no failure mode, and folding one into the
+    other would make every future tone number a measurement of two changes.
+
+    ``exclude_none=True`` is load-bearing rather than tidiness. ``validateSpec``
+    on the frontend rejects any modifier the form does not honour and tests for
+    presence, not value, so a spec that carries ``stack: null`` for a line chart
+    comes back as a refusal panel. See charts/spec.py for the measurement.
+    """
+    if bool(payload.dataset_id) == bool(payload.upload_id):
+        raise HttpError(400, "Give exactly one of datasetId or uploadId.")
+
+    tier = oc.resolve_tier(payload.tier)
+    plan = oc.tier_plan(tier)
+    if not plan["runnable"]:
+        missing = [m for m in tier.distinct_models if m not in plan["installed"]]
+        raise HttpError(
+            409, f"Tier '{payload.tier}' needs models not pulled: {', '.join(missing)}"
+        )
+
+    if payload.dataset_id:
+        if payload.dataset_id not in ds.SPECS:
+            raise HttpError(404, f"Unknown dataset '{payload.dataset_id}'")
+        sources = charts_http.sources_for_dataset(ds.get_dataset(payload.dataset_id))
+        source_label = f"dataset:{payload.dataset_id}"
+    else:
+        record = get_object_or_404(UploadedDataset, id=payload.upload_id)
+        sources = charts_http.sources_for_upload(record)
+        source_label = f"upload:{record.original_name}"
+
+    # The MODERATOR model, by design decision: in this project the moderator is
+    # the agentic role - it moderates tone and runs the factual check - so the
+    # agentic reading of a table belongs to it too. That is a choice about which
+    # model runs, and it is NOT the same as folding chart selection into
+    # ``stage_moderate``: the stages stay separate, so a tone measurement is
+    # still a measurement of one change.
+    #
+    # Overridable so the two can be compared on the same table without editing
+    # the tier, which is how the generator/moderator comparison was run.
+    model = payload.model or tier.moderator
+
+    selection = charts_select.select_charts(
+        sources, model=model, n=max(1, min(payload.n, 6)), seed=payload.seed,
+    )
+
+    notes: list[str] = []
+    for source in sources:
+        notes.extend(source.profile.notes)
+
+    return charts_http.ChartSuggestOut(
+        charts=selection.charts,
+        columns=charts_http.report_columns(sources),
+        notes=notes,
+        candidates_considered=selection.considered,
+        model=model,
+        source=source_label,
+    )

@@ -459,8 +459,20 @@ class JudgeOutcome(Schema):
 
 
 class UploadOut(Schema):
-    """A stored upload. `wired` is false and says why, so the interface cannot
-    imply the file is ready to generate from when it is not."""
+    """A stored upload.
+
+    Two separate capabilities, deliberately not collapsed into one flag:
+
+    ``wired``     the story pipeline can generate from it. Still false; that
+                  needs declared measures and class breaks, which are editorial
+                  facts no table states about itself.
+    ``chartable`` figures can be suggested from it. True, because choosing a
+                  form needs only each column's TYPE, and a table does answer
+                  that about itself.
+
+    Reporting one number for both is what would let the interface imply the file
+    is ready to generate from when it is only ready to draw.
+    """
 
     id: str
     original_name: str
@@ -471,6 +483,7 @@ class UploadOut(Schema):
     countries: int | None = None
     preview_rows: list[dict[str, str]] = []
     wired: bool = False
+    chartable: bool = True
     note: str = ""
 
 

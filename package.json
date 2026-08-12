@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test \"lib/**/*.test.mts\""
+    "test": "node --test \"lib/**/*.test.mts\"",
+    "schema": "node --experimental-strip-types scripts/build-chart-schema.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.41.0",
