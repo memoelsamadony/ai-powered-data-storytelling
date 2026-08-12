@@ -11,7 +11,7 @@ Generated from the speaker notes inside `AI-Storytelling-Final-Talk.pptx` by `ma
 | Mahmoud | 1-5 | 261 | 104s |
 | Okasha | 6-9 | 243 | 97s |
 | Elsaadani | 10-14 | 267 | 107s |
-| Ramadan | 15-18 | 262 | 105s |
+| Saleh | 15-18 | 262 | 105s |
 | **Talk total** | **1-18** | **1033** | **6:53** |
 | Demo | after 18 | - | 3:30 |
 | Close | 19 | 68 | 15s |
@@ -187,7 +187,7 @@ And the lower half is the more interesting finding: moderated tone is 2.10 eithe
 
 ### Slide 15 - section divider — hand over here
 
-`SPEAKER 4 - Ramadan   [0:05]   running total 5:21   ~15 words`
+`SPEAKER 4 - Saleh   [0:05]   running total 5:21   ~15 words`
 
 Last part: where that lands against a person, and how the agent works inside.
 
@@ -195,7 +195,7 @@ Last part: where that lands against a person, and how the agent works inside.
 
 ### Slide 16 - figure, full bleed
 
-`SPEAKER 4 - Ramadan   [0:38]   running total 5:59   ~105 words`
+`SPEAKER 4 - Saleh   [0:38]   running total 5:59   ~105 words`
 
 This is the result. We wrote 25 stories by hand from the same evidence packs, before seeing any machine output. The green band is where those human writers sit.
 
@@ -209,7 +209,7 @@ The caveat is on the slide rather than hidden: our human stories carry no headli
 
 ### Slide 17 - layout
 
-`SPEAKER 4 - Ramadan   [0:40]   running total 6:39   ~105 words`
+`SPEAKER 4 - Saleh   [0:40]   running total 6:39   ~105 words`
 
 How the model picks the figures, because people ask.
 
@@ -223,7 +223,7 @@ That surface is MCP-shaped and specified - a design, not a running server.
 
 ### Slide 18 - layout
 
-`SPEAKER 4 - Ramadan   [0:21]   running total 7:00   ~50 words   >>> DEMO`
+`SPEAKER 4 - Saleh   [0:21]   running total 7:00   ~50 words   >>> DEMO`
 
 That is the whole system. A table becomes an evidence pack, a local model writes the story, and the moderator model rewrites the tone, checks the numbers and picks the figures. Opus judges it blind.
 

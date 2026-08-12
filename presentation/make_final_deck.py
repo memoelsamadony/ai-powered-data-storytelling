@@ -256,7 +256,7 @@ PARTS = [
     ("The research, and the problem it found", "Mahmoud"),
     ("What we built, and how we measure it", "Okasha"),
     ("What the reader sees, and how we chose the pair", "Elsaadani"),
-    ("The result, the agent, and the system", "Ramadan"),
+    ("The result, the agent, and the system", "Saleh"),
 ]
 
 
@@ -321,7 +321,7 @@ def build() -> Presentation:
            15, False, RGBColor(0xC7, 0xD4, 0xE6), BODY, 2)], spacing=1.2)
     text(s, Inches(1.1), Inches(5.6), Inches(11.0), Inches(0.9),
          [("Mahmoud Elsamadony  ·  Ahmed Okasha  ·  Ahmed Elsaadani  ·  "
-           "Ahmed Ramadan", 14, True, WHITE, BODY, 0),
+           "Ahmed Saleh", 14, True, WHITE, BODY, 0),
           ("Supervisors: Susmita Khadse, Julián Méndez  ·  Chair: "
            "Prof. Dr. Raimund Dachselt (IMLD)", 11.5, False,
            RGBColor(0x8A, 0x9C, 0xB8), BODY, 5)])
@@ -833,7 +833,7 @@ DELIVERY: "our recommendation had been backwards" is the line. Say it plainly.
 
     # -- 13  divider ------------------------------------------------------
     divider(prs, 3, """
-SPEAKER 4 - Ramadan   [0:05]   running total 5:21   ~15 words
+SPEAKER 4 - Saleh   [0:05]   running total 5:21   ~15 words
 
 Last part: where that lands against a person, and how the agent works inside.
 
@@ -842,7 +842,7 @@ DELIVERY: a beat. Then fig9 is the payoff slide of the whole talk.
 
     # -- 14  fig9 ---------------------------------------------------------
     fullbleed(prs, "fig9.png", f"""
-SPEAKER 4 - Ramadan   [0:38]   running total 5:59   ~105 words
+SPEAKER 4 - Saleh   [0:38]   running total 5:59   ~105 words
 
 This is the result. We wrote {D['n_human']} stories by hand from the same
 evidence packs, before seeing any machine output. The green band is where those
@@ -917,7 +917,7 @@ DELIVERY: say the three numbers slowly, then stop talking.
     ], spacing=1.14)
     chrome(s, 17)
     notes(s, """
-SPEAKER 4 - Ramadan   [0:40]   running total 6:39   ~105 words
+SPEAKER 4 - Saleh   [0:40]   running total 6:39   ~105 words
 
 How the model picks the figures, because people ask.
 
@@ -974,7 +974,7 @@ server.
          RGBColor(0x8A, 0x9C, 0xB8), BODY, 8),
     ], spacing=1.2)
     notes(s, """
-SPEAKER 4 - Ramadan   [0:21]   running total 7:00   ~50 words   >>> DEMO
+SPEAKER 4 - Saleh   [0:21]   running total 7:00   ~50 words   >>> DEMO
 
 That is the whole system. A table becomes an evidence pack, a local model writes
 the story, and the moderator model rewrites the tone, checks the numbers and
@@ -1044,7 +1044,7 @@ makes the rest credible. Q&A prep is at the end of SPEAKER-SCRIPT.md.
          [("Questions?", 26, True, TEAL, HEAD, 0)])
     text(s, Inches(1.1), Inches(5.05), Inches(11.0), Inches(1.3), [
         ("Mahmoud Elsamadony  ·  Ahmed Okasha  ·  Ahmed Elsaadani  ·  "
-         "Ahmed Ramadan", 14, True, WHITE, BODY, 0),
+         "Ahmed Saleh", 14, True, WHITE, BODY, 0),
         ("Supervisors: Susmita Khadse, Julián Méndez  ·  Chair: "
          "Prof. Dr. Raimund Dachselt (IMLD)", 11.5, False,
          RGBColor(0x8A, 0x9C, 0xB8), BODY, 6),
