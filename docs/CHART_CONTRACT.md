@@ -20,9 +20,9 @@ Nothing can *choose* a chart while the payload can only describe one. So a
 `ChartSpec` says what to draw, a `ChartFrame` carries the numbers, and they
 travel together as a `ChartPayload`.
 
-## 2. Twenty catalog names, seventeen geometries
+## 2. Twenty-four catalog names, seventeen geometries
 
-Three of the twenty named chart types are the same geometry wearing a modifier:
+Several of the twenty-four named chart types are the same geometry wearing a modifier:
 
 | Catalog name | Geometry | Modifier |
 | --- | --- | --- |
@@ -215,18 +215,20 @@ class ChartEncoding(Schema):
 class ChartSpec(Schema):
     form: ChartForm
     encoding: ChartEncoding
-    transform: Transform = "raw"
+    transform: Transform | None = None
     denominator: str | None = None
-    per_capita_base: float = 1
+    per_capita_base: float | None = None
     index_base: float | str | None = None
-    stack: Literal["none", "stacked", "percent"] = "none"
-    orientation: Literal["vertical", "horizontal"] = "vertical"
+    # Modifiers default to None, NOT to their nominal value. See the warning
+    # below: an eager default here refuses to render.
+    stack: Literal["none", "stacked", "percent"] | None = None
+    orientation: Literal["vertical", "horizontal"] | None = None
     baseline: float | None = None
     emphasis: str | None = None
-    polarity: Literal["higher-is-worse", "higher-is-better"] = "higher-is-worse"
+    polarity: Literal["higher-is-worse", "higher-is-better"] | None = None
     breaks: list[float] | None = Field(default=None, min_length=4, max_length=4)
     sort: SpecSort | None = None
-    reference_lines: list[ReferenceLine] = Field(default_factory=list)
+    reference_lines: list[ReferenceLine] | None = None
     title: str
     subtitle: str = ""
     caption: str = ""
@@ -238,10 +240,32 @@ class ChartPayload(Schema):
     frame: ChartFrame
 ```
 
-Note the defaults differ from the TypeScript optionals on purpose: pydantic
-defaults reach an Ollama grammar as part of the JSON schema, so a model that
-omits `stack` gets `"none"` rather than a missing key the frontend has to guess
-about.
+**Do not give the modifiers eager defaults.** An earlier draft of this section
+set `stack: "none"` and `orientation: "vertical"`, reasoning that pydantic
+defaults reach an Ollama grammar as part of the JSON schema, so a model omitting
+`stack` would emit `"none"` rather than a missing key. Both halves are wrong.
+
+`validateSpec` rejects a modifier the form does not honour, and it tests for
+**presence**, not for a meaningful value:
+
+```ts
+if (spec[field] === undefined) continue;
+if (!rule.allows.includes(token)) errors.push(`${spec.form} does not honour ...`);
+```
+
+`line` allows only `emphasis`, so a payload carrying `stack: "none"` and
+`orientation: "vertical"` comes back `{ok: false}` and renders as a refusal
+panel. Measured against the real validator, that is every `line`, `area`,
+`lollipop`, `heatmap`, `slope`, `bump`, `scatter`, `beeswarm`, `box`,
+`ridgeline` and `statTile` figure. And nothing has to guess about a missing key:
+the TypeScript field is optional and `prepare()` already reads an absent `stack`
+as `"none"`.
+
+So modifiers are `None` here, which is what `undefined` means, and the wire drops
+them - `exclude_none=True` on the endpoint. The grammar still names every field,
+so a local model can emit `null` explicitly rather than inventing a key.
+`backend/storytelling/charts/spec.py` is the implementation and
+`ModifierDefaultTests` pins it.
 
 ## 8. Worked example
 

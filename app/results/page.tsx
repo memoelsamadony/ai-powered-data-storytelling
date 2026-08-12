@@ -465,6 +465,34 @@ export default async function ResultsPage({
                   />
                 </div>
 
+                <dl className="mt-6 space-y-2.5 border-t border-hairline pt-5 text-sm leading-relaxed">
+                  <div>
+                    <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+                      What these measure
+                    </dt>
+                    <dd className="mt-1 text-muted">
+                      Runs actually executed on this machine.{" "}
+                      <span className="font-medium text-ink">Edits per run</span> counts
+                      the emotive spans the moderator rewrote, split by category;{" "}
+                      <span className="font-medium text-ink">facts preserved</span> is the
+                      share of those runs where re-checking the moderated text flagged no
+                      claim the source table does not support.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
+                      What they cannot tell you
+                    </dt>
+                    <dd className="mt-1 text-muted">
+                      Anything general. These are a handful of local runs on mixed
+                      datasets and tiers, not a sample drawn to answer a question, so they
+                      show the pipeline works end to end and carry no claim about how
+                      often it works. Every figure is shown with its own{" "}
+                      <span className="font-mono">n</span> for that reason.
+                    </dd>
+                  </div>
+                </dl>
+
                 {live.measured.stageTimings.length > 0 && (
                   <div className="mt-8 border-t border-hairline pt-6">
                     <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
