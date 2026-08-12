@@ -103,6 +103,19 @@ export function GenerateExperience() {
         setLiveStory(s);
         return s;
       },
+      /**
+       * Between the draft and the moderation, on purpose.
+       *
+       * The moderator is the model doing both jobs, so this is the same agent
+       * reading the table before it reads the prose. Running it here rather
+       * than after the run also means the figures are on screen during the
+       * moderation stage, which is the long one.
+       *
+       * `suggestCharts` answers null when the selector cannot be reached, and
+       * the run continues: figures are what the story is *about*, not the
+       * story, and losing them should not lose the pipeline.
+       */
+      selectCharts: () => api.suggestCharts({ datasetId }, { tier }),
       moderate: async () => {
         const s = await api.stageModerate(runIdRef.current!);
         setLiveStory(s);

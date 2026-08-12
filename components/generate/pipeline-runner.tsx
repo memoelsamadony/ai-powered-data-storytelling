@@ -17,11 +17,20 @@ import { pipelineStages, type StageId } from "@/lib/data/pipeline";
 import { Typewriter } from "@/components/generate/typewriter";
 import { TonePair, humanBands } from "@/components/tone-meter";
 import { StoryChart } from "@/components/charts/story-chart";
+import { SuggestedCharts } from "@/components/charts/suggested-charts";
+import type { ChartSuggestion } from "@/lib/api";
 import { Redline } from "@/components/story/redline";
 import { FactCheckGutter } from "@/components/story/fact-check-gutter";
 import { cn } from "@/lib/utils";
 
-type Phase = "idle" | "generate" | "moderate" | "factcheck" | "done";
+/**
+ * `charts` sits between the draft and the moderation because that is the order
+ * the work happens in: the moderator reads the table and picks the figures,
+ * then reads the prose and moderates it. It is not one of the three stage
+ * cards - those describe what happens to the STORY - so it advances the phase
+ * without appearing in `stageIcons`.
+ */
+type Phase = "idle" | "generate" | "charts" | "moderate" | "factcheck" | "done";
 
 const stageIcons = { generate: PenLine, moderate: Scale, factcheck: ShieldCheck } as const;
 
@@ -42,6 +51,8 @@ export function PipelineRunner({
    */
   stages?: {
     generate: () => Promise<StorySet>;
+    /** Resolves null when the selector is unreachable; the run continues. */
+    selectCharts?: () => Promise<ChartSuggestion | null>;
     moderate: () => Promise<StorySet>;
     factcheck: () => Promise<StorySet>;
   };
@@ -53,6 +64,7 @@ export function PipelineRunner({
   const [phase, setPhase] = useState<Phase>("idle");
   const [live, setLive] = useState<StorySet | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [charts, setCharts] = useState<ChartSuggestion | null>(null);
   const isLive = !!stages;
 
   // Render whatever the backend has produced so far; fall back to the mock.
@@ -64,7 +76,7 @@ export function PipelineRunner({
   const rawBody = view.aiRaw.paragraphs.join("\n\n");
 
   const stageState = (id: keyof typeof stageIcons): "pending" | "running" | "done" => {
-    const order: Phase[] = ["idle", "generate", "moderate", "factcheck", "done"];
+    const order: Phase[] = ["idle", "generate", "charts", "moderate", "factcheck", "done"];
     const map: Record<string, Phase> = { generate: "generate", moderate: "moderate", factcheck: "factcheck" };
     const stagePhase = map[id];
     if (phase === stagePhase) return "running";
@@ -99,6 +111,10 @@ export function PipelineRunner({
     try {
       setPhase("generate");
       setLive(await stages.generate());
+      if (stages.selectCharts) {
+        setPhase("charts");
+        setCharts(await stages.selectCharts());
+      }
       setPhase("moderate");
       setLive(await stages.moderate());
       setPhase("factcheck");
@@ -116,6 +132,7 @@ export function PipelineRunner({
     setPhase("idle");
     setLive(null);
     setError(null);
+    setCharts(null);
     onReset?.();
   };
 
@@ -286,12 +303,41 @@ export function PipelineRunner({
 
           </div>
 
-          <aside className="lg:sticky lg:top-24">
+          {/*
+            The panel is the dataset's own trend line until the moderator has
+            picked its figures, then it becomes those figures. Sticky only
+            while it holds the single compact chart - three figures are taller
+            than the viewport, and pinning them would trap the reader in a
+            column that cannot scroll to its own end.
+          */}
+          <aside className={cn(!charts && "lg:sticky lg:top-24")}>
             <div className="rounded-2xl border border-hairline bg-surface p-4">
-              <p className="mb-3 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                The data · {dataset.yearRange}
-              </p>
-              <StoryChart dataset={dataset} height={260} compact />
+              {charts ? (
+                <>
+                  <p className="mb-1 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                    Figures chosen by the moderator
+                  </p>
+                  <p className="mb-4 text-xs leading-relaxed text-muted">
+                    Which forms this table can carry was computed from its column
+                    types. The moderator ranked those and wrote the reasoning under
+                    each figure; it could not reach for a form the data cannot hold.
+                  </p>
+                  <SuggestedCharts suggestion={charts} height={220} />
+                </>
+              ) : (
+                <>
+                  <p className="mb-3 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                    The data · {dataset.yearRange}
+                  </p>
+                  <StoryChart dataset={dataset} height={260} compact />
+                  {phase === "charts" && (
+                    <p className="mt-3 flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      The moderator is choosing figures
+                    </p>
+                  )}
+                </>
+              )}
             </div>
           </aside>
         </div>
