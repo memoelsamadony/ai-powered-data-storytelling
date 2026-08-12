@@ -64,9 +64,10 @@ def fig9():
         raw, mod, hum = (d["machine_raw_alarmism_mean"],
                          d["machine_moderated_alarmism_mean"],
                          d["human_alarmism_median"])
-        b.append(txt(72, y + 6, SERIES_LABEL.get(s, s), size=21, fill=INK, weight="bold"))
-        b.append(txt(72, y + 28, f"n={d['n_runs']} run{'s' if d['n_runs'] > 1 else ''}",
-                     size=15, fill=MUTED))
+        # No per-row run count. Five separate n= labels read as five separate
+        # sample sizes to compare, which is not what they are; the total belongs
+        # in the subtitle and which series carry repeats belongs in the footnote.
+        b.append(txt(72, y + 14, SERIES_LABEL.get(s, s), size=21, fill=INK, weight="bold"))
         # human band, +/- 0.5
         b.append(f'<rect x="{sx(hum-0.5)}" y="{y-26}" width="{sx(hum+0.5)-sx(hum-0.5)}" '
                  f'height="52" fill="{AQUA}" fill-opacity="0.12" rx="4"/>')
@@ -91,15 +92,21 @@ def fig9():
                  size=18, fill=INK_2))
 
     ag = HUMAN["aggregate"]
+    many = [(SERIES_LABEL.get(k, k).lower(), v["n_runs"])
+            for k, v in sorted(ps.items(), key=lambda kv: -kv[1]["n_runs"])
+            if v["n_runs"] > 1]
+    repeats = " and ".join(f"{name} carries {k}" for name, k in many)
     return frame(
         "Moderation moves machine stories onto the human level",
-        f"Alarmism 1-5, Claude Opus judging blind, one story at a time.   "
+        f"Alarmism 1-5, Claude Opus judging blind, one story at a time. "
+        f"{HUMAN['n_runs']} runs against {HUMAN['n_human_stories']} human stories.   "
         f"Overall {ag['alarmism_raw_mean']:.2f} -> {ag['alarmism_moderated_mean']:.2f}, "
         f"human median {ag['human_alarmism_median']:.2f}.",
         "\n".join(b),
-        "n=1 per cell on four of five series, so each arrow is one run, not a mean of repeats. "
-        "The human stories carry no headline and the machine stories do; headlines concentrate "
-        "alarmism, so the human line is if anything flattered and every gap shown is a lower bound.",
+        f"The runs are not spread evenly: {repeats}, and the remaining series are a single run "
+        "each, so those arrows are one story rather than a mean. The human stories carry no "
+        "headline and the machine stories do; headlines concentrate alarmism, so the human line "
+        "is if anything flattered and every gap shown is a lower bound.",
     )
 
 
