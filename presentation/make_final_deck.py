@@ -316,7 +316,7 @@ def build() -> Presentation:
     rect(s, Inches(1.1), Inches(3.95), Inches(1.6), Pt(4), fill=TEAL)
     text(s, Inches(1.1), Inches(4.3), Inches(11.0), Inches(0.9),
          [("An agent that reads a data story and pulls its tone back to what the "
-           "evidence supports —", 15, False, RGBColor(0xC7, 0xD4, 0xE6), BODY, 0),
+           "evidence supports - ", 15, False, RGBColor(0xC7, 0xD4, 0xE6), BODY, 0),
           ("measured against 25 stories our own team wrote from the same tables.",
            15, False, RGBColor(0xC7, 0xD4, 0xE6), BODY, 2)], spacing=1.2)
     text(s, Inches(1.1), Inches(5.6), Inches(11.0), Inches(0.9),
@@ -361,7 +361,7 @@ sentence about the second agent.
     text(s, Inches(10.02), Inches(2.58), Inches(2.35), Inches(3.9), [
         ("The one claim", 12.5, True, NAVY, BODY, 0),
         ("A second agent can pull a generated data story's tone back to what the "
-         "evidence supports —", 12, False, INK, BODY, 6),
+         "evidence supports - ", 12, False, INK, BODY, 6),
         ("without losing the numbers,", 12, True, DEEP_TEAL, BODY, 6),
         ("and at a cost in readability we can put a number on.", 12, True,
          DEEP_TEAL, BODY, 2),
@@ -392,7 +392,7 @@ DELIVERY: one line, then move. A divider is a beat, not a slide to present.
 
     # -- 4  the research --------------------------------------------------
     s = blank(prs)
-    heading(s, "The research", "Three systems we did not just cite — we re-ran them")
+    heading(s, "The research", "Three systems we did not just cite - we re-ran them")
     repros = [
         ("Kasner and Dušek, ACL 2024", "Are open models faithful?",
          "Their reference-free method marks every span of generated text that "
@@ -400,13 +400,13 @@ DELIVERY: one line, then move. A divider is a beat, not a slide to present.
          "We re-ran it on modern open models. A 12B model left a semantic error "
          "in about 18% of outputs, where the paper reported over 80%. A 4B model "
          "regressed to 52%.",
-         "Recency and size both matter — and today's open models are already "
+         "Recency and size both matter - and today's open models are already "
          "fairly faithful at stating data.", BLUE),
         ("DataTales, 2025", "Which kinds of claim are hard?",
          "A benchmark for data narration that scores a story per operation: "
          "lookup, comparison, trend, rate of change, causal.",
          "We reproduced a 30-report slice. Reading operations climb steeply with "
-         "scale — rate of change went 43% to 89% from a 4B to a 12B model.",
+         "scale - rate of change went 43% to 89% from a 4B to a 12B model.",
          "Stating a number is not the hard part. Explaining it is.", TEAL),
         ("DataNarrative, EMNLP 2024", "What architecture works?",
          "One agent writes the story, a second agent verifies it at every step, "
@@ -527,7 +527,7 @@ screen.
     rect(s, Inches(4.15), Inches(2.4), Inches(5.15), Inches(2.72), fill=SOFT)
     rect(s, Inches(4.15), Inches(2.4), Inches(5.15), Pt(4), fill=TEAL)
     text(s, Inches(4.42), Inches(2.62), Inches(4.6), Inches(0.6), [
-        ("2   THE AGENTIC ROLE — ONE MODEL, THREE JOBS", 10, True, MUTED, HEAD, 0),
+        ("2   THE AGENTIC ROLE - ONE MODEL, THREE JOBS", 10, True, MUTED, HEAD, 0),
         ("gemma4:31b", 15, True, DEEP_TEAL, HEAD, 4)], spacing=1.14)
     for i, (job, desc, star) in enumerate([
         ("Moderates tone", "rewrites the framing, keeps the numbers", True),
@@ -548,7 +548,7 @@ screen.
     text(s, Inches(9.94), Inches(2.62), Inches(2.45), Inches(1.2), [
         ("3   JUDGE", 10, True, MUTED, HEAD, 0),
         ("Claude Opus", 15, True, NAVY, HEAD, 4),
-        ("Rates each story blind. Evaluation\nonly — not part of the product\nloop.",
+        ("Rates each story blind. Evaluation\nonly - not part of the product\nloop.",
          11, False, INK, BODY, 4)], spacing=1.14)
     rect(s, Inches(0.75), Inches(5.3), Inches(5.9), Inches(1.28), fill=SOFT)
     rect(s, Inches(0.75), Inches(5.3), Pt(3.5), Inches(1.28), fill=NAVY)
@@ -556,11 +556,11 @@ screen.
         ("Same model, separate stages", 12.5, True, NAVY, BODY, 0),
         ("The moderator is the agentic role here, so the agentic reading of a "
          "table belongs to it too. The stages stay separate, so a tone number is "
-         "still measuring one change — and one 19–23 GB load is paid per run "
+         "still measuring one change - and one 19-23 GB load is paid per run "
          "instead of per stage.", 11.5, False, INK, BODY, 4)], spacing=1.14)
     text(s, Inches(7.15), Inches(5.32), Inches(5.43), Inches(1.3), [
         ("Two datasets, because tone fails both ways.", 12.5, True, NAVY, BODY, 0),
-        ("Measles × MCV1 coverage (9,959 rows, 1980–2024) invites alarmism. WHO "
+        ("Measles × MCV1 coverage (9,959 rows, 1980-2024) invites alarmism. WHO "
          "child mortality invites the opposite failure, false reassurance, where "
          "the agent must keep the inequality and the COVID reversal visible.",
          11.5, False, INK, BODY, 4)], spacing=1.14)
@@ -590,14 +590,14 @@ fourth model - it is not.
         ("The judge rates every story 1 to 5 on alarmism, and separately 1 to 5 "
          "on optimism.", 14, False, INK, BODY, 0),
         ("A 5 catastrophises. A 1 is flat and hides real stakes. Only the middle "
-         "is calibrated — so this is not a “lower is better” scale, and an agent "
+         "is calibrated - so this is not a “lower is better” scale, and an agent "
          "that simply drains the feeling out of a story scores badly too.",
          14, False, INK, BODY, 9),
         ("Blinding cost us something.", 14, True, NAVY, BODY, 12),
         ("An earlier version showed the judge both stories in one call, labelled "
          "before and after, always in that order. That names the treatment to "
          "the rater. Each story is now scored alone, which doubles the calls and "
-         "gives up the direct comparison — the price of a rating that was not "
+         "gives up the direct comparison - the price of a rating that was not "
          "told which story is the treatment.", 12.5, False, MUTED, BODY, 4),
     ], spacing=1.18)
     scale_bar(s, 7.05, 2.4, 5.35, "ALARMISM",
@@ -611,8 +611,8 @@ fourth model - it is not.
     text(s, Inches(7.32), Inches(5.38), Inches(4.9), Inches(0.95),
          [("The rubric calls 3 calibrated. Our human writers sit at "
            f"{agg['human_alarmism_median']:.1f} and "
-           f"{agg['human_optimism_median']:.1f}, so the human band — not the "
-           "rubric midpoint — is the target we report against.", 12, False,
+           f"{agg['human_optimism_median']:.1f}, so the human band - not the "
+           "rubric midpoint - is the target we report against.", 12, False,
            INK, BODY, 0)], spacing=1.16)
     chrome(s, 8)
     notes(s, f"""
@@ -637,12 +637,12 @@ human marks on the second note.
     # -- 8  metrics part 1 ------------------------------------------------
     s = blank(prs)
     heading(s, "Metrics · part 1", "What we measure about the system")
-    group(s, 0.75, 2.3, 5.9, 1.95, "Tone — the contribution",
+    group(s, 0.75, 2.3, 5.9, 1.95, "Tone - the contribution",
           "An LLM judge, blind, one story per call. The only family that needs a model.",
           [("Alarmism 1-5", "flat ↔ catastrophising"),
            ("Optimism 1-5", "bleak ↔ false reassurance"),
            ("Emotive spans removed", "count, per run")], accent=TEAL)
-    group(s, 0.75, 4.42, 5.9, 2.16, "Faithfulness — computed, no model, free",
+    group(s, 0.75, 4.42, 5.9, 2.16, "Faithfulness - computed, no model, free",
           "Did the rewrite keep the facts? Runs on every story automatically.",
           [("Numeric retention", "share of the raw story's figures that survive"),
            ("Added unsupported", "figures the moderator introduced"),
@@ -655,13 +655,13 @@ human marks on the second note.
           [("chrF++", "character n-grams; our ranking metric"),
            ("BLEU 1-4, ROUGE-L", "n-gram and longest-common-subsequence overlap"),
            ("METEOR, unigram F1", "stem and synonym aware")], accent=DEEP_TEAL)
-    group(s, 6.9, 4.42, 5.68, 2.16, "Analytical operations — from the DataTales re-run",
+    group(s, 6.9, 4.42, 5.68, 2.16, "Analytical operations - from the DataTales re-run",
           "Not every claim is equally hard, so we score accuracy per kind of claim.",
           [("lookup", "reading a single value off the table"),
            ("comparison", "ranking two values against each other"),
            ("trend", "which way a series moves across a window"),
            ("rate of change", "how steeply it moves"),
-           ("causal", "why it moved — the hardest, and the one we treat with "
+           ("causal", "why it moved - the hardest, and the one we treat with "
             "most caution")], accent=NAVY)
     text(s, Inches(0.75), Inches(6.68), Inches(11.8), Inches(0.28),
          [("“Trend” appears twice: trend selection (bottom left) is a "
@@ -706,7 +706,7 @@ DELIVERY: a beat, then straight into the next slide.
            ("Verified / flagged / corrected", "what the fact-check did to each "
             "number")], accent=TEAL)
     group(s, 0.75, 4.85, 5.9, 1.8, "The edit taxonomy",
-          "Every change the moderator made, classified — so the diff is readable.",
+          "Every change the moderator made, classified - so the diff is readable.",
           [("Intensity", "how hard the wording pushes"),
            ("Framing", "what the sentence is made to be about"),
            ("Overreach", "a claim beyond what the table shows"),
@@ -752,7 +752,7 @@ DELIVERY: this sets up the demo. Say "you will see these in a moment".
     steps = [
         ("01", "Build the grid",
          "Vary the generator against a fixed moderator, then the moderator "
-         "against a fixed generator. L-shaped, not factorial — so the best × "
+         "against a fixed generator. L-shaped, not factorial - so the best × "
          "best cell is never assumed, it has to be run.", BLUE),
         ("02", "Score every run the same way",
          "Blind Opus rating on both tone axes, plus the computed faithfulness "
@@ -864,10 +864,10 @@ DELIVERY: say the three numbers slowly, then stop talking.
     # -- 17  the tool surface ---------------------------------------------
     s = blank(prs)
     heading(s, "The tool surface", "Seven tools, not seventeen chart types",
-            "Grouped by the reader's job, with the geometry in an enum — a "
+            "Grouped by the reader's job, with the geometry in an enum - a "
             "two-level choice a local model can make reliably.")
     text(s, Inches(0.75), Inches(2.62), Inches(6.3), Inches(0.3),
-         [("CHART TOOLS (7)  —  each returns a ChartPayload", 10, True, MUTED,
+         [("CHART TOOLS (7)  -  each returns a ChartPayload", 10, True, MUTED,
            HEAD, 0)])
     chart_tools = [
         ("plot_trend_over_time", "line, area  (+ stack, indexed, emphasis)"),
@@ -893,14 +893,14 @@ DELIVERY: say the three numbers slowly, then stop talking.
            False, MUTED, BODY, 0)])
 
     text(s, Inches(7.35), Inches(2.62), Inches(5.23), Inches(0.3),
-         [("READ TOOLS (3)  —  what makes it an agent, not a classifier", 10,
+         [("READ TOOLS (3)  -  what makes it an agent, not a classifier", 10,
            True, MUTED, HEAD, 0)])
     read_tools = [
         ("describe_dataset", "dimensions, measures, span, row count, "
          "missingness, and the magnitude ratio between measures"),
         ("get_series", "a ChartFrame for one measure, grouped, filtered and "
          "aggregated as asked"),
-        ("check_comparability", "whether a per-capita denominator exists — and "
+        ("check_comparability", "whether a per-capita denominator exists - and "
          "whether it is needed"),
     ]
     for i2, (tool, ret) in enumerate(read_tools):
@@ -949,7 +949,7 @@ and the tool loop is the next step.
     rect(s, 0, 0, Inches(0.16), H, fill=TEAL)
     text(s, Inches(1.1), Inches(1.15), Inches(11.0), Inches(0.9), [
         ("THE WHOLE SYSTEM", 12, True, TEAL, HEAD, 0),
-        ("Table in, audited story out — on one laptop", 34, True, WHITE, HEAD, 6),
+        ("Table in, audited story out - on one laptop", 34, True, WHITE, HEAD, 6),
     ])
     chain = [("Table", "9,959 rows"), ("Evidence pack", "computed"),
              ("Raw story", "llama3.1:8b"), ("Moderated", "gemma4:31b"),
@@ -1001,7 +1001,7 @@ dataset page. Never click Generate and wait - see SPEAKER-SCRIPT.md.
     rect(s, 0, 0, W, Inches(0.16), fill=TEAL)
     text(s, Inches(1.1), Inches(1.5), Inches(11.2), Inches(1.9), [
         ("What we can defend", 13, True, DEEP_TEAL, HEAD, 0),
-        ("Human tone level — and what it cost", 40, True, NAVY, HEAD, 12),
+        ("Human tone level - and what it cost", 40, True, NAVY, HEAD, 12),
         ("Three numbers: where the tone lands, whether the ruler holds, and what "
          "the rewrite gave up.", 15, False, MUTED, BODY, 14),
     ], spacing=1.14)
@@ -1265,7 +1265,7 @@ def write_script(prs: Presentation) -> Path:
         if pic:
             title = "figure, full bleed"
         elif re.search(r"PART \d+ OF \d+", on_slide):
-            title = "section divider — hand over here"
+            title = "section divider - hand over here"
         else:
             title = "layout"
         L += [f"### Slide {i} - {title}", "", f"`{head}`", ""]
@@ -1449,17 +1449,17 @@ def script_pdf(prs: Presentation) -> Path:
 
     total = sum(per.values())
     rows = "".join(
-        f"<tr><td><b>{w}</b></td><td>{min(ks)}\u2013{max(ks)}</td>"
+        f"<tr><td><b>{w}</b></td><td>{min(ks)}-{max(ks)}</td>"
         f"<td class='n'>{per[w]}</td>"
         f"<td class='n'>{per[w] / 150 * 60:.0f}s</td></tr>"
         for w, ks in span.items())
-    rows += (f"<tr class='total'><td>Talk</td><td>{min(talk)}\u2013{max(talk)}</td>"
+    rows += (f"<tr class='total'><td>Talk</td><td>{min(talk)}-{max(talk)}</td>"
              f"<td class='n'>{total}</td>"
              f"<td class='n'>{total // 150}:{round(total / 150 % 1 * 60):02d}</td></tr>"
-             "<tr><td>Live demo</td><td>after the talk</td><td class='n'>\u2014</td>"
+             "<tr><td>Live demo</td><td>after the talk</td><td class='n'>-</td>"
              "<td class='n'>3:30</td></tr>")
 
-    body = [f"<h1>Final presentation \u2014 speaker script</h1>",
+    body = [f"<h1>Final presentation - speaker script</h1>",
             "<div class='rule'></div>",
             "<p class='lede'>Seven minutes of talk across four speakers, then a "
             "3:30 demo. Word counts are the spoken text below; times assume 150 "
@@ -1481,7 +1481,7 @@ def script_pdf(prs: Presentation) -> Path:
             body.append(
                 f"<div class='speaker'><div class='speaker-head'>"
                 f"<span class='who'>{who}</span>"
-                f"<span class='meta'>slides {min(ks)}\u2013{max(ks)} · {per[who]} words "
+                f"<span class='meta'>slides {min(ks)}-{max(ks)} · {per[who]} words "
                 f"· {per[who] / 150 * 60:.0f}s</span></div>")
             current = who
         elif not who and current is not None:
@@ -1491,7 +1491,7 @@ def script_pdf(prs: Presentation) -> Path:
         pic = any(sh.shape_type == 13 for sh in sl.shapes)
         on = " ".join(sh.text_frame.text for sh in sl.shapes if sh.has_text_frame)
         kind = ("figure, full bleed" if pic else
-                "section divider \u2014 hand over here"
+                "section divider - hand over here"
                 if re.search(r"PART \d+ OF \d+", on) else "layout")
         chip = re.search(r"\[(\d:\d\d)\]", head)
         run = re.search(r"running total (\d+:\d\d)", head)

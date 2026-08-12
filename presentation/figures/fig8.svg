@@ -13,7 +13,7 @@
 
 </defs>
 <rect width="1600" height="900" fill="#ffffff"/>
-<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">What the tone agent actually did — one real run</text>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">What the tone agent actually did - one real run</text>
 <text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Run 056795c4  ·  measles  ·  7 spans rebalanced, each returned with a stated reason</text>
 <line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
 <text x="118" y="180" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="bold" text-anchor="start" letter-spacing="1.5">ORIGINAL</text>
@@ -63,10 +63,10 @@
 <text x="128" y="764" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">causal accuracy is 0%, that is safety work, not style work.</text>
 <rect x="814" y="648" width="682" height="132" rx="10" fill="#fab219" fill-opacity="0.17"/>
 <text x="838" y="684" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">Then the fact-checker flagged the moderator</text>
-<text x="838" y="716" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">8 claims checked, 7 verified, 1 flagged — and the flagged item</text>
+<text x="838" y="716" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">8 claims checked, 7 verified, 1 flagged - and the flagged item</text>
 <text x="838" y="740" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">is the moderator's own new phrasing. The two agents</text>
 <text x="838" y="764" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">disagreeing is why they are kept as separate agents.</text>
 
-<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Alarmism 2.0 → 2.0 on this run: the rating did not move, but seven spans were still rewritten — which is exactly why the delta on its own is an insufficient measure of</text>
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Alarmism 2.0 → 2.0 on this run: the rating did not move, but seven spans were still rewritten - which is exactly why the delta on its own is an insufficient measure of</text>
 <text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">what the agent does.</text>
 </svg>

@@ -39,7 +39,7 @@ Four parts. What the research told us and the problem it exposed. What we built 
 
 > **DELIVERY:** fifteen seconds. Read the four part names, point at the claim on the right, move on. Do not explain the claim here - the whole talk is the explanation.
 
-### Slide 3 - section divider — hand over here
+### Slide 3 - section divider - hand over here
 
 `SPEAKER 1 - Mahmoud   [0:05]   running total 0:40   ~15 words`
 
@@ -77,7 +77,7 @@ Okasha will show you what we built for that.
 
 > **DELIVERY:** read both quotes out loud, slowly. This is the motivation and it lands in ten seconds if you actually perform the contrast.
 
-### Slide 6 - section divider — hand over here
+### Slide 6 - section divider - hand over here
 
 `SPEAKER 2 - Okasha   [0:05]   running total 1:50   ~15 words`
 
@@ -127,7 +127,7 @@ Elsaadani takes the reader-facing half.
 
 > **DELIVERY:** do NOT read the metric names. Name the four families and the fact that three of them cost nothing to compute. The slide is the handout.
 
-### Slide 10 - section divider — hand over here
+### Slide 10 - section divider - hand over here
 
 `SPEAKER 3 - Elsaadani   [0:05]   running total 3:29   ~15 words`
 
@@ -185,7 +185,7 @@ And the lower half is the more interesting finding: moderated tone is 2.10 eithe
 
 > **DELIVERY:** "our recommendation had been backwards" is the line. Say it plainly.
 
-### Slide 15 - section divider — hand over here
+### Slide 15 - section divider - hand over here
 
 `SPEAKER 4 - Saleh   [0:05]   running total 5:21   ~15 words`
 

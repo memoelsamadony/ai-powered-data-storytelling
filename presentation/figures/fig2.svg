@@ -90,7 +90,7 @@
 <rect x="1220" y="238" width="360" height="352" rx="10" fill="#d03b3b" fill-opacity="0.07"/>
 <text x="1245" y="282" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#d03b3b" font-weight="bold" text-anchor="start" letter-spacing="1.5">THE CAPABILITY WALL</text>
 <text x="1245" y="322" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Scale lifts every reading and</text>
-<text x="1245" y="348" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">computing operation — trend</text>
+<text x="1245" y="348" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">computing operation - trend</text>
 <text x="1245" y="374" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">40.5% → 87.3%.</text>
 <text x="1245" y="400" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0"></text>
 <text x="1245" y="426" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="bold" text-anchor="start" letter-spacing="0">Causal analysis stays at exactly</text>
@@ -102,6 +102,6 @@
 <text x="1245" y="582" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="bold" text-anchor="start" letter-spacing="0">This is why the fact-checker is a</text>
 <text x="1245" y="608" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="bold" text-anchor="start" letter-spacing="0">separate agent from the tone agent.</text>
 <text x="1528" y="172" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="end" letter-spacing="0">Share of analytical claims that check out against the source table</text>
-<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">* Small denominators — gemma writes more concise reports and makes only 5 subtraction and 9 rate claims (against qwen's 28 and 30), so a single item moves those two</text>
-<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">bars by 12–20 points. They are drawn faded for that reason. Counts under each label are qwen · gemma.</text>
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">* Small denominators - gemma writes more concise reports and makes only 5 subtraction and 9 rate claims (against qwen's 28 and 30), so a single item moves those two</text>
+<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">bars by 12-20 points. They are drawn faded for that reason. Counts under each label are qwen · gemma.</text>
 </svg>
