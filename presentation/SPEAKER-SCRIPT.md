@@ -1,6 +1,6 @@
 # Final presentation - speaker script
 
-**7:00 of talk across four speakers, then a 3:30 demo.** Twelve slides; five of them are figures that carry themselves, so on those you talk to the room, not to the screen.
+**7:00 of talk across four speakers, then a 3:30 demo.** 13 slides; the figure slides carry themselves, so on those you talk to the room, not to the screen.
 
 Generated from the speaker notes inside `AI-Storytelling-Final-Talk.pptx` by `make_final_deck.py`. Edit the notes there and rebuild rather than editing this file, or the two will disagree by Sunday.
 
@@ -8,13 +8,13 @@ Generated from the speaker notes inside `AI-Storytelling-Final-Talk.pptx` by `ma
 
 | Speaker | Slides | Words | At 150 wpm |
 |---------|--------|-------|-----------|
-| Mahmoud | 1-3 | 256 | 102s |
-| Okasha | 4-5 | 229 | 92s |
-| Elsaadani | 6-8 | 333 | 133s |
-| Ramadan | 9-10 | 236 | 94s |
-| **Talk total** | **1-10** | **1054** | **7:02** |
-| Demo | 11 | - | 3:30 |
-| Close | 12 | 86 | 15s |
+| Mahmoud | 1-3 | 245 | 98s |
+| Okasha | 4-6 | 275 | 110s |
+| Elsaadani | 7-9 | 255 | 102s |
+| Ramadan | 10-12 | 270 | 108s |
+| **Talk total** | **1-12** | **1045** | **6:58** |
+| Demo | after 12 | - | 3:30 |
+| Close | 13 | 74 | 15s |
 
 Assignments follow the interim deck's four-part split and are meant to be swapped - the script is written per section, not per person. Whoever drives the demo should not also be the one closing it; give the standby person the last slide.
 
@@ -22,159 +22,173 @@ Assignments follow the interim deck's four-part split and are meant to be swappe
 
 ### Slide 1 - layout
 
-`SPEAKER 1 - Mahmoud   [0:15]   running total 0:15   ~43 words`
+`SPEAKER 1 - Mahmoud   [0:15]   running total 0:15   ~40 words`
 
 Good afternoon. We turn a public-health table into a written story. The part we want to defend today is the second agent: it reads that story and pulls the emotional tone back to what the evidence supports.
 
 Four sections, then a live demo.
 
-> **DELIVERY:** do not read the names off the slide, they can see them. Go straight to the sentence about the second agent.
+> **DELIVERY:** do not read the names, they are on the slide. Go straight to the sentence about the second agent.
 
 ### Slide 2 - layout
 
-`SPEAKER 1 - Mahmoud   [0:45]   running total 1:00`
+`SPEAKER 1 - Mahmoud   [0:50]   running total 1:05   ~125 words`
 
-Agentic data storytelling already has a critic agent. DataNarrative, MDSF, Data Director - they all pair a generator with a second agent that checks the work. In every one of them, that second agent checks facts.
+We surveyed seven systems. On the left: the non-LLM baselines, then the ones closest to us - DataNarrative, Data Director, MDSF - all of which pair a generator with a critic agent.
 
-But Hullman and Diakopoulos showed years ago that framing alone significantly changes how people read the same chart. So the interesting failure is not the false number. It is the true number delivered in a way that misleads.
+On the right, the three we reproduced ourselves rather than cited. Kasner and Dušek's faithfulness method: a modern 12B model left about 18 percent of outputs with a semantic error where the paper reported over 80. DataTales: the reading operations climb steeply with model size. And we rebuilt DataNarrative's generate-and-verify architecture, which is the shape ours adapts.
 
-[POINT AT THE PANEL] Both of these are accurate. A fact-checker passes both. The first one is catastrophising and the second one is calibrated, and no system in the literature can tell them apart.
+That gave us the sentence at the bottom. Open models are already fairly faithful at stating data, and every critic in the literature checks facts. So another fact-checker is not where the gap is.
 
-> **DELIVERY:** read both quotes out loud, slowly. This is the whole motivation and it lands in ten seconds if you actually perform the contrast.
+> **DELIVERY:** do not read the paper list. Say "seven systems, three we re-ran ourselves" and go to the bottom bar. That sentence is the slide.
 
 ### Slide 3 - layout
 
-`SPEAKER 1 - Mahmoud   [0:40]   running total 1:40   >>> HAND TO OKASHA`
+`SPEAKER 1 - Mahmoud   [0:40]   running total 1:45   ~100 words   >>> HAND TO OKASHA`
 
-Three stages. A local model generates the story from an evidence pack we build out of the table. A second local model rewrites it for tone only. Claude Opus rates both versions blind.
+So here is the problem we noticed.
 
-Only the middle stage is new. Everything else exists to make it measurable.
+The critic is always a fact-checker. But Hullman and Diakopoulos showed that framing alone significantly changes how people read the same chart. Tone is not decoration - it is part of the claim.
 
-And we use two datasets on purpose, because tone fails in two directions. The measles data invites alarmism. The WHO child-mortality data invites the opposite failure - false reassurance - and there the agent has to keep the inequality and the COVID reversal visible rather than flatten them.
+[POINT] Both of these sentences are true to the table. A fact-checker passes both. The first catastrophises, the second is calibrated, and nothing in the literature can tell them apart.
 
-Okasha will show you how we turned that into a number.
+Okasha will show you what we built for that.
 
-> **DELIVERY:** this is a signpost slide, keep moving. Do not name model versions twice, they are on the slide.
+> **DELIVERY:** read both quotes out loud, slowly. This is the motivation and it lands in ten seconds if you actually perform the contrast.
 
 ### Slide 4 - layout
 
-`SPEAKER 2 - Okasha   [0:50]   running total 2:30`
+`SPEAKER 2 - Okasha   [0:35]   running total 2:20   ~88 words`
 
-To measure tone we need a scale, so the judge rates every story twice: once for alarmism, once for optimism, one to five each.
+Four agents. A local model generates the story from an evidence pack. A second rewrites it for tone only. A third checks the numbers back against the table. A fourth picks the charts.
 
-The important part is that both ends are failures. Five catastrophises. One is flat and hides the stakes. Only the middle is calibrated. So this is not a lower-is-better metric - an agent that just drains the feeling out of a story does badly on it too.
+Only the second one is new. Everything else exists to make it measurable.
 
-One thing we had to fix. The first version showed the judge both stories in a single call, labelled before and after, always in that order. That tells the rater which one is the treatment. Now every story is scored alone, in its own call, with nothing to compare it to.
+And note the fourth is deliberately not the moderator. If tone moderation also chose the charts, every tone number afterwards would be measuring two changes at once, and the one claim we are making would be confounded.
 
-> **DELIVERY:** "both ends are failures" is the sentence that has to land. Pause after it.
+> **DELIVERY:** signpost slide, keep moving. The separation point is worth five seconds because it pre-empts an obvious question.
 
-### Slide 5 - figure, full bleed
+### Slide 5 - layout
 
-`SPEAKER 2 - Okasha   [0:45]   running total 3:15   ~112 words   >>> HAND TO ELSAADANI`
+`SPEAKER 2 - Okasha   [0:40]   running total 3:00   ~100 words`
 
-Every run we did, all thirty-five, on both axes. Red is the raw story, blue is after moderation, the arrow is what the agent did.
+To measure tone you need a scale. Every story gets two: alarmism and optimism, one to five each.
 
-The big diagonal cloud is the alarmist dataset behaving as expected.
+Both ends of each are failures. Five catastrophises, one is flat and hides real stakes. So an agent cannot win by draining the feeling out of a story.
 
-But look at the top. That is the child-mortality data. The raw story scored a perfectly calm two on alarmism and a four-and-a-half on optimism. "Nothing short of miraculous." A single-axis alarmism metric sees nothing wrong with that story at all. Ours moved it to two-point-five.
+Two honest notes. The rubric calls three calibrated, but our human writers sit at 2.0 and 2.5 - so the human band is what we report against, not the midpoint.
 
-Alarmism falls 3.74 to 2.09, optimism rises 2.15 to 2.60. Both toward the middle.
+And blinding cost us. Scoring each story alone doubles the calls and gives up the direct comparison. We paid that to stop telling the judge which story was the treatment.
 
-Elsaadani will tell you where that lands next to a person.
+> **DELIVERY:** "both ends are failures" is the sentence that must land. Pause after it. Point at the blue human marks when you say the second note.
 
-> **DELIVERY:** physically point at the top cluster. That one group of points is the entire justification for the second axis.
+### Slide 6 - layout
 
-### Slide 6 - figure, full bleed
+`SPEAKER 2 - Okasha   [0:30]   running total 3:30   ~80 words   >>> HAND TO ELSAADANI`
 
-`SPEAKER 3 - Elsaadani   [0:50]   running total 4:05`
+Four families of metric, and only the first one needs a model.
 
-This is the main result. The four of us wrote 25 stories by hand from the same evidence packs, five per series, before seeing any machine output. The green band is where those human writers sit.
+Tone is the contribution and it is judged. Faithfulness is computed in code, for free, on every run - including a cherry-picking check that asks whether the window the story chose points the same way as the whole series. Similarity is against the human stories. And the operation accuracies come from our DataTales re-run.
 
-Red is the machine's raw story. Blue is after moderation. On every one of the five series the arrow moves onto or into the human band.
+One warning: two different things here are called trend. The footnote says which is which.
 
-Overall, alarmism goes from 3.74 to 2.09, and the human median is 2.00. That is 32 runs that have a human counterpart to compare against.
+Elsaadani takes the reader-facing half.
 
-One caveat we put on the slide rather than hide: our human stories have no headline and the machine stories do. Headlines concentrate alarmism, so the human line is flattered, and every gap you see is a lower bound.
+> **DELIVERY:** do NOT read the metric names. Name the four families and the fact that three of them cost nothing to compute. The slide is the handout.
 
-> **DELIVERY:** say the three numbers slowly - 3.74, 2.09, human 2.00 - and stop talking. That trio is the thesis of the whole project.
+### Slide 7 - layout
 
-### Slide 7 - figure, full bleed
+`SPEAKER 3 - Elsaadani   [0:25]   running total 3:55   ~63 words`
 
-`SPEAKER 3 - Elsaadani   [0:40]   running total 4:45   ~100 words`
+Not every metric is for us. These are for the reader.
 
-Fair question at this point: the judge is a language model too, so why believe it.
+The app shows the tone rating, the human band, and every emotive span the moderator removed, classified by what kind of edit it was. That is why the interface shows a diff rather than just a cleaner paragraph - so a reader can audit the rewrite instead of trusting it.
 
-So we rated every story three times, in independent calls. 64 stories, 192 calls.
+The user-study axes on the right are designed and not run.
 
-ICC 0.991. Krippendorff alpha 0.991. Identical on all three passes for 41 of 64 stories, never off by more than half a point.
+> **DELIVERY:** this slide sets up the demo. Say "you will see these in a moment".
 
-The number that matters: the judge disagrees with itself by 0.08 points. The same configuration at five seeds disagrees with itself by 0.42. So the spread in our results is the generator, not the instrument.
+### Slide 8 - figure, full bleed
 
-Same model, same prompt, so this is self-consistency, not inter-rater reliability.
+`SPEAKER 3 - Elsaadani   [0:25]   running total 4:20   ~63 words`
 
-> **DELIVERY:** expect this exact question from the supervisors. Getting in front of it is worth the forty seconds.
+Now, how we picked the pair.
 
-### Slide 8 - layout
+Fourteen generator-and-moderator combinations. Six of them tie on tone - all hit exactly 2.0 - so tone alone cannot choose. We broke the tie on faithfulness: how many of the raw story's figures survive the rewrite.
 
-`SPEAKER 3 - Elsaadani   [0:45]   running total 5:30   >>> HAND TO RAMADAN`
+On one run each, qwen 4b looked best at 71 percent against llama 8b's 50.
 
-We also asked the judge to compare the two versions directly, 20 pairs, blind, with the positions shuffled so it cannot learn that the second one is always the treatment.
-
-The moderated story won the overall verdict 20 times out of 20, and won factual correctness 20 out of 20 - the moderator is quietly re-grounding numbers the generator made up.
-
-But here is the honest part. On narrative quality the raw story was judged better in 12 of 20 pairs.
-
-Alarmism is not decoration. It is part of what made the story readable, and taking it out costs something. We would rather report that than bury it.
-
-> **DELIVERY:** do not rush the last row. Volunteering the cost is what makes the rest of the deck credible.
+> **DELIVERY:** do not read the table. Point at the green block of ties, then at the "figures kept" column. Twenty-five seconds.
 
 ### Slide 9 - figure, full bleed
 
-`SPEAKER 4 - Ramadan   [0:55]   running total 6:25`
+`SPEAKER 3 - Elsaadani   [0:55]   running total 5:15   ~138 words   >>> HAND TO RAMADAN`
 
-I want to show you the mistake we nearly published.
+Then we ran both five times, at different seeds. It reverses.
 
-Six generator-moderator combinations tied on moderated alarmism - all of them hit 2.0 - so we broke the tie on how many of the raw story's numbers survive moderation, and on one run each, qwen 4b beat llama 8b, 71% against 50%.
+Qwen averages 61%, llama averages 90%. Welch t of minus 2.70, p of 0.029, Cohen's d of 1.71. Our recommendation had been backwards, and one run per cell was never going to show us that.
 
-Then we ran both five times at different seeds. It reverses. Qwen averages 61% and llama averages 90%. Welch t of minus 2.70, p of 0.029, Cohen's d of 1.71.
+Seeds have to differ, by the way. Two of our tiers were the same configuration at the same seed and produced byte-identical text - that is determinism, not a repeat.
 
-Our recommendation had been backwards, and one run per cell was never going to show us that.
+So the pipeline we ship is llama3.1:8b generating, gemma4:31b moderating.
 
-Two things follow. The pipeline we are shipping is llama3.1:8b generating and gemma4:31b moderating. And the moderator lands on 2.10 either way, which is the more interesting finding: it converges on the same tone no matter who wrote the draft.
+And the lower half is the more interesting finding: the moderator lands on 2.10 either way. It converges on the same tone regardless of who wrote the draft.
 
-> **DELIVERY:** the strongest slide in the deck. Own the mistake, do not soften it. "Our recommendation had been backwards" is the line.
+Ahmed Ramadan will show you where that sits next to a person.
 
-### Slide 10 - layout
+> **DELIVERY:** the strongest slide in the deck. Own the mistake. "Our recommendation had been backwards" is the line - say it plainly and do not soften it.
 
-`SPEAKER 4 - Ramadan   [0:35]   running total 7:00   ~90 words   >>> HAND TO THE DEMO`
+### Slide 10 - figure, full bleed
 
-What we are not claiming.
+`SPEAKER 4 - Ramadan   [0:45]   running total 6:00   ~112 words`
 
-The reliability figure is one judge agreeing with itself; a second judge family is the next run. There is no user study, so every preference you saw is a model's, not a reader's.
+This is the result. The four of us wrote 25 stories by hand from the same evidence packs, five per series, before seeing any machine output. The green band is where those human writers sit.
 
-And two corrections to our own interim report. We called the DataTales causal zero percent a capability wall; it is a groundedness measure and cannot carry that claim. And scale is not the lever: a 27b generator reached the same moderated 2.0 as the 4b, at 5 minutes a run, n equals one.
+Red is the raw story, blue is after moderation. On every one of the five series the arrow lands on or inside the human band.
 
-Let me show you the system.
+Overall 3.74 to 2.09, against a human median of 2.00, over 32 runs that have a human counterpart.
 
-> **DELIVERY:** this is 35 seconds, not a minute. Then switch to the browser, which should ALREADY be open on the dataset page.
+And the honest caveat, on the slide rather than hidden: our human stories carry no headline and the machine stories do. Headlines concentrate alarmism, so every gap you see is a lower bound.
+
+> **DELIVERY:** say the three numbers slowly and then stop talking. That trio is the thesis of the project.
 
 ### Slide 11 - layout
 
-`DEMO - Ramadan drives, Okasha on standby with the screenshot folder   [3:30]`
+`SPEAKER 4 - Ramadan   [0:40]   running total 6:40   ~100 words`
 
-DO NOT PRESENT THIS SLIDE. It is a holding slide for the switch to the browser. Full click path, timings and the fallback are in presentation/SPEAKER-SCRIPT.md.
+The fourth agent, briefly, because it is the part people ask about.
 
-The one rule: a cold generation takes three to nine minutes. You cannot click Generate now and wait. Either the run was started at the beginning of the talk and is already finished, or you open a completed run. Both are covered in the script.
+Choosing a chart splits into three questions. Which forms can this table carry - that is closed, decided from column types in code, so it cannot hallucinate a map for a table with no geography. Which of those are worth showing - that is editorial, and that is the model. And is the result honest - closed again, and a rejected spec goes back for one retry.
+
+That split is why an 8B local model can do this reliably.
+
+One honest note: the tool surface is specified and MCP-shaped. It is a design, not something running today.
+
+> **DELIVERY:** say "specified, not wired" out loud. Do not imply we have an MCP server; someone will ask to see it.
 
 ### Slide 12 - layout
+
+`SPEAKER 4 - Ramadan   [0:20]   running total 7:00   ~50 words   >>> DEMO`
+
+That is the whole system. A table becomes an evidence pack, a local model writes the story, the tone agent rewrites it, a verifier checks the numbers, the selector picks the figures, and Opus judges the result blind.
+
+Everything except the judge runs on this laptop.
+
+Let me show you.
+
+> **DELIVERY:** 20 seconds, then switch. The browser should ALREADY be open on the dataset page. Full click path and the fallback are in SPEAKER-SCRIPT.md - the one rule is that you never click Generate and wait.
+
+### Slide 13 - layout
 
 `CLOSING - whoever finishes the demo   [0:15]`
 
 One sentence: a second agent can move a generated data story onto the tone level of a person writing from the same table, without losing the numbers, and at a cost in readability we can put a number on.
 
+What we are not claiming is on the slide. One judge family, no user study, and a human baseline written by five writer slots rather than a controlled design.
+
 Thank you. Happy to take questions.
 
-Q&A prep is at the end of presentation/SPEAKER-SCRIPT.md - read it on the way in. The three likely questions are the single judge, the missing user study, and why not just prompt the generator to be calm in the first place.
+> **DELIVERY:** read the limits line rather than skipping it. Volunteering it is what makes the rest credible. Q&A prep is at the end of SPEAKER-SCRIPT.md.
 
 ## The demo, minute by minute
 

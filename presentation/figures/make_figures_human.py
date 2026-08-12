@@ -107,7 +107,17 @@ def fig9():
 # FIG 10 - the decision matrix: which combination to ship
 # =========================================================================
 def fig10():
-    rank = RANK["ranking"]
+    # One row per configuration, not one per run. The five-seed repeats landed in
+    # the ranking file afterwards and pushed g4b and g8b to six rows each, which
+    # overflowed the table into its own footnote - and, worse, put repeated runs
+    # inside a figure whose entire point is that it is the n=1 grid. Collapse to
+    # the first run of each tier, which is the run this table originally showed.
+    seen: set[str] = set()
+    rank = []
+    for r in RANK["ranking"]:
+        if r["tier"] not in seen:
+            seen.add(r["tier"])
+            rank.append(r)
     b = []
     cols = [(72, "tier", "start"), (200, "generator  x  moderator", "start"),
             (700, "alarmism", "middle"), (850, "gap to human", "middle"),
@@ -118,7 +128,7 @@ def fig10():
         b.append(txt(x, y, label, size=16, fill=MUTED, anchor=anchor))
     b.append(f'<line x1="72" y1="{y+13}" x2="{W-72}" y2="{y+13}" stroke="{GRID}" stroke-width="2"/>')
 
-    row_h = 42
+    row_h = 36
     for i, r in enumerate(rank):
         yy = y + 44 + i * row_h
         tied = r["gap_to_human"] == 0.0
@@ -153,11 +163,11 @@ def fig10():
         "Superseded by fig13: five seeds per cell reverse the retention column. Read this "
         "as the n=1 table it is, not as a recommendation.",
         "\n".join(b),
-        "Pertussis only, n=1 per cell, so none of these differences is significant: a ranking, "
-        "not a test. g4b and q4b are the same configuration and produced byte-identical text - "
-        "a fixed seed replaying, not a repeat, so there are zero repeats anywhere here. The grid "
-        "is L-shaped, not factorial: generators varied against gemma4:31b and moderators against "
-        "llama3.1:8b, so the best x best cell was never run. Red rows invented a figure.",
+        "Pertussis only, one row per configuration, n=1 in every cell: a ranking, not a test. "
+        "Where a tier was later re-run at five seeds only its first run is here, and fig13 is "
+        "where the repeats live. The grid is L-shaped, not factorial - generators varied against "
+        "gemma4:31b, moderators against llama3.1:8b - so the best x best cell was never run. "
+        "Red rows invented a figure.",
     )
 
 
