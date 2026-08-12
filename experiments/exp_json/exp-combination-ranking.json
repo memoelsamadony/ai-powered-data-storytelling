@@ -1486,9 +1486,15 @@
     }
   ],
   "caveats": [
-    "n=1 per cell. No variance, so no ranking here is significant.",
+    "n=1 per cell, and genuinely so: there are zero repeats in this table. g4b and q4b are duplicate tier definitions (same generator, moderator and seed) and produced byte-identical text, raw_sha=3e29e7e9983c in both, so they demonstrate that the pipeline replays under a fixed seed, not that the result is stable under resampling.",
+    "No variance estimate, therefore no ranking here is significant.",
     "One series. pertussis-global is the hottest-writing series in the set.",
-    "Ranking deliberately excludes runs on other series: measles writes calm, so a tier that happened to run there would win on difficulty, not merit."
+    "Ranking deliberately excludes runs on other series: measles writes calm, so a tier that happened to run there would win on difficulty, not merit.",
+    "L-shaped grid, not factorial: the best-generator x best-moderator cell was never run."
   ],
-  "figure": "presentation/figures/fig10.svg"
+  "figure": "presentation/figures/fig10.svg",
+  "duplicate_tiers": {
+    "g4b": "qwen3.5:4b x gemma4:31b",
+    "q4b": "qwen3.5:4b x gemma4:31b (identical, same seed)"
+  }
 }

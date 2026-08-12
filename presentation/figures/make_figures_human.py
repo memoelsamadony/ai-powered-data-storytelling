@@ -151,13 +151,13 @@ def fig10():
     return frame(
         "Six combinations tie on tone. Faithfulness breaks the tie.",
         "Recommended: qwen3.5:4b x gemma4:31b - on the human median, keeps 71% of the raw "
-        "story's figures (best here), invents none, and is the only pairing run twice "
-        "(g4b, q4b) that reproduced.",
+        "story's figures (best here), and invents none.",
         "\n".join(b),
         "Pertussis only, n=1 per cell, so none of these differences is significant: a ranking, "
-        "not a test. The grid is L-shaped rather than factorial - generators varied against "
-        "gemma4:31b, moderators against llama3.1:8b - so the best x best cell was never run. "
-        "Red rows invented a figure the data does not support and are out regardless of tone.",
+        "not a test. g4b and q4b are the same configuration and produced byte-identical text - "
+        "a fixed seed replaying, not a repeat, so there are zero repeats anywhere here. The grid "
+        "is L-shaped, not factorial: generators varied against gemma4:31b and moderators against "
+        "llama3.1:8b, so the best x best cell was never run. Red rows invented a figure.",
     )
 
 

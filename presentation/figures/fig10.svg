@@ -14,7 +14,7 @@
 </defs>
 <rect width="1600" height="900" fill="#ffffff"/>
 <text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">Six combinations tie on tone. Faithfulness breaks the tie.</text>
-<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Recommended: qwen3.5:4b x gemma4:31b - on the human median, keeps 71% of the raw story's figures (best here), invents none, and is the only pairing run twice (g4b, q4b) that reproduced.</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Recommended: qwen3.5:4b x gemma4:31b - on the human median, keeps 71% of the raw story's figures (best here), and invents none.</text>
 <line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
 <text x="72" y="196" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">tier</text>
 <text x="200" y="196" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">generator  x  moderator</text>
@@ -137,6 +137,7 @@
 <text x="1330" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">0.407</text>
 <text x="1500" y="744" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">264</text>
 
-<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Pertussis only, n=1 per cell, so none of these differences is significant: a ranking, not a test. The grid is L-shaped rather than factorial - generators varied against</text>
-<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">gemma4:31b, moderators against llama3.1:8b - so the best x best cell was never run. Red rows invented a figure the data does not support and are out regardless of tone.</text>
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Pertussis only, n=1 per cell, so none of these differences is significant: a ranking, not a test. g4b and q4b are the same configuration and produced byte-identical</text>
+<text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">text - a fixed seed replaying, not a repeat, so there are zero repeats anywhere here. The grid is L-shaped, not factorial: generators varied against gemma4:31b and</text>
+<text x="72" y="874" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">moderators against llama3.1:8b, so the best x best cell was never run. Red rows invented a figure.</text>
 </svg>
