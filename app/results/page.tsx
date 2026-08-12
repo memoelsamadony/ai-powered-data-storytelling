@@ -6,15 +6,9 @@ import { Container, Section, SectionHeader } from "@/components/ui/layout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TonePair } from "@/components/tone-meter";
-import { FaithfulnessChart, OperationChart, SimpleBarChart } from "@/components/charts/metric-charts";
 import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
-import {
-  faithfulness as staticFaithfulness,
-  perOperation as staticPerOperation,
-  maskedNumber as staticMaskedNumber,
-  userStudy,
-} from "@/lib/data/metrics";
+import { userStudy } from "@/lib/data/metrics";
 import { getResults, suggestCharts } from "@/lib/api";
 import { SuggestedCharts } from "@/components/charts/suggested-charts";
 import { datasets as fallbackDatasets } from "@/lib/data/datasets";
@@ -63,30 +57,9 @@ export default async function ResultsPage({
   const chartedLabel =
     fallbackDatasets.find((d) => d.id === datasetId)?.shortName ?? datasetId;
 
-  // The reproduction blocks exist twice, and both are the same numbers: the
-  // backend reads the committed CSVs per request, the generated module is
-  // those same functions snapshotted at build time. Preferring the live copy
-  // means a re-run reproduction appears without a redeploy; falling back to
-  // the snapshot means the page never has to reach for a constant nobody
-  // measured. `sourceNote` names the file either way.
-  const faith = live?.faithfulness ?? staticFaithfulness;
-  const ops = live?.perOperation ?? staticPerOperation;
-  const masked = live?.maskedNumber ?? staticMaskedNumber;
-  const sourceNote = (source: string) => `Computed from ${source}.`;
-
   const measured = live?.measured ?? null;
   const toneMeasured =
     measured && measured.alarmismBefore !== null && measured.alarmismAfter !== null;
-  // Both runs' causal claims. Kept as a computed total rather than the literal
-  // 21, so a re-run reproduction cannot leave the prose quoting a stale count.
-  const causalTotal = ops.rows
-    .filter((r) => r.operation === "causal")
-    .reduce((n, r) => n + r.total, 0);
-  // Rule of three: with no successes in n trials the 95% upper bound is ~3/n.
-  // Zero out of a handful is not the same claim as zero out of a thousand, and
-  // the page should not let a small denominator read like a hard ceiling.
-  const causalCeiling = causalTotal ? Math.round((3 / causalTotal) * 100) : 0;
-
   return (
     <>
       <PageHero
@@ -100,125 +73,35 @@ export default async function ResultsPage({
       />
 
       {/* Faithfulness + masked number */}
+      {/*
+        The reproduction figures moved to /reproductions. They are offline,
+        batch, partly quoted from the source papers - a different kind of claim
+        from the live numbers below - and they used to sit between a reader and
+        the figures they asked for.
+      */}
       <Section>
         <Container>
           <Reveal>
-            <SectionHeader
-              kicker="Faithfulness & analytical correctness"
-              title="Modern models state data well, then reach outside it for causes"
-            />
-          </Reveal>
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            <Reveal>
-              <MetricCard
-                title="Faithfulness"
-                unit={faith.unit}
-                caption={`${faith.caption} ${sourceNote(faith.source)}`}
-                hint="Lower is better"
-                explain={{
-                  measures: (
-                    <>
-                      The share of generated outputs holding{" "}
-                      <span className="font-medium text-ink">at least one</span> span a
-                      reference-free detector marks as a semantic error, re-run on the
-                      released Quintd-1 inputs.
-                    </>
-                  ),
-                  blind: (
-                    <>
-                      How wrong an output is. One misplaced word and a fabricated
-                      statistic both count once, and an output with five errors counts
-                      the same as an output with one, so this rises with the
-                      <span className="font-medium text-ink"> reach</span> of error and
-                      says nothing about its severity.
-                    </>
-                  ),
-                }}
+            <Card className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-7">
+              <div>
+                <p className="font-mono text-[0.66rem] uppercase tracking-wider text-faint">
+                  Faithfulness &amp; analytical correctness
+                </p>
+                <h2 className="mt-1 text-xl text-navy">
+                  Modern models state data well, then reach outside it for causes
+                </h2>
+                <p className="mt-1.5 text-sm text-muted">
+                  Faithfulness, masked-number prediction and per-operation accuracy, each
+                  reproduced offline against the source papers.
+                </p>
+              </div>
+              <Link
+                href="/reproductions"
+                className="inline-flex items-center gap-1.5 font-mono text-[0.68rem] uppercase tracking-wide text-navy hover:underline"
               >
-                <FaithfulnessChart data={faith.series} />
-              </MetricCard>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <MetricCard
-                title="Masked-number prediction"
-                unit={masked.unit}
-                caption={`${masked.caption} ${sourceNote(masked.source)}`}
-                hint="Higher is better"
-                explain={{
-                  measures: (
-                    <>
-                      How often a model recovers a number that was deleted from the
-                      reference text, given the table it came from. A cloze test for
-                      whether the figures are being read rather than guessed.
-                    </>
-                  ),
-                  blind: (
-                    <>
-                      Whether the numbers a model writes{" "}
-                      <span className="font-medium text-ink">unprompted</span> are right,
-                      which is the separate factuality figure. The muted bars are quoted
-                      from the paper and the others were re-run here, so read each group
-                      against itself rather than as one ranking.
-                    </>
-                  ),
-                }}
-              >
-                <SimpleBarChart
-                  data={masked.series.map((point) => ({
-                    label: point.model,
-                    value: point.value,
-                    // The paper's four models are quoted from Fig. 5, ours were
-                    // rerun here. Same axis, different provenance, so they are
-                    // drawn apart rather than blended into one ranking.
-                    muted: point.source === "paper",
-                  }))}
-                  color="#1e66b8"
-                  domainMax={30}
-                  suffix="%"
-                  decimals={1}
-                  height={240}
-                />
-              </MetricCard>
-            </Reveal>
-          </div>
-
-          <Reveal>
-            <div className="mt-5">
-              <MetricCard
-                title="Per-operation accuracy"
-                unit={ops.unit}
-                caption={`${ops.caption} ${sourceNote(ops.source)}`}
-                hint="Higher is better"
-                explain={{
-                  measures: (
-                    <>
-                      Every analytical claim in a report is typed &mdash; lookup,
-                      comparison, subtraction, rate of change, trend, causal &mdash; and
-                      checked against the source table it was written from. The bar is
-                      the share of claims of that type the table supports.
-                    </>
-                  ),
-                  blind: (
-                    <>
-                      Whether an unsupported claim is{" "}
-                      <span className="font-medium text-ink">false</span>. That matters
-                      most in the causal row, which is {causalTotal} claims across both
-                      runs and none supported. The table is same-day prices and volumes,
-                      and causation is not a column in it, so &ldquo;fell amid inflation
-                      concerns&rdquo; points somewhere the table cannot follow and cannot
-                      score above zero however good the model is. Read it as
-                      groundedness, not reasoning: both models state off-table causes as
-                      confidently as on-table facts, which is the thing a factual check
-                      downstream has to catch. The counts are small enough to be careful
-                      with too &mdash; none correct out of {causalTotal} is still
-                      consistent with a true rate near {causalCeiling}%.
-                    </>
-                  ),
-                }}
-              >
-                <OperationChart results={ops} />
-              </MetricCard>
-            </div>
+                Read the reproductions <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Card>
           </Reveal>
         </Container>
       </Section>
@@ -568,65 +451,6 @@ function RunStat({ label, value, sub }: { label: string; value: string; sub?: st
   );
 }
 
-/**
- * One metric: the figure, the caption that sources it, and what it means.
- *
- * `explain` is not decoration. Every metric on this page is a proxy for
- * something a reader actually cares about, and each proxy is wrong in its own
- * specific way - a per-output rate that ignores severity, a score quoted from
- * two different provenances, a check that a table cannot perform. A number
- * shown without that is a number a reader will over-read, so the "what it
- * cannot tell you" half is the part that earns the space.
- */
-function MetricCard({
-  title,
-  unit,
-  caption,
-  hint,
-  explain,
-  children,
-}: {
-  title: string;
-  unit: string;
-  caption: string;
-  hint?: string;
-  explain?: { measures: React.ReactNode; blind: React.ReactNode };
-  children: React.ReactNode;
-}) {
-  return (
-    <Card className="flex h-full flex-col p-6 sm:p-7">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-xl text-navy">{title}</h3>
-          <p className="mt-0.5 font-mono text-[0.66rem] uppercase tracking-wider text-faint">{unit}</p>
-        </div>
-        {hint && (
-          <span className="shrink-0 rounded-full bg-surface-soft px-2.5 py-1 font-mono text-[0.62rem] font-medium uppercase tracking-wide text-faint">
-            {hint}
-          </span>
-        )}
-      </div>
-      <div className="mt-5">{children}</div>
-      <p className="mt-5 text-sm leading-relaxed text-muted">{caption}</p>
-      {explain && (
-        <dl className="mt-5 space-y-2.5 border-t border-hairline pt-4 text-sm leading-relaxed">
-          <div>
-            <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
-              What it measures
-            </dt>
-            <dd className="mt-1 text-muted">{explain.measures}</dd>
-          </div>
-          <div>
-            <dt className="font-mono text-[0.62rem] uppercase tracking-wider text-faint">
-              What it cannot tell you
-            </dt>
-            <dd className="mt-1 text-muted">{explain.blind}</dd>
-          </div>
-        </dl>
-      )}
-    </Card>
-  );
-}
 
 function Stat({
   icon: Icon,

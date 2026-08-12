@@ -14,6 +14,7 @@ const nav = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/datasets", label: "Datasets" },
   { href: "/results", label: "Results" },
+  { href: "/reproductions", label: "Reproductions" },
   { href: "/about", label: "About" },
 ];
 
