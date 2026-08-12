@@ -861,79 +861,86 @@ headline and the machine ones do, so every gap is a lower bound.
 DELIVERY: say the three numbers slowly, then stop talking.
 """)
 
-    # -- 17  the agent, and the tool surface ------------------------------
+    # -- 17  the tool surface ---------------------------------------------
     s = blank(prs)
-    heading(s, "How the model picks the charts",
-            "A tool surface, so the decision is the model's and the rules are not")
-    # the three-layer strip, compressed to one line of boxes
-    strip = [("applicability.py", "which forms this table can carry", "computed", BLUE),
-             ("the model", "which of those are worth showing, and why", "decided", TEAL),
-             ("validate.py", "whether the spec is honest", "computed", NAVY)]
-    for i2, (mod, what, tag, col) in enumerate(strip):
-        x = 0.75 + i2 * 4.06
-        rect(s, Inches(x), Inches(2.3), Inches(3.72), Inches(1.28), fill=SOFT)
-        rect(s, Inches(x), Inches(2.3), Inches(3.72), Pt(4), fill=col)
-        text(s, Inches(x + 0.26), Inches(2.5), Inches(3.2), Inches(1.0), [
-            (f"{mod}   ·   {tag}", 11, True, col, HEAD, 0),
-            (what, 12, False, INK, BODY, 4)], spacing=1.14)
-        if i2 < 2:
-            text(s, Inches(x + 3.76), Inches(2.78), Inches(0.3), Inches(0.4),
-                 [("›", 20, True, BORDER, HEAD, 0)])
-    text(s, Inches(0.75), Inches(3.72), Inches(11.8), Inches(0.3),
-         [("Computing what is possible before asking what is best is what makes "
-           "this work on a local model: the prompt shrinks from seventeen forms "
-           "with their rules to a handful of pre-validated candidates.", 11.5,
-           False, MUTED, BODY, 0)])
-    # the MCP surface
-    rect(s, Inches(0.75), Inches(4.2), Inches(7.6), Inches(2.4), fill=SOFT)
-    rect(s, Inches(0.75), Inches(4.2), Inches(7.6), Pt(4), fill=DEEP_TEAL)
-    text(s, Inches(1.02), Inches(4.42), Inches(7.1), Inches(0.4),
-         [("THE MCP-SHAPED TOOL SURFACE", 10, True, MUTED, HEAD, 0)])
-    tools = [
-        ("7 chart tools", "plot_trend_over_time, plot_magnitude, plot_change, "
-         "plot_relationship, plot_geographic, plot_distribution, show_headline"),
-        ("3 read tools", "what makes it an agent rather than a classifier: it can "
-         "look at the table before it commits to a figure"),
-        ("A two-level decision", "the tool is the reader's job; the form enum "
-         "inside it is the geometry. Seventeen flat forms is past what a local "
-         "model picks reliably — seven tools with enums is not."),
+    heading(s, "The tool surface",
+            "Seventeen flat chart types is past what a local model picks. Seven "
+            "tools plus an enum is not.")
+    text(s, Inches(0.75), Inches(2.62), Inches(6.3), Inches(0.3),
+         [("CHART TOOLS (7)  —  each returns a ChartPayload", 10, True, MUTED,
+           HEAD, 0)])
+    chart_tools = [
+        ("plot_trend_over_time", "line, area  (+ stack, indexed, emphasis)"),
+        ("plot_magnitude", "bar, lollipop, heatmap"),
+        ("plot_change", "dumbbell, slope, bump"),
+        ("plot_relationship", "scatter, connectedScatter, parallelCoordinates"),
+        ("plot_geographic", "choropleth, bivariateChoropleth"),
+        ("plot_distribution", "beeswarm, box, ridgeline"),
+        ("show_headline", "statTile"),
     ]
-    for i2, (k, v) in enumerate(tools):
-        y = 4.78 + i2 * 0.58
-        text(s, Inches(1.02), Inches(y), Inches(2.0), Inches(0.3),
-             [(k, 11.5, True, DEEP_TEAL, BODY, 0)])
-        text(s, Inches(2.9), Inches(y), Inches(5.2), Inches(0.55),
-             [(v, 11, False, INK, BODY, 0)], spacing=1.12)
-    rect(s, Inches(8.7), Inches(4.2), Inches(3.88), Inches(2.4), fill=SOFT)
-    rect(s, Inches(8.7), Inches(4.2), Inches(3.88), Pt(4), fill=WARN)
-    text(s, Inches(8.97), Inches(4.42), Inches(3.35), Inches(2.0), [
-        ("Specified, not wired", 12.5, True, WARN, BODY, 0),
-        ("The contract defines these tools and the build emits a JSON schema "
-         "shaped to drop straight in as an MCP inputSchema — the same file the "
-         "validator reads, so tool docs and rules cannot drift apart.", 11,
-         False, INK, BODY, 5),
-        ("Today the selector makes one structured call instead. The surface is a "
-         "written design, not a running server.", 11, True, NAVY, BODY, 5),
-    ], spacing=1.14)
+    for i2, (tool, enum) in enumerate(chart_tools):
+        y = 3.0 + i2 * 0.45
+        if i2 % 2 == 0:
+            rect(s, Inches(0.75), Inches(y - 0.04), Inches(6.3), Inches(0.42),
+                 fill=SOFT)
+        text(s, Inches(0.95), Inches(y), Inches(2.75), Inches(0.3),
+             [(tool, 12, True, DEEP_TEAL, BODY, 0)])
+        text(s, Inches(3.85), Inches(y + 0.01), Inches(3.05), Inches(0.3),
+             [(enum, 11, False, INK, BODY, 0)])
+    text(s, Inches(0.75), Inches(6.14), Inches(6.3), Inches(0.3),
+         [("The form enum is documented with the validator's own rule text, so a "
+           "tool description cannot drift from the rule it promises.", 10.5,
+           False, MUTED, BODY, 0)])
+
+    text(s, Inches(7.35), Inches(2.62), Inches(5.23), Inches(0.3),
+         [("READ TOOLS (3)  —  what makes it an agent, not a classifier", 10,
+           True, MUTED, HEAD, 0)])
+    read_tools = [
+        ("describe_dataset", "dimensions, measures, span, row count, "
+         "missingness, and the magnitude ratio between measures"),
+        ("get_series", "a ChartFrame for one measure, grouped, filtered and "
+         "aggregated as asked"),
+        ("check_comparability", "whether a per-capita denominator exists — and "
+         "whether it is needed"),
+    ]
+    for i2, (tool, ret) in enumerate(read_tools):
+        y = 3.0 + i2 * 0.86
+        rect(s, Inches(7.35), Inches(y - 0.04), Pt(3), Inches(0.76), fill=BLUE)
+        text(s, Inches(7.6), Inches(y), Inches(4.9), Inches(0.72), [
+            (tool, 12, True, BLUE, BODY, 0),
+            (ret, 11, False, INK, BODY, 3)], spacing=1.14)
+    rect(s, Inches(7.35), Inches(5.66), Inches(5.23), Inches(0.9), fill=SOFT)
+    rect(s, Inches(7.35), Inches(5.66), Pt(3.5), Inches(0.9), fill=TEAL)
+    text(s, Inches(7.62), Inches(5.82), Inches(4.75), Inches(0.65),
+         [("Without the read tools the model picks a form blind from a prompt "
+           "string. With them it can discover that two measures differ by 100× "
+           "and derive that it needs an indexed transform.", 11, False, INK,
+           BODY, 0)], spacing=1.14)
+    text(s, Inches(0.75), Inches(6.62), Inches(11.8), Inches(0.28),
+         [("Defined in docs/CHART_CONTRACT.md and pinned by the generated "
+           "docs/chart-schema.json. Today the selector makes one structured "
+           "call; the tool loop is the next step.", 10, False, MUTED, BODY, 0)])
     chrome(s, 17)
     notes(s, """
-SPEAKER 4 - Saleh   [0:40]   running total 6:39   ~105 words
+SPEAKER 4 - Saleh   [0:40]   running total 6:39   ~100 words
 
-How the model picks the figures, because people ask.
+How the model actually decides which figures to draw.
 
-Three steps. Which forms can this table carry - computed from column types, so
-it cannot propose a map for a table with no geography. Which are worth showing -
-the model. Is the result honest - computed again.
+Seventeen flat chart types is past what a local model picks reliably. So the
+contract groups them into seven tools by the reader's job - trend over time,
+magnitude, change, relationship, geographic, distribution, headline - and puts
+the geometry in an enum inside each. That is a two-level decision, and it is one
+a local model makes well.
 
-The interesting part is the shape of the decision. Instead of seventeen flat
-chart types, the contract groups them into seven tools by the reader's job, with
-the geometry as an enum inside each. A two-level choice is what a local model
-does reliably.
+The three read tools on the right are what make this an agent rather than a
+classifier. Without them the model picks a form blind from a prompt string. With
+them it can look at the table first, find that two measures differ by a hundred
+times, and derive that it needs an indexed transform.
 
-That surface is MCP-shaped and specified - a design, not a running server.
-
-DELIVERY: say "specified, not wired" out loud. Someone will ask to see the
-server.
+DELIVERY: name the seven tools as a group, do not read them one by one. Spend
+the time on the read tools - that is the interesting half. If asked whether the
+MCP server is running: it is not, the selector makes one structured call today
+and the tool loop is the next step.
 """)
 
     # -- 16  whole system into the demo -----------------------------------

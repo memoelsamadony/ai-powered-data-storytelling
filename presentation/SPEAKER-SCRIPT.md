@@ -11,8 +11,8 @@ Generated from the speaker notes inside `AI-Storytelling-Final-Talk.pptx` by `ma
 | Mahmoud | 1-5 | 261 | 104s |
 | Okasha | 6-9 | 243 | 97s |
 | Elsaadani | 10-14 | 267 | 107s |
-| Saleh | 15-18 | 262 | 105s |
-| **Talk total** | **1-18** | **1033** | **6:53** |
+| Saleh | 15-18 | 279 | 112s |
+| **Talk total** | **1-18** | **1050** | **7:00** |
 | Demo | after 18 | - | 3:30 |
 | Close | 19 | 68 | 15s |
 | Questions | 20 | - | stays up |
@@ -209,17 +209,15 @@ The caveat is on the slide rather than hidden: our human stories carry no headli
 
 ### Slide 17 - layout
 
-`SPEAKER 4 - Saleh   [0:40]   running total 6:39   ~105 words`
+`SPEAKER 4 - Saleh   [0:40]   running total 6:39   ~100 words`
 
-How the model picks the figures, because people ask.
+How the model actually decides which figures to draw.
 
-Three steps. Which forms can this table carry - computed from column types, so it cannot propose a map for a table with no geography. Which are worth showing - the model. Is the result honest - computed again.
+Seventeen flat chart types is past what a local model picks reliably. So the contract groups them into seven tools by the reader's job - trend over time, magnitude, change, relationship, geographic, distribution, headline - and puts the geometry in an enum inside each. That is a two-level decision, and it is one a local model makes well.
 
-The interesting part is the shape of the decision. Instead of seventeen flat chart types, the contract groups them into seven tools by the reader's job, with the geometry as an enum inside each. A two-level choice is what a local model does reliably.
+The three read tools on the right are what make this an agent rather than a classifier. Without them the model picks a form blind from a prompt string. With them it can look at the table first, find that two measures differ by a hundred times, and derive that it needs an indexed transform.
 
-That surface is MCP-shaped and specified - a design, not a running server.
-
-> **DELIVERY:** say "specified, not wired" out loud. Someone will ask to see the server.
+> **DELIVERY:** name the seven tools as a group, do not read them one by one. Spend the time on the read tools - that is the interesting half. If asked whether the MCP server is running: it is not, the selector makes one structured call today and the tool loop is the next step.
 
 ### Slide 18 - layout
 
