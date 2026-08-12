@@ -1,0 +1,267 @@
+{
+  "experiment": "Repeats at distinct seeds, to put a variance on the ranking",
+  "question": "Is the gap between the top combinations bigger than the run-to-run noise of one combination?",
+  "dataset": "pertussis-global",
+  "n_per_config": 5,
+  "seeds": [
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "why_distinct_seeds": "Repeats at a fixed seed replay the same text and measure determinism. g4b and q4b share a seed and produced byte-identical output, which is how a duplicate tier was briefly read as a repeat.",
+  "sd_convention": "sample standard deviation (n-1)",
+  "configs": {
+    "g4b": {
+      "label": "qwen3.5:4b x gemma4:31b",
+      "dataset": "pertussis-global",
+      "runs": [
+        {
+          "run": "d9793720-9637-42b5-b85b-6c1fd3f9907d",
+          "seed": 101,
+          "alarmism_raw": 4.2,
+          "alarmism_moderated": 2.0,
+          "optimism_raw": 2.4,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 0.714,
+          "added_unsupported": 0,
+          "emotive_spans": 9
+        },
+        {
+          "run": "766c3877-d035-445f-a9e7-a8d49dc54d0c",
+          "seed": 202,
+          "alarmism_raw": 4.3,
+          "alarmism_moderated": 2.0,
+          "optimism_raw": 1.6,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 0.667,
+          "added_unsupported": 0,
+          "emotive_spans": 5
+        },
+        {
+          "run": "1a20dcdb-f2d9-4a45-9589-46f807a6743b",
+          "seed": 303,
+          "alarmism_raw": 4.3,
+          "alarmism_moderated": 2.5,
+          "optimism_raw": 1.6,
+          "optimism_moderated": 2.0,
+          "numeric_retention": 0.5,
+          "added_unsupported": 0,
+          "emotive_spans": 5
+        },
+        {
+          "run": "124c9d59-b8cf-4ac9-88f4-325821801fa2",
+          "seed": 404,
+          "alarmism_raw": 4.2,
+          "alarmism_moderated": 2.5,
+          "optimism_raw": 1.4,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 0.833,
+          "added_unsupported": 0,
+          "emotive_spans": 6
+        },
+        {
+          "run": "c377a420-ecd8-4df1-9f94-567ef730a143",
+          "seed": 505,
+          "alarmism_raw": 3.5,
+          "alarmism_moderated": 1.5,
+          "optimism_raw": 2.5,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 0.333,
+          "added_unsupported": 1,
+          "emotive_spans": 6
+        }
+      ],
+      "summary": {
+        "config": "qwen3.5:4b x gemma4:31b",
+        "alarmism_raw": {
+          "n": 5,
+          "mean": 4.1,
+          "sd": 0.339,
+          "min": 3.5,
+          "max": 4.3,
+          "values": [
+            4.2,
+            4.3,
+            4.3,
+            4.2,
+            3.5
+          ]
+        },
+        "alarmism_moderated": {
+          "n": 5,
+          "mean": 2.1,
+          "sd": 0.418,
+          "min": 1.5,
+          "max": 2.5,
+          "values": [
+            2.0,
+            2.0,
+            2.5,
+            2.5,
+            1.5
+          ]
+        },
+        "numeric_retention": {
+          "n": 5,
+          "mean": 0.609,
+          "sd": 0.195,
+          "min": 0.333,
+          "max": 0.833,
+          "values": [
+            0.714,
+            0.667,
+            0.5,
+            0.833,
+            0.333
+          ]
+        },
+        "emotive_spans": {
+          "n": 5,
+          "mean": 6.2,
+          "sd": 1.643,
+          "min": 5,
+          "max": 9,
+          "values": [
+            9,
+            5,
+            5,
+            6,
+            6
+          ]
+        }
+      }
+    },
+    "g8b": {
+      "label": "llama3.1:8b x gemma4:31b",
+      "dataset": "pertussis-global",
+      "runs": [
+        {
+          "run": "e64fc8c1-cf4d-40d6-8dfc-8e8635803233",
+          "seed": 101,
+          "alarmism_raw": 3.7,
+          "alarmism_moderated": 2.0,
+          "optimism_raw": 1.8,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 1.0,
+          "added_unsupported": 0,
+          "emotive_spans": 11
+        },
+        {
+          "run": "9e40c53a-eb4c-43d1-9ffd-68efaf41de76",
+          "seed": 202,
+          "alarmism_raw": 4.0,
+          "alarmism_moderated": 2.0,
+          "optimism_raw": 2.0,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 0.857,
+          "added_unsupported": 0,
+          "emotive_spans": 7
+        },
+        {
+          "run": "3720cfd9-39b3-4b71-b1bc-02d053c179a5",
+          "seed": 303,
+          "alarmism_raw": 3.6,
+          "alarmism_moderated": 2.0,
+          "optimism_raw": 2.8,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 1.0,
+          "added_unsupported": 0,
+          "emotive_spans": 6
+        },
+        {
+          "run": "2dc9ef11-b0a9-4235-a44b-52da404e5764",
+          "seed": 404,
+          "alarmism_raw": 4.3,
+          "alarmism_moderated": 2.5,
+          "optimism_raw": 2.0,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 0.667,
+          "added_unsupported": 0,
+          "emotive_spans": 7
+        },
+        {
+          "run": "01cccfdc-b33f-4ff6-bdf5-f9aa80ef36ef",
+          "seed": 505,
+          "alarmism_raw": 4.3,
+          "alarmism_moderated": 2.0,
+          "optimism_raw": 1.4,
+          "optimism_moderated": 2.5,
+          "numeric_retention": 1.0,
+          "added_unsupported": 0,
+          "emotive_spans": 9
+        }
+      ],
+      "summary": {
+        "config": "llama3.1:8b x gemma4:31b",
+        "alarmism_raw": {
+          "n": 5,
+          "mean": 3.98,
+          "sd": 0.327,
+          "min": 3.6,
+          "max": 4.3,
+          "values": [
+            3.7,
+            4.0,
+            3.6,
+            4.3,
+            4.3
+          ]
+        },
+        "alarmism_moderated": {
+          "n": 5,
+          "mean": 2.1,
+          "sd": 0.224,
+          "min": 2.0,
+          "max": 2.5,
+          "values": [
+            2.0,
+            2.0,
+            2.0,
+            2.5,
+            2.0
+          ]
+        },
+        "numeric_retention": {
+          "n": 5,
+          "mean": 0.905,
+          "sd": 0.147,
+          "min": 0.667,
+          "max": 1.0,
+          "values": [
+            1.0,
+            0.857,
+            1.0,
+            0.667,
+            1.0
+          ]
+        },
+        "emotive_spans": {
+          "n": 5,
+          "mean": 8.0,
+          "sd": 2.0,
+          "min": 6,
+          "max": 11,
+          "values": [
+            11,
+            7,
+            6,
+            7,
+            9
+          ]
+        }
+      }
+    }
+  },
+  "test": {
+    "metric": "numeric_retention",
+    "method": "Welch two-sample t",
+    "t": -2.7,
+    "p": 0.0288,
+    "cohen_d": -1.71,
+    "verdict": "significant at .05; llama3.1:8b retains more"
+  },
+  "headline": "The n=1 ranking was backwards. One run each had qwen3.5:4b at 71% retention and llama3.1:8b at 50%; five seeds each give 61% and 91%. Moderated alarmism is identical at 2.10 (p=1.00), so the generator changes what survives, not where the tone lands.",
+  "figure": "presentation/figures/fig13.svg"
+}

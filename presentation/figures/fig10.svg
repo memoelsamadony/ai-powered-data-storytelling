@@ -14,7 +14,7 @@
 </defs>
 <rect width="1600" height="900" fill="#ffffff"/>
 <text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">Six combinations tie on tone. Faithfulness breaks the tie.</text>
-<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Recommended: qwen3.5:4b x gemma4:31b - on the human median, keeps 71% of the raw story's figures (best here), and invents none.</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Superseded by fig13: five seeds per cell reverse the retention column. Read this as the n=1 table it is, not as a recommendation.</text>
 <line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
 <text x="72" y="196" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">tier</text>
 <text x="200" y="196" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">generator  x  moderator</text>

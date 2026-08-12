@@ -150,8 +150,8 @@ def fig10():
 
     return frame(
         "Six combinations tie on tone. Faithfulness breaks the tie.",
-        "Recommended: qwen3.5:4b x gemma4:31b - on the human median, keeps 71% of the raw "
-        "story's figures (best here), and invents none.",
+        "Superseded by fig13: five seeds per cell reverse the retention column. Read this "
+        "as the n=1 table it is, not as a recommendation.",
         "\n".join(b),
         "Pertussis only, n=1 per cell, so none of these differences is significant: a ranking, "
         "not a test. g4b and q4b are the same configuration and produced byte-identical text - "
@@ -309,8 +309,169 @@ def fig12():
     )
 
 
+
+# =========================================================================
+# FIG 13 - what five repeats did to the recommendation
+# =========================================================================
+def fig13():
+    rep = json.load(open(os.path.join(EXP, "exp_json", "exp-repeats-g4b-g8b.json")))
+    cfg = rep["configs"]
+    b = []
+    x0, x1 = 420, 1180
+    lo, hi = 0.0, 1.0
+    sx = lambda v: x0 + (v - lo) / (hi - lo) * (x1 - x0)
+
+    b.append(txt(72, 208, "NUMERIC RETENTION - the share of the raw story's figures "
+                          "that survive moderation", size=17, fill=MUTED))
+    for v in [0, 0.25, 0.5, 0.75, 1.0]:
+        b.append(f'<line x1="{sx(v)}" y1="238" x2="{sx(v)}" y2="470" stroke="{GRID}" stroke-width="2"/>')
+        b.append(txt(sx(v), 496, f"{v*100:.0f}%", size=17, fill=MUTED, anchor="middle"))
+
+    for i, tier in enumerate(["g4b", "g8b"]):
+        c = cfg[tier]
+        y = 290 + i * 108
+        vals = [r["numeric_retention"] for r in c["runs"] if r["numeric_retention"] is not None]
+        mean = sum(vals) / len(vals)
+        b.append(txt(72, y - 4, c["label"], size=20, fill=INK, weight="bold"))
+        b.append(txt(72, y + 22, f"n=5 seeds", size=15, fill=MUTED))
+        # range
+        b.append(f'<line x1="{sx(min(vals))}" y1="{y}" x2="{sx(max(vals))}" y2="{y}" '
+                 f'stroke="{BASELINE}" stroke-width="10" stroke-linecap="round"/>')
+        for v in vals:
+            b.append(f'<circle cx="{sx(v)}" cy="{y}" r="7" fill="{BLUE}" fill-opacity="0.75"/>')
+        b.append(f'<line x1="{sx(mean)}" y1="{y-22}" x2="{sx(mean)}" y2="{y+22}" '
+                 f'stroke="{INK}" stroke-width="3"/>')
+        b.append(txt(sx(mean), y - 32, f"{mean*100:.0f}%", size=19, fill=INK,
+                     weight="bold", anchor="middle"))
+        # what the single run had said
+        single = {"g4b": 0.714, "g8b": 0.50}[tier]
+        b.append(f'<circle cx="{sx(single)}" cy="{y}" r="11" fill="none" '
+                 f'stroke="{CRITICAL}" stroke-width="3" stroke-dasharray="3 3"/>')
+        b.append(txt(sx(single), y + 44, f"n=1 said {single*100:.0f}%", size=16,
+                     fill=CRITICAL, anchor="middle"))
+
+    b.append(f'<rect x="1240" y="250" width="290" height="286" fill="{CRITICAL}" '
+             f'fill-opacity="0.06" rx="6"/>')
+    b.append(txt(1262, 284, "The ranking was", size=19, fill=INK, weight="bold"))
+    b.append(txt(1262, 310, "backwards", size=19, fill=CRITICAL, weight="bold"))
+    for i, line in enumerate([
+        "One run each had put",
+        "qwen3.5:4b ahead on",
+        "retention, 71% to 50%.",
+        "Five seeds each reverse",
+        "it: 61% to 91%.",
+        "",
+        "Welch t = -2.70, p = 0.029,",
+        "Cohen d = 1.71.",
+    ]):
+        b.append(txt(1262, 346 + i * 24, line, size=16, fill=INK_2))
+
+    b.append(txt(72, 560, "MODERATED ALARMISM - where the moderator leaves the story",
+                 size=17, fill=MUTED))
+    ax0, ax1 = 420, 1180
+    alo, ahi = 1.0, 3.0
+    ax = lambda v: ax0 + (v - alo) / (ahi - alo) * (ax1 - ax0)
+    for v in [1.0, 1.5, 2.0, 2.5, 3.0]:
+        b.append(f'<line x1="{ax(v)}" y1="590" x2="{ax(v)}" y2="720" stroke="{GRID}" stroke-width="2"/>')
+        b.append(txt(ax(v), 746, f"{v}", size=17, fill=MUTED, anchor="middle"))
+    for i, tier in enumerate(["g4b", "g8b"]):
+        c = cfg[tier]
+        y = 626 + i * 56
+        vals = [r["alarmism_moderated"] for r in c["runs"] if r["alarmism_moderated"] is not None]
+        mean = sum(vals) / len(vals)
+        b.append(txt(72, y + 6, c["label"], size=17, fill=INK_2))
+        b.append(f'<line x1="{ax(min(vals))}" y1="{y}" x2="{ax(max(vals))}" y2="{y}" '
+                 f'stroke="{BASELINE}" stroke-width="8" stroke-linecap="round"/>')
+        for v in vals:
+            b.append(f'<circle cx="{ax(v)}" cy="{y}" r="6" fill="{AQUA}" fill-opacity="0.8"/>')
+        b.append(f'<line x1="{ax(mean)}" y1="{y-16}" x2="{ax(mean)}" y2="{y+16}" '
+                 f'stroke="{INK}" stroke-width="3"/>')
+        b.append(txt(ax(mean) + 16, y + 6, f"{mean:.2f}", size=17, fill=INK, weight="bold"))
+    b.append(txt(1240, 660, "Identical: 2.10 both, p = 1.00.", size=17, fill=INK_2))
+    b.append(txt(1240, 686, "The moderator converges on the", size=17, fill=INK_2))
+    b.append(txt(1240, 712, "same tone whoever wrote the draft.", size=17, fill=INK_2))
+
+    return frame(
+        "Five seeds per cell, and the recommendation flips",
+        "Same two configurations, run five times each at distinct seeds, pertussis-global.",
+        "\n".join(b),
+        "Seeds differ deliberately: repeats at a fixed seed replay the same text and measure "
+        "determinism, not stability. Judge noise is not the source of this spread - three "
+        "independent passes over the same story agree to ICC 0.99, mean spread 0.08, against a "
+        "run-to-run alarmism spread of 0.42. The variance is the generator's, not the judge's.",
+    )
+
+
+# =========================================================================
+# FIG 14 - the judge has an error bar now
+# =========================================================================
+def fig14():
+    rel = json.load(open(os.path.join(EXP, "exp_json", "exp-judge-reliability.json")))
+    al = rel["alarmism"]
+    b = []
+    cards = [
+        ("ICC(2,1)", f"{al['icc_2_1']:.3f}", "two-way random, absolute agreement", GOOD),
+        ("Krippendorff alpha", f"{al['krippendorff_alpha']:.3f}", "interval scale", GOOD),
+        ("mean spread", f"{al['mean_spread']:.2f}", "points, over three passes", GOOD),
+        ("max spread", f"{al['max_spread']:.1f}", "worst single story", WARNING),
+    ]
+    for i, (label, value, sub, col) in enumerate(cards):
+        x = 72 + i * 370
+        b.append(f'<rect x="{x}" y="200" width="330" height="150" fill="{col}" '
+                 f'fill-opacity="0.07" rx="8"/>')
+        b.append(txt(x + 24, 240, label, size=17, fill=MUTED))
+        b.append(txt(x + 24, 300, value, size=52, fill=col, weight="bold"))
+        b.append(txt(x + 24, 330, sub, size=15, fill=MUTED))
+
+    n = rel["n_stories"]
+    b.append(txt(72, 420, f"Agreement across all {n} stories, three independent passes each",
+                 size=19, fill=INK, weight="bold"))
+    bars = [("identical on all three", al["identical_all_passes"], GOOD),
+            ("within 0.5 of each other", al["within_0_5"] - al["identical_all_passes"], AQUA),
+            ("further apart", n - al["within_0_5"], CRITICAL)]
+    x = 72
+    for label, count, col in bars:
+        w = (W - 144) * count / n
+        if w > 0:
+            b.append(hbar(x, 450, x + w, 46, col))
+            if w > 90:
+                b.append(txt(x + w / 2, 480, f"{count}", size=22, fill="#ffffff",
+                             anchor="middle", weight="bold"))
+        x += w
+    x = 72
+    for label, count, col in bars:
+        w = (W - 144) * count / n
+        if w > 90:
+            b.append(txt(x + w / 2, 522, label, size=16, fill=INK_2, anchor="middle"))
+        x += w
+
+    b.append(txt(72, 600, "Why this matters for every other number in the deck",
+                 size=19, fill=INK, weight="bold"))
+    for i, line in enumerate([
+        "The judge disagrees with itself by 0.08 points on average. The same configuration "
+        "run at five different",
+        "seeds disagrees with itself by 0.42. So the spread in the repeat experiment is the "
+        "generator resampling,",
+        "not the instrument wobbling - which is what makes it worth measuring rather than "
+        "averaging away.",
+    ]):
+        b.append(txt(72, 634 + i * 28, line, size=18, fill=INK_2))
+
+    return frame(
+        "The tone scale now has an error bar",
+        f"Every story rated three times by Claude Opus, {rel['passes'] * n} calls, "
+        f"${rel['cost_usd']:.2f}.",
+        "\n".join(b),
+        "Same model and same prompt on all three passes, so this is self-consistency, not "
+        "inter-rater reliability: it is an upper bound on what a different judge would agree "
+        "to. Calls are stateless and share no context, which is the only sense in which they "
+        "are independent.",
+    )
+
 if __name__ == "__main__":
     write("fig9", fig9())
     write("fig10", fig10())
     write("fig11", fig11())
     write("fig12", fig12())
+    write("fig13", fig13())
+    write("fig14", fig14())

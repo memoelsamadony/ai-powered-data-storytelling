@@ -105,7 +105,7 @@ Until that lands, "the moderator works" is not supported by a near-zero delta.
 
 ---
 
-### L18. The generator ladder mixed families, and correcting it reversed the result. **RESOLVED 2026-08-11**
+### L18. Family, not size: the missing qwen rung is in. **CLOSED 2026-08-12**
 
 The first generator ladder paired `llama3.2:1b`, `llama3.2:3b`, `qwen3.5:4b`
 and `llama3.1:8b`. Two families and two llama generations, so "size" was never
@@ -132,6 +132,14 @@ What can be said is narrower and still useful: most small instruct models write
 this series at roughly 4.0, and `llama3.1:8b` writes it calmer. Whether that is
 scale or lineage cannot be settled without `qwen3.5:27b`, the rung that would
 show whether a larger qwen also calms down.
+
+**The ladder is complete.** `qwen3.5:27b` was pulled and run on the same series
+and seed, and it writes as hot as its small siblings: raw alarmism **4.3**,
+against 4.8 / 4.6 / 4.5 for 2b / 4b / 9b. Scaling a qwen up by more than 13x
+does not buy the calm that `llama3.1:8b` shows at 3.98 over five seeds. That
+settles it: **the one calm generator in the set is a family trait, not a size
+effect**, and the original "smaller generators write hotter copy" reading was a
+family effect misread as a scale one.
 
 A second observation from the same table: `qwen3.5:2b` is the only run where
 moderation did nothing to the rating (4.0 -> 4.0) despite the moderator marking
