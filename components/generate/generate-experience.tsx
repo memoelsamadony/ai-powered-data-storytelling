@@ -39,6 +39,17 @@ export function GenerateExperience() {
   const [liveStory, setLiveStory] = useState<StorySet | null>(null);
   const [liveMetrics, setLiveMetrics] = useState<api.ComparisonMetrics | null>(null);
   const runIdRef = useRef<string | null>(null);
+  // Keyed by the dataset+tier it was fetched for. Deriving the list from a
+  // matching key is what lets the effect never clear state synchronously: a
+  // stale list simply stops matching instead of having to be wiped.
+  const [cached, setCached] = useState<{ key: string; runs: api.RunRef[] }>({
+    key: "",
+    runs: [],
+  });
+  // Null until the reader touches the toggle, so the default can follow what is
+  // actually available per dataset without an effect writing state to say so.
+  const [sourceChoice, setSourceChoice] = useState<"cached" | "live" | null>(null);
+  const storedRef = useRef<StorySet | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,6 +83,54 @@ export function GenerateExperience() {
     };
   }, [health, tier]);
 
+  /**
+   * Which model picks the figures.
+   *
+   * Choosing figures and moderating prose are different jobs. The demo tier
+   * moderates on `gemma4:12b` because that is what can stay co-resident with
+   * the generator for an interactive run, but selection is one short
+   * grammar-constrained call, so it can afford the biggest model on the
+   * machine even when the story stages cannot.
+   *
+   * Read off the `mid` tier's moderator rather than written as a literal, so
+   * the model name lives in the backend tier table and not in two places. Null
+   * when that model is not installed, and the call then falls back to the
+   * running tier's own moderator.
+   */
+  const figureModel = useMemo(() => {
+    const mid = health?.tiers.find((t) => t.id === "mid");
+    const mod = mid?.models.find((m) => m.role === "moderator");
+    return mod?.available ? mod.model : undefined;
+  }, [health]);
+
+  /**
+   * Completed runs for this dataset and tier, which cached mode replays.
+   *
+   * Looked up per dataset, because "is there something to replay" is a
+   * per-dataset question the toggle has to answer before the reader presses
+   * anything.
+   */
+  const cacheKey = datasetId && tier ? `${datasetId}:${tier}` : "";
+  // Memoised because it feeds the `stages` dependency list: a fresh [] every
+  // render would rebuild the stage closures on every render.
+  const cachedRuns = useMemo(
+    () => (cached.key === cacheKey ? cached.runs : []),
+    [cached, cacheKey],
+  );
+
+  useEffect(() => {
+    if (!datasetId || !tier) return;
+    const key = `${datasetId}:${tier}`;
+    let cancelled = false;
+    api.listRuns(datasetId, tier).then((rs) => {
+      if (!cancelled) setCached({ key, runs: rs.filter((r) => r.status === "done") });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [datasetId, tier]);
+
+
   const mockStory = useMemo(() => (datasetId ? getStorySet(datasetId) : null), [datasetId]);
   const story = liveStory ?? mockStory;
   const dataset = useMemo(
@@ -89,9 +148,61 @@ export function GenerateExperience() {
     runIdRef.current = null;
   };
 
-  /** Real backend stages. Undefined when there is no runnable backend. */
+  /**
+   * The mode the next run will use.
+   *
+   * Derived rather than stored, so a dataset with nothing cached never sits on
+   * a "cached" toggle that would do nothing, and an explicit choice still wins
+   * once the reader makes one.
+   */
+  const source: "cached" | "live" =
+    sourceChoice ?? (cachedRuns.length > 0 ? "cached" : "live");
+
+  /**
+   * One stages contract, two implementations.
+   *
+   * `cached` replays a stored run: the text is fetched once and every stage
+   * returns it, with fixed timers for the beats, so the reveal keeps the shape
+   * of a live run without the waiting. `live` computes each stage on a model.
+   *
+   * Branching inside one memo rather than picking between two of them keeps
+   * the runner on a single code path, so cached mode cannot drift into
+   * rendering something live mode would not.
+   *
+   * Both go through `suggestCharts`, which is a cache read once that table has
+   * been charted on that model - which is what lets cached mode touch no model
+   * at all.
+   */
   const stages = useMemo(() => {
     if (!isLive || !datasetId || !tier) return undefined;
+
+    const selectCharts = () =>
+      api.suggestCharts({ datasetId }, { tier, model: figureModel });
+
+    const cachedRunId = cachedRuns[0]?.runId;
+    if (source === "cached" && cachedRunId) {
+      const beat = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      return {
+        generate: async () => {
+          runIdRef.current = cachedRunId;
+          const s = await api.getRun(cachedRunId);
+          storedRef.current = s;
+          setLiveStory(s);
+          await beat(700);
+          return s;
+        },
+        selectCharts,
+        moderate: async () => {
+          await beat(1900);
+          return storedRef.current!;
+        },
+        factcheck: async () => {
+          await beat(1600);
+          return storedRef.current!;
+        },
+      };
+    }
+
     return {
       generate: async () => {
         const run = await api.createRun(datasetId, tier);
@@ -103,19 +214,7 @@ export function GenerateExperience() {
         setLiveStory(s);
         return s;
       },
-      /**
-       * Between the draft and the moderation, on purpose.
-       *
-       * The moderator is the model doing both jobs, so this is the same agent
-       * reading the table before it reads the prose. Running it here rather
-       * than after the run also means the figures are on screen during the
-       * moderation stage, which is the long one.
-       *
-       * `suggestCharts` answers null when the selector cannot be reached, and
-       * the run continues: figures are what the story is *about*, not the
-       * story, and losing them should not lose the pipeline.
-       */
-      selectCharts: () => api.suggestCharts({ datasetId }, { tier }),
+      selectCharts,
       moderate: async () => {
         const s = await api.stageModerate(runIdRef.current!);
         setLiveStory(s);
@@ -127,7 +226,7 @@ export function GenerateExperience() {
         return s;
       },
     };
-  }, [isLive, datasetId, tier, humanText]);
+  }, [isLive, datasetId, tier, humanText, figureModel, source, cachedRuns]);
 
   // Scored once the comparison step is reachable, not while the run is going:
   // the metrics need the moderated text, which only exists after the last
@@ -302,6 +401,9 @@ export function GenerateExperience() {
                         dataset={dataset}
                         stages={stages}
                         models={stageModels}
+                        source={source}
+                        onSourceChange={setSourceChoice}
+                        cachedCount={cachedRuns.length}
                         onComplete={() => {
                           setGenerated(true);
                           setMaxReached((m) => Math.max(m, 3));

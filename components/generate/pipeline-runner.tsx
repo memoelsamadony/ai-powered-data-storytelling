@@ -39,6 +39,9 @@ export function PipelineRunner({
   dataset,
   stages,
   models,
+  source,
+  onSourceChange,
+  cachedCount = 0,
   onComplete,
   onReset,
 }: {
@@ -58,6 +61,11 @@ export function PipelineRunner({
   };
   /** Actual model per stage, from the backend tier. Falls back to the static copy. */
   models?: Partial<Record<StageId, string>>;
+  /** Which source the next run uses. Cached replays a stored run. */
+  source?: "cached" | "live";
+  onSourceChange?: (s: "cached" | "live") => void;
+  /** Stored runs available for this dataset and tier. Zero disables cached. */
+  cachedCount?: number;
   onComplete: () => void;
   onReset?: () => void;
 }) {
@@ -201,6 +209,51 @@ export function PipelineRunner({
             Run the pipeline to watch the general model write a story, the agentic moderator
             rebalance its tone, and the factual check audit the numbers.
           </p>
+          {/*
+            The source is chosen before the run, not reported after it. A live
+            run on this hardware is minutes; a stored one is seconds. Which of
+            those is about to happen is the single most useful thing to know
+            standing in front of an audience, so it is a control rather than a
+            badge, and it says what it will do rather than what it did.
+          */}
+          {onSourceChange && (
+            <div className="mt-6 inline-flex items-center gap-1 rounded-full border border-hairline bg-surface p-1">
+              {(["cached", "live"] as const).map((opt) => {
+                const disabled = opt === "cached" && cachedCount === 0;
+                const active = source === opt;
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => onSourceChange(opt)}
+                    disabled={disabled}
+                    title={
+                      disabled
+                        ? "No stored run for this dataset and tier yet"
+                        : opt === "cached"
+                          ? "Replay a stored run: same text every time, no model"
+                          : "Run every stage on a local model now"
+                    }
+                    className={cn(
+                      "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+                      active ? "bg-navy text-white" : "text-muted hover:text-navy",
+                      disabled && "cursor-not-allowed opacity-40 hover:text-muted",
+                    )}
+                  >
+                    {opt === "cached" ? "Cached" : "Live"}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {onSourceChange && (
+            <p className="mt-2 font-mono text-[0.66rem] uppercase tracking-wide text-faint">
+              {source === "cached" && cachedCount > 0
+                ? "Replays a stored run - seconds, and the same text every time"
+                : "Runs every stage on a local model - minutes on this hardware"}
+            </p>
+          )}
+
           <button
             onClick={run}
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-navy px-7 py-3.5 font-medium text-white shadow-[0_12px_30px_-12px_rgba(13,27,92,0.7)] transition-all hover:-translate-y-0.5 hover:bg-deep-navy"
@@ -314,8 +367,14 @@ export function PipelineRunner({
             <div className="rounded-2xl border border-hairline bg-surface p-4">
               {charts ? (
                 <>
+                  {/*
+                    Not "chosen by the moderator": selection can run on a larger
+                    model than the tier moderates with, so naming the role here
+                    would be wrong on exactly the runs that matter. The footer
+                    under the figures prints the model that actually ran.
+                  */}
                   <p className="mb-1 font-mono text-[0.66rem] uppercase tracking-wider text-faint">
-                    Figures chosen by the moderator
+                    Figures chosen for this table
                   </p>
                   <p className="mb-4 text-xs leading-relaxed text-muted">
                     Which forms this table can carry was computed from its column

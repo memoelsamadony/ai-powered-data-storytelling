@@ -119,6 +119,30 @@ export interface RunRef {
   status: string;
 }
 
+/**
+ * Completed runs already in the backend, newest first.
+ *
+ * This is what the studio's cached mode replays. A stored run needs no model,
+ * so it costs a request rather than the minutes a live tier takes, and it is
+ * the same text every time - which a live run explicitly is not, since a fixed
+ * seed stops reproducing once the model is evicted.
+ *
+ * Answers an empty list when the backend is unreachable, so a caller can treat
+ * "no cached runs" and "no backend" the same way: stay live.
+ */
+export async function listRuns(datasetId?: string, tier?: string): Promise<RunRef[]> {
+  const q = new URLSearchParams();
+  if (datasetId) q.set("datasetId", datasetId);
+  if (tier) q.set("tier", tier);
+  try {
+    return await call<RunRef[]>(`/runs?${q}`);
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api] cached runs unavailable:", err);
+    return [];
+  }
+}
+
 export async function createRun(datasetId: string, tier = "mid"): Promise<RunRef> {
   return call<RunRef>("/runs", {
     method: "POST",
@@ -314,15 +338,27 @@ export interface ChartSuggestion {
  * Takes minutes on the large tier - one Ollama call, on hardware that can hold
  * one model at a time - so callers should not put it in a blocking render path
  * without saying what is happening.
+ *
+ * `model` overrides the tier's moderator for this call only. Picking figures
+ * and moderating prose are different jobs and do not have to be the same
+ * weight class, so a run can moderate on a small model and still choose its
+ * figures on the largest one the machine can hold. The response echoes the
+ * model that actually ran, and the footer under the figures prints it, so the
+ * override can never be silent.
  */
 export async function suggestCharts(
   source: { datasetId: string } | { uploadId: string },
-  { n = 3, tier = "demo", seed }: { n?: number; tier?: string; seed?: number } = {},
+  {
+    n = 3,
+    tier = "demo",
+    seed,
+    model,
+  }: { n?: number; tier?: string; seed?: number; model?: string } = {},
 ): Promise<ChartSuggestion | null> {
   try {
     return await call<ChartSuggestion>("/charts/suggest", {
       method: "POST",
-      body: JSON.stringify({ ...source, n, tier, seed }),
+      body: JSON.stringify({ ...source, n, tier, seed, model }),
     });
   } catch (err) {
     unstable_rethrow(err);
