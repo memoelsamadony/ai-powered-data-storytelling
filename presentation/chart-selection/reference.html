@@ -1,0 +1,537 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Chart selection — session record and speaker reference</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 16mm; }
+  :root {
+    --ink:#0b0b0b; --ink2:#3c3b38; --muted:#6f6d68; --faint:#8f8d87;
+    --rule:#ddddd5; --surface:#faf9f5;
+    --blue:#2a78d6; --orange:#eb6834; --aqua:#1baf7a;
+    --good:#0ca30c; --warn:#b57d00; --crit:#c22f2f;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; color:var(--ink2);
+         font:10.5pt/1.62 Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  h1,h2,h3,h4 { font-family:'Helvetica Neue',Arial,sans-serif; color:var(--ink);
+                line-height:1.22; margin:0; font-weight:700; }
+  h1 { font-size:26pt; letter-spacing:-0.3pt; }
+  h2 { font-size:15pt; margin:0 0 3mm; padding-top:1mm; }
+  h3 { font-size:11.5pt; margin:6mm 0 2mm; }
+  h4 { font-size:10pt; margin:4mm 0 1.5mm; color:var(--ink2); }
+  p { margin:0 0 2.6mm; }
+  a { color:var(--blue); text-decoration:none; }
+  code, .mono { font-family:'SF Mono',Menlo,Consolas,monospace; font-size:9pt; }
+  .sect { break-before:page; padding-top:2mm; }
+  .sect:first-of-type { break-before:auto; }
+  .kicker { font-family:'Helvetica Neue',Arial,sans-serif; font-size:8pt;
+            letter-spacing:1.4pt; text-transform:uppercase; color:var(--faint);
+            margin:0 0 1.5mm; font-weight:700; }
+  .rule { border:0; border-top:1.5px solid var(--rule); margin:3mm 0 5mm; }
+  figure { margin:5mm 0 6mm; break-inside:avoid; }
+  figure svg { width:100%; height:auto; display:block;
+               border:1px solid var(--rule); border-radius:3px; }
+  figcaption { font-size:8.5pt; color:var(--muted); margin-top:2mm;
+               font-family:'Helvetica Neue',Arial,sans-serif; line-height:1.5; }
+  figcaption b { color:var(--ink); }
+  table { width:100%; border-collapse:collapse; margin:3mm 0 4mm; font-size:9pt;
+          font-family:'Helvetica Neue',Arial,sans-serif; break-inside:avoid; }
+  th { text-align:left; font-size:8pt; letter-spacing:0.6pt; text-transform:uppercase;
+       color:var(--faint); border-bottom:1.5px solid var(--rule); padding:0 4mm 1.5mm 0; }
+  td { padding:1.8mm 4mm 1.8mm 0; border-bottom:1px solid var(--rule);
+       vertical-align:top; line-height:1.45; }
+  td.n { font-family:'SF Mono',Menlo,monospace; white-space:nowrap; }
+  .note { background:var(--surface); border-left:3px solid var(--rule);
+          padding:3mm 4mm; margin:3.5mm 0; break-inside:avoid; }
+  .note.blue { border-left-color:var(--blue); background:#f2f7fd; }
+  .note.warn { border-left-color:var(--warn); background:#fdf8ec; }
+  .note.crit { border-left-color:var(--crit); background:#fdf2f2; }
+  .note.good { border-left-color:var(--good); background:#f1faf1; }
+  .note p:last-child { margin-bottom:0; }
+  .note .lbl { font-family:'Helvetica Neue',Arial,sans-serif; font-weight:700;
+               font-size:8.5pt; letter-spacing:0.5pt; text-transform:uppercase;
+               color:var(--ink); display:block; margin-bottom:1.5mm; }
+  ul,ol { margin:0 0 3mm; padding-left:5mm; }
+  li { margin-bottom:1.4mm; }
+  .say { border-left:3px solid var(--orange); padding:1mm 0 1mm 4mm; margin:2.5mm 0;
+         font-size:10pt; color:var(--ink); }
+  .caveat { font-family:'Helvetica Neue',Arial,sans-serif; font-size:8.5pt;
+            color:var(--crit); margin:1.5mm 0 0; }
+  .caveat b { color:var(--crit); }
+  .slot { font-family:'Helvetica Neue',Arial,sans-serif; font-size:8.5pt;
+          color:var(--faint); letter-spacing:0.5pt; }
+  .cover { height:247mm; display:flex; flex-direction:column; justify-content:space-between; }
+  .cover .top { padding-top:38mm; }
+  .cover h1 { font-size:34pt; max-width:150mm; }
+  .cover .sub { font-size:13pt; color:var(--muted); margin-top:5mm; max-width:140mm;
+                font-family:'Helvetica Neue',Arial,sans-serif; line-height:1.5; }
+  .cover .meta { font-family:'Helvetica Neue',Arial,sans-serif; font-size:9pt;
+                 color:var(--faint); }
+  .cover .meta b { color:var(--ink2); }
+  .toc { columns:2; column-gap:12mm; font-family:'Helvetica Neue',Arial,sans-serif;
+         font-size:9pt; }
+  .toc div { break-inside:avoid; margin-bottom:1.8mm; }
+  .toc span { color:var(--faint); }
+</style>
+
+<div class="cover">
+  <div class="top">
+    <p class="kicker">CMS Team Project · Chair of Multimedia Technology · TU Dresden</p>
+    <h1>Choosing the figures a table can honestly carry</h1>
+    <p class="sub">A chart-selection agent for arbitrary uploaded datasets: what we built,
+       the three claims we had to walk back, and five experiments — with the speaker
+       script for presenting them.</p>
+  </div>
+  <div class="meta">
+    <p><b>Branch</b> <span class="mono">feat/chart-selection</span> · 22 commits ahead of main · 50 files, +13,623 lines</p>
+    <p><b>Verified</b> 139 backend tests · 148 frontend tests · 16 live model runs on local Ollama</p>
+    <p><b>Date</b> 12 August 2026 · <b>Hardware</b> Apple M1 Max, 32 GB unified memory</p>
+  </div>
+</div>
+
+<div class="sect">
+<p class="kicker">Contents</p>
+<h2>What this document is</h2>
+<p>A record of one work session, in the order the work happened, written so that any of
+   the four of us can present it without having been in the session. Every number in it
+   was measured on this machine and is traceable to a file in the branch; where a number
+   is confounded, the confound is stated next to it rather than left for the audience to
+   find. The speaker script is at the back.</p>
+<hr class="rule">
+<div class="toc">
+  <div><b>1</b> The gap this closes <span>· the contract stopped at one figure</span></div>
+  <div><b>2</b> What we built <span>· computed applicability, model ranking</span></div>
+  <div><b>3</b> Three claims we walked back <span>· the causal 0%, and two more</span></div>
+  <div><b>4</b> Bringing your own table <span>· upload, and a real third-party CSV</span></div>
+  <div><b>5</b> Experiment 1 <span>· which model should select?</span></div>
+  <div><b>6</b> Experiment 2 <span>· copy quality against the data</span></div>
+  <div><b>7</b> Experiment 3 <span>· throughput, and a contaminated clock</span></div>
+  <div><b>8</b> Experiment 4 <span>· a seed that survived an eviction</span></div>
+  <div><b>9</b> Experiment 5 <span>· two prompt variants against redundancy</span></div>
+  <div><b>10</b> What is still open</div>
+  <div><b>11</b> Speaker script <span>· timed, one figure at a time</span></div>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">1</p>
+<h2>The gap this closes</h2>
+<p>The frontend already had a chart contract: seventeen geometries, a long-format frame,
+   and a validator (<span class="mono">validateSpec</span>) that refuses to draw a figure
+   whose specification the data cannot support. What it did not have was anything that
+   <em>decides</em>. A <span class="mono">&lt;Chart&gt;</span> takes one payload and is
+   deliberately incurious about where that payload came from; the preview page builds its
+   array by hand. So for the two registry datasets the figures were chosen by us, in
+   advance, and for anything else there were no figures at all.</p>
+<p>That is the gap. A visitor with their own CSV could not see a single chart, because
+   nothing in the stack could look at an unfamiliar table and work out what it could carry.</p>
+<div class="note blue">
+  <span class="lbl">The theory we started from, and where it was wrong</span>
+  <p>The original framing was "a new moderator endpoint chooses the graph types". Four
+     parts of that needed correcting before any code was written. There is <b>no MCP
+     client</b> in this stack — the one mention of MCP in the repo is a flag that
+     <em>disables</em> it. <b>Chart selection is not the moderator's job</b>: the
+     moderator rewrites emotional tone and is the one novel thing the project measures,
+     and hanging an unrelated feature off it would make every future tone number measure
+     two changes at once. <b>"The best three" was not in the contract</b> and had no
+     landing surface in the interface. And <b>"any custom dataset" was blocked</b> on a
+     problem nobody had solved yet: knowing what an arbitrary column <em>means</em>.</p>
+  <p>What survived is the useful half, and it is what got built: a real endpoint, three
+     figures, rendered through the contract the frontend already had. The moderator
+     <em>model</em> runs it — that was a later decision, and it is a choice of model, not
+     a merging of stages.</p>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">2</p>
+<h2>What we built</h2>
+<p>A Python package of eight modules beside the existing pipeline, and one endpoint.
+   The design principle is a split: what a table <em>can</em> carry is a closed question
+   and is computed; which of those figures is <em>worth showing</em> is an open question
+   and is asked of a model. The model never names a chart type. It is handed a numbered
+   list of figures that are already drawable, already encoded against real columns and
+   already carrying whatever slice they need, and it picks indices.</p>
+<!--FIG:figS1-->
+<table>
+<tr><th>Module</th><th>Lines</th><th>What it does</th></tr>
+<tr><td class="mono">spec.py</td><td class="n">316</td><td>Pydantic mirror of <span class="mono">lib/charts/spec.ts</span>. Pinned against the emitted JSON schema by a test, so a contract change on either side breaks the build rather than the page.</td></tr>
+<tr><td class="mono">validate.py</td><td class="n">268</td><td>Mirrors <span class="mono">validateSpec</span> rule for rule, so a rejected figure can be handed back to the model with the real reason instead of being dropped.</td></tr>
+<tr><td class="mono">profile.py</td><td class="n">362</td><td>Types an arbitrary CSV into quantitative / temporal / nominal / geo. The piece with no frontend twin, and the reason an upload works at all.</td></tr>
+<tr><td class="mono">applicability.py</td><td class="n">691</td><td>Which of the seventeen forms this frame can carry, and what each needs cut to be honest. The largest module, and the one that does the actual thinking.</td></tr>
+<tr><td class="mono">select.py</td><td class="n">267</td><td>The agent: one Ollama call with a schema-constrained response, one retry that feeds the validator's own errors back.</td></tr>
+<tr><td class="mono">frames.py, http.py</td><td class="n">225</td><td>Registry datasets and uploads both arrive as a list of frame sources, so there is one selection path rather than two that drift.</td></tr>
+<tr><td class="mono">tests_charts.py</td><td class="n">715</td><td>69 tests. Schema parity, validator behaviour, column typing, applicability, the real upload shape, registry-vs-CSV parity, the endpoint.</td></tr>
+</table>
+<div class="note">
+  <span class="lbl">Why this is testable at all</span>
+  <p>The project's own measurement is that a seeded run reproduces only while the model
+     stays warm, so "the agent picks the same three charts twice" cannot be a test. What
+     is pinned instead is the deterministic layer underneath: column typing, the candidate
+     set, the validation, and the fact that a registry dataset and the same data as an
+     uploaded CSV produce the same candidates. The model's taste is measured by
+     experiment, not asserted by a test.</p>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">3</p>
+<h2>Three claims we had to walk back</h2>
+<p>Building the endpoint meant reading what the site already said, and three statements
+   did not survive that reading. None of them were caught by a test, because none of them
+   were code defects — they were claims stronger than the evidence under them.</p>
+
+<h3>The causal 0%, reported as a capability wall</h3>
+<p>The results page carried a red banner: not one of 21 causal claims was supported by the
+   table, therefore causal reasoning is a capability wall rather than a size problem. The
+   first half is a measurement. The second half does not follow from it.</p>
+<!--FIG:figS6-->
+<div class="note good">
+  <span class="lbl">What replaced it</span>
+  <p>The banner is gone. Every metric on the page now carries two lines instead — <b>what
+     it measures</b> and <b>what it cannot tell you</b> — which is what the original
+     request asked for, and which puts the caveat next to the number it qualifies rather
+     than in a box above all of them. The page also computes the ceiling from the data it
+     has rather than asserting zero: with 21 attempts and none confirmed, an honest upper
+     bound is about 14%.</p>
+</div>
+
+<h3>The home page repeated the same over-claim</h3>
+<p>The headline statistic said the causal result was "a capability wall for both model
+   sizes". It now states the fact and stops: off-table causes, stated as fact, across the
+   claims attempted, none the table could confirm.</p>
+
+<h3>The contract prescribed a bug</h3>
+<p>Section 7 of <span class="mono">CHART_CONTRACT.md</span> told the backend to give every
+   modifier an eager default — <span class="mono">stack: "none"</span>,
+   <span class="mono">orientation: "vertical"</span>. But
+   <span class="mono">validateSpec</span> rejects a modifier the form does not honour, and
+   it tests for <em>presence</em>, not value. Following the contract as written makes
+   every line chart render as a refusal.</p>
+<div class="note warn">
+  <span class="lbl">Proved before it was changed</span>
+  <p>Rather than argue from reading, we built the payload the contract prescribed and ran
+     the frontend's own validator over it. It returned
+     <span class="mono">{ok: false, errors: ['line does not honour "stack"', 'line does
+     not honour "orientation"']}</span>. Modifiers are now <span class="mono">None</span>
+     server-side and dropped from the wire, and the section was rewritten so the next
+     person to implement against it does not reintroduce the same failure.</p>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">4</p>
+<h2>Bringing your own table</h2>
+<p>The dataset picker had a card saying custom uploads were future work. Half of that was
+   still true, and the half that was not is the reason the card became a control: a CSV
+   can be <b>charted</b> now, because choosing a form needs only each column's type and a
+   table answers that about itself. It cannot be <b>generated from</b>, because a story
+   still needs declared measures and class breaks that no table states.</p>
+<p>So the upload response splits those two facts. <span class="mono">chartable</span> is
+   true, <span class="mono">wired</span> is false, and the success state offers exactly
+   one thing: see the figures. An upload button that dropped a visitor into a wizard which
+   then refused them would be worse than the placeholder it replaced.</p>
+
+<h3>Tested on a table nobody here had seen</h3>
+<p>The registry datasets are ours; they cannot show that inference works, because their
+   types are declared. So we fetched a third-party medical time series and ran the whole
+   path on it.</p>
+<table>
+<tr><th>Property</th><th>Value</th></tr>
+<tr><td>Source</td><td>WHO tuberculosis incidence and case-detection rate, via Our World in Data</td></tr>
+<tr><td>Shape</td><td class="n">227 entities · 2000–2024 · 5,597 rows · 2 measures</td></tr>
+<tr><td>Missingness</td><td class="n">~11% on the second measure</td></tr>
+<tr><td>Column types</td><td>All inferred. Nothing declared.</td></tr>
+</table>
+<div class="note crit">
+  <span class="lbl">Five defects a real third-party table exposed that our own never could</span>
+  <p><b>225 bars on one axis.</b> The cap that exists governs colour, not the category
+     axis, so nothing limited a bar chart's x. Now capped at 15, and the latest year is
+     taken <em>before</em> ranking — rank first and it ranks on the wrong number, quite
+     convincingly.</p>
+  <p><b>Aggregates ranked as peers.</b> Our World in Data ships World, continents and
+     income groups in the same column as countries. Rows whose code is not ISO3-shaped are
+     now dropped from any figure that ranks places, and the drop is disclosed. This was the
+     one place our own reasoning was wrong first: the note originally said an aggregate
+     outranks everything inside it, which is false for a rate — World sits 59th of 225 on
+     TB incidence per 100k. The real reason is peerhood, not magnitude.</p>
+  <p><b>A 225-value colour legend.</b> The scatter bound colour to the country column.
+     225 hues is not a legend; colour is now omitted when the split exceeds what the form
+     can carry.</p>
+  <p><b>A sparse column typed as text.</b> The case-detection rate is absent for a third
+     of country-years and failed a numeric-share threshold, which removed every figure
+     needing a second measure. Types are now read from the non-missing values.</p>
+  <p><b>Silent cuts.</b> Only one kind of cut was being disclosed. A bivariate map was
+     quietly showing one year with an empty caption. Every editorial cut now writes itself
+     into the caption the reader sees.</p>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">5 · Experiment 1</p>
+<h2>Which model should choose the figures?</h2>
+<p>By design decision the selector runs on the tier's <b>moderator</b> — the agentic role
+   that also runs the factual check. That is a choice of model only: selection remains its
+   own endpoint, and the moderation stage was not touched, so a tone measurement still
+   measures one change.</p>
+<p>Which leaves the question of which moderator. Four models were run on the same tables,
+   with the same seed and the same fourteen candidates. The small pair
+   (<span class="mono">qwen3.5:4b</span>, <span class="mono">gemma4:12b</span>) was
+   measured first; the large pair is below.</p>
+<!--FIG:figS2-->
+<table>
+<tr><th></th><th>qwen3.5:27b · 17 GB</th><th>gemma4:31b · 19 GB</th></tr>
+<tr><td>Question coverage</td><td>2 of 4 runs redundant</td><td>4 of 4 runs distinct</td></tr>
+<tr><td>Rationale quality</td><td><b>Better.</b> Argues form against alternative: "a scatter isolates the statistical relationship better than a map"</td><td>Flatter. States the reason without the comparison</td></tr>
+<tr><td>Factual accuracy of copy</td><td>Two defects (next section)</td><td>None found</td></tr>
+<tr><td>Compute per selection</td><td class="n">44.2 s / 43.7 s</td><td class="n">49.0 s / 40.7 s</td></tr>
+</table>
+<div class="note blue">
+  <span class="lbl">The verdict, and why it changed later</span>
+  <p>On the original prompt, <b>gemma4:31b wins</b>: it spans more ground and never
+     over-claims. But the deciding axis turned out to be fixable — the redundancy was a
+     prompt defect, not a property of the model, and Experiment 5 closes it for both. What
+     does <em>not</em> reverse is the copy behaviour, which is why the recommendation still
+     stands. No tier change is needed: <span class="mono">mid</span> and
+     <span class="mono">large</span> already run <span class="mono">gemma4:31b</span> as
+     moderator, so they inherit this. <span class="mono">qwen3.5:27b</span> is in no tier
+     and is absent from <span class="mono">experiments/MODELS.md</span> — it appeared on
+     disk during this session and the roster should record it.</p>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">6 · Experiment 2</p>
+<h2>Copy quality, checked against the data</h2>
+<p>The selector never sees a data value. It is given column names, types, ranges, row
+   counts and the candidate list. So every claim a title makes about what the data
+   <em>shows</em> is a claim the model cannot have checked — and we could, by computing it.</p>
+<!--FIG:figS4-->
+<p>The second defect is smaller but sharper. <span class="mono">qwen3.5:27b</span> titled
+   the all-years tuberculosis map "<i>…by country in 2024</i>". That is not false — the
+   scrubber opens on the last year — but 2024 appears nowhere in that candidate's listing.
+   It was borrowed from a sibling candidate the model also picked, against an explicit
+   instruction to state no number that was not given, and it undersells a figure carrying
+   25 years and a play button. <span class="mono">gemma4:31b</span>, same seed, titled it
+   without a year and wrote "over time" in the rationale.</p>
+<div class="note">
+  <span class="lbl">Why this is the failure mode that matters here</span>
+  <p>This project measures whether a moderator can lower a story's alarmism without
+     flattening real urgency. A model that writes conclusions it has not verified is
+     producing exactly the thing the project exists to measure — one layer up, in the
+     furniture around the story rather than the story itself. Duller copy is the cheaper
+     mistake.</p>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">7 · Experiment 3</p>
+<h2>Throughput, and a contaminated clock</h2>
+<p>The first set of timings was nonsense and it took a process listing to notice: another
+   session was running <span class="mono">experiments/run_repeats.py</span> against the
+   same Ollama server. The same selection measured 372.0 s, then 143.2 s, then 63.2 s once
+   the competing job died — with byte-identical output all three times.</p>
+<!--FIG:figS3-->
+<div class="note warn">
+  <span class="lbl">The method worth repeating</span>
+  <p>Ollama returns its own counters on every response:
+     <span class="mono">load_duration</span>, <span class="mono">prompt_eval_duration</span>,
+     <span class="mono">eval_duration</span>. Contention inflates load and queue wait; it
+     leaves prefill and decode alone. Measured against a clean run afterwards, prefill
+     moved by 0.6 s and decode by 0.1 s — so the counters were telling the truth while the
+     wall clock was off by a factor of six. <b>Any wall clock quoted from a shared machine
+     is measuring the machine.</b></p>
+</div>
+<p>On the honest numbers the two models are a tie: <span class="mono">qwen3.5:27b</span>
+   decodes about 20% faster and writes about 40% more, and the two cancel. What actually
+   separates them in practice is model load, which depends on cache state and on who else
+   is using the GPU.</p>
+</div>
+
+<div class="sect">
+<p class="kicker">8 · Experiment 4</p>
+<h2>A seed that survived an eviction</h2>
+<p>An accidental result, and it qualifies a finding already written into
+   <span class="mono">RESULTS.md</span>. That finding is that seeded reproducibility holds
+   inside a warm process and fails across a cold load, which is why the committed raw
+   stories are treated as the only reproducible artefact.</p>
+<!--FIG:figS5-->
+<p>It still holds for generation. It does not hold here. Two complete runs of the same
+   selection were diffed in full — identical bytes, with two 17 GB model loads evicting the
+   model in between. The conditions are different in three ways at once, and any of them
+   could be doing the work: temperature 0 rather than 0.6, grammar-constrained decoding
+   rather than free text, and about 150 output tokens rather than 700.</p>
+<div class="note crit">
+  <span class="lbl">Do not over-read this</span>
+  <p>One repeat, one model, one table. It is a qualification of a stated finding, not a
+     replacement for it, and it must not be carried back to the story stages — those are
+     the left-hand condition in the figure. If it is worth a line in the paper, it needs
+     the three variables separated first.</p>
+</div>
+</div>
+
+<div class="sect">
+<p class="kicker">9 · Experiment 5</p>
+<h2>Redundancy was a prompt defect — and prose could not fix it</h2>
+<p>Experiment 1 left one clear defect: on two of four runs a model spent two of its three
+   slots on figures a reader would answer the same question from. Two maps of the same
+   measure; a bivariate map and a scatter of the same two measures. The hypothesis was that
+   the instruction was at fault. It said "prefer variety", and variety of <em>form</em> is
+   not what was wanted.</p>
+<!--FIG:figS7-->
+<h3>Variant A — say it properly</h3>
+<p>The instruction was rewritten to be about the question a reader walks away having
+   answered, explicitly not about the shape of the figure. It changed almost nothing.
+   <span class="mono">qwen3.5:27b</span> returned the same three forms on tuberculosis in
+   a different order, and on measles swapped a scatter for a connected scatter — the same
+   two measures against each other, with time added. Still 2 of 4 clean.</p>
+
+<h3>Variant B — give it somewhere to put the answer</h3>
+<p>The second attempt changed the response schema rather than the wording. Each pick now
+   carries a required <span class="mono">question</span> field, declared <b>before</b> the
+   index. Fields are decoded in schema order, so the model must state a question and then
+   find a figure that answers it, instead of taking a figure and reverse-engineering a
+   justification — and, crucially, it can see its own earlier questions while writing the
+   next one. That is the thing prose could not provide: a place to compare against.</p>
+<div class="note good">
+  <span class="lbl">4 of 4 clean, and two results nobody was aiming for</span>
+  <p><b>Both models converged on the same three questions.</b> On both tables, independently:
+     how has this moved over time, which places are worst now, and do the two measures
+     relate. For a country × year × two-measure table that is arguably the right trio, and
+     two different model families finding it from a list of fourteen is a stronger signal
+     than either finding it alone.</p>
+  <p><b>Every over-claiming title disappeared.</b> Not asked for, not expected. Asked to
+     write the question first, both models titled the question rather than an answer:
+     "Vaccination Coverage vs. Measles Cases in 2023" instead of "Countries with lower
+     vaccination rates report more measles". The defect in Experiment 2 turns out to have
+     been partly structural — a model with nowhere to put the question puts it in the
+     title, as an assertion.</p>
+</div>
+<div class="note warn">
+  <span class="lbl">One regression, unfixed</span>
+  <p>Nine of the twelve variant-B titles came back in Title Case, against the sentence case
+     used everywhere else in the interface. Cosmetic, one line of prompt, and not worth
+     another four minutes of model time before the talk — but it should be fixed before
+     this ships.</p>
+</div>
+<table>
+<tr><th>Run</th><th>Baseline</th><th>Variant A · prose</th><th>Variant B · schema</th></tr>
+<tr><td>qwen · TB</td><td>choropleth, <b>bivariateChoropleth</b>, line</td><td>choropleth, line, <b>bivariateChoropleth</b></td><td>line, bar, bivariateChoropleth</td></tr>
+<tr><td>qwen · measles</td><td><b>bivariateChoropleth</b>, line, <b>scatter</b></td><td><b>bivariateChoropleth</b>, <b>connectedScatter</b>, line</td><td>line, bar, scatter</td></tr>
+<tr><td>gemma · TB</td><td>choropleth, bar, scatter</td><td>choropleth, bar, scatter</td><td>bar, choropleth, scatter</td></tr>
+<tr><td>gemma · measles</td><td>bivariateChoropleth, line, bump</td><td>choropleth, scatter, line</td><td>bivariateChoropleth, lollipop, line</td></tr>
+</table>
+<p class="slot">Bold marks the members of a redundant pair. All sixteen runs across all three
+   prompts: one model call each, no grammar fallback, no validator rejection, no retry.</p>
+</div>
+
+<div class="sect">
+<p class="kicker">10</p>
+<h2>What is still open</h2>
+<ol>
+<li><b>No pull request yet.</b> The branch carries a teammate's 14 chart-contract commits
+    plus 8 of ours. If <span class="mono">feat/chart-contract</span> merges first the PR
+    reads as 8 focused commits; if not, reviewers see all 22 and re-review work that was
+    already reviewed.</li>
+<li><b>Four written records still say "capability wall."</b> Deliberately left alone,
+    because they are the research record and changing a stated finding there is not a
+    silent edit to make: <span class="mono">RESULTS.md:143</span>,
+    <span class="mono">reproductions/REPRODUCTIONS_SUMMARY.md:114</span>,
+    <span class="mono">reproductions/paper9-datatales/REPORT_gemma4.md:30</span>,
+    <span class="mono">presentation/figures/README.md:41</span>. Note the last one is the
+    speaker script for the existing fig2 — <b>whoever presents that figure will say the
+    corrected claim's older form out loud</b> unless it is fixed first.</li>
+<li><b>Title Case regression</b> from variant B, above.</li>
+<li><b>The uploaded file still cannot be generated from.</b> Charting an arbitrary table
+    needs column types; generating a story from one needs declared measures and class
+    breaks. That gap is real and is stated in the interface rather than hidden.</li>
+<li><b>The tone axis is still single-axis</b> (alarmism only). Unrelated to this work and
+    not started.</li>
+</ol>
+</div>
+
+<div class="sect">
+<p class="kicker">11</p>
+<h2>Speaker script</h2>
+<p>Written to slot beside the existing eight-figure Results section, which runs about 7
+   minutes of content plus a 3.5-minute demo. This material adds roughly <b>4 minutes</b>
+   and one demo beat. If the talk is already full, sections 9 and 3 are the two that earn
+   their place; the rest is backup for questions.</p>
+<table>
+<tr><th>Beat</th><th>Figure</th><th>Time</th><th>Point to land</th></tr>
+<tr><td>A</td><td>figS1</td><td class="n">50 s</td><td>The model never names a chart type</td></tr>
+<tr><td>B</td><td>figS7</td><td class="n">70 s</td><td>A schema change fixed what a prompt change could not</td></tr>
+<tr><td>C</td><td>figS6</td><td class="n">55 s</td><td>We corrected one of our own published claims</td></tr>
+<tr><td>D</td><td>figS4</td><td class="n">45 s</td><td>The model over-claims where it cannot check</td></tr>
+<tr><td>—</td><td>demo</td><td class="n">60 s</td><td>Upload a CSV nobody has seen, get three figures</td></tr>
+<tr><td>Q&amp;A</td><td>figS2, figS3, figS5</td><td>—</td><td>Held in reserve</td></tr>
+</table>
+
+<h3>Beat A — figS1 · The division of labour</h3>
+<div class="say">"Seventeen chart types. The question of which ones a table <em>can</em>
+   carry is not a matter of taste — it follows from the column types, so we compute it.
+   What the model gets is a numbered list of figures that are already drawable, already
+   bound to real columns, already carrying whatever cut they need. It picks three indices
+   and writes the copy. It never names a chart type. That is why this runs on a 4-billion
+   parameter model without producing a single invalid figure across sixteen runs."</div>
+<p class="caveat"><b>If asked</b> "why not just let the model choose freely": because a
+   model that names a form can name one the data cannot carry, and nothing downstream
+   catches it. Here the worst it can be is wrong about taste.</p>
+
+<h3>Beat B — figS7 · The variety experiment</h3>
+<div class="say">"The first version had a real defect: on half the runs, two of the three
+   figures answered the same question. Two maps of the same measure. So we rewrote the
+   instruction to say exactly that — judge sameness by the question, not the shape. It
+   changed nothing. Same forms, different order. What worked was not asking better: it was
+   adding a required <em>question</em> field to the response, decoded before the figure
+   index. Now the model has to state a question, and it can see the questions it already
+   wrote. Four out of four clean. And two things we were not aiming for: both models
+   converged on the same three questions — how has this moved, who is worst now, do the
+   two measures relate — and every over-claiming title disappeared, because a model asked
+   for the question first stops putting the answer in the headline."</div>
+<p class="caveat"><b>Caveat to state:</b> twelve runs, two models, two tables. That is an
+   effect worth acting on, not a benchmark.</p>
+
+<h3>Beat C — figS6 · The causal 0%</h3>
+<div class="say">"Our own results page said the zero-percent causal score proved a
+   capability wall. It does not, and the reason is structural. The source table is
+   same-day open, high, low, close, volume. Causation is not a column in it. So a claim
+   like 'fell amid inflation concerns' points outside the table and cannot be supported
+   there however capable the model is — which means the row cannot exceed zero, and a row
+   that cannot exceed zero cannot tell a capability ceiling from its own floor. What the
+   number does show survives, and it is the finding that matters: both models state
+   off-table causes with exactly the confidence they state on-table facts. That is
+   groundedness, and it is why the fact-checker is a separate agent."</div>
+<p class="caveat"><b>Caveat to state:</b> and the denominator is 21 claims. By the rule of
+   three, none-out-of-21 is consistent with a true rate near 14%.</p>
+
+<h3>Beat D — figS4 · Titles the model cannot check</h3>
+<div class="say">"The selector is shown column names, types and ranges. It is never shown
+   a single value. So we took three titles it wrote and computed whether they were true.
+   One was supported and correctly hedged. One was true by luck. One asserted a
+   correlation of minus zero-point-three-one — about a tenth of the variance — as a flat
+   statement of fact. That is the same failure the whole project is about, one layer up:
+   confidence that is not earned by the evidence underneath it."</div>
+<p class="caveat"><b>Do not say</b> the model "hallucinated". It made claims it had no way
+   to check, which is a different and more interesting failure.</p>
+
+<h3>Demo beat</h3>
+<div class="say">"This is a WHO tuberculosis table — 227 countries, 25 years, two measures,
+   and nobody in this project has ever configured it. Upload. The column types are read
+   from the data. Three figures. And read the small print under them: it tells you the top
+   fifteen were kept, that the World row was dropped because an aggregate is not a peer of
+   the countries inside it, and which year is shown. Every editorial cut says so."</div>
+<p class="caveat"><b>Have ready:</b> the file is at
+   <span class="mono">.playwright-mcp/who_tuberculosis_owid.csv</span>, and the backend
+   needs <span class="mono">DJANGO_CORS_ORIGINS</span> set for the browser upload.</p>
+
+<h3>Questions we should expect</h3>
+<table>
+<tr><th>Question</th><th>Answer</th></tr>
+<tr><td>Is this the moderator?</td><td>It runs on the moderator <em>model</em>, by design decision. It is a separate stage and separate endpoint, so a tone measurement still measures one change.</td></tr>
+<tr><td>Which model is better?</td><td>gemma4:31b, on copy accuracy. On figure choice the gap closed once the schema was fixed. figS2.</td></tr>
+<tr><td>How fast is it?</td><td>About 45 seconds of compute on a 30B model, plus load. Do not quote wall clock from a shared machine. figS3.</td></tr>
+<tr><td>Is it reproducible?</td><td>Byte-identical across an eviction here, which is <em>not</em> true of the story generator. One repeat. figS5.</td></tr>
+<tr><td>Can I upload anything?</td><td>Any CSV with at least one numeric column. It will be charted, not turned into a story — and the interface says which.</td></tr>
+</table>
+</div>

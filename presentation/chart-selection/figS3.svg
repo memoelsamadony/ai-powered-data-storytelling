@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"/>
+</marker>
+
+</defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start">Throughput: a tie between the two models, and a warning about wall clock</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start">Another session's experiment held the same GPU for most of these measurements</text>
+<line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
+<text x="72" y="196" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="25" fill="#0b0b0b" font-weight="bold" text-anchor="start">Compute per selection, from Ollama's own counters</text>
+<text x="72" y="226" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">Prefill and decode are unaffected by a competing process. These are the honest numbers.</text>
+<text x="72" y="289" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start">qwen3.5:27b</text>
+<text x="414" y="289" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="end">TB · 2,389 tok</text>
+<path d="M 430 262 L 752.3 262 Q 756.3 262 756.3 266 L 756.3 292 Q 756.3 296 752.3 296 L 430 296 Z" fill="#eb6834" fill-opacity="0.85"/>
+<path d="M 759.3 262 L 1003.6 262 Q 1007.6 262 1007.6 266 L 1007.6 292 Q 1007.6 296 1003.6 296 L 759.3 296 Z" fill="#eb6834" fill-opacity="0.35"/>
+<text x="444" y="286" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#ffffff" font-weight="bold" text-anchor="start">prefill 25.1s</text>
+<text x="773.3" y="286" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">decode 19.1s</text>
+<text x="1026.6" y="286" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start">= 44.2s</text>
+<text x="72" y="337" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start">gemma4:31b</text>
+<text x="414" y="337" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="end">TB · 2,456 tok</text>
+<path d="M 430 310 L 849.8 310 Q 853.8 310 853.8 314 L 853.8 340 Q 853.8 344 849.8 344 L 430 344 Z" fill="#2a78d6" fill-opacity="0.85"/>
+<path d="M 856.8 310 L 1066.0 310 Q 1070.0 310 1070.0 314 L 1070.0 340 Q 1070.0 344 1066.0 344 L 856.8 344 Z" fill="#2a78d6" fill-opacity="0.35"/>
+<text x="444" y="334" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#ffffff" font-weight="bold" text-anchor="start">prefill 32.6s</text>
+<text x="870.8" y="334" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">decode 16.4s</text>
+<text x="1089.0" y="334" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start">= 49.0s</text>
+<text x="72" y="385" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start">qwen3.5:27b</text>
+<text x="414" y="385" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="end">measles · 1,779 tok</text>
+<path d="M 430 358 L 710.7 358 Q 714.7 358 714.7 362 L 714.7 388 Q 714.7 392 710.7 392 L 430 392 Z" fill="#eb6834" fill-opacity="0.85"/>
+<path d="M 717.7 358 L 997.1 358 Q 1001.1 358 1001.1 362 L 1001.1 388 Q 1001.1 392 997.1 392 L 717.7 392 Z" fill="#eb6834" fill-opacity="0.35"/>
+<text x="444" y="382" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#ffffff" font-weight="bold" text-anchor="start">prefill 21.9s</text>
+<text x="731.7" y="382" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">decode 21.8s</text>
+<text x="1020.1" y="382" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start">= 43.7s</text>
+<text x="72" y="433" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="21" fill="#0b0b0b" font-weight="bold" text-anchor="start">gemma4:31b</text>
+<text x="414" y="433" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#898781" font-weight="normal" text-anchor="end">measles · 1,785 tok</text>
+<path d="M 430 406 L 732.8 406 Q 736.8 406 736.8 410 L 736.8 436 Q 736.8 440 732.8 440 L 430 440 Z" fill="#2a78d6" fill-opacity="0.85"/>
+<path d="M 739.8 406 L 958.1 406 Q 962.1 406 962.1 410 L 962.1 436 Q 962.1 440 958.1 440 L 739.8 440 Z" fill="#2a78d6" fill-opacity="0.35"/>
+<text x="444" y="430" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#ffffff" font-weight="bold" text-anchor="start">prefill 23.6s</text>
+<text x="753.8" y="430" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start">decode 17.1s</text>
+<text x="981.1" y="430" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#0b0b0b" font-weight="bold" text-anchor="start">= 40.7s</text>
+<text x="72" y="480" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="normal" text-anchor="start">Decode rate: qwen 11.3 tok/s writing 216-247 tokens; gemma 9.3 tok/s writing 153-160. Faster, and wordier, cancel out.</text>
+<rect x="72" y="540" width="1456" height="3" rx="0" fill="#e1e0d9" fill-opacity="1.0" stroke="none" stroke-width="0"/>
+<text x="72" y="596" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="25" fill="#0b0b0b" font-weight="bold" text-anchor="start">The same selection, three wall clocks</text>
+<text x="72" y="626" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="19" fill="#52514e" font-weight="normal" text-anchor="start">gemma4:31b, TB table, seed 11 — byte-identical output every time.</text>
+<path d="M 430 664 L 1393.2 664 Q 1397.2 664 1397.2 668 L 1397.2 692 Q 1397.2 696 1393.2 696 L 430 696 Z" fill="#d03b3b" fill-opacity="0.8"/>
+<text x="418" y="687" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="end">under contention</text>
+<text x="1411.2" y="687" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start">372.0 s</text>
+<path d="M 430 708 L 798.3199999999999 708 Q 802.3199999999999 708 802.3199999999999 712 L 802.3199999999999 736 Q 802.3199999999999 740 798.3199999999999 740 L 430 740 Z" fill="#fab219" fill-opacity="0.8"/>
+<text x="418" y="731" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="end">under contention</text>
+<text x="816.3199999999999" y="731" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start">143.2 s</text>
+<path d="M 430 752 L 590.32 752 Q 594.32 752 594.32 756 L 594.32 780 Q 594.32 784 590.32 784 L 430 784 Z" fill="#0ca30c" fill-opacity="0.8"/>
+<text x="418" y="775" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#52514e" font-weight="normal" text-anchor="end">competing job dead</text>
+<text x="608.32" y="775" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#0b0b0b" font-weight="bold" text-anchor="start">63.2 s</text>
+<text x="72" y="828" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start">A concurrent run_repeats.py plus its llama-server was resident for the first measurement set. It never touched prefill or decode - it inflated model load and queue</text>
+<text x="72" y="850" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start">wait. Any wall clock quoted from a shared machine measures the machine.</text>
+</svg>
