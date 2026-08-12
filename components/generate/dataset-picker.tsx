@@ -71,34 +71,56 @@ export function DatasetPicker({
             </div>
           </div>
 
-          <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-            <div className="overflow-hidden rounded-xl border border-hairline">
-              <table className="w-full text-sm">
-                <thead className="bg-surface-soft">
-                  <tr className="text-left font-mono text-[0.68rem] uppercase tracking-wide text-faint">
-                    <th className="px-4 py-2.5 font-medium">Region</th>
-                    <th className="px-4 py-2.5 font-medium">Year</th>
-                    <th className="px-4 py-2.5 text-right font-medium">{selected.id === "measles" ? "Cases" : "U5MR"}</th>
-                    <th className="px-4 py-2.5 text-right font-medium">{selected.id === "measles" ? "MCV1" : "Life exp."}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-hairline">
-                  {selected.previewRows.map((r, i) => (
-                    <tr key={i} className="text-ink">
-                      <td className="px-4 py-2.5">{r.country}</td>
-                      <td className="px-4 py-2.5 font-mono text-muted">{r.year}</td>
-                      <td className="px-4 py-2.5 text-right font-mono">{r.cases}</td>
-                      <td className="px-4 py-2.5 text-right font-mono">{r.coverage}</td>
+          {/*
+            The country table appears only when the dataset has country rows to
+            put in it. A global-total table has no country dimension at all, so
+            `previewRows` is empty by construction, and rendering the header row
+            anyway left column names standing over nothing. The headers are the
+            dataset's own series labels rather than a measles/everything-else
+            branch: that branch captioned every non-measles table `U5MR` and
+            `Life exp.`, which was invisible only because the body was empty.
+          */}
+          <div
+            className={cn(
+              "mt-5 grid gap-6",
+              selected.previewRows.length > 0 && "lg:grid-cols-[1fr_1.2fr]",
+            )}
+          >
+            {selected.previewRows.length > 0 && (
+              <div className="overflow-hidden rounded-xl border border-hairline">
+                <table className="w-full text-sm">
+                  <thead className="bg-surface-soft">
+                    <tr className="text-left font-mono text-[0.68rem] uppercase tracking-wide text-faint">
+                      <th className="px-4 py-2.5 font-medium">Country</th>
+                      <th className="px-4 py-2.5 font-medium">Year</th>
+                      <th className="px-4 py-2.5 text-right font-medium">{selected.primaryLabel}</th>
+                      <th className="px-4 py-2.5 text-right font-medium">{selected.secondaryLabel}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-hairline">
+                    {selected.previewRows.map((r, i) => (
+                      <tr key={i} className="text-ink">
+                        <td className="px-4 py-2.5">{r.country}</td>
+                        <td className="px-4 py-2.5 font-mono text-muted">{r.year}</td>
+                        <td className="px-4 py-2.5 text-right font-mono">{r.cases}</td>
+                        <td className="px-4 py-2.5 text-right font-mono">{r.coverage}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             <div>
               <StoryChart dataset={selected} height={280} />
             </div>
           </div>
+
+          {selected.previewRows.length === 0 && (
+            <p className="mt-3 font-mono text-[0.68rem] uppercase tracking-wide text-faint">
+              {selected.granularity} — no country breakdown to preview
+            </p>
+          )}
 
           <p className="mt-5 rounded-xl bg-surface-soft/70 px-4 py-3 text-sm text-muted">
             <span className="font-medium text-ink">{selected.failureModeLabel}.</span>{" "}
