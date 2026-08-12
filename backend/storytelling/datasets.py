@@ -58,7 +58,9 @@ class DatasetSpec:
     primary_unit: str
     secondary_unit: str
     primary_col: str
-    secondary_col: str
+    #: ``None`` on an inferred upload whose table holds a single measure. Every
+    #: reader below guards on it rather than assuming a second column exists.
+    secondary_col: str | None
     aggregate_row: str
     reference_line: tuple[float, str] | None = None
     spotlight: list[str] = field(default_factory=list)
@@ -300,8 +302,55 @@ def is_available(spec: DatasetSpec) -> bool:
     return csv_path(spec).exists()
 
 
+# --------------------------------------------------------------------------
+# Resolving an id: the registry, or an uploaded file typed by inference
+# --------------------------------------------------------------------------
+#
+# `SPECS[dataset_id]` used to open every function below, which fused two
+# separate jobs - finding the spec, and building something out of it - and made
+# the registry the only possible source. Splitting them is what lets an upload
+# travel this code path rather than a parallel one that would drift from it.
+# The uploaded spec is INFERRED (see upload_spec.py) and says so in every
+# payload it reaches; the registry spec is declared by a human. That difference
+# is reported, never smoothed over.
+
+
+@functools.lru_cache(maxsize=8)
+def _upload_source(dataset_id: str):
+    """`(spec, frame, mapping)` for an uploaded id. Cached: the file is
+    immutable and named after its id, so re-reading it cannot change it."""
+    from .models import UploadedDataset
+    from .upload_spec import infer
+
+    record = UploadedDataset.objects.filter(id=dataset_id).first()
+    if record is None:
+        raise KeyError(dataset_id)
+    return infer(record)
+
+
+def resolve_spec(dataset_id: str) -> DatasetSpec:
+    """The spec for a registry id or an uploaded one. KeyError if neither."""
+    if dataset_id in SPECS:
+        return SPECS[dataset_id]
+    return _upload_source(dataset_id)[0]
+
+
+def is_upload(dataset_id: str) -> bool:
+    return dataset_id not in SPECS
+
+
+def upload_mapping(dataset_id: str):
+    """The inferred mapping behind an upload, for disclosure. None if declared."""
+    if dataset_id in SPECS:
+        return None
+    return _upload_source(dataset_id)[2]
+
+
 @functools.lru_cache(maxsize=4)
 def load_frame(dataset_id: str) -> pd.DataFrame:
+    if dataset_id not in SPECS:
+        # Already normalised onto the country/year convention by upload_spec.
+        return _upload_source(dataset_id)[1]
     spec = SPECS[dataset_id]
     path = csv_path(spec)
     if not path.exists():
@@ -373,7 +422,7 @@ def country_payload(
     sent, and a gap stays ``None`` so the map can hatch it as missing instead of
     colouring it with a guess.
     """
-    spec = SPECS[dataset_id]
+    spec = resolve_spec(dataset_id)
     if not spec.country_years or not spec.country_metrics:
         return None
 
@@ -429,7 +478,7 @@ def country_payload(
 
 
 def get_dataset(dataset_id: str) -> Dataset:
-    spec = SPECS[dataset_id]
+    spec = resolve_spec(dataset_id)
     df = load_frame(dataset_id)
     agg = df[df["country"] == spec.aggregate_row]
 
@@ -440,7 +489,7 @@ def get_dataset(dataset_id: str) -> Dataset:
         if row.empty:
             continue
         primary = row.iloc[0][spec.primary_col]
-        secondary = row.iloc[0][spec.secondary_col]
+        secondary = row.iloc[0][spec.secondary_col] if spec.secondary_col else None
         if pd.isna(primary):
             continue
         # The chart plots measles cases in thousands; keep the unit contract.
@@ -449,7 +498,7 @@ def get_dataset(dataset_id: str) -> Dataset:
             DatasetSeriesPoint(
                 year=int(year),
                 primary=scaled,
-                secondary=0.0 if pd.isna(secondary) else float(secondary),
+                secondary=0.0 if secondary is None or pd.isna(secondary) else float(secondary),
             )
         )
 
@@ -470,7 +519,10 @@ def get_dataset(dataset_id: str) -> Dataset:
                 country=country,
                 year=latest,
                 cases=_fmt_int(r[spec.primary_col]),
-                coverage=_fmt_secondary(r[spec.secondary_col], spec.secondary_unit),
+                coverage=(
+                    _fmt_secondary(r[spec.secondary_col], spec.secondary_unit)
+                    if spec.secondary_col else "-"
+                ),
             )
         )
 
@@ -523,7 +575,7 @@ def build_prompt_table(dataset_id: str) -> str:
     Every figure is read from the CSV. Nothing is hardcoded, so the agents
     cannot be handed a number the dataset does not contain.
     """
-    spec = SPECS[dataset_id]
+    spec = resolve_spec(dataset_id)
     df = load_frame(dataset_id)
     agg = df[df["country"] == spec.aggregate_row]
     # The last year the spec actually plots, not the last in the table. The two
@@ -533,10 +585,19 @@ def build_prompt_table(dataset_id: str) -> str:
     # hand the agent that same blank.
     latest = int(spec.series_years[-1]) if spec.series_years else int(df["year"].max())
 
+    # An inferred spec reaches here identically to a declared one, and the pack
+    # deliberately does NOT say which it is. The pack is the evidence the agents
+    # narrate; adding "these columns were guessed" would put an instruction in
+    # the prompt and make every tone measurement a measurement of two changes.
+    # The inference is disclosed to the READER instead, beside the story.
+    header = f"{spec.aggregate_row} by year -> {spec.primary_label}"
+    if spec.secondary_col:
+        header += f" | {spec.secondary_label}"
+        if spec.secondary_unit:
+            header += f" ({spec.secondary_unit})"
     lines = [
         f"REAL DATA - {spec.name} ({spec.sources[0]} and others; {spec.granularity}).",
-        f"{spec.aggregate_row} by year -> {spec.primary_label} | "
-        f"{spec.secondary_label} ({spec.secondary_unit}):",
+        header + ":",
     ]
     for year in (spec.series_years or sorted(agg["year"].unique().tolist())):
         row = agg[agg["year"] == year]
@@ -545,10 +606,12 @@ def build_prompt_table(dataset_id: str) -> str:
         r = row.iloc[0]
         if pd.isna(r[spec.primary_col]):
             continue
-        lines.append(
-            f"  {int(year)}: {_fmt_int(r[spec.primary_col])} | "
-            f"{_fmt_secondary(r[spec.secondary_col], spec.secondary_unit)}"
-        )
+        line = f"  {int(year)}: {_fmt_int(r[spec.primary_col])}"
+        # Never "| n/a": the agent narrates what it is handed, and a column of
+        # absences is an invitation to explain one.
+        if spec.secondary_col and not pd.isna(r[spec.secondary_col]):
+            line += f" | {_fmt_secondary(r[spec.secondary_col], spec.secondary_unit)}"
+        lines.append(line)
 
     if spec.spotlight:
         lines.append(f"Country detail ({latest}):")
@@ -559,12 +622,16 @@ def build_prompt_table(dataset_id: str) -> str:
             r = row.iloc[0]
             rate = r.get("incidence_per_million")
             rate_txt = "" if rate is None or pd.isna(rate) else f", {float(rate):.1f} per million"
-            lines.append(
-                f"  {country}: {_fmt_int(r[spec.primary_col])} "
-                f"{spec.primary_col_unit or spec.primary_unit}, "
-                f"{spec.secondary_label} "
-                f"{_fmt_secondary(r[spec.secondary_col], spec.secondary_unit)}{rate_txt}"
-            )
+            unit = spec.primary_col_unit or spec.primary_unit
+            detail = f"  {country}: {_fmt_int(r[spec.primary_col])}"
+            if unit:
+                detail += f" {unit}"
+            if spec.secondary_col and not pd.isna(r[spec.secondary_col]):
+                detail += (
+                    f", {spec.secondary_label} "
+                    f"{_fmt_secondary(r[spec.secondary_col], spec.secondary_unit)}"
+                )
+            lines.append(detail + rate_txt)
 
     if spec.reference_line:
         lines.append(

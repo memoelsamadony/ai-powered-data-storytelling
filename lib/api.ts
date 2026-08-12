@@ -143,10 +143,21 @@ export async function listRuns(datasetId?: string, tier?: string): Promise<RunRe
   }
 }
 
-export async function createRun(datasetId: string, tier = "mid"): Promise<RunRef> {
+/**
+ * Start a run on a registry dataset or on an uploaded table.
+ *
+ * The source is a tagged object rather than two positional ids, so a caller
+ * cannot pass an upload id in the dataset slot - which the backend would answer
+ * with a 404 that reads as "your file is gone".
+ */
+export async function createRun(
+  source: string | { datasetId: string } | { uploadId: string },
+  tier = "mid",
+): Promise<RunRef> {
+  const body = typeof source === "string" ? { datasetId: source } : source;
   return call<RunRef>("/runs", {
     method: "POST",
-    body: JSON.stringify({ datasetId, tier }),
+    body: JSON.stringify({ ...body, tier }),
   });
 }
 
@@ -378,11 +389,15 @@ export interface UploadedDataset {
   yearRange: string;
   countries: number | null;
   previewRows: Record<string, string>[];
-  /** The story pipeline can generate from it. Still false: see `note`. */
+  /** The story pipeline can generate from it. Per file, not a constant. */
   wired: boolean;
   /** Figures can be suggested from it. True - a table states its own types. */
   chartable: boolean;
   note: string;
+  /** How the file was read, in one sentence. Empty when `wired` is false. */
+  mapping: string;
+  /** Shape changes and caveats behind that reading. */
+  mappingNotes: string[];
 }
 
 /** Raised with the backend's own words, so the reader is told what was wrong. */

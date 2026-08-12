@@ -16,7 +16,13 @@
    `node --test`. Type-only imports are erased and do not need one. */
 import { generatedDatasets } from "./generated/datasets.generated.ts";
 
-export type FailureMode = "alarmism" | "over-optimism";
+/**
+ * "unknown" is what an uploaded table gets. Which direction a dataset tempts a
+ * narrator is an editorial reading of what the numbers are ABOUT, and a file
+ * uploaded a minute ago states nothing about that. Mirrors `FailureMode` in
+ * backend/storytelling/schemas.py.
+ */
+export type FailureMode = "alarmism" | "over-optimism" | "unknown";
 
 export interface DatasetSeriesPoint {
   year: number;

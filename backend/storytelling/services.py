@@ -54,9 +54,15 @@ def _timed(run: Run, stage: str, model: str, fn: Callable[[], T]) -> T:
 # --------------------------------------------------------------------------
 
 
-def start_run(dataset_id: str, tier_id: str) -> Run:
+def start_run(dataset_id: str, tier_id: str, upload=None) -> Run:
+    """`upload` is an UploadedDataset when the run is on an uploaded table.
+
+    `dataset_id` carries its uuid either way, so every stage below keeps reading
+    one field; the FK exists so `results.py` can hold these out of the measured
+    aggregates without parsing ids.
+    """
     oc.resolve_tier(tier_id)  # validate early
-    return Run.objects.create(dataset_id=dataset_id, tier=tier_id)
+    return Run.objects.create(dataset_id=dataset_id, tier=tier_id, source_upload=upload)
 
 
 # The local Ollama judge below is kept, and the Claude judge writes to its own
@@ -266,7 +272,10 @@ def to_story_set(run: Run) -> StorySet:
     spans = emotive_spans_of(run)
     return StorySet(
         dataset_id=run.dataset_id,
-        human=_human_variant(run),
+        # An uploaded table has no human baseline and no way to acquire one in
+        # the same session, so the field is absent rather than empty. See the
+        # note on StorySet.human.
+        human=None if run.source_upload_id else _human_variant(run),
         ai_raw=ToneVariant(
             id="ai-raw",
             label="LLM - raw",
@@ -302,13 +311,13 @@ def to_story_set(run: Run) -> StorySet:
 def _dataset_values(dataset_id: str):
     """Every figure the generator was given for this dataset, plus its years."""
     import pandas as pd
-    from .datasets import SPECS, load_frame
-    spec = SPECS[dataset_id]
+    from .datasets import load_frame, resolve_spec
+    spec = resolve_spec(dataset_id)
     df = load_frame(dataset_id)
     agg = df[df["country"] == spec.aggregate_row]
     values, years = [], []
     for _, r in agg.iterrows():
-        for col in (spec.primary_col, spec.secondary_col):
+        for col in (c for c in (spec.primary_col, spec.secondary_col) if c):
             v = r.get(col)
             if v is not None and not pd.isna(v):
                 values.append(float(v))
@@ -318,7 +327,8 @@ def _dataset_values(dataset_id: str):
         row = df[(df["country"] == country) & (df["year"] == latest)]
         if row.empty:
             continue
-        for col in (spec.primary_col, spec.secondary_col, "incidence_per_million"):
+        cols = (spec.primary_col, spec.secondary_col, "incidence_per_million")
+        for col in (c for c in cols if c):
             v = row.iloc[0].get(col)
             if v is not None and not pd.isna(v):
                 values.append(float(v))
@@ -350,8 +360,13 @@ def compare(run: Run, human_text: str = "") -> ComparisonMetrics:
     candidate = "\n\n".join(run.moderated_paragraphs)
     raw_text = "\n\n".join(run.raw_paragraphs)
 
+    # Every one of these measures the candidate AGAINST the human baseline, so
+    # with no baseline there is nothing to report - and six rows of 0.0 would
+    # read as "scored zero" rather than "not measured". That is the same defect
+    # the BLEU-4 note above describes, and an uploaded table hits it on every
+    # run, because it never has a baseline.
     sim = metrics.all_metrics(reference, candidate) if reference and candidate else {}
-    similarity = [
+    similarity = [] if not sim else [
         TextSimilarity(metric="chrF++", value=sim.get("chrf++", 0.0)),
         TextSimilarity(metric="BLEU-1", value=sim.get("bleu1", 0.0)),
         TextSimilarity(metric="BLEU-2", value=sim.get("bleu2", 0.0)),

@@ -32,7 +32,20 @@ class Run(models.Model):
     """One pass of generate -> moderate -> factcheck over one dataset."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    #: A registry id ("measles"), or the uuid of an uploaded file. Both resolve
+    #: through `datasets.resolve_spec`, so every stage reads one field.
     dataset_id = models.CharField(max_length=64)
+    #: Set only for a run on an uploaded CSV. A separate column rather than a
+    #: "upload:" prefix on `dataset_id`, for one reason: `results.py` has to
+    #: exclude these from the measured aggregates, and a prefix convention would
+    #: leak that parsing into every place that resolves a dataset id. The
+    #: aggregates are a research record whose n the report cites, and runs whose
+    #: column mapping was INFERRED are not the same kind of evidence as runs on
+    #: the two curated datasets, so they must not silently join that mean.
+    source_upload = models.ForeignKey(
+        "UploadedDataset", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="runs",
+    )
     tier = models.CharField(max_length=32)
     status = models.CharField(max_length=16, choices=RunStatus, default=RunStatus.PENDING)
 

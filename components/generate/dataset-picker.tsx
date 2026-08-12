@@ -4,6 +4,7 @@ import { Check, Database, AlertTriangle, TrendingUp } from "lucide-react";
 import type { Dataset } from "@/lib/data/datasets";
 import { StoryChart } from "@/components/charts/story-chart";
 import { DatasetUpload } from "@/components/generate/dataset-upload";
+import type { UploadedDataset } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -11,10 +12,14 @@ export function DatasetPicker({
   datasets,
   selectedId,
   onSelect,
+  onSelectUpload,
+  selectedUploadId,
 }: {
   datasets: Dataset[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  onSelectUpload: (record: UploadedDataset) => void;
+  selectedUploadId: string | null;
 }) {
   const selected = datasets.find((d) => d.id === selectedId) ?? null;
 
@@ -56,7 +61,7 @@ export function DatasetPicker({
           );
         })}
 
-        <DatasetUpload />
+        <DatasetUpload onSelect={onSelectUpload} selectedId={selectedUploadId} />
       </div>
 
       {selected && (

@@ -141,7 +141,10 @@ export function StoryChart({
 
   return (
     <figure className="m-0">
-      <ChartLegend specs={[primary, secondary]} compact={compact} />
+      <ChartLegend
+        specs={dataset.secondaryLabel ? [primary, secondary] : [primary]}
+        compact={compact}
+      />
 
       <ResponsiveContainer width="100%" height={height}>
         <ComposedChart data={rows} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
@@ -198,15 +201,23 @@ export function StoryChart({
             dot={false}
             activeDot={{ r: 4, stroke: t.surface, strokeWidth: 2 }}
           />
-          <Line
-            type="monotone"
-            dataKey="secondaryPlot"
-            stroke={t.brandBlue}
-            strokeWidth={2}
-            name={secondary.label}
-            dot={false}
-            activeDot={{ r: 4, stroke: t.surface, strokeWidth: 2 }}
-          />
+          {/* An uploaded table may carry only one usable measure, and the
+              payload fills the absent one with 0.0 rather than a gap. Drawing it
+              would put a flat line along the axis that reads as "this measure is
+              zero every year" - a measurement of something never measured. An
+              empty label is what says the measure is absent; every registry
+              dataset declares one. */}
+          {!!dataset.secondaryLabel && (
+            <Line
+              type="monotone"
+              dataKey="secondaryPlot"
+              stroke={t.brandBlue}
+              strokeWidth={2}
+              name={secondary.label}
+              dot={false}
+              activeDot={{ r: 4, stroke: t.surface, strokeWidth: 2 }}
+            />
+          )}
 
           <Tooltip
             content={<StoryTooltip primary={primary} secondary={secondary} />}
@@ -329,7 +340,9 @@ function StoryTooltip({
       <p className="font-mono text-[0.7rem] font-semibold text-navy">{p.year}</p>
       <div className="mt-2 space-y-1.5">
         <Row spec={primary} value={p.primary} plotted={p.primaryPlot} />
-        <Row spec={secondary} value={p.secondary} plotted={p.secondaryPlot} />
+        {!!secondary.label && (
+          <Row spec={secondary} value={p.secondary} plotted={p.secondaryPlot} />
+        )}
       </div>
     </div>
   );

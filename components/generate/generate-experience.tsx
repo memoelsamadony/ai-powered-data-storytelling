@@ -12,20 +12,31 @@ import { PipelineRunner } from "@/components/generate/pipeline-runner";
 import { Comparison } from "@/components/generate/comparison";
 import { cn } from "@/lib/utils";
 
-const stepMeta = [
-  { title: "Choose a dataset", desc: "Pick the data your story is built from. Each one fails in a different tonal direction." },
-  { title: "The human baseline", desc: "Write or import the human-authored story, the yardstick the LLM is measured against." },
-  { title: "Run the agentic pipeline", desc: "Generate → moderate tone → factual check, all on the same numbers." },
-  { title: "Compare & evaluate", desc: "Human, raw, and moderated stories side by side, with the metrics." },
-];
+/**
+ * Identified, not numbered.
+ *
+ * An uploaded table has no human baseline, so its wizard is three steps rather
+ * than four - and every gate, recap and body below used to key off the step
+ * INDEX, which silently means something different once a step is dropped. The
+ * ids are what survive the filter; the index is only a position on the rail.
+ */
+type StepId = "dataset" | "human" | "run" | "compare";
 
-const LAST = stepMeta.length - 1;
+const ALL_STEPS: { id: StepId; title: string; desc: string }[] = [
+  { id: "dataset", title: "Choose a dataset", desc: "Pick the data your story is built from. Each one fails in a different tonal direction, and you can bring your own table." },
+  { id: "human", title: "The human baseline", desc: "Write or import the human-authored story, the yardstick the LLM is measured against." },
+  { id: "run", title: "Run the agentic pipeline", desc: "Generate → moderate tone → factual check, all on the same numbers." },
+  { id: "compare", title: "Compare & evaluate", desc: "Human, raw, and moderated stories side by side, with the metrics." },
+];
 
 export function GenerateExperience() {
   const [step, setStep] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
   const [openSteps, setOpenSteps] = useState<number[]>([0]);
   const [datasetId, setDatasetId] = useState<string | null>(null);
+  // The uploaded table this run is on, if any. Held as the record rather than a
+  // boolean so the mapping sentence it carries can be shown with the story.
+  const [upload, setUpload] = useState<api.UploadedDataset | null>(null);
   const [humanText, setHumanText] = useState("");
   const [generated, setGenerated] = useState(false);
 
@@ -131,17 +142,58 @@ export function GenerateExperience() {
   }, [datasetId, tier]);
 
 
-  const mockStory = useMemo(() => (datasetId ? getStorySet(datasetId) : null), [datasetId]);
-  const story = liveStory ?? mockStory;
-  const dataset = useMemo(
-    () => datasets.find((d) => d.id === datasetId) ?? null,
-    [datasets, datasetId],
+  // Never for an uploaded table. `getStorySet` falls back to the measles story
+  // for an id it does not know, and rendering that under an uploaded file's
+  // name is the exact failure the `/runs` alias bug produced: one dataset's
+  // story shown as another's. An upload with no backend simply has no story.
+  const mockStory = useMemo(
+    () => (datasetId && !upload ? getStorySet(datasetId) : null),
+    [datasetId, upload],
   );
-  const sampleText = mockStory ? mockStory.human.paragraphs.join("\n\n") : "";
+  const story = liveStory ?? mockStory;
+  // An uploaded table is served by the same /datasets/{id} endpoint, typed by
+  // inference instead of declared, so it arrives here as an ordinary Dataset
+  // and every component below draws it without knowing the difference.
+  const [uploadDataset, setUploadDataset] = useState<Dataset | null>(null);
+  const dataset = useMemo(
+    () =>
+      datasets.find((d) => d.id === datasetId) ??
+      (uploadDataset?.id === datasetId ? uploadDataset : null),
+    [datasets, datasetId, uploadDataset],
+  );
+
+  const steps = useMemo(
+    () => ALL_STEPS.filter((s) => s.id !== "human" || !upload),
+    [upload],
+  );
+  const LAST = steps.length - 1;
+  const sampleText = mockStory?.human?.paragraphs.join("\n\n") ?? "";
+
+  const selectUpload = async (record: api.UploadedDataset) => {
+    setUpload(record);
+    setDatasetId(record.id);
+    setUploadDataset(null);
+    // No sample baseline: there is no human story for a file uploaded a minute
+    // ago, and seeding the measles one would put another dataset's words into
+    // this run's comparison.
+    setHumanText("");
+    setGenerated(false);
+    setLiveStory(null);
+    setLiveMetrics(null);
+    runIdRef.current = null;
+    // The rail is one step shorter now, so a reader who had walked further
+    // would land on an index that no longer exists.
+    setStep(0);
+    setMaxReached(0);
+    setOpenSteps([0]);
+    setUploadDataset((await api.getDatasetById(record.id)) ?? null);
+  };
 
   const selectDataset = (id: string) => {
+    setUpload(null);
+    setUploadDataset(null);
     setDatasetId(id);
-    setHumanText(getStorySet(id).human.paragraphs.join("\n\n"));
+    setHumanText(getStorySet(id).human?.paragraphs.join("\n\n") ?? "");
     setGenerated(false);
     setLiveStory(null);
     setLiveMetrics(null);
@@ -177,7 +229,10 @@ export function GenerateExperience() {
     if (!isLive || !datasetId || !tier) return undefined;
 
     const selectCharts = () =>
-      api.suggestCharts({ datasetId }, { tier, model: figureModel });
+      api.suggestCharts(
+        upload ? { uploadId: upload.id } : { datasetId },
+        { tier, model: figureModel },
+      );
 
     const cachedRunId = cachedRuns[0]?.runId;
     if (source === "cached" && cachedRunId) {
@@ -205,7 +260,10 @@ export function GenerateExperience() {
 
     return {
       generate: async () => {
-        const run = await api.createRun(datasetId, tier);
+        const run = await api.createRun(
+          upload ? { uploadId: upload.id } : { datasetId },
+          tier,
+        );
         runIdRef.current = run.runId;
         if (humanText.trim()) {
           await api.saveHumanStory(run.runId, humanText);
@@ -226,7 +284,7 @@ export function GenerateExperience() {
         return s;
       },
     };
-  }, [isLive, datasetId, tier, humanText, figureModel, source, cachedRuns]);
+  }, [isLive, datasetId, upload, tier, humanText, figureModel, source, cachedRuns]);
 
   // Scored once the comparison step is reachable, not while the run is going:
   // the metrics need the moderated text, which only exists after the last
@@ -281,21 +339,25 @@ export function GenerateExperience() {
     );
   };
 
-  const canContinue = (i: number) =>
-    (i === 0 && !!datasetId) ||
-    (i === 1 && humanText.trim().length > 0) ||
-    (i === 2 && generated);
+  const canContinue = (i: number) => {
+    const id = steps[i]?.id;
+    if (id === "dataset") return !!datasetId;
+    if (id === "human") return humanText.trim().length > 0;
+    if (id === "run") return generated;
+    return false;
+  };
 
   /** The one-line recap a folded step shows, so the rail stays readable. */
   const summary = (i: number): string | null => {
     if (i > maxReached) return null;
-    if (i === 0) return dataset ? dataset.name : "No dataset chosen";
-    if (i === 1) {
+    const id = steps[i]?.id;
+    if (id === "dataset") return dataset ? dataset.name : "No dataset chosen";
+    if (id === "human") {
       const words = humanText.trim() ? humanText.trim().split(/\s+/).length : 0;
       return words ? `${words} words` : "Not written yet";
     }
-    if (i === 2) return generated ? "Pipeline complete: 3 stages" : "Not run yet";
-    if (i === 3 && story) {
+    if (id === "run") return generated ? "Pipeline complete: 3 stages" : "Not run yet";
+    if (id === "compare" && story) {
       const after = story.aiModerated.alarmismRating;
       const beforeRating = story.aiRaw.alarmismRating;
       if (after === null || beforeRating === null) return "Tone not measured";
@@ -321,7 +383,7 @@ export function GenerateExperience() {
       )}
 
       <ol className="space-y-0">
-        {stepMeta.map((meta, i) => {
+        {steps.map((meta, i) => {
           const state = stateOf(i);
           const reached = i <= maxReached;
           const open = reached && isOpen(i);
@@ -384,10 +446,16 @@ export function GenerateExperience() {
                     discard it, and re-opening must not replay the animation. */}
                 {reached && (
                   <div className={cn("mt-6", !open && "hidden")}>
-                    {i === 0 && (
-                      <DatasetPicker datasets={datasets} selectedId={datasetId} onSelect={selectDataset} />
+                    {meta.id === "dataset" && (
+                      <DatasetPicker
+                        datasets={datasets}
+                        selectedId={datasetId}
+                        onSelect={selectDataset}
+                        onSelectUpload={selectUpload}
+                        selectedUploadId={upload?.id ?? null}
+                      />
                     )}
-                    {i === 1 && dataset && (
+                    {meta.id === "human" && dataset && (
                       <HumanStoryEditor
                         value={humanText}
                         onChange={setHumanText}
@@ -395,7 +463,7 @@ export function GenerateExperience() {
                         dataset={dataset}
                       />
                     )}
-                    {i === 2 && story && dataset && (
+                    {meta.id === "run" && story && dataset && (
                       <PipelineRunner
                         story={story}
                         dataset={dataset}
@@ -406,7 +474,7 @@ export function GenerateExperience() {
                         cachedCount={cachedRuns.length}
                         onComplete={() => {
                           setGenerated(true);
-                          setMaxReached((m) => Math.max(m, 3));
+                          setMaxReached((m) => Math.max(m, LAST));
                         }}
                         onReset={() => {
                           // A new run gets a new id, so the previous run's
@@ -419,7 +487,7 @@ export function GenerateExperience() {
                         }}
                       />
                     )}
-                    {i === 3 && story && dataset && (
+                    {meta.id === "compare" && story && dataset && (
                       <Comparison
                         story={story}
                         humanText={humanText}
@@ -441,7 +509,7 @@ export function GenerateExperience() {
                               : "cursor-not-allowed bg-surface-soft text-faint",
                           )}
                         >
-                          {i === 2 ? "See the comparison" : "Continue"}
+                          {meta.id === "run" ? "See the comparison" : "Continue"}
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       </div>

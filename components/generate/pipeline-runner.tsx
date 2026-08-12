@@ -78,8 +78,11 @@ export function PipelineRunner({
   // Render whatever the backend has produced so far; fall back to the mock.
   const view = live ?? story;
   // No band without a judged human baseline: the band is drawn *around* that
-  // rating, so inventing one would draw a target where none was measured.
-  const bands = humanBands(view.human);
+  // rating, so inventing one would draw a target where none was measured. An
+  // uploaded table has no baseline at all, which is the same absence.
+  const bands: ReturnType<typeof humanBands> = view.human
+    ? humanBands(view.human)
+    : { alarmism: undefined, optimism: undefined };
 
   const rawBody = view.aiRaw.paragraphs.join("\n\n");
 

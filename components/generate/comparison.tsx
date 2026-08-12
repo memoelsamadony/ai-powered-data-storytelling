@@ -14,6 +14,7 @@ import { Redline } from "@/components/story/redline";
 import { FactCheckGutter } from "@/components/story/fact-check-gutter";
 import { humanBands } from "@/components/tone-meter";
 import { Glossary, type GlossaryItem } from "@/components/ui/glossary";
+import { cn } from "@/lib/utils";
 
 /* ── Terminology, defined on the page rather than in a tooltip ──────────── */
 
@@ -102,7 +103,11 @@ export function Comparison({
    */
   metrics?: api.ComparisonMetrics | null;
 }) {
-  const human: ToneVariant = {
+  // Null for a run on an uploaded table. Every human-relative figure below
+  // falls away with it rather than being computed against nothing: a band of
+  // undefined, a similarity score of 0.0 and an empty "Human baseline" panel
+  // would each report a measurement that was never taken.
+  const human: ToneVariant | null = story.human && {
     ...story.human,
     paragraphs: humanText.trim()
       ? humanText.trim().split(/\n{2,}/).map((p) => p.trim())
@@ -123,9 +128,18 @@ export function Comparison({
   // have to exist before any of it can be stated. When the judge was
   // unreachable the panel says so instead of computing a move that was never
   // measured, which on this page would be the headline claim.
-  const humanRating = story.human.alarmismRating;
-  const scored = raw !== null && moderated !== null && humanRating !== null;
-  const bands = humanBands(story.human);
+  const humanRating = story.human?.alarmismRating ?? null;
+  // Two questions that used to be one. How far moderation moved the story needs
+  // only the two machine ratings; WHERE it landed needs the baseline's band as
+  // well. Requiring the baseline for both withheld a move that had in fact been
+  // measured - visibly so, since the message below already said "Both machine
+  // stories were scored" while printing no number. An uploaded table has no
+  // baseline at all, so without this split it could never show a tone result.
+  const moveScored = raw !== null && moderated !== null;
+  const scored = moveScored && humanRating !== null;
+  const bands: ReturnType<typeof humanBands> = story.human
+    ? humanBands(story.human)
+    : { alarmism: undefined, optimism: undefined };
   const band = bands.alarmism;
   // The optimism move used to be *inferred* from the alarmism one - pulled down
   // meant "out of catastrophising", pulled up meant "out of false reassurance".
@@ -135,7 +149,7 @@ export function Comparison({
     story.aiRaw.optimismRating !== null && story.aiModerated.optimismRating !== null
       ? +(story.aiModerated.optimismRating - story.aiRaw.optimismRating).toFixed(1)
       : null;
-  const moved = scored ? +(moderated! - raw!).toFixed(1) : null;
+  const moved = moveScored ? +(moderated! - raw!).toFixed(1) : null;
   const pulledUp = moved !== null && moved > 0;
   const landedInBand =
     scored && band ? moderated! >= band.from && moderated! <= band.to : false;
@@ -144,8 +158,12 @@ export function Comparison({
     ? {
         id: dataset.id,
         label: dataset.shortName,
-        tempts: `tempts ${dataset.failureMode}`,
-        human: { value: humanRating!, title: human.title, author: human.author },
+        tempts:
+          dataset.failureMode === "unknown"
+            ? "failure mode not declared"
+            : `tempts ${dataset.failureMode}`,
+        // `scored` implies a judged baseline, which implies `human`.
+        human: { value: humanRating!, title: human!.title, author: human!.author },
         raw: { value: raw!, title: story.aiRaw.title, author: story.aiRaw.author },
         moderated: {
           value: moderated!,
@@ -162,11 +180,21 @@ export function Comparison({
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 lg:grid-cols-3">
-        <StoryPanel variant={human} bands={bands} compact />
+      <div className={cn("grid gap-4", human ? "lg:grid-cols-3" : "lg:grid-cols-2")}>
+        {human && <StoryPanel variant={human} bands={bands} compact />}
         <StoryPanel variant={story.aiRaw} bands={bands} compact />
         <StoryPanel variant={story.aiModerated} bands={bands} compact />
       </div>
+
+      {!human && (
+        <p className="rounded-xl border border-hairline bg-surface-soft/40 px-4 py-3 text-xs leading-relaxed text-muted">
+          No human baseline: this story was written from a table you uploaded, and
+          the baseline is a story a person wrote against the same numbers. The
+          moderator&rsquo;s move is still measured below - what is missing is the
+          human tone band it would be measured <em>against</em>, and every
+          similarity score, which compares the machine text to that baseline.
+        </p>
+      )}
 
       {/* One chart for all three panels. The three stories are three tellings of
           the SAME numbers — that is the whole point of the comparison — so
@@ -213,11 +241,7 @@ export function Comparison({
                  both machine stories had been judged and only the baseline was
                  missing, which is the common case and not a judge failure. */
               <p className="text-sm text-muted">
-                {raw === null || moderated === null
-                  ? "No judge was reachable for this run, so the tone was not measured."
-                  : humanRating === null && !story.human.paragraphs.join("").trim()
-                    ? "Write a human baseline above to see where the moderated story landed against it."
-                    : "The baseline was not judged, so there is no band to measure the move against. Both machine stories were scored."}
+                {"No judge was reachable for this run, so the tone was not measured."}
               </p>
             ) : (
               <p className="text-sm text-muted">

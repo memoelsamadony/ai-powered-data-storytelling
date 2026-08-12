@@ -83,7 +83,13 @@ export interface FactCheckItem {
 
 export interface StorySet {
   datasetId: string;
-  human: ToneVariant;
+  /**
+   * Null for a run on an uploaded table: the baseline is a story a human wrote
+   * against this same data, and an uploaded file has none. Absent rather than
+   * empty, so the panel disappears instead of reading as a human who wrote
+   * nothing. The tone band derived from it goes with it.
+   */
+  human: ToneVariant | null;
   aiRaw: ToneVariant;
   aiModerated: ToneVariant;
   emotiveSpans: EmotiveSpan[];

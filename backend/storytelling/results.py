@@ -120,9 +120,19 @@ def faithfulness() -> ReproductionResults | None:
     )
 
 
+#: Runs on uploaded CSVs are excluded from every figure below. Not because they
+#: are worse runs - they use the same models and the same stages - but because
+#: their column mapping was INFERRED rather than declared, so they are a
+#: different kind of evidence. Averaging the two together would let a demo
+#: upload move a number the report and the talk cite, inside an n that gives no
+#: sign the instrument changed. The wizard shows those runs in full; only the
+#: aggregate research record is kept clean.
+CURATED = {"source_upload__isnull": True}
+
+
 def measured() -> MeasuredResults:
-    """What the runs in this database actually show."""
-    runs = list(Run.objects.all())
+    """What the runs on the curated datasets in this database actually show."""
+    runs = list(Run.objects.filter(**CURATED))
     done = [r for r in runs if r.status == RunStatus.DONE]
 
     judged = [r for r in done if r.raw_alarmism is not None and r.moderated_alarmism is not None]
@@ -140,15 +150,16 @@ def measured() -> MeasuredResults:
 
     timings: list[StageTiming] = []
     keys = (
-        StageResult.objects.values("stage", "model")
+        StageResult.objects.filter(run__source_upload__isnull=True)
+        .values("stage", "model")
         .annotate(n=Count("id"))
         .order_by("stage", "model")
     )
     for key in keys:
         seconds = list(
-            StageResult.objects.filter(stage=key["stage"], model=key["model"]).values_list(
-                "duration_s", flat=True
-            )
+            StageResult.objects.filter(
+                stage=key["stage"], model=key["model"], run__source_upload__isnull=True
+            ).values_list("duration_s", flat=True)
         )
         timings.append(
             StageTiming(
@@ -164,7 +175,8 @@ def measured() -> MeasuredResults:
         runs_complete=len(done),
         by_tier=[
             TierRuns(tier=row["tier"], runs=row["n"])
-            for row in Run.objects.values("tier").annotate(n=Count("id")).order_by("tier")
+            for row in Run.objects.filter(**CURATED)
+            .values("tier").annotate(n=Count("id")).order_by("tier")
         ],
         alarmism_before=(
             round(statistics.mean(r.raw_alarmism for r in judged), 2) if judged else None

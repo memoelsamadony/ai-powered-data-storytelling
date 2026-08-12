@@ -35,6 +35,7 @@ from .charts import select as charts_select
 from . import ollama_client as oc
 from . import results as results_mod
 from . import services
+from . import upload_spec
 from . import uploads as uploads_mod
 from .models import ChartSelection, Run, RunStatus, StageResult, UploadedDataset
 from .schemas import (
@@ -154,26 +155,74 @@ def list_datasets(request):
 
 @get("/datasets/{dataset_id}", response=Dataset)
 def get_dataset(request, dataset_id: str):
-    if dataset_id not in ds.SPECS:
-        raise HttpError(404, f"Unknown dataset '{dataset_id}'")
-    if not ds.is_available(ds.SPECS[dataset_id]):
-        raise HttpError(404, f"Dataset '{dataset_id}' has no data file yet")
-    return ds.get_dataset(dataset_id)
+    """A registry dataset, or an uploaded table typed by inference.
+
+    Serving both from one endpoint is the point of `resolve_spec`: the wizard
+    asks for whatever it was given an id for and receives the same shape, so no
+    component below it needs to know which kind of table it is drawing.
+    """
+    if dataset_id in ds.SPECS:
+        if not ds.is_available(ds.SPECS[dataset_id]):
+            raise HttpError(404, f"Dataset '{dataset_id}' has no data file yet")
+        return ds.get_dataset(dataset_id)
+    try:
+        return ds.get_dataset(dataset_id)
+    except KeyError as exc:
+        raise HttpError(404, f"Unknown dataset '{dataset_id}'") from exc
+    except upload_spec.NotGeneratable as exc:
+        raise HttpError(422, str(exc)) from exc
 
 
-# Two different capabilities, and conflating them is what would mislead. Charts
-# need the column TYPE, which the data answers for itself (charts/profile.py).
-# The story pipeline needs to know which column is the measure, which is the
-# comparison and what its class breaks are - editorial facts no table states -
-# so it still waits on the configuration step.
-UPLOAD_NOTE = (
-    "Stored and validated. Figures can be suggested from it now: choosing a chart "
-    "needs only each column's type, which is readable from the data. Generating a "
-    "story is not available yet - the pipeline needs to know which column is the "
-    "measure, which is the comparison, and what its class breaks are, and inferring "
-    "that from column names is how an unlabelled figure ends up in front of a "
-    "reader. The configuration step comes first."
+# Two capabilities that still fail apart, so still two fields. What changed is
+# that the second one is now decided per file rather than being a constant no:
+# `upload_spec.infer` settles the editorial part (measure, comparison, total
+# row) from the column types. That is a guess, and the guard against a guess
+# becoming a claim is that `mapping` states it in one sentence beside the story.
+# A file with no time column still cannot narrate, and says which ingredient
+# was missing rather than failing generically.
+CHARTABLE_NOTE = (
+    "Stored and validated. Figures can be suggested from it: choosing a chart "
+    "needs only each column's type, which is readable from the data."
 )
+GENERATABLE_NOTE = (
+    CHARTABLE_NOTE
+    + " The story pipeline can run on it too - which column is the measure, which "
+    "is the comparison and which row is the total were read from the column types "
+    "rather than declared by a human, so that reading is shown with the story and "
+    "is worth a glance before you trust the numbers in it."
+)
+
+
+def _upload_out(record, *, preview: bool) -> UploadOut:
+    """One serialiser for both upload endpoints, so they cannot disagree.
+
+    The inference runs here rather than at generate time on purpose: a file that
+    cannot carry a story should say so on the card that stores it, not after a
+    reader has clicked through to a wizard that then refuses them.
+    """
+    try:
+        mapping = ds.upload_mapping(str(record.id))
+    except upload_spec.NotGeneratable as exc:
+        mapping, reason = None, str(exc)
+    except Exception as exc:  # noqa: BLE001 - a broken read must not hide the file
+        mapping, reason = None, f"The file could not be read as a table: {exc}"
+    else:
+        reason = ""
+    return UploadOut(
+        id=str(record.id),
+        original_name=record.original_name,
+        rows=record.rows,
+        columns=record.columns,
+        numeric_columns=record.numeric_columns,
+        year_range=record.year_range,
+        countries=record.countries,
+        preview_rows=uploads_mod.preview(record) if preview else [],
+        wired=mapping is not None,
+        chartable=True,
+        mapping=mapping.sentence() if mapping else "",
+        mapping_notes=list(mapping.notes) if mapping else [],
+        note=GENERATABLE_NOTE if mapping else f"{CHARTABLE_NOTE} {reason}",
+    )
 
 
 @post("/uploads", response=UploadOut)
@@ -186,37 +235,12 @@ def upload_dataset(request, file: UploadedFile = File(...)):
         record = uploads_mod.store(file)
     except uploads_mod.UploadRejected as exc:
         raise HttpError(400, str(exc)) from exc
-    return UploadOut(
-        id=str(record.id),
-        original_name=record.original_name,
-        rows=record.rows,
-        columns=record.columns,
-        numeric_columns=record.numeric_columns,
-        year_range=record.year_range,
-        countries=record.countries,
-        preview_rows=uploads_mod.preview(record),
-        wired=False,
-        chartable=True,
-        note=UPLOAD_NOTE,
-    )
+    return _upload_out(record, preview=True)
 
 
 @get("/uploads", response=list[UploadOut])
 def list_uploads(request):
-    return [
-        UploadOut(
-            id=str(r.id),
-            original_name=r.original_name,
-            rows=r.rows,
-            columns=r.columns,
-            numeric_columns=r.numeric_columns,
-            year_range=r.year_range,
-            countries=r.countries,
-            wired=False,
-            note=UPLOAD_NOTE,
-        )
-        for r in UploadedDataset.objects.all()[:50]
-    ]
+    return [_upload_out(r, preview=False) for r in UploadedDataset.objects.all()[:50]]
 
 
 # --------------------------------------------------------------------------
@@ -226,14 +250,34 @@ def list_uploads(request):
 
 @post("/runs", response=RunRef)
 def create_run(request, payload: GenerateIn):
-    if payload.dataset_id not in ds.SPECS:
-        raise HttpError(404, f"Unknown dataset '{payload.dataset_id}'")
+    """A run on a registry dataset, or on an uploaded table.
+
+    The upload branch resolves the inferred spec BEFORE creating the run, so a
+    file that cannot carry a story fails here with the missing ingredient named,
+    rather than at the generate stage with a half-written run in the database.
+    """
+    if bool(payload.dataset_id) == bool(payload.upload_id):
+        raise HttpError(400, "Give exactly one of datasetId or uploadId.")
+
+    upload = None
+    if payload.upload_id:
+        upload = get_object_or_404(UploadedDataset, id=payload.upload_id)
+        try:
+            ds.resolve_spec(str(upload.id))
+        except upload_spec.NotGeneratable as exc:
+            raise HttpError(422, str(exc)) from exc
+        dataset_id = str(upload.id)
+    else:
+        if payload.dataset_id not in ds.SPECS:
+            raise HttpError(404, f"Unknown dataset '{payload.dataset_id}'")
+        dataset_id = payload.dataset_id
+
     plan = oc.tier_plan(oc.resolve_tier(payload.tier))
     if not plan["runnable"]:
         missing = [m for m in oc.resolve_tier(payload.tier).distinct_models
                    if m not in plan["installed"]]
         raise HttpError(409, f"Tier '{payload.tier}' needs models not pulled: {', '.join(missing)}")
-    run = services.start_run(payload.dataset_id, payload.tier)
+    run = services.start_run(dataset_id, payload.tier, upload=upload)
     return RunRef(run_id=str(run.id), dataset_id=run.dataset_id, tier=run.tier, status=run.status)
 
 

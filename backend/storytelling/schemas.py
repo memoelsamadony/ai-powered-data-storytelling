@@ -31,7 +31,12 @@ class Schema(BaseModel):
 # Datasets  (mirrors lib/data/datasets.ts)
 # --------------------------------------------------------------------------
 
-FailureMode = Literal["alarmism", "over-optimism"]
+# "unknown" exists for uploaded tables. Which direction a dataset tempts a
+# narrator is an editorial reading of what the numbers are ABOUT, and an
+# uploaded file states nothing about that. Both tone axes are judged and
+# drawn for every story regardless, so nothing downstream needs this to be
+# one of the two declared modes - it only needs to not claim one.
+FailureMode = Literal["alarmism", "over-optimism", "unknown"]
 
 
 class DatasetSeriesPoint(Schema):
@@ -171,7 +176,13 @@ class FactCheckItem(Schema):
 
 class StorySet(Schema):
     dataset_id: str
-    human: ToneVariant
+    #: ``None`` for a run on an uploaded table. The baseline is a story a human
+    #: wrote against this same data; for a file uploaded a minute ago there is
+    #: none, and the alternative - an empty panel labelled "Human baseline" -
+    #: would read as a human who wrote nothing rather than as a step that does
+    #: not apply. The tone band derived from it is dropped with it, which
+    #: ``humanBands`` already handles by returning undefined.
+    human: ToneVariant | None
     ai_raw: ToneVariant
     ai_moderated: ToneVariant
     emotive_spans: list[EmotiveSpan]
@@ -463,15 +474,18 @@ class UploadOut(Schema):
 
     Two separate capabilities, deliberately not collapsed into one flag:
 
-    ``wired``     the story pipeline can generate from it. Still false; that
-                  needs declared measures and class breaks, which are editorial
-                  facts no table states about itself.
+    ``wired``     the story pipeline can generate from it. No longer a
+                  constant: ``upload_spec.infer`` decides the editorial part
+                  (which column is the measure, which is the comparison, which
+                  row is the total) from the column types, and this is true when
+                  it succeeded. False keeps its meaning - the file cannot carry
+                  a story - and ``note`` then says which ingredient was missing.
     ``chartable`` figures can be suggested from it. True, because choosing a
                   form needs only each column's TYPE, and a table does answer
                   that about itself.
 
-    Reporting one number for both is what would let the interface imply the file
-    is ready to generate from when it is only ready to draw.
+    They stay two fields because they still fail apart: a table with no time
+    column draws fine and narrates nothing.
     """
 
     id: str
@@ -484,11 +498,20 @@ class UploadOut(Schema):
     preview_rows: list[dict[str, str]] = []
     wired: bool = False
     chartable: bool = True
+    #: One sentence naming every choice ``infer`` made, shown beside the story.
+    #: Empty when ``wired`` is false, because then no mapping was settled on.
+    mapping: str = ""
+    #: Shape changes and caveats: a melted wide table, a computed total row, a
+    #: single-measure file. Rendered as a list under the mapping sentence.
+    mapping_notes: list[str] = []
     note: str = ""
 
 
 class GenerateIn(Schema):
-    dataset_id: str
+    """Exactly one of ``dataset_id`` / ``upload_id``, as ``ChartSuggestIn``."""
+
+    dataset_id: str | None = None
+    upload_id: str | None = None
     tier: str = "demo"
 
 
