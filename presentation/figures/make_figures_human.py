@@ -119,7 +119,13 @@ def fig10():
             seen.add(r["tier"])
             rank.append(r)
     b = []
-    cols = [(72, "tier", "start"), (200, "generator  x  moderator", "start"),
+    # No tier column. The internal ids meant nothing to a reader, and dropping
+    # them exposes something better: where a generator x moderator pair appears
+    # more than once, those are separate runs of the same configuration, and the
+    # "figures kept" column disagrees with itself across them. That disagreement
+    # is the whole argument for fig13, so the table should show it rather than
+    # hide it behind an id.
+    cols = [(72, "generator  x  moderator", "start"),
             (700, "alarmism", "middle"), (850, "gap to human", "middle"),
             (1010, "figures kept", "middle"), (1180, "invented", "middle"),
             (1330, "chrF++ to human", "middle"), (1500, "seconds", "middle")]
@@ -140,10 +146,7 @@ def fig10():
         if bad:
             b.append(f'<rect x="64" y="{yy-25}" width="{W-128}" height="{row_h-4}" '
                      f'fill="{CRITICAL}" fill-opacity="0.07" rx="4"/>')
-        # The tier id matters: three rows share llama3.1:8b x gemma4:31b and
-        # differ only in who judged them, which is a whole finding of its own.
-        b.append(txt(72, yy, r["tier"], size=17, fill=MUTED))
-        b.append(txt(200, yy, f"{r['generator']}  x  {r['moderator']}", size=19,
+        b.append(txt(72, yy, f"{r['generator']}  x  {r['moderator']}", size=19,
                      fill=INK, weight="bold" if pick else "normal"))
         b.append(txt(700, yy, f"{r['moderated_alarmism']}", size=19, fill=INK_2, anchor="middle"))
         b.append(txt(850, yy, f"{r['gap_to_human']:.1f}", size=19,
@@ -161,13 +164,13 @@ def fig10():
     return frame(
         "Six combinations tie on tone. Faithfulness breaks the tie.",
         "Superseded by fig13: five seeds per cell reverse the retention column. Read this "
-        "as the n=1 table it is, not as a recommendation.",
+        "as the ranking it is, not as a recommendation.",
         "\n".join(b),
-        "Pertussis only, one row per configuration, n=1 in every cell: a ranking, not a test. "
-        "Where a tier was later re-run at five seeds only its first run is here, and fig13 is "
-        "where the repeats live. The grid is L-shaped, not factorial - generators varied against "
-        "gemma4:31b, moderators against llama3.1:8b - so the best x best cell was never run. "
-        "Red rows invented a figure.",
+        "Pertussis only, one row per run. Where a pair of models appears twice or more, "
+        "those are separate runs of the same configuration and \"figures kept\" disagrees "
+        "with itself: 50%, 75% and 100% for llama3.1:8b x gemma4:31b. That spread is why one "
+        "run cannot rank anything, and it is what fig13 measures. The grid is L-shaped, so "
+        "the best x best cell was never run. Red rows invented a figure.",
     )
 
 

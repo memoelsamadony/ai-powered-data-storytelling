@@ -338,79 +338,120 @@ DELIVERY: do not read the names, they are on the slide. Go straight to the
 sentence about the second agent.
 """)
 
-    # -- 2  divider -------------------------------------------------------
+
+    # -- 2  table of contents ---------------------------------------------
+    s = blank(prs)
+    heading(s, "Agenda", "Four parts, then the system running")
+    for i, (title, who) in enumerate(PARTS):
+        y = 2.35 + i * 0.92
+        rect(s, Inches(0.75), Inches(y), Inches(8.6), Inches(0.76), fill=SOFT)
+        rect(s, Inches(0.75), Inches(y), Pt(3.5), Inches(0.76), fill=TEAL)
+        text(s, Inches(1.05), Inches(y + 0.12), Inches(0.7), Inches(0.5),
+             [(f"0{i + 1}", 22, True, RGBColor(0xC2, 0xCE, 0xDB), HEAD, 0)])
+        text(s, Inches(1.85), Inches(y + 0.13), Inches(6.0), Inches(0.5),
+             [(title, 15, True, NAVY, BODY, 0)])
+        text(s, Inches(1.85), Inches(y + 0.44), Inches(6.0), Inches(0.26),
+             [(who, 11, False, MUTED, BODY, 0)])
+    rect(s, Inches(0.75), Inches(6.03), Inches(8.6), Inches(0.62), fill=DEEP_NAVY)
+    text(s, Inches(1.05), Inches(6.18), Inches(8.0), Inches(0.4),
+         [("LIVE DEMO   ·   the pipeline running locally   ·   3:30", 13, True,
+           WHITE, BODY, 0)])
+    rect(s, Inches(9.75), Inches(2.35), Inches(2.83), Inches(4.3), fill=SOFT)
+    rect(s, Inches(9.75), Inches(2.35), Inches(2.83), Pt(4), fill=BLUE)
+    text(s, Inches(10.02), Inches(2.58), Inches(2.35), Inches(3.9), [
+        ("The one claim", 12.5, True, NAVY, BODY, 0),
+        ("A second agent can pull a generated data story's tone back to what the "
+         "evidence supports —", 12, False, INK, BODY, 6),
+        ("without losing the numbers,", 12, True, DEEP_TEAL, BODY, 6),
+        ("and at a cost in readability we can put a number on.", 12, True,
+         DEEP_TEAL, BODY, 2),
+        ("Everything else in this talk exists to make that measurable.", 11.5,
+         False, MUTED, BODY, 8),
+    ], spacing=1.16)
+    chrome(s, 2)
+    notes(s, """
+SPEAKER 1 - Mahmoud   [0:20]   running total 0:35   ~38 words
+
+Four parts. What the research told us and the problem it exposed. What we built
+and how we measure it. What a reader sees, and how we picked the model pair.
+Then the result and the system itself, and we finish live in the app.
+
+DELIVERY: fifteen seconds. Read the four part names, point at the claim on the
+right, move on. Do not explain the claim here - the whole talk is the
+explanation.
+""")
+
+    # -- 3  divider -------------------------------------------------------
     divider(prs, 0, """
-SPEAKER 1 - Mahmoud   [0:05]   running total 0:20   ~15 words
+SPEAKER 1 - Mahmoud   [0:05]   running total 0:40   ~15 words
 
 First: what the field already does, and the gap we found in it.
 
 DELIVERY: one line, then move. A divider is a beat, not a slide to present.
 """)
 
-    # -- 3  the research --------------------------------------------------
+    # -- 4  the research --------------------------------------------------
     s = blank(prs)
-    heading(s, "The research", "Seven systems surveyed, three reproduced")
-    text(s, Inches(0.75), Inches(2.3), Inches(5.9), Inches(0.3),
-         [("WHAT THE FIELD BUILDS", 10, True, MUTED, HEAD, 0)])
-    text(s, Inches(0.75), Inches(2.62), Inches(5.9), Inches(3.2), [
-        ("Template and algorithmic", 12, True, NAVY, BODY, 0),
-        ("Voder (InfoVis 2018), Calliope (TVCG 2021) — the non-LLM baselines.",
-         11.5, False, INK, BODY, 2),
-        ("Generator plus critic", 12, True, NAVY, BODY, 9),
-        ("DataNarrative (EMNLP 2024), Data Director (IEEE VIS 2024), "
-         "MDSF (2025). The closest precedents to what we built.", 11.5, False,
-         INK, BODY, 2),
-        ("Interactive and agentic", 12, True, NAVY, BODY, 9),
-        ("InReAcTable (UIST 2025) — a ReAct loop over tables.", 11.5, False,
-         INK, BODY, 2),
-        ("Benchmarks", 12, True, NAVY, BODY, 9),
-        ("Kasner and Dušek (ACL 2024) on faithfulness; DataTales (2025) on "
-         "data narration. Framing theory from Hullman and Diakopoulos (2011).",
-         11.5, False, INK, BODY, 2),
-    ], spacing=1.14)
-    text(s, Inches(7.15), Inches(2.3), Inches(5.43), Inches(0.3),
-         [("WHAT WE RE-RAN OURSELVES", 10, True, MUTED, HEAD, 0)])
-    for i, (paper, finding) in enumerate([
-        ("Kasner and Dušek — faithfulness",
-         "gemma4:12b left ~18% of outputs with a semantic error, against the "
-         "paper's >80%. A 4B model regressed to 52%."),
-        ("DataTales — data narration",
-         "Reading operations climb with scale: rate-of-change goes 43% → 89% "
-         "from a 4B model to a 12B one."),
-        ("DataNarrative — architecture",
-         "Reproduced the generate-and-verify pattern. It is the shape our own "
-         "pipeline adapts."),
-    ]):
-        y = 2.62 + i * 1.12
-        rect(s, Inches(7.15), Inches(y), Pt(3), Inches(0.95), fill=BLUE)
-        text(s, Inches(7.42), Inches(y), Inches(5.1), Inches(0.95), [
-            (paper, 12, True, NAVY, BODY, 0),
-            (finding, 11.5, False, INK, BODY, 2)], spacing=1.14)
-    rect(s, Inches(0.75), Inches(6.05), Inches(11.83), Inches(0.62), fill=SOFT)
-    rect(s, Inches(0.75), Inches(6.05), Pt(3.5), Inches(0.62), fill=TEAL)
-    text(s, Inches(1.05), Inches(6.19), Inches(11.3), Inches(0.4),
-         [("The conclusion that set our topic: open models are already fairly "
-           "faithful at stating data, and every critic agent in the literature "
-           "checks facts. So another fact-checker is not the gap.", 13, True,
-           NAVY, BODY, 0)])
-    chrome(s, 3)
+    heading(s, "The research", "Three systems we did not just cite — we re-ran them")
+    repros = [
+        ("Kasner and Dušek, ACL 2024", "Are open models faithful?",
+         "Their reference-free method marks every span of generated text that "
+         "the source table does not support.",
+         "We re-ran it on modern open models. A 12B model left a semantic error "
+         "in about 18% of outputs, where the paper reported over 80%. A 4B model "
+         "regressed to 52%.",
+         "Recency and size both matter — and today's open models are already "
+         "fairly faithful at stating data.", BLUE),
+        ("DataTales, 2025", "Which kinds of claim are hard?",
+         "A benchmark for data narration that scores a story per operation: "
+         "lookup, comparison, trend, rate of change, causal.",
+         "We reproduced a 30-report slice. Reading operations climb steeply with "
+         "scale — rate of change went 43% to 89% from a 4B to a 12B model.",
+         "Stating a number is not the hard part. Explaining it is.", TEAL),
+        ("DataNarrative, EMNLP 2024", "What architecture works?",
+         "One agent writes the story, a second agent verifies it at every step, "
+         "beating single-LLM baselines.",
+         "We rebuilt the two-agent generate-and-verify loop, which is the "
+         "structural basis of our own pipeline.",
+         "The second-agent pattern works. Ours swaps its factual verifier for a "
+         "tone moderator.", NAVY),
+    ]
+    for i2, (paper, q, what, did, took, col) in enumerate(repros):
+        x = 0.75 + i2 * 4.06
+        rect(s, Inches(x), Inches(2.3), Inches(3.72), Inches(3.62), fill=SOFT)
+        rect(s, Inches(x), Inches(2.3), Inches(3.72), Pt(4), fill=col)
+        text(s, Inches(x + 0.26), Inches(2.52), Inches(3.2), Inches(3.3), [
+            (paper, 10, True, MUTED, HEAD, 0),
+            (q, 14, True, col, HEAD, 4),
+            (what, 11, False, INK, BODY, 7),
+            (f"What we did: {did}", 11, False, INK, BODY, 7),
+            (took, 11, True, NAVY, BODY, 7),
+        ], spacing=1.15)
+    rect(s, Inches(0.75), Inches(6.08), Inches(11.83), Inches(0.6), fill=SOFT)
+    rect(s, Inches(0.75), Inches(6.08), Pt(3.5), Inches(0.6), fill=TEAL)
+    text(s, Inches(1.05), Inches(6.21), Inches(11.3), Inches(0.4),
+         [("Put together: open models already state data fairly faithfully, and "
+           "every critic agent in this literature checks facts. So another "
+           "fact-checker is not the gap.", 13, True, NAVY, BODY, 0)])
+    chrome(s, 4)
     notes(s, """
-SPEAKER 1 - Mahmoud   [0:45]   running total 1:05   ~112 words
+SPEAKER 1 - Mahmoud   [0:35]   running total 1:15   ~100 words
 
-We surveyed seven systems. On the left: the non-LLM baselines, then the ones
-closest to us - DataNarrative, Data Director, MDSF - all of which pair a
-generator with a critic agent.
+We surveyed the field, and the report lists it. These are the three we re-ran
+ourselves, because they shaped what we built.
 
-On the right, the three we reproduced ourselves rather than cited. Kasner and
-Dušek's faithfulness method: a modern 12B model left about 18 percent of outputs
-with a semantic error where the paper reported over 80. DataTales, where reading
-operations climb steeply with model size. And DataNarrative's generate-and-verify
-architecture, which is the shape ours adapts.
+Kasner and Dušek: are open models faithful? Re-running their method, a 12B model
+left an error in about 18 percent of outputs where the paper reported over 80.
 
-That gave us the sentence at the bottom.
+DataTales: which claims are hard? Stating a number is not the hard part.
+Explaining it is.
 
-DELIVERY: do not read the paper list. Say "seven surveyed, three we re-ran
-ourselves" and go to the bottom bar. That sentence is the slide.
+DataNarrative gave us the architecture - one agent writes, a second checks.
+
+Together, that is the bar at the bottom. Another fact-checker is not the gap.
+
+DELIVERY: three cards, one sentence each, then the bottom bar. If asked about
+the wider survey, it is in the interim report.
 """)
 
     # -- 4  the problem ---------------------------------------------------
@@ -441,19 +482,19 @@ ourselves" and go to the bottom bar. That sentence is the slide.
         ("Same table. Same facts. A different reader reaction.", 12, False, MUTED,
          BODY, 6),
     ], spacing=1.15)
-    chrome(s, 4)
+    chrome(s, 5)
     notes(s, """
-SPEAKER 1 - Mahmoud   [0:40]   running total 1:45   ~98 words   >>> HAND TO OKASHA
+SPEAKER 1 - Mahmoud   [0:30]   running total 1:45   ~98 words   >>> HAND TO OKASHA
 
 So here is the problem we noticed.
 
-The critic is always a fact-checker. But Hullman and Diakopoulos showed that
-framing alone significantly changes how people read the same chart. Tone is not
-decoration - it is part of the claim.
+The critic is always a fact-checker. But Hullman and Diakopoulos showed framing
+alone significantly changes how people read the same chart. Tone is part of the
+claim.
 
-[POINT] Both of these sentences are true to the table. A fact-checker passes
-both. The first catastrophises, the second is calibrated, and nothing in the
-literature can tell them apart.
+[POINT] Both sentences are true to the table. A fact-checker passes both. One
+catastrophises, one is calibrated, and nothing in the literature tells them
+apart.
 
 Okasha will show you what we built for that.
 
@@ -523,16 +564,15 @@ screen.
          "child mortality invites the opposite failure, false reassurance, where "
          "the agent must keep the inequality and the COVID reversal visible.",
          11.5, False, INK, BODY, 4)], spacing=1.14)
-    chrome(s, 6)
+    chrome(s, 7)
     notes(s, """
 SPEAKER 2 - Okasha   [0:33]   running total 2:23   ~82 words
 
 Three roles, but only two local models.
 
-A generator writes the draft. Then the moderator - and in this project the
-moderator is the agentic role, so it does three jobs on the same weights: it
-rewrites the tone, that is our contribution, it fact-checks every number back
-against the table, and it picks the charts.
+A generator writes the draft. Then the moderator - the agentic role here - does
+three jobs on the same weights: it rewrites the tone, that is our contribution,
+it fact-checks every number, and it picks the charts.
 
 Same model, separate stages. That matters twice: a tone number still measures
 one change, and we pay one twenty-gigabyte model load per run instead of three.
@@ -574,22 +614,21 @@ fourth model - it is not.
            f"{agg['human_optimism_median']:.1f}, so the human band — not the "
            "rubric midpoint — is the target we report against.", 12, False,
            INK, BODY, 0)], spacing=1.16)
-    chrome(s, 7)
+    chrome(s, 8)
     notes(s, f"""
-SPEAKER 2 - Okasha   [0:38]   running total 3:01   ~95 words
+SPEAKER 2 - Okasha   [0:33]   running total 2:56   ~95 words
 
 To measure tone you need a scale. Every story gets two: alarmism and optimism,
 one to five each.
 
-Both ends of each are failures. Five catastrophises, one is flat and hides real
-stakes. So an agent cannot win by draining the feeling out of a story.
+Both ends are failures. Five catastrophises, one is flat and hides real stakes.
+So an agent cannot win by draining the feeling out of a story.
 
 Two honest notes. The rubric calls three calibrated, but our human writers sit
 at {agg['human_alarmism_median']:.1f} and {agg['human_optimism_median']:.1f}, so
 the human band is what we report against.
 
-And blinding cost us: scoring each story alone doubles the calls and gives up
-the direct comparison.
+And blinding cost us: scoring each story alone doubles the calls.
 
 DELIVERY: "both ends are failures" must land. Pause after it. Point at the blue
 human marks on the second note.
@@ -628,16 +667,15 @@ human marks on the second note.
          [("“Trend” appears twice: trend selection (bottom left) is a "
            "cherry-picking check on one story; trend (bottom right) is an "
            "accuracy category from the benchmark.", 10, False, MUTED, BODY, 0)])
-    chrome(s, 8)
+    chrome(s, 9)
     notes(s, """
-SPEAKER 2 - Okasha   [0:28]   running total 3:29   ~70 words   >>> HAND TO ELSAADANI
+SPEAKER 2 - Okasha   [0:28]   running total 3:24   ~70 words   >>> HAND TO ELSAADANI
 
 Four families of metric, and only the first one needs a model.
 
 Tone is the contribution and it is judged. Faithfulness is computed in code, for
-free, on every run - including a cherry-picking check on which window the story
-chose. Similarity is against our human stories. And the operation accuracies
-come from the DataTales re-run.
+free, including a cherry-picking check on the window the story chose. Similarity
+is against our human stories. The operation accuracies come from DataTales.
 
 Careful: two of these share the word trend. The footnote says which is which.
 
@@ -649,7 +687,7 @@ that three of them cost nothing to compute. The slide is the handout.
 
     # -- 9  divider -------------------------------------------------------
     divider(prs, 2, """
-SPEAKER 3 - Elsaadani   [0:05]   running total 3:34   ~15 words
+SPEAKER 3 - Elsaadani   [0:05]   running total 3:29   ~15 words
 
 My half: what a reader is actually shown, and how we picked the model pair.
 
@@ -693,65 +731,109 @@ DELIVERY: a beat, then straight into the next slide.
         ("Same underlying numbers in places. Different job.", 11.5, True,
          DEEP_TEAL, BODY, 6),
     ], spacing=1.15)
-    chrome(s, 10)
+    chrome(s, 11)
     notes(s, """
-SPEAKER 3 - Elsaadani   [0:24]   running total 3:58   ~60 words
+SPEAKER 3 - Elsaadani   [0:24]   running total 3:53   ~60 words
 
 Not every metric is for us. These are for the reader.
 
 The app shows the tone rating, the human band, and every emotive span the
-moderator removed, classified by what kind of edit it was. That is why the
-interface shows a diff rather than just a cleaner paragraph - a reader can audit
-the rewrite instead of trusting it.
+moderator removed, classified by kind. That is why the interface shows a diff
+rather than a cleaner paragraph - a reader can audit the rewrite.
 
 The user-study axes are designed and not run.
 
 DELIVERY: this sets up the demo. Say "you will see these in a moment".
 """)
 
-    # -- 11  fig10 --------------------------------------------------------
+    # -- 12  how we chose the pair ----------------------------------------
+    s = blank(prs)
+    heading(s, "Choosing the pair", "Four steps from fourteen candidates to one pipeline")
+    steps = [
+        ("01", "Build the grid",
+         "Vary the generator against a fixed moderator, then the moderator "
+         "against a fixed generator. L-shaped, not factorial — so the best × "
+         "best cell is never assumed, it has to be run.", BLUE),
+        ("02", "Score every run the same way",
+         "Blind Opus rating on both tone axes, plus the computed faithfulness "
+         "metrics. Same dataset throughout, so the comparison is not rewarded "
+         "for drawing an easy table.", TEAL),
+        ("03", "Tone does not decide it",
+         "Six combinations land on exactly 2.0 alarmism. A tie on the headline "
+         "metric is a real result: the moderator is doing its job regardless of "
+         "who wrote the draft.", DEEP_TEAL),
+        ("04", "Break the tie on faithfulness, then repeat it",
+         "Rank the tied cells on how many of the raw story's figures survive. "
+         "Then run the top two five times each at distinct seeds, because a "
+         "single run cannot separate a model from a draft.", NAVY),
+    ]
+    for i2, (num, title, body, col) in enumerate(steps):
+        x = 0.75 + (i2 % 2) * 6.04
+        y = 2.35 + (i2 // 2) * 2.1
+        rect(s, Inches(x), Inches(y), Inches(5.79), Inches(1.85), fill=SOFT)
+        rect(s, Inches(x), Inches(y), Pt(3.5), Inches(1.85), fill=col)
+        text(s, Inches(x + 0.28), Inches(y + 0.2), Inches(0.8), Inches(0.5),
+             [(num, 20, True, RGBColor(0xC2, 0xCE, 0xDB), HEAD, 0)])
+        text(s, Inches(x + 1.15), Inches(y + 0.22), Inches(4.4), Inches(1.5), [
+            (title, 13.5, True, col, BODY, 0),
+            (body, 11.5, False, INK, BODY, 5)], spacing=1.15)
+    text(s, Inches(0.75), Inches(6.62), Inches(11.8), Inches(0.28),
+         [("Step 4 is the one we nearly skipped, and it is the step that changed "
+           "the answer.", 11, True, WARN, BODY, 0)])
+    chrome(s, 12)
+    notes(s, """
+SPEAKER 3 - Elsaadani   [0:28]   running total 4:21   ~65 words
+
+How we actually chose the pair, in four steps.
+
+Build a grid of generator and moderator combinations. Score every run the same
+way, on the same dataset. Tone does not decide it - six land on exactly 2.0.
+
+So break the tie on faithfulness, then repeat the top two at different seeds,
+because one run cannot separate a model from a draft.
+
+The next two slides are steps three and four.
+
+DELIVERY: this is the method slide. Say the four steps, then let the two figures
+carry the evidence.
+""")
+
+    # -- 13  fig10 --------------------------------------------------------
     fullbleed(prs, "fig10.png", """
-SPEAKER 3 - Elsaadani   [0:24]   running total 4:22   ~60 words
+SPEAKER 3 - Elsaadani   [0:20]   running total 4:41   ~50 words
 
-Now, how we picked the pair.
+Step three. Fourteen runs. The green rows all tie on tone at exactly 2.0, so we
+rank them on the "figures kept" column instead.
 
-Fourteen generator-and-moderator combinations. Six tie on tone - all land on
-exactly 2.0 - so tone alone cannot choose between them. We broke the tie on
-faithfulness: how many of the raw story's figures survive the rewrite.
+Now look at the three rows that read llama3.1:8b times gemma4:31b. Same models,
+three separate runs: 50 percent, 75 percent, 100 percent.
 
-On one run each, qwen 4b looked best, 71 percent against llama 8b's 50.
-
-DELIVERY: do not read the table. Point at the green block of ties, then at the
-"figures kept" column.
+DELIVERY: point at those three rows. That is the moment the audience should
+distrust the table, and it sets up the next slide.
 """)
 
     # -- 12  fig13 --------------------------------------------------------
     fullbleed(prs, "fig13.png", f"""
-SPEAKER 3 - Elsaadani   [0:51]   running total 5:13   ~128 words   >>> HAND TO RAMADAN
+SPEAKER 3 - Elsaadani   [0:35]   running total 5:16   ~80 words   >>> HAND TO RAMADAN
 
-Then we ran both five times, at different seeds. It reverses.
+Step four. Both configurations, five runs each, at distinct seeds.
 
-Qwen averages {D['g4b']['numeric_retention']['mean']:.0%}, llama averages
-{D['g8b']['numeric_retention']['mean']:.0%}. Welch t of minus 2.70, p of 0.029,
-Cohen's d of 1.71. Our recommendation had been backwards, and one run per cell
-was never going to show us that.
+It reverses. Qwen averages {D['g4b']['numeric_retention']['mean']:.0%}, llama
+averages {D['g8b']['numeric_retention']['mean']:.0%}. Welch t of minus 2.70,
+p of 0.029. Our recommendation had been backwards, and one run per cell was
+never going to show us that.
 
-Seeds have to differ, by the way. Two of our tiers were the same configuration
-at the same seed and produced byte-identical text - that is determinism, not a
-repeat.
+So we ship llama3.1:8b generating and gemma4:31b moderating.
 
-So the pipeline we ship is llama3.1:8b generating and gemma4:31b moderating.
+And the lower half is the more interesting finding: moderated tone is 2.10
+either way. The moderator converges on the same tone whoever wrote the draft.
 
-The lower half is the more interesting finding: the moderator lands on 2.10
-either way. It converges on the same tone regardless of who wrote the draft.
-
-DELIVERY: the strongest slide in the deck. Own the mistake. "Our recommendation
-had been backwards" is the line - say it plainly.
+DELIVERY: "our recommendation had been backwards" is the line. Say it plainly.
 """)
 
     # -- 13  divider ------------------------------------------------------
     divider(prs, 3, """
-SPEAKER 4 - Ramadan   [0:05]   running total 5:18   ~15 words
+SPEAKER 4 - Ramadan   [0:05]   running total 5:21   ~15 words
 
 Last part: where that lands against a person, and how the agent works inside.
 
@@ -760,14 +842,14 @@ DELIVERY: a beat. Then fig9 is the payoff slide of the whole talk.
 
     # -- 14  fig9 ---------------------------------------------------------
     fullbleed(prs, "fig9.png", f"""
-SPEAKER 4 - Ramadan   [0:42]   running total 6:00   ~105 words
+SPEAKER 4 - Ramadan   [0:38]   running total 5:59   ~105 words
 
-This is the result. The four of us wrote {D['n_human']} stories by hand from the
-same evidence packs, five per series, before seeing any machine output. The green
-band is where those human writers sit.
+This is the result. We wrote {D['n_human']} stories by hand from the same
+evidence packs, before seeing any machine output. The green band is where those
+human writers sit.
 
-Red is the raw story, blue is after moderation. On every one of the five series
-the arrow lands on or inside the human band.
+Red is raw, blue is after moderation. On every one of the five series the arrow
+lands on or inside the human band.
 
 Overall {agg['alarmism_raw_mean']:.2f} to {agg['alarmism_moderated_mean']:.2f},
 against a human median of {agg['human_alarmism_median']:.2f}, over
@@ -779,69 +861,79 @@ headline and the machine ones do, so every gap is a lower bound.
 DELIVERY: say the three numbers slowly, then stop talking.
 """)
 
-    # -- 15  inside the agent ---------------------------------------------
+    # -- 17  the agent, and the tool surface ------------------------------
     s = blank(prs)
-    heading(s, "Inside the moderator's third job",
-            "How an 8B-class local model picks charts without hallucinating one")
-    layers = [
-        ("applicability.py", "WHICH FORMS THE DATA CAN CARRY",
-         "Computed from column types. Exhaustive, instant, no tokens, and it "
-         "cannot propose a map for a table with no geography.", "closed  ·  free",
-         BLUE),
-        ("select.py", "WHICH ARE WORTH SHOWING, AND WHY",
-         "The moderator picks an index out of candidates that are already "
-         "drawable and encoded against real columns. Its job is ranking and prose.",
-         "open  ·  the model", TEAL),
-        ("validate.py", "WHETHER THE RESULT IS HONEST",
-         "A rejected spec is not dropped silently: the validator's own errors go "
-         "back to the model for one retry.", "closed  ·  free", NAVY),
+    heading(s, "How the model picks the charts",
+            "A tool surface, so the decision is the model's and the rules are not")
+    # the three-layer strip, compressed to one line of boxes
+    strip = [("applicability.py", "which forms this table can carry", "computed", BLUE),
+             ("the model", "which of those are worth showing, and why", "decided", TEAL),
+             ("validate.py", "whether the spec is honest", "computed", NAVY)]
+    for i2, (mod, what, tag, col) in enumerate(strip):
+        x = 0.75 + i2 * 4.06
+        rect(s, Inches(x), Inches(2.3), Inches(3.72), Inches(1.28), fill=SOFT)
+        rect(s, Inches(x), Inches(2.3), Inches(3.72), Pt(4), fill=col)
+        text(s, Inches(x + 0.26), Inches(2.5), Inches(3.2), Inches(1.0), [
+            (f"{mod}   ·   {tag}", 11, True, col, HEAD, 0),
+            (what, 12, False, INK, BODY, 4)], spacing=1.14)
+        if i2 < 2:
+            text(s, Inches(x + 3.76), Inches(2.78), Inches(0.3), Inches(0.4),
+                 [("›", 20, True, BORDER, HEAD, 0)])
+    text(s, Inches(0.75), Inches(3.72), Inches(11.8), Inches(0.3),
+         [("Computing what is possible before asking what is best is what makes "
+           "this work on a local model: the prompt shrinks from seventeen forms "
+           "with their rules to a handful of pre-validated candidates.", 11.5,
+           False, MUTED, BODY, 0)])
+    # the MCP surface
+    rect(s, Inches(0.75), Inches(4.2), Inches(7.6), Inches(2.4), fill=SOFT)
+    rect(s, Inches(0.75), Inches(4.2), Inches(7.6), Pt(4), fill=DEEP_TEAL)
+    text(s, Inches(1.02), Inches(4.42), Inches(7.1), Inches(0.4),
+         [("THE MCP-SHAPED TOOL SURFACE", 10, True, MUTED, HEAD, 0)])
+    tools = [
+        ("7 chart tools", "plot_trend_over_time, plot_magnitude, plot_change, "
+         "plot_relationship, plot_geographic, plot_distribution, show_headline"),
+        ("3 read tools", "what makes it an agent rather than a classifier: it can "
+         "look at the table before it commits to a figure"),
+        ("A two-level decision", "the tool is the reader's job; the form enum "
+         "inside it is the geometry. Seventeen flat forms is past what a local "
+         "model picks reliably — seven tools with enums is not."),
     ]
-    for i, (mod, cap, desc, tag, col) in enumerate(layers):
-        x = 0.75 + i * 4.06
-        rect(s, Inches(x), Inches(2.35), Inches(3.72), Inches(2.35), fill=SOFT)
-        rect(s, Inches(x), Inches(2.35), Inches(3.72), Pt(4), fill=col)
-        text(s, Inches(x + 0.26), Inches(2.58), Inches(3.2), Inches(2.0), [
-            (cap, 9.5, True, MUTED, HEAD, 0),
-            (mod, 15, True, col, HEAD, 4),
-            (desc, 11.5, False, INK, BODY, 5),
-            (tag, 10.5, True, col, BODY, 6)], spacing=1.14)
-        if i < 2:
-            text(s, Inches(x + 3.76), Inches(3.35), Inches(0.3), Inches(0.4),
-                 [("›", 22, True, BORDER, HEAD, 0)])
-    text(s, Inches(0.75), Inches(4.9), Inches(5.9), Inches(1.5), [
-        ("Why split it at all", 13, True, NAVY, BODY, 0),
-        ("Applicability is a closed question over column types, so computing it "
-         "beats asking. That shrinks the prompt from seventeen forms with their "
-         "rules to a handful of pre-validated candidates — which is what makes "
-         "this reliable on a local model rather than only on a frontier one.",
-         11.5, False, INK, BODY, 4)], spacing=1.15)
-    rect(s, Inches(7.15), Inches(4.82), Inches(5.43), Inches(1.62), fill=SOFT)
-    rect(s, Inches(7.15), Inches(4.82), Pt(3.5), Inches(1.62), fill=WARN)
-    text(s, Inches(7.45), Inches(5.0), Inches(4.95), Inches(1.3), [
-        ("Tool surface: specified, not wired", 12.5, True, WARN, BODY, 0),
-        ("The contract defines seven chart tools plus three read tools, and the "
-         "build emits a JSON schema shaped to drop straight in as an MCP "
-         "inputSchema. That is a written design, not something running today — "
-         "selection is one structured call.", 11.5, False, INK, BODY, 4)],
-        spacing=1.14)
-    chrome(s, 15)
+    for i2, (k, v) in enumerate(tools):
+        y = 4.78 + i2 * 0.58
+        text(s, Inches(1.02), Inches(y), Inches(2.0), Inches(0.3),
+             [(k, 11.5, True, DEEP_TEAL, BODY, 0)])
+        text(s, Inches(2.9), Inches(y), Inches(5.2), Inches(0.55),
+             [(v, 11, False, INK, BODY, 0)], spacing=1.12)
+    rect(s, Inches(8.7), Inches(4.2), Inches(3.88), Inches(2.4), fill=SOFT)
+    rect(s, Inches(8.7), Inches(4.2), Inches(3.88), Pt(4), fill=WARN)
+    text(s, Inches(8.97), Inches(4.42), Inches(3.35), Inches(2.0), [
+        ("Specified, not wired", 12.5, True, WARN, BODY, 0),
+        ("The contract defines these tools and the build emits a JSON schema "
+         "shaped to drop straight in as an MCP inputSchema — the same file the "
+         "validator reads, so tool docs and rules cannot drift apart.", 11,
+         False, INK, BODY, 5),
+        ("Today the selector makes one structured call instead. The surface is a "
+         "written design, not a running server.", 11, True, NAVY, BODY, 5),
+    ], spacing=1.14)
+    chrome(s, 17)
     notes(s, """
-SPEAKER 4 - Ramadan   [0:37]   running total 6:37   ~92 words
+SPEAKER 4 - Ramadan   [0:40]   running total 6:39   ~105 words
 
-The moderator's third job, briefly, because it is what people ask about.
+How the model picks the figures, because people ask.
 
-Choosing a chart splits into three questions. Which forms can this table carry -
-closed, decided from column types in code, so it cannot hallucinate a map for a
-table with no geography. Which are worth showing - editorial, and that is the
-model. Is the result honest - closed again, and a rejected spec goes back for one
-retry.
+Three steps. Which forms can this table carry - computed from column types, so
+it cannot propose a map for a table with no geography. Which are worth showing -
+the model. Is the result honest - computed again.
 
-That split is why a local model can do this reliably.
+The interesting part is the shape of the decision. Instead of seventeen flat
+chart types, the contract groups them into seven tools by the reader's job, with
+the geometry as an enum inside each. A two-level choice is what a local model
+does reliably.
 
-One honest note: the tool surface is specified and MCP-shaped. A design, not
-something running today.
+That surface is MCP-shaped and specified - a design, not a running server.
 
-DELIVERY: say "specified, not wired" out loud. Someone will ask to see it.
+DELIVERY: say "specified, not wired" out loud. Someone will ask to see the
+server.
 """)
 
     # -- 16  whole system into the demo -----------------------------------
@@ -882,7 +974,7 @@ DELIVERY: say "specified, not wired" out loud. Someone will ask to see it.
          RGBColor(0x8A, 0x9C, 0xB8), BODY, 8),
     ], spacing=1.2)
     notes(s, """
-SPEAKER 4 - Ramadan   [0:20]   running total 6:57   ~50 words   >>> DEMO
+SPEAKER 4 - Ramadan   [0:21]   running total 7:00   ~50 words   >>> DEMO
 
 That is the whole system. A table becomes an evidence pack, a local model writes
 the story, and the moderator model rewrites the tone, checks the numbers and
@@ -922,10 +1014,11 @@ dataset page. Never click Generate and wait - see SPEAKER-SCRIPT.md.
         ("What we are not claiming: one judge family agreeing with itself, not a "
          "panel. No user study. Twenty-five human stories from five writer slots, "
          "not a controlled writer design.", 12, False, MUTED, BODY, 0),
-        ("github.com/memoelsamadony/ai-powered-data-storytelling  ·  Thank you — "
-         "questions welcome", 12.5, True, NAVY, BODY, 8),
+        ("Everything in this deck is generated from the experiment files in the "
+         "repository, so the numbers and the slides cannot drift apart.", 12,
+         False, MUTED, BODY, 6),
     ], spacing=1.16)
-    chrome(s, 17)
+    chrome(s, 19)
     notes(s, """
 CLOSING - whoever finishes the demo   [0:15]
 
@@ -936,10 +1029,50 @@ cost in readability we can put a number on.
 What we are not claiming is on the slide. One judge family, no user study, and a
 human baseline written by five writer slots rather than a controlled design.
 
-Thank you. Happy to take questions.
-
 DELIVERY: read the limits line rather than skipping it. Volunteering it is what
 makes the rest credible. Q&A prep is at the end of SPEAKER-SCRIPT.md.
+""")
+
+    # -- 20  thank you -----------------------------------------------------
+    s = blank(prs)
+    rect(s, 0, 0, W, H, fill=DEEP_NAVY)
+    rect(s, 0, 0, Inches(0.16), H, fill=TEAL)
+    text(s, Inches(1.1), Inches(2.15), Inches(11.0), Inches(1.5),
+         [("Thank you", 60, True, WHITE, HEAD, 0)])
+    rect(s, Inches(1.1), Inches(3.75), Inches(1.6), Pt(4), fill=TEAL)
+    text(s, Inches(1.1), Inches(4.1), Inches(11.0), Inches(0.6),
+         [("Questions?", 26, True, TEAL, HEAD, 0)])
+    text(s, Inches(1.1), Inches(5.05), Inches(11.0), Inches(1.3), [
+        ("Mahmoud Elsamadony  ·  Ahmed Okasha  ·  Ahmed Elsaadani  ·  "
+         "Ahmed Ramadan", 14, True, WHITE, BODY, 0),
+        ("Supervisors: Susmita Khadse, Julián Méndez  ·  Chair: "
+         "Prof. Dr. Raimund Dachselt (IMLD)", 11.5, False,
+         RGBColor(0x8A, 0x9C, 0xB8), BODY, 6),
+        ("github.com/memoelsamadony/ai-powered-data-storytelling", 12, True,
+         TEAL, BODY, 8),
+    ], spacing=1.18)
+    notes(s, """
+QUESTIONS - all four speakers stay at the front
+
+Leave this slide up for the whole Q&A. It holds the names and the repository
+link, which is what anyone wanting to follow up needs.
+
+The four questions to expect, with answers, are at the end of
+presentation/SPEAKER-SCRIPT.md. Read them on the way in. Short forms:
+
+- Only one judge? Yes, and slide 19 says so. 0.991 is self-consistency, not
+  inter-rater. Two independent methods agree though: the scalar scores and the
+  blind pairwise verdicts.
+- Why no user study? The brief allows metrics or a user study. We chose metrics
+  and went deep: reliability, repeats, a significance test.
+- Why not just prompt the generator to be calm? Because a separate pass is
+  measurable on its own, and because the moderator lands on 2.10 whichever
+  generator wrote the draft.
+- Is 2.09 against a human 2.00 just noise? Essentially yes, and that is the
+  claim: it lands on the human level. The judge's own disagreement is 0.08.
+
+DELIVERY: whoever is nearest the laptop takes questions first, then hand to
+whoever owns that section. Nobody answers over anybody.
 """)
 
     return prs
@@ -1100,8 +1233,10 @@ def write_script(prs: Presentation) -> Path:
     L += [f"| **Talk total** | **{min(talk_slides)}-{max(talk_slides)}** | **{talk}** | "
           f"**{int(talk / 150)}:{round(talk / 150 % 1 * 60):02d}** |",
           f"| Demo | after {max(talk_slides)} | - | 3:30 |",
-          f"| Close | {len(slides)} | "
-          f"{spoken(slides[-1].notes_slide.notes_text_frame.text)} | 15s |",
+          *[f"| Close | {k} | {spoken(sl.notes_slide.notes_text_frame.text)} | 15s |"
+            for k, sl in enumerate(slides, 1)
+            if sl.notes_slide.notes_text_frame.text.strip().startswith("CLOSING")],
+          f"| Questions | {len(slides)} | - | stays up |",
           "",
           "Assignments follow the interim deck's four-part split and are meant to be "
           "swapped - the script is written per section, not per person. Whoever "
