@@ -863,9 +863,9 @@ DELIVERY: say the three numbers slowly, then stop talking.
 
     # -- 17  the tool surface ---------------------------------------------
     s = blank(prs)
-    heading(s, "The tool surface",
-            "Seventeen flat chart types is past what a local model picks. Seven "
-            "tools plus an enum is not.")
+    heading(s, "The tool surface", "Seven tools, not seventeen chart types",
+            "Grouped by the reader's job, with the geometry in an enum — a "
+            "two-level choice a local model can make reliably.")
     text(s, Inches(0.75), Inches(2.62), Inches(6.3), Inches(0.3),
          [("CHART TOOLS (7)  —  each returns a ChartPayload", 10, True, MUTED,
            HEAD, 0)])
@@ -999,12 +999,11 @@ dataset page. Never click Generate and wait - see SPEAKER-SCRIPT.md.
     s = blank(prs)
     rect(s, 0, 0, W, H, fill=WHITE)
     rect(s, 0, 0, W, Inches(0.16), fill=TEAL)
-    text(s, Inches(1.1), Inches(1.35), Inches(11.2), Inches(2.0), [
+    text(s, Inches(1.1), Inches(1.5), Inches(11.2), Inches(1.9), [
         ("What we can defend", 13, True, DEEP_TEAL, HEAD, 0),
-        ("A second agent reaches the human tone level,", 34, True, NAVY, HEAD, 12),
-        ("keeps the numbers, and costs some readability.", 34, True, NAVY, HEAD, 2),
-        ("All three are measured, not asserted — one number each.", 15, False,
-         MUTED, BODY, 12),
+        ("Human tone level — and what it cost", 40, True, NAVY, HEAD, 12),
+        ("Three numbers: where the tone lands, whether the ruler holds, and what "
+         "the rewrite gave up.", 15, False, MUTED, BODY, 14),
     ], spacing=1.14)
     for i, (label, v, lab) in enumerate([
         ("The result",
