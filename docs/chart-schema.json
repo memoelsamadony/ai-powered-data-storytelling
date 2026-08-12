@@ -1,0 +1,3633 @@
+{
+  "$comment": "Generated from lib/charts/catalog.ts. Do not edit by hand. Regenerate: node --experimental-strip-types scripts/build-chart-schema.mjs",
+  "summary": {
+    "geometries": 17,
+    "names": 24,
+    "note": "There are more names than geometries because several names are a geometry wearing a modifier: smallMultiples is any form + encoding.facet, stackedArea100 is area + stack:'percent', divergingBar is bar + baseline:0, bubble is scatter with size bound, kpiRow is a faceted statTile."
+  },
+  "visualizations": [
+    {
+      "name": "line",
+      "form": "line",
+      "description": "Trend over time. Add color for several series, emphasis when one is the point.",
+      "supplies": "A line per series."
+    },
+    {
+      "name": "indexedLine",
+      "form": "line",
+      "description": "Trend over time. Add color for several series, emphasis when one is the point.",
+      "supplies": "Every series rescaled to 100 at its first point, so unlike magnitudes share one axis. The honest replacement for a dual axis."
+    },
+    {
+      "name": "emphasisLine",
+      "form": "line",
+      "description": "Trend over time. Add color for several series, emphasis when one is the point.",
+      "supplies": "One series in the accent, every other in the same grey. Set `emphasis` to a series name."
+    },
+    {
+      "name": "smallMultiples",
+      "form": "line",
+      "description": "Trend over time. Add color for several series, emphasis when one is the point.",
+      "supplies": "One panel per value. Set `encoding.facet`. Works with any geometry, not just lines."
+    },
+    {
+      "name": "stackedArea",
+      "form": "area",
+      "description": "Trend with volume. stack='stacked' for part-to-whole, 'percent' for share.",
+      "supplies": "Bands sum to the total: part-to-whole over time."
+    },
+    {
+      "name": "stackedArea100",
+      "form": "area",
+      "description": "Trend with volume. stack='stacked' for part-to-whole, 'percent' for share.",
+      "supplies": "Bands sum to 100%: composition over time, with the total removed."
+    },
+    {
+      "name": "rankedBar",
+      "form": "bar",
+      "description": "Compare magnitude across categories. orientation='horizontal' for long names, baseline=0 to diverge.",
+      "supplies": "Horizontal bars, sorted largest first."
+    },
+    {
+      "name": "divergingBar",
+      "form": "bar",
+      "description": "Compare magnitude across categories. orientation='horizontal' for long names, baseline=0 to diverge.",
+      "supplies": "Bars growing either side of zero, warm one way and cool the other."
+    },
+    {
+      "name": "lollipop",
+      "form": "lollipop",
+      "description": "A ranked bar with the ink removed. Use when the bar length is not itself the point.",
+      "supplies": "A stem and a dot instead of a filled bar."
+    },
+    {
+      "name": "heatmap",
+      "form": "heatmap",
+      "description": "A dense grid, colour = magnitude. The form for country x year at full resolution.",
+      "supplies": "A grid of cells, colour by magnitude."
+    },
+    {
+      "name": "dumbbell",
+      "form": "dumbbell",
+      "description": "Before and after per item. x must hold exactly two values.",
+      "supplies": "Two dots joined by a line, one row per item."
+    },
+    {
+      "name": "slope",
+      "form": "slope",
+      "description": "Direction between two points, one line per item. x must hold exactly two values.",
+      "supplies": "Two columns joined by a line per item, labelled at both ends."
+    },
+    {
+      "name": "bump",
+      "form": "bump",
+      "description": "How rank changes over time. Pair with transform='rank'.",
+      "supplies": "Rank over time, 1 at the top. Supplies transform: \"rank\"."
+    },
+    {
+      "name": "scatter",
+      "form": "scatter",
+      "description": "Relationship between two measures. Add size for a bubble chart.",
+      "supplies": "One dot per item, two measures."
+    },
+    {
+      "name": "bubble",
+      "form": "scatter",
+      "description": "Relationship between two measures. Add size for a bubble chart.",
+      "supplies": "A scatter with `size` bound, so the dot area carries a third measure."
+    },
+    {
+      "name": "connectedScatter",
+      "form": "connectedScatter",
+      "description": "Two measures against each other, joined in time order. Shows a trajectory.",
+      "supplies": "A scatter joined in time order."
+    },
+    {
+      "name": "parallelCoordinates",
+      "form": "parallelCoordinates",
+      "description": "One line per item across many measures. For profiles, not for trends.",
+      "supplies": "One line per item across several independently scaled axes."
+    },
+    {
+      "name": "choropleth",
+      "form": "choropleth",
+      "description": "Magnitude by country. Absence is hatched, never a pale fill.",
+      "supplies": "Countries filled by magnitude, absence hatched."
+    },
+    {
+      "name": "bivariateChoropleth",
+      "form": "bivariateChoropleth",
+      "description": "Two measures per country on one 3x3 grid. Answers 'high on one, low on the other'.",
+      "supplies": "Countries filled from a 3x3 grid of two measures."
+    },
+    {
+      "name": "beeswarm",
+      "form": "beeswarm",
+      "description": "Every item as a dot, grouped by category. Shows the spread an average hides.",
+      "supplies": "Every item a dot, nudged apart within its group."
+    },
+    {
+      "name": "box",
+      "form": "box",
+      "description": "Distribution per x-slice as quartiles. Use when the spread is the finding.",
+      "supplies": "Quartiles, median and extremes per slice."
+    },
+    {
+      "name": "ridgeline",
+      "form": "ridgeline",
+      "description": "Stacked density curves, one per x-slice. Shows a distribution shifting over time.",
+      "supplies": "Overlapping density curves, one per slice."
+    },
+    {
+      "name": "statTile",
+      "form": "statTile",
+      "description": "A headline number with its delta and a sparkline. Facet it for a KPI row.",
+      "supplies": "A headline number, its delta, and a sparkline."
+    },
+    {
+      "name": "kpiRow",
+      "form": "statTile",
+      "description": "A headline number with its delta and a sparkline. Facet it for a KPI row.",
+      "supplies": "Several stat tiles side by side. Set `encoding.color` to split them."
+    }
+  ],
+  "jobs": {
+    "trend": {
+      "description": "How something moved over time.",
+      "forms": [
+        "line",
+        "area"
+      ]
+    },
+    "magnitude": {
+      "description": "How big things are next to each other.",
+      "forms": [
+        "bar",
+        "lollipop",
+        "heatmap"
+      ]
+    },
+    "change": {
+      "description": "What moved between two points, and in which direction.",
+      "forms": [
+        "dumbbell",
+        "slope",
+        "bump"
+      ]
+    },
+    "relationship": {
+      "description": "Whether two or more measures travel together.",
+      "forms": [
+        "scatter",
+        "connectedScatter",
+        "parallelCoordinates"
+      ]
+    },
+    "geography": {
+      "description": "How a measure varies by place.",
+      "forms": [
+        "choropleth",
+        "bivariateChoropleth"
+      ]
+    },
+    "distribution": {
+      "description": "The spread that an average hides.",
+      "forms": [
+        "beeswarm",
+        "box",
+        "ridgeline"
+      ]
+    },
+    "headline": {
+      "description": "A single number, where a chart would be furniture.",
+      "forms": [
+        "statTile"
+      ]
+    }
+  },
+  "forms": {
+    "line": {
+      "label": "Line chart",
+      "job": "trend",
+      "description": "Trend over time. Add color for several series, emphasis when one is the point.",
+      "useWhen": "A measure moves over time and the shape of the movement is the point.",
+      "avoidWhen": "Two measures of very different magnitude share it untransformed. Index them, or use two figures.",
+      "maxSeries": 8,
+      "names": [
+        "line",
+        "indexedLine",
+        "emphasisLine",
+        "smallMultiples"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "Horizontal position, or the category a mark belongs to."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "line",
+        "encoding": {
+          "x": "year",
+          "y": "cases",
+          "color": "country"
+        },
+        "title": "Reported measles cases by country",
+        "rationale": "A trend over time with a handful of named series, so a line per country reads directly."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Line chart",
+        "description": "Trend over time. Add color for several series, emphasis when one is the point. Use when: A measure moves over time and the shape of the movement is the point.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "line",
+            "description": "Trend over time. Add color for several series, emphasis when one is the point."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "Horizontal position, or the category a mark belongs to. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "area": {
+      "label": "Area chart",
+      "job": "trend",
+      "description": "Trend with volume. stack='stacked' for part-to-whole, 'percent' for share.",
+      "useWhen": "A trend where the volume under it matters, or a composition that shifts over time.",
+      "avoidWhen": "Series overlap without stacking; the fills hide each other.",
+      "maxSeries": 8,
+      "names": [
+        "stackedArea",
+        "stackedArea100"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "Horizontal position, or the category a mark belongs to."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "stack",
+          "values": "\"none\" | \"stacked\" | \"percent\"",
+          "description": "\"stacked\" makes it part-to-whole, \"percent\" makes it composition. This is what turns `area` into the catalog's stacked and 100% stacked area."
+        },
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "area",
+        "encoding": {
+          "x": "year",
+          "y": "cases",
+          "color": "country"
+        },
+        "stack": "percent",
+        "title": "Share of reported cases by country",
+        "caption": "Each band is that country's share of the total, so the chart shows composition rather than volume.",
+        "rationale": "Part-to-whole over time. Percent stacking answers 'who accounts for the total' rather than 'how big is the total'."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Area chart",
+        "description": "Trend with volume. stack='stacked' for part-to-whole, 'percent' for share. Use when: A trend where the volume under it matters, or a composition that shifts over time.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "area",
+            "description": "Trend with volume. stack='stacked' for part-to-whole, 'percent' for share."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "Horizontal position, or the category a mark belongs to. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "stack": {
+            "enum": [
+              "none",
+              "stacked",
+              "percent"
+            ],
+            "description": "\"stacked\" makes it part-to-whole, \"percent\" makes it composition. This is what turns `area` into the catalog's stacked and 100% stacked area."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "bar": {
+      "label": "Bar chart",
+      "job": "magnitude",
+      "description": "Compare magnitude across categories. orientation='horizontal' for long names, baseline=0 to diverge.",
+      "useWhen": "Comparing a measure across categories, ranked or diverging.",
+      "avoidWhen": "There is only one bar. That is a stat tile.",
+      "maxSeries": 8,
+      "names": [
+        "rankedBar",
+        "divergingBar"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "The category. Use orientation: \"horizontal\" when the names are long."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "stack",
+          "values": "\"none\" | \"stacked\" | \"percent\"",
+          "description": "\"stacked\" makes it part-to-whole, \"percent\" makes it composition. This is what turns `area` into the catalog's stacked and 100% stacked area."
+        },
+        {
+          "name": "orientation",
+          "values": "\"vertical\" | \"horizontal\"",
+          "description": "Horizontal is the only readable option once category names are long."
+        },
+        {
+          "name": "baseline",
+          "values": "number",
+          "description": "Bars grow from here instead of the axis floor. Setting 0 is what makes a bar chart diverge, with marks taking the warm or cool pole by side."
+        },
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "bar",
+        "encoding": {
+          "x": "country",
+          "y": "incidence"
+        },
+        "orientation": "horizontal",
+        "sort": {
+          "by": "y",
+          "order": "desc"
+        },
+        "title": "Measles incidence per million, latest year",
+        "rationale": "Magnitude across a handful of named categories. Horizontal because country names do not fit under vertical bars."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Bar chart",
+        "description": "Compare magnitude across categories. orientation='horizontal' for long names, baseline=0 to diverge. Use when: Comparing a measure across categories, ranked or diverging.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "bar",
+            "description": "Compare magnitude across categories. orientation='horizontal' for long names, baseline=0 to diverge."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "The category. Use orientation: \"horizontal\" when the names are long. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "stack": {
+            "enum": [
+              "none",
+              "stacked",
+              "percent"
+            ],
+            "description": "\"stacked\" makes it part-to-whole, \"percent\" makes it composition. This is what turns `area` into the catalog's stacked and 100% stacked area."
+          },
+          "orientation": {
+            "enum": [
+              "vertical",
+              "horizontal"
+            ],
+            "description": "Horizontal is the only readable option once category names are long."
+          },
+          "baseline": {
+            "type": "number",
+            "description": "Bars grow from here instead of the axis floor. Setting 0 is what makes a bar chart diverge, with marks taking the warm or cool pole by side."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "lollipop": {
+      "label": "Lollipop chart",
+      "job": "magnitude",
+      "description": "A ranked bar with the ink removed. Use when the bar length is not itself the point.",
+      "useWhen": "A ranked comparison where the bar's area would overstate the difference.",
+      "avoidWhen": "Values start at zero and the length genuinely is the quantity. Use a bar.",
+      "maxSeries": 1,
+      "names": [
+        "lollipop"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "Horizontal position, or the category a mark belongs to."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "orientation",
+          "values": "\"vertical\" | \"horizontal\"",
+          "description": "Horizontal is the only readable option once category names are long."
+        },
+        {
+          "name": "baseline",
+          "values": "number",
+          "description": "Bars grow from here instead of the axis floor. Setting 0 is what makes a bar chart diverge, with marks taking the warm or cool pole by side."
+        },
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "lollipop",
+        "encoding": {
+          "x": "country",
+          "y": "coverage"
+        },
+        "orientation": "horizontal",
+        "sort": {
+          "by": "y",
+          "order": "desc"
+        },
+        "referenceLines": [
+          {
+            "value": 95,
+            "label": "~95% herd immunity",
+            "axis": "x"
+          }
+        ],
+        "title": "MCV1 coverage against the herd-immunity threshold",
+        "rationale": "The reader is comparing each value to a threshold, not summing areas, so the ink of a full bar would be misleading weight."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Lollipop chart",
+        "description": "A ranked bar with the ink removed. Use when the bar length is not itself the point. Use when: A ranked comparison where the bar's area would overstate the difference.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "lollipop",
+            "description": "A ranked bar with the ink removed. Use when the bar length is not itself the point."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "Horizontal position, or the category a mark belongs to. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "orientation": {
+            "enum": [
+              "vertical",
+              "horizontal"
+            ],
+            "description": "Horizontal is the only readable option once category names are long."
+          },
+          "baseline": {
+            "type": "number",
+            "description": "Bars grow from here instead of the axis floor. Setting 0 is what makes a bar chart diverge, with marks taking the warm or cool pole by side."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "heatmap": {
+      "label": "Heatmap",
+      "job": "magnitude",
+      "description": "A dense grid, colour = magnitude. The form for country x year at full resolution.",
+      "useWhen": "Two dimensions and one measure, at a density no other form survives: country x year at full resolution.",
+      "avoidWhen": "There are under ~5 rows. A grouped bar reads better.",
+      "maxSeries": null,
+      "names": [
+        "heatmap"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "The column dimension of the grid."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "nominal",
+            "temporal",
+            "geo"
+          ],
+          "description": "The ROW dimension, and the one place y is not the measure. Magnitude rides on `color`."
+        },
+        {
+          "channel": "color",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The MEASURE. Binned into five steps of one hue, light to dark. Absence is hatched, never a pale fill."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "breaks",
+          "values": "[number, number, number, number]",
+          "description": "Four ascending class breaks, giving five bins. Declared rather than derived, so scrubbing a year cannot recolour a country whose own figure never moved."
+        }
+      ],
+      "example": {
+        "form": "heatmap",
+        "encoding": {
+          "x": "year",
+          "y": "country",
+          "color": "incidence"
+        },
+        "polarity": "higher-is-worse",
+        "title": "Measles incidence by country and year",
+        "rationale": "Two dimensions and one measure across many rows. Colour is the only channel that scales to this density without seating a hue per country."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Heatmap",
+        "description": "A dense grid, colour = magnitude. The form for country x year at full resolution. Use when: Two dimensions and one measure, at a density no other form survives: country x year at full resolution.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "heatmap",
+            "description": "A dense grid, colour = magnitude. The form for country x year at full resolution."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y",
+              "color"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "The column dimension of the grid. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The ROW dimension, and the one place y is not the measure. Magnitude rides on `color`. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "The MEASURE. Binned into five steps of one hue, light to dark. Absence is hatched, never a pale fill. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "breaks": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number"
+            },
+            "description": "Four ascending class breaks, giving five bins. Declared rather than derived, so scrubbing a year cannot recolour a country whose own figure never moved."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dumbbell": {
+      "label": "Dumbbell chart",
+      "job": "change",
+      "description": "Before and after per item. x must hold exactly two values.",
+      "useWhen": "Before and after per item, where the SIZE of each gap is the finding.",
+      "avoidWhen": "The items cross over. A slope chart shows crossing; a dumbbell hides it.",
+      "maxSeries": null,
+      "names": [
+        "dumbbell"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "Must hold EXACTLY two values: the before and the after."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": true,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "One row per distinct value. The two ends share a hue in two shades, because they are one measure at two times."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "orientation",
+          "values": "\"vertical\" | \"horizontal\"",
+          "description": "Horizontal is the only readable option once category names are long."
+        },
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "dumbbell",
+        "encoding": {
+          "x": "year",
+          "y": "coverage",
+          "color": "country"
+        },
+        "title": "MCV1 coverage, 2015 against 2023",
+        "rationale": "Before and after per country, where the length of each gap is the point. One hue in two shades, because the ends are one measure at two times."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Dumbbell chart",
+        "description": "Before and after per item. x must hold exactly two values. Use when: Before and after per item, where the SIZE of each gap is the finding.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "dumbbell",
+            "description": "Before and after per item. x must hold exactly two values."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y",
+              "color"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "Must hold EXACTLY two values: the before and the after. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "One row per distinct value. The two ends share a hue in two shades, because they are one measure at two times. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "orientation": {
+            "enum": [
+              "vertical",
+              "horizontal"
+            ],
+            "description": "Horizontal is the only readable option once category names are long."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "slope": {
+      "label": "Slope chart",
+      "job": "change",
+      "description": "Direction between two points, one line per item. x must hold exactly two values.",
+      "useWhen": "Direction between two points, especially when items cross.",
+      "avoidWhen": "More than about a dozen items. The labels collide.",
+      "maxSeries": 12,
+      "names": [
+        "slope"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "Must hold exactly two values."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": true,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "One line per distinct value, direct-labelled at both ends."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "slope",
+        "encoding": {
+          "x": "year",
+          "y": "coverage",
+          "color": "country"
+        },
+        "title": "Which countries gained coverage, and which lost it",
+        "rationale": "Direction between two points across a few items. Crossing lines are the finding, and only this form shows them."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Slope chart",
+        "description": "Direction between two points, one line per item. x must hold exactly two values. Use when: Direction between two points, especially when items cross.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "slope",
+            "description": "Direction between two points, one line per item. x must hold exactly two values."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y",
+              "color"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "Must hold exactly two values. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "One line per distinct value, direct-labelled at both ends. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "bump": {
+      "label": "Bump chart",
+      "job": "change",
+      "description": "How rank changes over time. Pair with transform='rank'.",
+      "useWhen": "The ORDER changed, which is a different claim from the values changing.",
+      "avoidWhen": "The magnitudes matter. Rank throws them away by design.",
+      "maxSeries": 12,
+      "names": [
+        "bump"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "Horizontal position, or the category a mark belongs to."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "Position, normally produced by transform: \"rank\". Rank 1 draws at the top."
+        },
+        {
+          "channel": "color",
+          "required": true,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "bump",
+        "encoding": {
+          "x": "year",
+          "y": "cases",
+          "color": "country"
+        },
+        "transform": "rank",
+        "title": "Rank by reported cases",
+        "caption": "Rank 1 is the highest count. Equal counts share no rank, and an unreported year has none.",
+        "rationale": "The finding is a change in order rather than in level, so position is ranked and the magnitudes are deliberately dropped."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Bump chart",
+        "description": "How rank changes over time. Pair with transform='rank'. Use when: The ORDER changed, which is a different claim from the values changing.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "bump",
+            "description": "How rank changes over time. Pair with transform='rank'."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y",
+              "color"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "Horizontal position, or the category a mark belongs to. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "Position, normally produced by transform: \"rank\". Rank 1 draws at the top. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "scatter": {
+      "label": "Scatter plot",
+      "job": "relationship",
+      "description": "Relationship between two measures. Add size for a bubble chart.",
+      "useWhen": "Two measures per item, asking whether they travel together.",
+      "avoidWhen": "One of the axes is time. That is a line chart.",
+      "maxSeries": 3,
+      "names": [
+        "scatter",
+        "bubble"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "The first measure. Unlike every other form, this axis is quantitative."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal",
+            "quantitative"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "size",
+          "required": false,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "Mark radius, scaled by area. Turns a scatter into a bubble chart."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "scatter",
+        "encoding": {
+          "x": "coverage",
+          "y": "incidence",
+          "color": "region",
+          "size": "population"
+        },
+        "title": "Coverage against incidence, sized by population",
+        "rationale": "The honest form for 'do these two move together', stated as x against y rather than implied by aligning two y-scales."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Scatter plot",
+        "description": "Relationship between two measures. Add size for a bubble chart. Use when: Two measures per item, asking whether they travel together.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "scatter",
+            "description": "Relationship between two measures. Add size for a bubble chart."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "The first measure. Unlike every other form, this axis is quantitative. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "size": {
+                "type": "string",
+                "description": "Mark radius, scaled by area. Turns a scatter into a bubble chart. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "connectedScatter": {
+      "label": "Connected scatter plot",
+      "job": "relationship",
+      "description": "Two measures against each other, joined in time order. Shows a trajectory.",
+      "useWhen": "Two measures over time, where the path doubles back on itself.",
+      "avoidWhen": "The trajectory is monotonic. Two aligned panels are easier to read.",
+      "maxSeries": 3,
+      "names": [
+        "connectedScatter"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "The first measure. Time becomes the path, not an axis, which is the only way to show a trajectory that doubles back."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "connectedScatter",
+        "encoding": {
+          "x": "coverage",
+          "y": "incidence",
+          "color": "country"
+        },
+        "title": "The path each country took",
+        "rationale": "Time is the path rather than an axis, which is the only way to show a trajectory that reverses."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Connected scatter plot",
+        "description": "Two measures against each other, joined in time order. Shows a trajectory. Use when: Two measures over time, where the path doubles back on itself.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "connectedScatter",
+            "description": "Two measures against each other, joined in time order. Shows a trajectory."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "The first measure. Time becomes the path, not an axis, which is the only way to show a trajectory that doubles back. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "parallelCoordinates": {
+      "label": "Parallel coordinates",
+      "job": "relationship",
+      "description": "One line per item across many measures. For profiles, not for trends.",
+      "useWhen": "One item's profile across several measures at once.",
+      "avoidWhen": "The measures are the same thing at different times. That is a line chart.",
+      "maxSeries": 8,
+      "names": [
+        "parallelCoordinates"
+      ],
+      "channels": [
+        {
+          "channel": "measures",
+          "required": true,
+          "accepts": "any",
+          "description": "The parallel axes, in the order they should appear."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "parallelCoordinates",
+        "encoding": {
+          "measures": [
+            "coverage",
+            "incidence",
+            "population"
+          ],
+          "color": "country"
+        },
+        "title": "Country profiles across three measures",
+        "caption": "Each axis is scaled to its own range, so the chart compares shape rather than magnitude.",
+        "rationale": "Several measures per item, where the profile is the finding. Each axis is independently scaled and says so."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Parallel coordinates",
+        "description": "One line per item across many measures. For profiles, not for trends. Use when: One item's profile across several measures at once.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "parallelCoordinates",
+            "description": "One line per item across many measures. For profiles, not for trends."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "measures"
+            ],
+            "properties": {
+              "measures": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The parallel axes, in the order they should appear."
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "choropleth": {
+      "label": "Choropleth map",
+      "job": "geography",
+      "description": "Magnitude by country. Absence is hatched, never a pale fill.",
+      "useWhen": "A measure varies by country and where matters.",
+      "avoidWhen": "Raw counts across countries of very different size. Use transform: \"perCapita\".",
+      "maxSeries": null,
+      "names": [
+        "choropleth"
+      ],
+      "channels": [
+        {
+          "channel": "geo",
+          "required": true,
+          "accepts": [
+            "geo"
+          ],
+          "description": "ISO 3166-1 alpha-3 code. Joins to the world geometry in lib/data/world-geo.ts."
+        },
+        {
+          "channel": "color",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The measure filling each country, binned into five steps of one hue."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        },
+        {
+          "channel": "x",
+          "required": false,
+          "accepts": "any",
+          "description": "Optional. Supplies the map's own timeline, driving the scrubber and the 1/3/5/10-year step tabs."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "breaks",
+          "values": "[number, number, number, number]",
+          "description": "Four ascending class breaks, giving five bins. Declared rather than derived, so scrubbing a year cannot recolour a country whose own figure never moved."
+        }
+      ],
+      "example": {
+        "form": "choropleth",
+        "encoding": {
+          "geo": "iso3",
+          "color": "incidence",
+          "x": "year"
+        },
+        "polarity": "higher-is-worse",
+        "title": "Measles incidence per million by country",
+        "rationale": "The measure is geographic and the reader's question is 'where', which no ranked bar answers."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Choropleth map",
+        "description": "Magnitude by country. Absence is hatched, never a pale fill. Use when: A measure varies by country and where matters.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "choropleth",
+            "description": "Magnitude by country. Absence is hatched, never a pale fill."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "geo",
+              "color"
+            ],
+            "properties": {
+              "geo": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-3 code. Joins to the world geometry in lib/data/world-geo.ts. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "The measure filling each country, binned into five steps of one hue. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              },
+              "x": {
+                "type": "string",
+                "description": "Optional. Supplies the map's own timeline, driving the scrubber and the 1/3/5/10-year step tabs. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "breaks": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number"
+            },
+            "description": "Four ascending class breaks, giving five bins. Declared rather than derived, so scrubbing a year cannot recolour a country whose own figure never moved."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "bivariateChoropleth": {
+      "label": "Bivariate choropleth",
+      "job": "geography",
+      "description": "Two measures per country on one 3x3 grid. Answers 'high on one, low on the other'.",
+      "useWhen": "Two measures per country, and the interesting cases are high on one and low on the other.",
+      "avoidWhen": "One measure would do. The 3x3 key costs the reader real effort.",
+      "maxSeries": null,
+      "names": [
+        "bivariateChoropleth"
+      ],
+      "channels": [
+        {
+          "channel": "geo",
+          "required": true,
+          "accepts": [
+            "geo"
+          ],
+          "description": "ISO 3166-1 alpha-3 code. Joins to the world geometry in lib/data/world-geo.ts."
+        },
+        {
+          "channel": "color",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The FIRST measure, binned into three. Reads down the 3x3 key."
+        },
+        {
+          "channel": "color2",
+          "required": true,
+          "accepts": "any",
+          "description": "The SECOND measure, binned into three. Reads across the 3x3 key."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "breaks",
+          "values": "[number, number, number, number]",
+          "description": "Four ascending class breaks, giving five bins. Declared rather than derived, so scrubbing a year cannot recolour a country whose own figure never moved."
+        }
+      ],
+      "example": {
+        "form": "bivariateChoropleth",
+        "encoding": {
+          "geo": "iso3",
+          "color": "incidence",
+          "color2": "coverage"
+        },
+        "title": "Incidence against coverage, by country",
+        "rationale": "Two measures on one map, so 'high incidence despite high coverage' becomes a colour the reader can name."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Bivariate choropleth",
+        "description": "Two measures per country on one 3x3 grid. Answers 'high on one, low on the other'. Use when: Two measures per country, and the interesting cases are high on one and low on the other.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "bivariateChoropleth",
+            "description": "Two measures per country on one 3x3 grid. Answers 'high on one, low on the other'."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "geo",
+              "color",
+              "color2"
+            ],
+            "properties": {
+              "geo": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-3 code. Joins to the world geometry in lib/data/world-geo.ts. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "The FIRST measure, binned into three. Reads down the 3x3 key. (a column key)"
+              },
+              "color2": {
+                "type": "string",
+                "description": "The SECOND measure, binned into three. Reads across the 3x3 key. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "breaks": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number"
+            },
+            "description": "Four ascending class breaks, giving five bins. Declared rather than derived, so scrubbing a year cannot recolour a country whose own figure never moved."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "beeswarm": {
+      "label": "Beeswarm plot",
+      "job": "distribution",
+      "description": "Every item as a dot, grouped by category. Shows the spread an average hides.",
+      "useWhen": "Every item should stay visible, and the group average is hiding them.",
+      "avoidWhen": "There are thousands of items. Use a box plot or a ridgeline.",
+      "maxSeries": 8,
+      "names": [
+        "beeswarm"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "The grouping category. Every row becomes its own dot within it."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "size",
+          "required": false,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "Mark radius, scaled by area. Turns a scatter into a bubble chart."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "beeswarm",
+        "encoding": {
+          "x": "region",
+          "y": "coverage"
+        },
+        "title": "Coverage by WHO region, one dot per country",
+        "rationale": "A regional average conceals the countries at the bottom, which are the ones the story is about. Nothing is aggregated away."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Beeswarm plot",
+        "description": "Every item as a dot, grouped by category. Shows the spread an average hides. Use when: Every item should stay visible, and the group average is hiding them.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "beeswarm",
+            "description": "Every item as a dot, grouped by category. Shows the spread an average hides."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "The grouping category. Every row becomes its own dot within it. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "size": {
+                "type": "string",
+                "description": "Mark radius, scaled by area. Turns a scatter into a bubble chart. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "box": {
+      "label": "Box plot",
+      "job": "distribution",
+      "description": "Distribution per x-slice as quartiles. Use when the spread is the finding.",
+      "useWhen": "The spread per slice is the finding and the individual items are not.",
+      "avoidWhen": "Fewer than about five items per slice. Quartiles of four points mislead.",
+      "maxSeries": 4,
+      "names": [
+        "box"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "The slice whose quartiles are drawn, usually a year."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [
+        {
+          "name": "emphasis",
+          "values": "string",
+          "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+        }
+      ],
+      "example": {
+        "form": "box",
+        "encoding": {
+          "x": "year",
+          "y": "coverage"
+        },
+        "title": "Spread of national coverage",
+        "rationale": "The finding is convergence, which a global mean line hides completely and quartiles state directly."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Box plot",
+        "description": "Distribution per x-slice as quartiles. Use when the spread is the finding. Use when: The spread per slice is the finding and the individual items are not.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "box",
+            "description": "Distribution per x-slice as quartiles. Use when the spread is the finding."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "The slice whose quartiles are drawn, usually a year. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          },
+          "emphasis": {
+            "type": "string",
+            "description": "A VALUE in the color column, not a column key. One series takes the accent and every other becomes the same grey. The honest answer to a crowded chart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "ridgeline": {
+      "label": "Ridgeline plot",
+      "job": "distribution",
+      "description": "Stacked density curves, one per x-slice. Shows a distribution shifting over time.",
+      "useWhen": "A whole distribution shifts over time.",
+      "avoidWhen": "There are only two or three slices. Overlaid curves are clearer.",
+      "maxSeries": null,
+      "names": [
+        "ridgeline"
+      ],
+      "channels": [
+        {
+          "channel": "x",
+          "required": true,
+          "accepts": "any",
+          "description": "The slice whose distribution is drawn, one ridge per value."
+        },
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The single measure on the single value axis. There is no second one."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [],
+      "example": {
+        "form": "ridgeline",
+        "encoding": {
+          "x": "year",
+          "y": "coverage"
+        },
+        "title": "How the distribution of national coverage moved",
+        "caption": "Ridges share one vertical scale, so a taller curve means more countries and not just a narrower spread.",
+        "rationale": "The shape of the distribution is the finding, and it is moving, which is exactly what this form is for."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Ridgeline plot",
+        "description": "Stacked density curves, one per x-slice. Shows a distribution shifting over time. Use when: A whole distribution shifts over time.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "ridgeline",
+            "description": "Stacked density curves, one per x-slice. Shows a distribution shifting over time."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "string",
+                "description": "The slice whose distribution is drawn, one ridge per value. (a column key)"
+              },
+              "y": {
+                "type": "string",
+                "description": "The single measure on the single value axis. There is no second one. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Series identity when bound to a nominal column, magnitude when bound to a quantitative one. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "statTile": {
+      "label": "Stat tile",
+      "job": "headline",
+      "description": "A headline number with its delta and a sparkline. Facet it for a KPI row.",
+      "useWhen": "The answer is one number, with its change and maybe a sparkline.",
+      "avoidWhen": "Never as a one-bar bar chart or a two-slice pie. This IS that chart, done right.",
+      "maxSeries": null,
+      "names": [
+        "statTile",
+        "kpiRow"
+      ],
+      "channels": [
+        {
+          "channel": "y",
+          "required": true,
+          "accepts": [
+            "quantitative"
+          ],
+          "description": "The measure. Its last non-null value becomes the headline number, and the first sets the delta."
+        },
+        {
+          "channel": "x",
+          "required": false,
+          "accepts": "any",
+          "description": "Optional. Supplies the span shown beside the delta and the sparkline's order."
+        },
+        {
+          "channel": "color",
+          "required": false,
+          "accepts": [
+            "nominal"
+          ],
+          "description": "Optional. One tile per distinct value, which is how you get a KPI row."
+        },
+        {
+          "channel": "facet",
+          "required": false,
+          "accepts": "any",
+          "description": "Splits the figure into small multiples, one panel per distinct value."
+        }
+      ],
+      "modifiers": [],
+      "example": {
+        "form": "statTile",
+        "encoding": {
+          "y": "cases",
+          "x": "year",
+          "color": "country"
+        },
+        "polarity": "higher-is-worse",
+        "title": "Latest reported cases",
+        "rationale": "A headline figure with its delta. A one-bar bar chart would spend a whole plot saying one number."
+      },
+      "jsonSchema": {
+        "type": "object",
+        "title": "Stat tile",
+        "description": "A headline number with its delta and a sparkline. Facet it for a KPI row. Use when: The answer is one number, with its change and maybe a sparkline.",
+        "required": [
+          "form",
+          "encoding",
+          "title",
+          "rationale"
+        ],
+        "properties": {
+          "form": {
+            "const": "statTile",
+            "description": "A headline number with its delta and a sparkline. Facet it for a KPI row."
+          },
+          "encoding": {
+            "type": "object",
+            "description": "Which column plays which visual role. Every value is a column key.",
+            "required": [
+              "y"
+            ],
+            "properties": {
+              "y": {
+                "type": "string",
+                "description": "The measure. Its last non-null value becomes the headline number, and the first sets the delta. (a column key)"
+              },
+              "x": {
+                "type": "string",
+                "description": "Optional. Supplies the span shown beside the delta and the sparkline's order. (a column key)"
+              },
+              "color": {
+                "type": "string",
+                "description": "Optional. One tile per distinct value, which is how you get a KPI row. (a column key)"
+              },
+              "facet": {
+                "type": "string",
+                "description": "Splits the figure into small multiples, one panel per distinct value. (a column key)"
+              }
+            },
+            "additionalProperties": false
+          },
+          "transform": {
+            "enum": [
+              "raw",
+              "indexed",
+              "perCapita",
+              "share",
+              "rank"
+            ],
+            "default": "raw",
+            "description": "Value transform. \"perCapita\" also needs `denominator`, and is what a comparison across places of different size requires."
+          },
+          "denominator": {
+            "type": "string",
+            "description": "Column to divide by. Required when transform is \"perCapita\"."
+          },
+          "perCapitaBase": {
+            "type": "number",
+            "description": "Multiplier after dividing, e.g. 1000000 for per million."
+          },
+          "polarity": {
+            "enum": [
+              "higher-is-worse",
+              "higher-is-better"
+            ],
+            "description": "Picks the colour ramp direction and which side of a baseline reads as alarm."
+          },
+          "sort": {
+            "type": "object",
+            "properties": {
+              "by": {
+                "enum": [
+                  "x",
+                  "y",
+                  "color"
+                ]
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          },
+          "referenceLines": {
+            "type": "array",
+            "description": "Only a real threshold earns one. They render dashed; nothing else in the app does.",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "axis": {
+                  "enum": [
+                    "x",
+                    "y"
+                  ]
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The renderer never invents one."
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Say what the axis means whenever it is not literal."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Required, and shown to the reader. Why this form over the alternatives. A producer that cannot say why has guessed rather than decided."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "frame": {
+    "description": "The data, long format. One row per observation, never one column per series. Long is the contract because wide cannot describe 194 countries without naming 194 columns.",
+    "jsonSchema": {
+      "type": "object",
+      "required": [
+        "columns",
+        "rows"
+      ],
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "type"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "Matches the keys in every row."
+              },
+              "label": {
+                "type": "string",
+                "description": "Shown on axes, legends, tooltips and the table."
+              },
+              "type": {
+                "enum": [
+                  "quantitative",
+                  "temporal",
+                  "nominal",
+                  "geo"
+                ],
+                "description": "temporal is distinct from quantitative because a year is orderable but its magnitude is meaningless: it must never be indexed or divided."
+              },
+              "unit": {
+                "type": "string"
+              },
+              "decimals": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "rows": {
+          "type": "array",
+          "description": "Each row maps column key to value. null means not reported, and never renders as zero.",
+          "items": {
+            "type": "object"
+          }
+        },
+        "sourceNote": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
