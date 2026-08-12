@@ -52,7 +52,7 @@ Only the middle stage is new. Everything else exists to make it measurable.
 
 And we use two datasets on purpose, because tone fails in two directions. The measles data invites alarmism. The WHO child-mortality data invites the opposite failure - false reassurance - and there the agent has to keep the inequality and the COVID reversal visible rather than flatten them.
 
-Ahmed will show you how we turned that into a number.
+Okasha will show you how we turned that into a number.
 
 > **DELIVERY:** this is a signpost slide, keep moving. Do not name model versions twice, they are on the slide.
 
@@ -80,7 +80,7 @@ But look at the top. That is the child-mortality data. The raw story scored a pe
 
 Alarmism falls 3.74 to 2.09, optimism rises 2.15 to 2.60. Both toward the middle.
 
-Ahmed will tell you where that lands next to a person.
+Elsaadani will tell you where that lands next to a person.
 
 > **DELIVERY:** physically point at the top cluster. That one group of points is the entire justification for the second axis.
 
@@ -178,9 +178,14 @@ Q&A prep is at the end of presentation/SPEAKER-SCRIPT.md - read it on the way in
 
 ## The demo, minute by minute
 
-A cold run takes between 92 and 550 seconds - that is measured, not guessed
-(`exp-repeats-g4b-g8b.json`). **You cannot click Generate on stage and wait.**
-Everything below exists to make sure you never have to.
+A cold run of the shipping configuration takes between 194 and 550 seconds -
+measured, not guessed (`exp-repeats-g4b-g8b.json`). **You cannot click Generate
+on stage and wait.** Everything below exists to make sure you never have to.
+
+> **Walk this path once, end to end, the day before.** It is written against the
+> code as it stands after the chart-selection merge, and the screens were read
+> out of the components rather than clicked. That is enough to know each screen
+> exists; it is not enough to know what it looks like with your data in it.
 
 ### Before you leave
 
@@ -199,14 +204,22 @@ so - one sentence, no apology.
 
 ### The click path
 
-| Time | Screen | The one thing you say |
-|------|--------|----------------------|
-| 0:00-0:20 | Datasets | Real merged data: measles cases joined to MCV1 coverage on country and year, 9,959 rows, 1980 to 2024. |
-| 0:20-0:55 | Chosen figures | We do not let the frontend guess. The backend profiles the table and picks the forms it can honestly carry - and refuses specs that would misrepresent it. |
-| 0:55-1:45 | Raw story | Read **one** alarmist sentence out loud, then show its alarmism score. |
-| 1:45-2:40 | Moderated story | Same numbers, different temperature. Show the highlighted emotive spans and the score moving. |
-| 2:40-3:10 | Human story beside it | This is one of the 25 we wrote by hand. Show the similarity and retention row. |
+Everything after the first step lives on `/generate`, which composes the dataset
+picker, the pipeline runner and the comparison panel on one page.
+
+| Time | Where | The one thing you say |
+|------|-------|----------------------|
+| 0:00-0:20 | `/datasets` | Real merged data: measles cases joined to MCV1 coverage on country and year, 9,959 rows, 1980 to 2024. |
+| 0:20-0:55 | `/generate`, dataset picked | We do not let the frontend guess which charts to draw. The backend profiles the table and picks the forms it can honestly carry - and refuses a spec that would misrepresent it. |
+| 0:55-1:45 | Pipeline runner, raw story | Read **one** alarmist sentence out loud, then show its tone reading. |
+| 1:45-2:40 | Moderated story | Same numbers, different temperature. The red-line view marks every emotive span that came out, and the tone meter moves. |
+| 2:40-3:10 | Comparison panel | This is one of the 25 stories we wrote by hand. Now the similarity and retention numbers. |
 | 3:10-3:30 | Anywhere | That entire loop ran on this laptop. There is no API call in the generation path. |
+
+**The gotcha:** the comparison panel scores against the human baseline *typed or
+imported into the page*, so the metrics stay empty until you paste one in. Have
+the measles story on the clipboard, or import it, before you switch to the
+browser - not while the room is watching.
 
 ### When it breaks
 
