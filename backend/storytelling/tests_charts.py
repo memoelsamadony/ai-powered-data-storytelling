@@ -23,6 +23,7 @@ from . import datasets as ds
 from .charts import http as charts_http
 from .charts.applicability import (
     INCOMMENSURABLE_RATIO,
+    MAX_BARS,
     MAX_CANDIDATES,
     FrameSource,
     apply_slice,
@@ -482,6 +483,93 @@ class ApplicabilityTests(TestCase):
         dumbbell = next(c for c in candidates_for(source) if c.form == "dumbbell")
         sliced = apply_slice(source.frame, dumbbell)
         self.assertEqual(len({r["year"] for r in sliced.rows}), 2)
+
+
+class RealUploadShapeTests(TestCase):
+    """Two defects that only a real third-party table exposed.
+
+    Built from the shape of an OWID country-year export (227 entities, 2000-2024,
+    world/continent/income-group aggregates in the same column as the countries).
+    Neither registry dataset has that shape, so neither could have caught these.
+    """
+
+    def _owid_shaped(self) -> FrameSource:
+        columns = [
+            {"key": "Entity", "label": "Entity", "type": "nominal"},
+            {"key": "Code", "label": "Code", "type": "geo"},
+            {"key": "Year", "label": "Year", "type": "temporal"},
+            {"key": "incidence", "label": "Incidence", "type": "quantitative"},
+        ]
+        rows = []
+        for i in range(40):  # countries, with ISO3-SHAPED codes: letters only
+            code = "A" + chr(ord("A") + i // 26) + chr(ord("A") + i % 26)
+            for year in (2000, 2012, 2024):
+                rows.append({"Entity": f"Country {i}", "Code": code,
+                             "Year": year, "incidence": float(i * 3)})
+        for name, code in (("World", "OWID_WRL"), ("Africa", "OWID_AFR"),
+                           ("High-income countries", "OWID_HIC")):
+            for year in (2000, 2012, 2024):
+                # An aggregate is larger than any of its parts, which is exactly
+                # why it captures the top of a ranking.
+                rows.append({"Entity": name, "Code": code, "Year": year,
+                             "incidence": 9000.0})
+        frame = ChartFrame(columns=columns, rows=rows)
+        return FrameSource("uploaded table", frame, profile_of_frame(frame))
+
+    def _bar(self):
+        source = self._owid_shaped()
+        bar = next(c for c in candidates_for(source) if c.form == "bar")
+        return source, bar, apply_slice(source.frame, bar)
+
+    def test_a_crowded_category_axis_is_cut(self):
+        """maxSeries governs colour, not x, so nothing capped the bars."""
+        _, _, sliced = self._bar()
+        self.assertLessEqual(len({r["Entity"] for r in sliced.rows}), MAX_BARS)
+
+    def test_the_cut_is_disclosed(self):
+        _, bar, _ = self._bar()
+        self.assertTrue(any("highest" in n for n in bar.notes))
+
+    def test_aggregates_are_not_ranked_beside_countries(self):
+        """"World" outranks every country it contains, by construction."""
+        _, _, sliced = self._bar()
+        entities = {r["Entity"] for r in sliced.rows}
+        for aggregate in ("World", "Africa", "High-income countries"):
+            self.assertNotIn(aggregate, entities)
+
+    def test_dropping_aggregates_is_disclosed(self):
+        _, bar, _ = self._bar()
+        self.assertTrue(any("not individual countries" in n for n in bar.notes))
+
+    def test_the_ranking_is_taken_from_the_latest_year(self):
+        """Rank first and take the latest year after, and it ranks on the wrong
+        number while looking entirely convincing."""
+        _, _, sliced = self._bar()
+        self.assertEqual({r["Year"] for r in sliced.rows}, {2024})
+
+    def test_a_table_of_only_regions_is_left_alone(self):
+        """Dropping every row would be worse than charting regions as regions."""
+        columns = [
+            {"key": "Entity", "label": "Entity", "type": "nominal"},
+            {"key": "Code", "label": "Code", "type": "geo"},
+            {"key": "v", "label": "V", "type": "quantitative"},
+        ]
+        rows = [{"Entity": n, "Code": c, "v": 1.0} for n, c in
+                (("World", "OWID_WRL"), ("Africa", "OWID_AFR"), ("Asia", "OWID_ASI"))]
+        frame = ChartFrame(columns=columns, rows=rows)
+        source = FrameSource("t", frame, profile_of_frame(frame))
+        bar = next(c for c in candidates_for(source) if c.form == "bar")
+        self.assertTrue(apply_slice(frame, bar).rows)
+
+    def test_the_map_still_sees_every_row(self):
+        """Aggregates are dropped only where places are RANKED. A choropleth
+        looks each code up and simply fails to match the ones that are not
+        countries, so nothing needs removing."""
+        source = self._owid_shaped()
+        chor = next(c for c in candidates_for(source) if c.form == "choropleth")
+        self.assertIsNone(chor.drop_aggregates_on)
+        self.assertEqual(len(apply_slice(source.frame, chor).rows),
+                         len(source.frame.rows))
 
 
 class SourceParityTests(TestCase):

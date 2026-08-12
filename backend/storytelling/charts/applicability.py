@@ -40,7 +40,7 @@ import re
 from dataclasses import dataclass, field
 
 from .frames import top_by, where_rows
-from .profile import ColumnProfile, DatasetProfile
+from .profile import ColumnProfile, DatasetProfile, is_country_code
 from .spec import FORM_RULES, ChartFrame, ChartSpec
 
 #: How many candidates to put in front of the model. Past roughly this many the
@@ -54,6 +54,12 @@ MAX_CANDIDATES = 14
 #: fixed ceiling of 200 silently discarded `country` at 211 distinct and left
 #: `line` with no colour channel, which draws 211 countries as one zigzag.
 MAX_SPLIT_RATIO = 0.6
+
+#: How many bars stay readable at once. A category axis has no `maxSeries` in
+#: FORM_RULES - that governs colour - so nothing capped it, and a real upload
+#: (227 OWID entities) produced a 225-bar chart. Cut and declared, like every
+#: other editorial cut here.
+MAX_BARS = 15
 
 #: Beyond this ratio between the peak values of two groups inside one measure
 #: column, the groups must not share a linear axis untransformed.
@@ -111,6 +117,10 @@ class Candidate:
     slice_arg: object = None
     #: Modifiers this candidate must carry to be honest (e.g. bump wants rank).
     transform: str | None = None
+    #: Geo column whose non-ISO3 rows (World, continents, income groups) must be
+    #: dropped before this figure. Set on the forms that RANK places against one
+    #: another, where an aggregate would sit above every country it contains.
+    drop_aggregates_on: str | None = None
     #: Spec modifiers the candidate sets itself, e.g. a horizontal bar. Only
     #: ones FORM_RULES[form].allows, or validate_spec rejects the result.
     modifiers: dict[str, object] = field(default_factory=dict)
@@ -123,7 +133,8 @@ class Candidate:
         parts = [self.source, self.form] + [
             f"{k}={v}" for k, v in sorted(self.encoding.items()) if v
         ]
-        return "|".join(parts) + f"|{self.slice}|{self.transform or ''}"
+        return ("|".join(parts) + f"|{self.slice}|{self.transform or ''}"
+                f"|{self.drop_aggregates_on or ''}")
 
 
 def _is_category(c: ColumnProfile) -> bool:
@@ -221,6 +232,14 @@ def _split_candidate(form: str, encoding: dict[str, object],
     )
 
 
+def _aggregate_rows(frame: ChartFrame, geo_key: str) -> int:
+    """Rows whose geo code is not a country: World, continents, income groups."""
+    return sum(
+        1 for row in frame.rows
+        if row.get(geo_key) is not None and not is_country_code(row[geo_key])
+    )
+
+
 def candidates_for(source: FrameSource) -> list[Candidate]:
     """Every form this frame's column types can honestly satisfy."""
     profile, frame = source.profile, source.frame
@@ -241,6 +260,14 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
 
     # Does the split mix units inside one measure column? If so, every form that
     # shares one linear axis across it is off the table, the indexed one aside.
+    # A table of places routinely ships aggregates in the same column - OWID
+    # publishes World, continents and income groups beside its countries. They
+    # are sums of the other rows, so ranking them together puts "World" above
+    # every country as though it were a peer. Detected here, dropped only from
+    # the forms that rank places, and always disclosed.
+    geo_key = geo[0].key if geo else None
+    aggregates = _aggregate_rows(frame, geo_key) if geo_key else 0
+
     ratio = (
         _incommensurable_ratio(frame, split, measures[0].key)
         if split and measures else None
@@ -301,25 +328,41 @@ def candidates_for(source: FrameSource) -> list[Candidate]:
         # to the model, which otherwise describes a horizontal bar in its
         # rationale while emitting a spec that draws a vertical one.
         long_names = _longest_value(frame, category.key) > 12
+        crowded = category.distinct > MAX_BARS
+        notes: list[str] = []
+        if crowded:
+            notes.append(f"{category.distinct} {category.label.lower()} values would "
+                         f"not fit on one axis, so this shows the highest {MAX_BARS} "
+                         f"by {m.label}.")
+        if aggregates:
+            notes.append(f"{aggregates} rows that are not individual countries "
+                         "(world totals, continents, income groups) are excluded, "
+                         "because an aggregate outranks every country inside it.")
         for form in ("bar", "lollipop"):
             out.append(Candidate(
                 form=form, encoding={"x": category.key, "y": m.key},
                 modifiers={"orientation": "horizontal"} if long_names else {},
-                slice="latest" if t else "none", slice_arg=(t.key if t else None),
+                drop_aggregates_on=geo_key,
+                slice=("ranked_latest" if crowded else ("latest" if t else "none")),
+                slice_arg=((t.key if t else None, category.key, m.key, MAX_BARS)
+                           if crowded else (t.key if t else None)),
                 because=(f"{m.label} compared across {category.label}"
                          if form == "bar"
                          else f"a ranked comparison of {m.label}, where bar area "
                               "would overstate the difference"),
+                notes=list(notes),
             ))
 
         if t:
             # The heatmap's `y` is the row dimension, not a series, so it takes
             # the category for the same reason the bar does.
-            out.append(_split_candidate(
+            heat = _split_candidate(
                 "heatmap", {"x": t.key, "y": category.key, "color": m.key},
                 category, m, cap=25,
                 because=f"{category.label} x {t.label} at full resolution",
-            ))
+            )
+            heat.drop_aggregates_on = geo_key
+            out.append(heat)
 
     # --- Change between two points ---------------------------------------
     if t and split and measures and shared_axis_ok:
@@ -470,6 +513,16 @@ def candidates_across(sources: list[FrameSource]) -> list[Candidate]:
 
 def apply_slice(frame: ChartFrame, candidate: Candidate) -> ChartFrame:
     """The cut a candidate declares. Editorial, and therefore never silent."""
+    if candidate.drop_aggregates_on:
+        key = candidate.drop_aggregates_on
+        kept = where_rows(
+            frame, lambda r: r.get(key) is None or is_country_code(r[key])
+        )
+        # Only if it leaves something: a table of nothing BUT aggregates is a
+        # legitimate table of regions, and emptying it would be worse.
+        if kept.rows:
+            frame = kept
+
     if candidate.slice == "none" or not frame.rows:
         return frame
 
@@ -482,6 +535,20 @@ def apply_slice(frame: ChartFrame, candidate: Candidate) -> ChartFrame:
             return frame
         newest = max(values, key=_sort_key)
         return where_rows(frame, lambda r: r.get(x_key) == newest)
+
+    if candidate.slice == "ranked_latest":
+        # The latest x-slice, then the highest N of it. Order matters: ranking
+        # first and then taking the latest year would rank on the wrong number.
+        x_key, item_key, measure, n = candidate.slice_arg
+        if x_key:
+            values = [r.get(x_key) for r in frame.rows if r.get(x_key) is not None]
+            if values:
+                newest = max(values, key=_sort_key)
+                frame = where_rows(frame, lambda r: r.get(x_key) == newest)
+        keep = set(top_by(frame, item_key, measure, n))
+        if keep:
+            frame = where_rows(frame, lambda r: str(r.get(item_key) or "") in keep)
+        return frame
 
     if candidate.slice == "top_n":
         item_key, measure, n = candidate.slice_arg

@@ -110,6 +110,19 @@ class DatasetProfile:
         return max(medians) / min(medians)
 
 
+def is_country_code(value: object) -> bool:
+    """Does this value look like an ISO3 country code?
+
+    Used past the typing step to tell individual places apart from the
+    aggregates published alongside them. A table of countries routinely carries
+    "World", continents and income groups in the same column, and those rows
+    are sums of the others rather than peers of them.
+    """
+    if value is None:
+        return False
+    return bool(_ISO3.fullmatch(str(value).strip()))
+
+
 def _clean_key(name: str) -> str:
     key = re.sub(r"[^0-9a-zA-Z]+", "_", str(name).strip()).strip("_")
     return key or "column"

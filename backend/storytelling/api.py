@@ -160,11 +160,18 @@ def get_dataset(request, dataset_id: str):
     return ds.get_dataset(dataset_id)
 
 
+# Two different capabilities, and conflating them is what would mislead. Charts
+# need the column TYPE, which the data answers for itself (charts/profile.py).
+# The story pipeline needs to know which column is the measure, which is the
+# comparison and what its class breaks are - editorial facts no table states -
+# so it still waits on the configuration step.
 UPLOAD_NOTE = (
-    "Stored and validated. Not yet generatable: the pipeline needs to know which "
-    "column is the measure, which is the comparison, and what its class breaks "
-    "are, and inferring that from column names is how an unlabelled figure ends "
-    "up in front of a reader. The configuration step comes first."
+    "Stored and validated. Figures can be suggested from it now: choosing a chart "
+    "needs only each column's type, which is readable from the data. Generating a "
+    "story is not available yet - the pipeline needs to know which column is the "
+    "measure, which is the comparison, and what its class breaks are, and inferring "
+    "that from column names is how an unlabelled figure ends up in front of a "
+    "reader. The configuration step comes first."
 )
 
 
@@ -188,6 +195,7 @@ def upload_dataset(request, file: UploadedFile = File(...)):
         countries=record.countries,
         preview_rows=uploads_mod.preview(record),
         wired=False,
+        chartable=True,
         note=UPLOAD_NOTE,
     )
 

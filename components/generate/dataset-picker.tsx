@@ -1,8 +1,9 @@
 "use client";
 
-import { Check, Upload, Database, AlertTriangle, TrendingUp } from "lucide-react";
+import { Check, Database, AlertTriangle, TrendingUp } from "lucide-react";
 import type { Dataset } from "@/lib/data/datasets";
 import { StoryChart } from "@/components/charts/story-chart";
+import { DatasetUpload } from "@/components/generate/dataset-upload";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -55,16 +56,7 @@ export function DatasetPicker({
           );
         })}
 
-        <div className="relative flex flex-col items-center justify-center rounded-2xl border border-dashed border-hairline bg-surface-soft/40 p-5 text-center">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-surface text-faint">
-            <Upload className="h-5 w-5" />
-          </span>
-          <h3 className="mt-4 font-serif text-lg text-faint">Upload your own</h3>
-          <p className="mt-1.5 text-xs leading-relaxed text-faint">
-            Connecting custom CSV uploads to the Python pipeline is future work. Pick a built-in
-            dataset for now.
-          </p>
-        </div>
+        <DatasetUpload />
       </div>
 
       {selected && (

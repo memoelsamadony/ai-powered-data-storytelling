@@ -330,3 +330,53 @@ export async function suggestCharts(
     return null;
   }
 }
+
+// ------------------------------------------------------------------- uploads
+
+export interface UploadedDataset {
+  id: string;
+  originalName: string;
+  rows: number;
+  columns: string[];
+  numericColumns: string[];
+  yearRange: string;
+  countries: number | null;
+  previewRows: Record<string, string>[];
+  /** The story pipeline can generate from it. Still false: see `note`. */
+  wired: boolean;
+  /** Figures can be suggested from it. True - a table states its own types. */
+  chartable: boolean;
+  note: string;
+}
+
+/** Raised with the backend's own words, so the reader is told what was wrong. */
+export class UploadRejected extends Error {}
+
+/**
+ * Send a CSV to the backend.
+ *
+ * Deliberately does NOT use `call`: that helper sets a JSON content-type, and a
+ * multipart body needs the browser to set its own boundary. It also does not
+ * use `withFallback`, because there is no honest mock for "your file was
+ * stored" - a fallback here would tell the reader their upload succeeded when
+ * nothing received it.
+ */
+export async function uploadDataset(file: File): Promise<UploadedDataset> {
+  const body = new FormData();
+  body.append("file", file);
+
+  const res = await fetch(`${API_BASE}/uploads`, { method: "POST", body, cache: "no-store" });
+  if (!res.ok) {
+    let detail = res.statusText;
+    try {
+      detail = (await res.json()).detail ?? detail;
+    } catch {
+      /* non-JSON error body */
+    }
+    // 400 is the backend judging the file; anything else is the backend itself.
+    throw new UploadRejected(
+      res.status === 400 ? detail : `The server could not store the file (${res.status}: ${detail}).`,
+    );
+  }
+  return res.json() as Promise<UploadedDataset>;
+}
