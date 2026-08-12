@@ -1118,7 +1118,7 @@ on stage and wait.** Everything below exists to make sure you never have to.
 ### T-0, as slide 1 goes up
 
 The standby person starts a real generation on the measles dataset in a
-background tab. At the measured mean it finishes around slide 8. If it has not
+background tab. At the measured mean it finishes around slide 16. If it has not
 finished by the time you switch over, you open a completed run instead and say
 so - one sentence, no apology.
 
@@ -1151,15 +1151,18 @@ browser - not while the room is watching.
 
 ## If you are running long
 
-Cut slide 7, the reliability figure, and fold one sentence into slide 6: "we
-rated every story three times and the judge agrees with itself to ICC 0.99, so
-this gap is real." That buys 40 seconds and costs the least.
+Cut **slide 13**, the n=1 ranking table, and fold its point into slide 12 step
+three: "six combinations tied on tone, so we ranked them on faithfulness." That
+buys about 20 seconds and costs the least, because slide 14 restates the
+comparison anyway.
 
-Do **not** cut slide 9. The reversal is the strongest thing in the deck.
+Next cheapest is **slide 12** itself, compressed to two sentences.
+
+Do **not** cut slide 14. The reversal is the strongest thing in the deck.
 
 ## Questions to expect
 
-**"There is only one judge."** Correct, and we say so on slide 10. The 0.991 is
+**"There is only one judge."** Correct, and we say so on slide 19. The 0.991 is
 self-consistency, not inter-rater agreement - an upper bound on what a different
 judge would agree to. A second judge family is the next run. What supports the
 result meanwhile is that two independent methods agree: the scalar scores and
@@ -1184,7 +1187,7 @@ judge's own disagreement with itself is 0.08.
 **"Your human baseline is your own team."** Yes. Five writer slots per series,
 written from the evidence packs before anyone saw machine output. It is a real
 hand-written baseline, and it is not the controlled writer design a full study
-would want. Both are on slide 10.
+would want. Both are on slide 19.
 """
 
 
@@ -1279,6 +1282,251 @@ def write_script(prs: Presentation) -> Path:
     return dest
 
 
+# --------------------------------------------------------------------------
+# the same script as a PDF you can hold at a lectern
+# --------------------------------------------------------------------------
+SCRIPT_CSS = """
+@page { size: A4; margin: 15mm 14mm 16mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+       color: #0F172A; font-size: 11pt; line-height: 1.45; }
+h1 { font-size: 21pt; color: #0D1B5C; margin: 0 0 2mm; letter-spacing: -0.2pt; }
+.lede { color: #526173; font-size: 10.5pt; margin: 0 0 6mm; }
+.rule { height: 3px; background: #20C4B0; width: 34mm; margin: 0 0 6mm; }
+
+table.timing { width: 100%; border-collapse: collapse; margin: 0 0 7mm;
+               font-size: 10pt; }
+table.timing th { text-align: left; color: #526173; font-weight: 600;
+                  font-size: 8.5pt; letter-spacing: .4pt; text-transform: uppercase;
+                  border-bottom: 1.5px solid #D9DFE7; padding: 2mm 2mm 1.5mm; }
+table.timing td { padding: 2mm; border-bottom: 1px solid #EEF4F8; }
+table.timing tr.total td { font-weight: 700; color: #0D1B5C;
+                           border-bottom: 1.5px solid #D9DFE7; }
+table.timing td.n { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Break before every speaker except the first. :first-of-type would match the
+   first <div> in the document, which is the rule bar, not the first speaker. */
+.speaker + .speaker { page-break-before: always; }
+.speaker-head { display: flex; align-items: baseline; gap: 4mm;
+                border-left: 4px solid #20C4B0; padding: 0 0 0 4mm;
+                margin: 0 0 5mm; }
+.speaker-head .who { font-size: 17pt; font-weight: 700; color: #0D1B5C; }
+.speaker-head .meta { font-size: 10pt; color: #526173; }
+
+.blk { break-inside: avoid; page-break-inside: avoid; margin: 0 0 6mm;
+       padding: 0 0 0 14mm; position: relative; }
+.blk .num { position: absolute; left: 0; top: 0; width: 10mm; text-align: right;
+            font-size: 15pt; font-weight: 700; color: #C2CEDB;
+            font-variant-numeric: tabular-nums; }
+.blk .hd { display: flex; gap: 3mm; align-items: baseline; margin: 0 0 2mm; }
+.blk .kind { font-size: 8pt; letter-spacing: .5pt; text-transform: uppercase;
+             color: #526173; font-weight: 700; }
+.blk .chip { font-size: 8.5pt; font-weight: 700; color: #0E8F86;
+             background: #E4F4F1; padding: 0.6mm 2mm; border-radius: 2mm; }
+.blk .run { font-size: 8.5pt; color: #8A99AD; }
+.blk .hand { font-size: 8.5pt; font-weight: 700; color: #B45409; }
+.say p { margin: 0 0 2.4mm; font-size: 11.5pt; line-height: 1.5; }
+.say p:last-child { margin-bottom: 0; }
+.cue { margin: 2.5mm 0 0; padding: 2mm 3mm; background: #F7FAFC;
+       border-left: 3px solid #1E66B8; font-size: 9.5pt; color: #526173; }
+.cue b { color: #1E66B8; }
+
+.back { page-break-before: always; }
+.back h2 { font-size: 15pt; color: #0D1B5C; margin: 0 0 3mm; }
+.back h3 { font-size: 11.5pt; color: #0E8F86; margin: 5mm 0 2mm; }
+.back p { margin: 0 0 3mm; font-size: 10.5pt; }
+.back ul { margin: 0 0 3mm; padding-left: 5mm; font-size: 10.5pt; }
+.back li { margin: 0 0 1.5mm; }
+.back blockquote { margin: 0 0 4mm; padding: 2.5mm 3.5mm; background: #FFF6EC;
+                   border-left: 3px solid #B45409; font-size: 10.5pt; }
+.back table { width: 100%; border-collapse: collapse; margin: 0 0 4mm;
+              font-size: 9.5pt; }
+.back th { text-align: left; background: #EEF4F8; color: #0D1B5C;
+           padding: 1.8mm 2.5mm; border-bottom: 1px solid #D9DFE7; }
+.back td { padding: 1.8mm 2.5mm; border-bottom: 1px solid #EEF4F8;
+           vertical-align: top; }
+code { font-family: "SF Mono", Menlo, monospace; font-size: 9pt;
+       background: #EEF4F8; padding: 0.4mm 1.2mm; border-radius: 1mm; }
+"""
+
+
+def _md_inline(t: str) -> str:
+    import html
+    import re as _re
+    t = html.escape(t)
+    t = _re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+    t = _re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", t)
+    t = _re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"<i>\1</i>", t)
+    return t
+
+
+def _md_to_html(md: str) -> str:
+    """Just enough Markdown for the runbook: headings, lists, tables, quotes.
+
+    A dependency for six constructs is not worth it, and the input is one file
+    written in this repo rather than arbitrary user text.
+    """
+    out, rows, lst, para = [], [], [], []
+
+    def flush_table():
+        if not rows:
+            return
+        head, *body = rows
+        cells = lambda r, tag: "".join(
+            f"<{tag}>{_md_inline(c.strip())}</{tag}>" for c in r.strip("|").split("|"))
+        out.append("<table><tr>" + cells(head, "th") + "</tr>")
+        for r in body:
+            if set(r.replace("|", "").strip()) <= set("- :"):
+                continue
+            out.append("<tr>" + cells(r, "td") + "</tr>")
+        out.append("</table>")
+        rows.clear()
+
+    def flush_list():
+        if lst:
+            out.append("<ul>" + "".join(f"<li>{_md_inline(i)}</li>" for i in lst)
+                       + "</ul>")
+            lst.clear()
+
+    def flush_para():
+        # The source is hard-wrapped at 80 columns. Emitting one <p> per physical
+        # line is what made the first render double-spaced; a paragraph ends at a
+        # blank line, not at a newline.
+        if para:
+            out.append(f"<p>{_md_inline(' '.join(para))}</p>")
+            para.clear()
+
+    for line in md.splitlines():
+        st = line.strip()
+        if st.startswith("|"):
+            flush_para(); flush_list()
+            rows.append(st)
+            continue
+        flush_table()
+        if not st:
+            flush_para(); flush_list()
+        elif st.startswith("### "):
+            flush_para(); flush_list(); out.append(f"<h3>{_md_inline(st[4:])}</h3>")
+        elif st.startswith("## "):
+            flush_para(); flush_list(); out.append(f"<h2>{_md_inline(st[3:])}</h2>")
+        elif st.startswith("> "):
+            flush_para(); flush_list()
+            out.append(f"<blockquote>{_md_inline(st[2:])}</blockquote>")
+        elif st.startswith("- "):
+            flush_para()
+            lst.append(st[2:])
+        elif lst:
+            lst[-1] += " " + st          # a wrapped list item
+        else:
+            para.append(st)
+    flush_table(); flush_para(); flush_list()
+    return "\n".join(out)
+
+
+def script_pdf(prs: Presentation) -> Path:
+    """Render the speaker script for printing, grouped so each person can hold
+    their own pages: one page break per speaker, and no slide block split
+    across a page boundary."""
+    import html
+    import re
+
+    slides = list(prs.slides)
+    dest = HERE / "SPEAKER-SCRIPT.pdf"
+
+    def spoken(t):
+        b = re.split(r"\nDELIVERY:", t)[0]
+        return len("\n".join(l for l in b.splitlines()
+                             if not re.match(r"^(SPEAKER|DEMO|CLOSING|QUESTIONS)",
+                                             l.strip())).split())
+
+    talk = [k for k, sl in enumerate(slides, 1)
+            if sl.notes_slide.notes_text_frame.text.strip().startswith("SPEAKER")]
+    per, span = {}, {}
+    for k in talk:
+        who = slides[k - 1].notes_slide.notes_text_frame.text.splitlines()[0]
+        who = who.split("-")[1].split()[0]
+        per[who] = per.get(who, 0) + spoken(slides[k - 1].notes_slide.notes_text_frame.text)
+        span.setdefault(who, []).append(k)
+
+    total = sum(per.values())
+    rows = "".join(
+        f"<tr><td><b>{w}</b></td><td>{min(ks)}\u2013{max(ks)}</td>"
+        f"<td class='n'>{per[w]}</td>"
+        f"<td class='n'>{per[w] / 150 * 60:.0f}s</td></tr>"
+        for w, ks in span.items())
+    rows += (f"<tr class='total'><td>Talk</td><td>{min(talk)}\u2013{max(talk)}</td>"
+             f"<td class='n'>{total}</td>"
+             f"<td class='n'>{total // 150}:{round(total / 150 % 1 * 60):02d}</td></tr>"
+             "<tr><td>Live demo</td><td>after the talk</td><td class='n'>\u2014</td>"
+             "<td class='n'>3:30</td></tr>")
+
+    body = [f"<h1>Final presentation \u2014 speaker script</h1>",
+            "<div class='rule'></div>",
+            "<p class='lede'>Seven minutes of talk across four speakers, then a "
+            "3:30 demo. Word counts are the spoken text below; times assume 150 "
+            "words a minute. Generated from the speaker notes in "
+            "AI-Storytelling-Final-Talk.pptx.</p>",
+            "<table class='timing'><tr><th>Speaker</th><th>Slides</th>"
+            "<th style='text-align:right'>Words</th>"
+            "<th style='text-align:right'>At 150 wpm</th></tr>" + rows + "</table>"]
+
+    current = None
+    for k, sl in enumerate(slides, 1):
+        note = sl.notes_slide.notes_text_frame.text.strip()
+        head, _, rest = note.partition("\n")
+        who = head.split("-")[1].split()[0] if head.startswith("SPEAKER") else None
+        if who and who != current:
+            if current is not None:
+                body.append("</div>")
+            ks = span[who]
+            body.append(
+                f"<div class='speaker'><div class='speaker-head'>"
+                f"<span class='who'>{who}</span>"
+                f"<span class='meta'>slides {min(ks)}\u2013{max(ks)} · {per[who]} words "
+                f"· {per[who] / 150 * 60:.0f}s</span></div>")
+            current = who
+        elif not who and current is not None:
+            body.append("</div>")
+            current = None
+
+        pic = any(sh.shape_type == 13 for sh in sl.shapes)
+        on = " ".join(sh.text_frame.text for sh in sl.shapes if sh.has_text_frame)
+        kind = ("figure, full bleed" if pic else
+                "section divider \u2014 hand over here"
+                if re.search(r"PART \d+ OF \d+", on) else "layout")
+        chip = re.search(r"\[(\d:\d\d)\]", head)
+        run = re.search(r"running total (\d+:\d\d)", head)
+        hand = re.search(r">>> (.+)$", head)
+
+        parts = [f"<div class='blk'><div class='num'>{k}</div><div class='hd'>",
+                 f"<span class='kind'>{kind}</span>"]
+        if chip:
+            parts.append(f"<span class='chip'>{chip.group(1)}</span>")
+        if run:
+            parts.append(f"<span class='run'>at {run.group(1)}</span>")
+        if hand:
+            parts.append(f"<span class='hand'>{html.escape(hand.group(1))}</span>")
+        parts.append("</div><div class='say'>")
+        for para in rest.strip().split("\n\n"):
+            one = " ".join(para.split())
+            if one.startswith("DELIVERY:"):
+                parts.append(f"</div><div class='cue'><b>Delivery.</b> "
+                             f"{html.escape(one[9:].strip())}</div><div class='say'>")
+            elif one:
+                parts.append(f"<p>{html.escape(one)}</p>")
+        parts.append("</div></div>")
+        body.append("".join(parts))
+    if current is not None:
+        body.append("</div>")
+
+    body.append("<div class='back'>" + _md_to_html(RUNBOOK.strip()) + "</div>")
+    doc = ("<!doctype html><meta charset='utf-8'><title>Speaker script</title>"
+           f"<style>{SCRIPT_CSS}</style>" + "\n".join(body))
+    from build_docs import to_pdf
+    to_pdf(doc, dest)
+    return dest
+
+
 if __name__ == "__main__":
     prs = build()
     prs.save(OUT)
@@ -1286,3 +1534,4 @@ if __name__ == "__main__":
     print(f"wrote {OUT.name}  ({len(prs.slides._sldIdLst)} slides, "
           f"{OUT.stat().st_size / 1024:.0f} KB)")
     print(f"wrote {script.name}  ({len(script.read_text().splitlines())} lines)")
+    script_pdf(prs)

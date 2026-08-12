@@ -275,7 +275,7 @@ on stage and wait.** Everything below exists to make sure you never have to.
 ### T-0, as slide 1 goes up
 
 The standby person starts a real generation on the measles dataset in a
-background tab. At the measured mean it finishes around slide 8. If it has not
+background tab. At the measured mean it finishes around slide 16. If it has not
 finished by the time you switch over, you open a completed run instead and say
 so - one sentence, no apology.
 
@@ -308,15 +308,18 @@ browser - not while the room is watching.
 
 ## If you are running long
 
-Cut slide 7, the reliability figure, and fold one sentence into slide 6: "we
-rated every story three times and the judge agrees with itself to ICC 0.99, so
-this gap is real." That buys 40 seconds and costs the least.
+Cut **slide 13**, the n=1 ranking table, and fold its point into slide 12 step
+three: "six combinations tied on tone, so we ranked them on faithfulness." That
+buys about 20 seconds and costs the least, because slide 14 restates the
+comparison anyway.
 
-Do **not** cut slide 9. The reversal is the strongest thing in the deck.
+Next cheapest is **slide 12** itself, compressed to two sentences.
+
+Do **not** cut slide 14. The reversal is the strongest thing in the deck.
 
 ## Questions to expect
 
-**"There is only one judge."** Correct, and we say so on slide 10. The 0.991 is
+**"There is only one judge."** Correct, and we say so on slide 19. The 0.991 is
 self-consistency, not inter-rater agreement - an upper bound on what a different
 judge would agree to. A second judge family is the next run. What supports the
 result meanwhile is that two independent methods agree: the scalar scores and
@@ -341,4 +344,4 @@ judge's own disagreement with itself is 0.08.
 **"Your human baseline is your own team."** Yes. Five writer slots per series,
 written from the evidence packs before anyone saw machine output. It is a real
 hand-written baseline, and it is not the controlled writer design a full study
-would want. Both are on slide 10.
+would want. Both are on slide 19.
