@@ -1,0 +1,672 @@
+[
+{
+  "model": "storytelling.run",
+  "pk": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+  "fields": {
+    "dataset_id": "measles",
+    "tier": "demo",
+    "status": "done",
+    "raw_title": "The Vaccine Paradox: Why High Coverage Still Hides Epidemics",
+    "raw_paragraphs": [
+      "Global measles cases plummeted from nearly four million in 1980 to under two hundred thousand by the early 2020s. Yet, a sharp spike pushed reported infections back above half a million in 2024.",
+      "Nigeria stands out as an alarming outlier with 57% vaccination coverage and over sixty-five cases per million people. In contrast, Germany boasts near-universal protection at 96%, yet still recorded nearly seven thousand infections."
+    ],
+    "raw_alarmism": 3.0,
+    "raw_optimism": null,
+    "moderated_title": "Measles Trends and Vaccination Coverage Correlation",
+    "moderated_paragraphs": [
+      "Global measles cases decreased from approximately 3.8 million in 1980 to roughly 200,000 by the early 2020s. However, reported infections increased to over 675,000 in 2024.",
+      "Nigeria reports 65.8 cases per million people with 57% vaccination coverage. In contrast, Germany recorded 7.6 cases per million despite having a 96% vaccination rate."
+    ],
+    "moderated_alarmism": 2.0,
+    "moderated_optimism": null,
+    "emotive_spans": [
+      {
+        "text": "The Vaccine Paradox: Why High Coverage Still Hides Epidemics",
+        "replacement": "Measles Trends and Vaccination Coverage Correlation",
+        "reason": "Uses alarmist, dramatic framing to create a narrative of mystery rather than reporting the data.",
+        "category": "framing"
+      },
+      {
+        "text": "plummeted",
+        "replacement": "decreased",
+        "reason": "Exaggerated intensity verb for a downward trend.",
+        "category": "intensity"
+      },
+      {
+        "text": "nearly four million",
+        "replacement": "approximately 3.8 million",
+        "reason": "Rounding to 'four' is less precise than the provided data point of 3,852,242.",
+        "category": "grounding"
+      },
+      {
+        "text": "under two hundred thousand",
+        "replacement": "roughly 200,000",
+        "reason": "More neutral phrasing for the 123k-206k range.",
+        "category": "intensity"
+      },
+      {
+        "text": "sharp spike pushed reported infections back above half a million",
+        "replacement": "increased to over 675,000",
+        "reason": "Uses alarmist language ('sharp spike') and less precise rounding.",
+        "category": "intensity"
+      },
+      {
+        "text": "stands out as an alarming outlier",
+        "replacement": "reports",
+        "reason": "Fear-based framing of a data point.",
+        "category": "framing"
+      },
+      {
+        "text": "over sixty-five cases per million people",
+        "replacement": "65.8 cases per million people",
+        "reason": "Uses the specific provided figure instead of an approximate range.",
+        "category": "grounding"
+      },
+      {
+        "text": "nearly seven thousand infections",
+        "replacement": "7.6 cases per million",
+        "reason": "The original used a raw count (645) which is misleading when comparing countries of different sizes; the per-million rate is the correct metric.",
+        "category": "grounding"
+      }
+    ],
+    "factual_check": [
+      {
+        "claim": "Global measles cases decreased from approximately 3.8 million in 1980 to roughly 200,000 by the early 2020s.",
+        "status": "verified",
+        "note": "The data shows a decrease from 3,852,242 in 1980 to 123,152 (2021) and 206,775 (2022)."
+      },
+      {
+        "claim": "However, reported infections increased to over 675,000 in 2024.",
+        "status": "verified",
+        "note": "The data for 2024 shows exactly 675,533 cases."
+      },
+      {
+        "claim": "Nigeria reports 65.8 cases per million people with 57% vaccination coverage.",
+        "status": "verified",
+        "note": "The country detail for Nigeria matches both the rate of 65.8 and the coverage of 57%."
+      },
+      {
+        "claim": "In contrast, Germany recorded 7.6 cases per million despite having a 96% vaccination rate.",
+        "status": "flagged",
+        "note": "The use of 'despite' implies a causal relationship or correlation that the provided data table cannot support."
+      }
+    ],
+    "opus_raw_alarmism": 3.6,
+    "opus_raw_optimism": 2.4,
+    "opus_moderated_alarmism": 2.0,
+    "opus_moderated_optimism": 2.0,
+    "opus_rationale": "",
+    "opus_model": "opus",
+    "opus_cost_usd": null,
+    "human_text": "For two decades, measles looked like a problem the world was solving. Between 2000 and 2016, reported cases fell by more than half as first-dose vaccination climbed from 72% into the mid-80s. The trend line pointed in one direction.\n\nThen it stopped. Coverage settled in the low-to-mid 80s and never reached the roughly 95% needed to hold the virus back. In 2019, before the pandemic disrupted reporting, cases climbed back above 860,000, the worst year in a generation.\n\nThe pattern is not mysterious. Measles is among the most contagious diseases we know, and it finds the gaps we leave. Where coverage holds, it retreats; where coverage slips, it returns. The data is less a warning than a reminder of how little margin there is.",
+    "human_title": "",
+    "human_alarmism": null,
+    "human_optimism": null,
+    "error": "",
+    "created_at": "2026-08-12T08:57:58.988Z",
+    "updated_at": "2026-08-12T08:59:30.368Z"
+  }
+},
+{
+  "model": "storytelling.run",
+  "pk": "ec050ddd-8722-49a8-b118-ea291224093b",
+  "fields": {
+    "dataset_id": "measles",
+    "tier": "demo",
+    "status": "done",
+    "raw_title": "The Mismatch: High Vaccines, Still Spreading",
+    "raw_paragraphs": [
+      "In the last half-century, global vaccination coverage soared from just 16% in 1980 to 84% today. Yet measles cases have defied this progress, rebounding sharply in recent years despite high first-dose rates worldwide.",
+      "Nigeria illustrates a stark reality: with only 57% of children vaccinated and over 65 cases per million people, it dominates the global case count due to low herd immunity thresholds."
+    ],
+    "raw_alarmism": 3.0,
+    "raw_optimism": null,
+    "moderated_title": "Vaccination Trends and Measles Incidence",
+    "moderated_paragraphs": [
+      "Over the last 40 years, global first-dose measles vaccine coverage increased from 16% in 1980 to approximately 84% today. While cases have fluctuated over time, recent data shows a rise in reported cases despite high vaccination rates in many regions.",
+      "Nigeria highlights the impact of lower coverage: with 57% of children vaccinated, it reports 65.8 cases per million people. In contrast, countries like India and Germany maintain higher coverage (over 96%) and report significantly lower incidence rates of 12.9 and 7.6 per million, respectively."
+    ],
+    "moderated_alarmism": 2.0,
+    "moderated_optimism": null,
+    "emotive_spans": [
+      {
+        "text": "The Mismatch: High Vaccines, Still Spreading",
+        "replacement": "Vaccination Trends and Measles Incidence",
+        "reason": "The original title used dramatic framing to imply a mysterious contradiction rather than presenting the data neutrally.",
+        "category": "framing"
+      },
+      {
+        "text": "soared",
+        "replacement": "increased",
+        "reason": "The word 'soared' is an intensity verb that overstates the statistical trend.",
+        "category": "intensity"
+      },
+      {
+        "text": "defied this progress, rebounding sharply",
+        "replacement": "fluctuated over time, [with a] rise in reported cases",
+        "reason": "The original used alarmist language to describe a trend that the data shows as a fluctuation and recent increase.",
+        "category": "intensity"
+      },
+      {
+        "text": "illustrates a stark reality",
+        "replacement": "highlights the impact of lower coverage",
+        "reason": "The original used fear-based framing to describe a geographical disparity.",
+        "category": "framing"
+      },
+      {
+        "text": "dominates the global case count due to low herd immunity thresholds",
+        "replacement": "reports 65.8 cases per million people. In contrast, countries like India and Germany maintain higher coverage (over 96%) and report significantly lower incidence rates of 12.9 and 7.6 per million, respectively.",
+        "reason": "The original used raw counts to imply a 'dominance' that is misleading when comparing different population sizes; the rewrite uses the provided per-million data for an accurate comparison.",
+        "category": "grounding"
+      }
+    ],
+    "factual_check": [
+      {
+        "claim": "Over the last 40 years, global first-dose measles vaccine coverage increased from 16% in 1980 to approximately 84% today.",
+        "status": "verified",
+        "note": "The data shows a rise from 16% in 1980 to 84% in 2024."
+      },
+      {
+        "claim": "While cases have fluctuated over time, recent data shows a rise in reported cases despite high vaccination rates in many regions.",
+        "status": "flagged",
+        "note": "The data shows fluctuations but does not provide enough context to support the 'despite' comparison between local and global trends."
+      },
+      {
+        "claim": "Nigeria highlights the impact of lower coverage: with 57% of children vaccinated, it reports 65.8 cases per million people.",
+        "status": "flagged",
+        "note": "The data provides these figures but does not support a causal claim regarding 'impact'."
+      },
+      {
+        "claim": "In contrast, countries like India and Germany maintain higher coverage (over 96%) and report significantly lower incidence rates of 12.9 and 7.6 per million, respectively.",
+        "status": "verified",
+        "note": "The data confirms 97% for India, 96% for Germany, and the respective per-million rates."
+      }
+    ],
+    "opus_raw_alarmism": 3.4,
+    "opus_raw_optimism": 2.3,
+    "opus_moderated_alarmism": 2.0,
+    "opus_moderated_optimism": 2.5,
+    "opus_rationale": "",
+    "opus_model": "opus",
+    "opus_cost_usd": null,
+    "human_text": "For two decades, measles looked like a problem the world was solving. Between 2000 and 2016, reported cases fell by more than half as first-dose vaccination climbed from 72% into the mid-80s. The trend line pointed in one direction.\n\nThen it stopped. Coverage settled in the low-to-mid 80s and never reached the roughly 95% needed to hold the virus back. In 2019, before the pandemic disrupted reporting, cases climbed back above 860,000, the worst year in a generation.\n\nThe pattern is not mysterious. Measles is among the most contagious diseases we know, and it finds the gaps we leave. Where coverage holds, it retreats; where coverage slips, it returns. The data is less a warning than a reminder of how little margin there is.",
+    "human_title": "",
+    "human_alarmism": null,
+    "human_optimism": null,
+    "error": "",
+    "created_at": "2026-08-12T08:04:32.031Z",
+    "updated_at": "2026-08-12T08:05:49.168Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 1,
+  "fields": {
+    "run": "ec050ddd-8722-49a8-b118-ea291224093b",
+    "stage": "generate",
+    "model": "qwen3.5:4b",
+    "duration_s": 8.93,
+    "payload": {
+      "title": "The Mismatch: High Vaccines, Still Spreading",
+      "paragraphs": [
+        "In the last half-century, global vaccination coverage soared from just 16% in 1980 to 84% today. Yet measles cases have defied this progress, rebounding sharply in recent years despite high first-dose rates worldwide.",
+        "Nigeria illustrates a stark reality: with only 57% of children vaccinated and over 65 cases per million people, it dominates the global case count due to low herd immunity thresholds."
+      ]
+    },
+    "usage": {
+      "eval_count": 121,
+      "prompt_eval_count": 573,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.6,
+      "num_ctx": 8192,
+      "num_predict": 450,
+      "seed": null,
+      "model_digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"
+    },
+    "created_at": "2026-08-12T08:04:40.979Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 2,
+  "fields": {
+    "run": "ec050ddd-8722-49a8-b118-ea291224093b",
+    "stage": "judge_raw",
+    "model": "qwen3.5:4b",
+    "duration_s": 3.03,
+    "payload": {
+      "alarmismRating": 3.0,
+      "rationale": "'Stark reality' frames a specific country's data as universally alarming."
+    },
+    "usage": {
+      "eval_count": 31,
+      "prompt_eval_count": 1222,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 250,
+      "seed": null,
+      "model_digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"
+    },
+    "created_at": "2026-08-12T08:04:44.007Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 3,
+  "fields": {
+    "run": "ec050ddd-8722-49a8-b118-ea291224093b",
+    "stage": "judge_opus_raw",
+    "model": "claude/opus",
+    "duration_s": 3.67,
+    "payload": {
+      "alarmism": 3.4,
+      "optimism": 2.3,
+      "rationale": "\"defied this progress, rebounding sharply\" and \"stark reality\" push mild dramatization above calibrated, while the framing of high coverage as a failed 'mismatch' and the omission of the ~5.7x drop in cases since 1980 leaves the tone bleaker than the data warrants."
+    },
+    "usage": {
+      "cost_usd": 0.17438599999999999
+    },
+    "created_at": "2026-08-12T08:04:49.513Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 4,
+  "fields": {
+    "run": "ec050ddd-8722-49a8-b118-ea291224093b",
+    "stage": "moderate",
+    "model": "gemma4:12b",
+    "duration_s": 31.12,
+    "payload": {
+      "title": "Vaccination Trends and Measles Incidence",
+      "paragraphs": [
+        "Over the last 40 years, global first-dose measles vaccine coverage increased from 16% in 1980 to approximately 84% today. While cases have fluctuated over time, recent data shows a rise in reported cases despite high vaccination rates in many regions.",
+        "Nigeria highlights the impact of lower coverage: with 57% of children vaccinated, it reports 65.8 cases per million people. In contrast, countries like India and Germany maintain higher coverage (over 96%) and report significantly lower incidence rates of 12.9 and 7.6 per million, respectively."
+      ],
+      "emotiveSpans": [
+        {
+          "text": "The Mismatch: High Vaccines, Still Spreading",
+          "replacement": "Vaccination Trends and Measles Incidence",
+          "reason": "The original title used dramatic framing to imply a mysterious contradiction rather than presenting the data neutrally.",
+          "category": "framing"
+        },
+        {
+          "text": "soared",
+          "replacement": "increased",
+          "reason": "The word 'soared' is an intensity verb that overstates the statistical trend.",
+          "category": "intensity"
+        },
+        {
+          "text": "defied this progress, rebounding sharply",
+          "replacement": "fluctuated over time, [with a] rise in reported cases",
+          "reason": "The original used alarmist language to describe a trend that the data shows as a fluctuation and recent increase.",
+          "category": "intensity"
+        },
+        {
+          "text": "illustrates a stark reality",
+          "replacement": "highlights the impact of lower coverage",
+          "reason": "The original used fear-based framing to describe a geographical disparity.",
+          "category": "framing"
+        },
+        {
+          "text": "dominates the global case count due to low herd immunity thresholds",
+          "replacement": "reports 65.8 cases per million people. In contrast, countries like India and Germany maintain higher coverage (over 96%) and report significantly lower incidence rates of 12.9 and 7.6 per million, respectively.",
+          "reason": "The original used raw counts to imply a 'dominance' that is misleading when comparing different population sizes; the rewrite uses the provided per-million data for an accurate comparison.",
+          "category": "grounding"
+        }
+      ]
+    },
+    "usage": {
+      "eval_count": 563,
+      "prompt_eval_count": 986,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 3000,
+      "seed": null,
+      "model_digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c"
+    },
+    "created_at": "2026-08-12T08:05:20.659Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 5,
+  "fields": {
+    "run": "ec050ddd-8722-49a8-b118-ea291224093b",
+    "stage": "judge_moderated",
+    "model": "qwen3.5:4b",
+    "duration_s": 2.71,
+    "payload": {
+      "alarmismRating": 2.0,
+      "rationale": "Plain reporting of figures without alarmist language."
+    },
+    "usage": {
+      "eval_count": 22,
+      "prompt_eval_count": 1258,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 250,
+      "seed": null,
+      "model_digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"
+    },
+    "created_at": "2026-08-12T08:05:23.376Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 6,
+  "fields": {
+    "run": "ec050ddd-8722-49a8-b118-ea291224093b",
+    "stage": "judge_opus_moderated",
+    "model": "claude/opus",
+    "duration_s": 3.69,
+    "payload": {
+      "alarmism": 2.0,
+      "optimism": 2.5,
+      "rationale": "Neutral connectives like \"cases have fluctuated over time\" and the bare mention of \"a rise in reported cases\" flatten the 2023-24 rebound to near-zero urgency (low alarmism), while the framing stops at coverage comparisons without naming the ~95% herd-immunity shortfall or the human cost, leaving it slightly under-stated rather than falsely reassuring."
+    },
+    "usage": {
+      "cost_usd": 0.024192999999999996
+    },
+    "created_at": "2026-08-12T08:05:29.067Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 7,
+  "fields": {
+    "run": "ec050ddd-8722-49a8-b118-ea291224093b",
+    "stage": "factcheck",
+    "model": "gemma4:12b",
+    "duration_s": 20.09,
+    "payload": {
+      "items": [
+        {
+          "claim": "Over the last 40 years, global first-dose measles vaccine coverage increased from 16% in 1980 to approximately 84% today.",
+          "status": "verified",
+          "note": "The data shows a rise from 16% in 1980 to 84% in 2024."
+        },
+        {
+          "claim": "While cases have fluctuated over time, recent data shows a rise in reported cases despite high vaccination rates in many regions.",
+          "status": "flagged",
+          "note": "The data shows fluctuations but does not provide enough context to support the 'despite' comparison between local and global trends."
+        },
+        {
+          "claim": "Nigeria highlights the impact of lower coverage: with 57% of children vaccinated, it reports 65.8 cases per million people.",
+          "status": "flagged",
+          "note": "The data provides these figures but does not support a causal claim regarding 'impact'."
+        },
+        {
+          "claim": "In contrast, countries like India and Germany maintain higher coverage (over 96%) and report significantly lower incidence rates of 12.9 and 7.6 per million, respectively.",
+          "status": "verified",
+          "note": "The data confirms 97% for India, 96% for Germany, and the respective per-million rates."
+        }
+      ]
+    },
+    "usage": {
+      "eval_count": 338,
+      "prompt_eval_count": 823,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 1500,
+      "seed": null,
+      "model_digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c"
+    },
+    "created_at": "2026-08-12T08:05:49.165Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 8,
+  "fields": {
+    "run": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+    "stage": "generate",
+    "model": "qwen3.5:4b",
+    "duration_s": 7.06,
+    "payload": {
+      "title": "The Vaccine Paradox: Why High Coverage Still Hides Epidemics",
+      "paragraphs": [
+        "Global measles cases plummeted from nearly four million in 1980 to under two hundred thousand by the early 2020s. Yet, a sharp spike pushed reported infections back above half a million in 2024.",
+        "Nigeria stands out as an alarming outlier with 57% vaccination coverage and over sixty-five cases per million people. In contrast, Germany boasts near-universal protection at 96%, yet still recorded nearly seven thousand infections."
+      ]
+    },
+    "usage": {
+      "eval_count": 129,
+      "prompt_eval_count": 573,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.6,
+      "num_ctx": 8192,
+      "num_predict": 450,
+      "seed": null,
+      "model_digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"
+    },
+    "created_at": "2026-08-12T08:58:06.059Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 9,
+  "fields": {
+    "run": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+    "stage": "judge_raw",
+    "model": "qwen3.5:4b",
+    "duration_s": 3.13,
+    "payload": {
+      "alarmismRating": 3.0,
+      "rationale": "'Alarming outlier' frames a specific data point as an exception rather than amplifying overall risk."
+    },
+    "usage": {
+      "eval_count": 36,
+      "prompt_eval_count": 1229,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 250,
+      "seed": null,
+      "model_digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"
+    },
+    "created_at": "2026-08-12T08:58:09.185Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 10,
+  "fields": {
+    "run": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+    "stage": "judge_opus_raw",
+    "model": "claude/opus",
+    "duration_s": 2.75,
+    "payload": {
+      "alarmism": 3.6,
+      "optimism": 2.4,
+      "rationale": "Alarmism is pushed above calibrated by loaded framing like 'Hides Epidemics', 'sharp spike', and 'alarming outlier' for Nigeria, while optimism sits slightly below calibrated because the single 'plummeted' concession is immediately undercut and the piece treats Germany's high coverage as a paradox rather than acknowledging real progress."
+    },
+    "usage": {
+      "cost_usd": 0.023692
+    },
+    "created_at": "2026-08-12T08:58:13.925Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 11,
+  "fields": {
+    "run": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+    "stage": "moderate",
+    "model": "gemma4:12b",
+    "duration_s": 43.04,
+    "payload": {
+      "title": "Measles Trends and Vaccination Coverage Correlation",
+      "paragraphs": [
+        "Global measles cases decreased from approximately 3.8 million in 1980 to roughly 200,000 by the early 2020s. However, reported infections increased to over 675,000 in 2024.",
+        "Nigeria reports 65.8 cases per million people with 57% vaccination coverage. In contrast, Germany recorded 7.6 cases per million despite having a 96% vaccination rate."
+      ],
+      "emotiveSpans": [
+        {
+          "text": "The Vaccine Paradox: Why High Coverage Still Hides Epidemics",
+          "replacement": "Measles Trends and Vaccination Coverage Correlation",
+          "reason": "Uses alarmist, dramatic framing to create a narrative of mystery rather than reporting the data.",
+          "category": "framing"
+        },
+        {
+          "text": "plummeted",
+          "replacement": "decreased",
+          "reason": "Exaggerated intensity verb for a downward trend.",
+          "category": "intensity"
+        },
+        {
+          "text": "nearly four million",
+          "replacement": "approximately 3.8 million",
+          "reason": "Rounding to 'four' is less precise than the provided data point of 3,852,242.",
+          "category": "grounding"
+        },
+        {
+          "text": "under two hundred thousand",
+          "replacement": "roughly 200,000",
+          "reason": "More neutral phrasing for the 123k-206k range.",
+          "category": "intensity"
+        },
+        {
+          "text": "sharp spike pushed reported infections back above half a million",
+          "replacement": "increased to over 675,000",
+          "reason": "Uses alarmist language ('sharp spike') and less precise rounding.",
+          "category": "intensity"
+        },
+        {
+          "text": "stands out as an alarming outlier",
+          "replacement": "reports",
+          "reason": "Fear-based framing of a data point.",
+          "category": "framing"
+        },
+        {
+          "text": "over sixty-five cases per million people",
+          "replacement": "65.8 cases per million people",
+          "reason": "Uses the specific provided figure instead of an approximate range.",
+          "category": "grounding"
+        },
+        {
+          "text": "nearly seven thousand infections",
+          "replacement": "7.6 cases per million",
+          "reason": "The original used a raw count (645) which is misleading when comparing countries of different sizes; the per-million rate is the correct metric.",
+          "category": "grounding"
+        }
+      ]
+    },
+    "usage": {
+      "eval_count": 656,
+      "prompt_eval_count": 994,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 3000,
+      "seed": null,
+      "model_digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c"
+    },
+    "created_at": "2026-08-12T08:58:56.983Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 12,
+  "fields": {
+    "run": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+    "stage": "judge_moderated",
+    "model": "qwen3.5:4b",
+    "duration_s": 7.78,
+    "payload": {
+      "alarmismRating": 2.0,
+      "rationale": "Plain reporting of figures without emotional amplification."
+    },
+    "usage": {
+      "eval_count": 22,
+      "prompt_eval_count": 1231,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 250,
+      "seed": null,
+      "model_digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"
+    },
+    "created_at": "2026-08-12T08:59:04.766Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 13,
+  "fields": {
+    "run": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+    "stage": "judge_opus_moderated",
+    "model": "claude/opus",
+    "duration_s": 3.92,
+    "payload": {
+      "alarmism": 2.0,
+      "optimism": 2.0,
+      "rationale": "Flat clinical verbs like \"decreased,\" \"increased to over 675,000,\" and \"reports\" strip stakes from a 2024 resurgence and never name illness or death, setting alarmism low; the neutral \"However\" and the odd concessive \"despite having a 96% vaccination rate\" offer no reassurance or credit for progress either, leaving optimism equally muted."
+    },
+    "usage": {
+      "cost_usd": 0.023576
+    },
+    "created_at": "2026-08-12T08:59:10.771Z"
+  }
+},
+{
+  "model": "storytelling.stageresult",
+  "pk": 14,
+  "fields": {
+    "run": "9a57f07e-6067-49cb-923d-98c9c0ebe8ef",
+    "stage": "factcheck",
+    "model": "gemma4:12b",
+    "duration_s": 19.57,
+    "payload": {
+      "items": [
+        {
+          "claim": "Global measles cases decreased from approximately 3.8 million in 1980 to roughly 200,000 by the early 2020s.",
+          "status": "verified",
+          "note": "The data shows a decrease from 3,852,242 in 1980 to 123,152 (2021) and 206,775 (2022)."
+        },
+        {
+          "claim": "However, reported infections increased to over 675,000 in 2024.",
+          "status": "verified",
+          "note": "The data for 2024 shows exactly 675,533 cases."
+        },
+        {
+          "claim": "Nigeria reports 65.8 cases per million people with 57% vaccination coverage.",
+          "status": "verified",
+          "note": "The country detail for Nigeria matches both the rate of 65.8 and the coverage of 57%."
+        },
+        {
+          "claim": "In contrast, Germany recorded 7.6 cases per million despite having a 96% vaccination rate.",
+          "status": "flagged",
+          "note": "The use of 'despite' implies a causal relationship or correlation that the provided data table cannot support."
+        }
+      ]
+    },
+    "usage": {
+      "eval_count": 334,
+      "prompt_eval_count": 796,
+      "done_reason": "stop",
+      "grammar": true,
+      "temperature": 0.0,
+      "num_ctx": 8192,
+      "num_predict": 1500,
+      "seed": null,
+      "model_digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c"
+    },
+    "created_at": "2026-08-12T08:59:30.366Z"
+  }
+}
+]

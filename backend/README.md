@@ -249,6 +249,26 @@ Flagged causal claims per tier answer the causal-gap question directly — the
 reproductions put causal accuracy at 0% for both a 4B and a 12B model, so the
 interesting result is whether 31B/35B moves it at all.
 
+## Cached runs (fixtures)
+
+`backend/db.sqlite3` is gitignored, so completed runs do not survive a clone or
+a database reset. The finished ones are exported as a fixture instead:
+
+```bash
+.venv/bin/python manage.py dumpdata storytelling.Run storytelling.StageResult \
+    --indent 2 -o storytelling/fixtures/cached_runs.json   # export
+.venv/bin/python manage.py loaddata cached_runs                    # restore
+```
+
+Restoring gives `GET /api/runs` something to serve without touching Ollama, and
+the `/results` "this deployment" panel its numbers.
+
+What is in there today is **two demo-tier measles runs**, both 3.0 -> 2.0 on
+alarmism, with 8 and 5 emotive spans. That is what has actually been run, not a
+prepared demo set: measles + WHO on the demo and mid tiers still need
+pre-running, and the studio has no cached/live toggle yet, so the interface
+still calls the stage endpoints live.
+
 ## Demo safety
 
 A deployed frontend cannot reach `localhost:11434`. Two options, and it is worth
