@@ -38,6 +38,9 @@ class ChartSuggestIn(Schema):
     #: the weights and the sampler starts from a different place. See
     #: experiments/MODELS.md - the same caveat applies to every stage here.
     seed: int | None = None
+    #: Recompute and replace the stored answer. Off by default, so the common
+    #: case is served from cache and a presentation never waits on a model.
+    refresh: bool = False
 
 
 class ColumnReport(Schema):

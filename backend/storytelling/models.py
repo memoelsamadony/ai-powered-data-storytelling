@@ -156,3 +156,43 @@ class StageResult(models.Model):
 
     def __str__(self) -> str:
         return f"{self.stage} on {self.model} ({self.duration_s:.1f}s)"
+
+
+class ChartSelection(models.Model):
+    """One stored answer from ``POST /charts/suggest``.
+
+    Selection is a real Ollama call - seconds on the demo moderator, over a
+    minute on ``gemma4:31b`` once its 19.9 GB has to load - and it is pure with
+    respect to its inputs in every way that matters: the same table, model and
+    count produce an answer of the same kind every time. Caching it is what
+    lets a presentation show figures without waiting on a model.
+
+    It is also stronger than a seed. A fixed seed only reproduces while the
+    model stays resident; an eviction re-reads the weights and the sampler
+    starts somewhere else (see experiments/MODELS.md). A stored payload is the
+    only way to guarantee the audience sees the figures that were rehearsed.
+
+    Keyed by source **label** rather than a foreign key because the two sources
+    are different things - a registry dataset id and an uploaded file - and a
+    nullable FK to one of them would not describe the other.
+    """
+
+    #: ``dataset:measles`` or ``upload:<original name>``, as built by the endpoint.
+    source = models.CharField(max_length=200)
+    model = models.CharField(max_length=64)
+    n = models.PositiveSmallIntegerField()
+    #: A whole ``ChartSuggestOut``, stored as sent.
+    payload = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["source", "model", "n"], name="one_selection_per_source_model_n"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.source} x{self.n} on {self.model}"

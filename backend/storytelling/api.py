@@ -36,7 +36,7 @@ from . import ollama_client as oc
 from . import results as results_mod
 from . import services
 from . import uploads as uploads_mod
-from .models import Run, RunStatus, StageResult, UploadedDataset
+from .models import ChartSelection, Run, RunStatus, StageResult, UploadedDataset
 from .schemas import (
     ComparisonMetrics,
     CompareIn,
@@ -506,16 +506,26 @@ def suggest_charts(request, payload: charts_http.ChartSuggestIn):
     # Overridable so the two can be compared on the same table without editing
     # the tier, which is how the generator/moderator comparison was run.
     model = payload.model or tier.moderator
+    n = max(1, min(payload.n, 6))
+
+    # A stored answer is returned as-is. Selection costs one Ollama call - over
+    # a minute once gemma4:31b has to load - and repeating it to get the same
+    # kind of answer is the wait a demo cannot afford. `refresh` forces a new
+    # one, which is what a changed table or a model comparison needs.
+    if not payload.refresh:
+        cached = ChartSelection.objects.filter(source=source_label, model=model, n=n).first()
+        if cached:
+            return charts_http.ChartSuggestOut(**cached.payload)
 
     selection = charts_select.select_charts(
-        sources, model=model, n=max(1, min(payload.n, 6)), seed=payload.seed,
+        sources, model=model, n=n, seed=payload.seed,
     )
 
     notes: list[str] = []
     for source in sources:
         notes.extend(source.profile.notes)
 
-    return charts_http.ChartSuggestOut(
+    out = charts_http.ChartSuggestOut(
         charts=selection.charts,
         columns=charts_http.report_columns(sources),
         notes=notes,
@@ -523,3 +533,9 @@ def suggest_charts(request, payload: charts_http.ChartSuggestIn):
         model=model,
         source=source_label,
     )
+    # update_or_create rather than create: a refresh replaces the stored answer
+    # instead of leaving two rows that the unique constraint would reject.
+    ChartSelection.objects.update_or_create(
+        source=source_label, model=model, n=n, defaults={"payload": out.model_dump()},
+    )
+    return out
