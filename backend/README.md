@@ -263,11 +263,20 @@ a database reset. The finished ones are exported as a fixture instead:
 Restoring gives `GET /api/runs` something to serve without touching Ollama, and
 the `/results` "this deployment" panel its numbers.
 
-What is in there today is **two demo-tier measles runs**, both 3.0 -> 2.0 on
-alarmism, with 8 and 5 emotive spans. That is what has actually been run, not a
-prepared demo set: measles + WHO on the demo and mid tiers still need
-pre-running, and the studio has no cached/live toggle yet, so the interface
-still calls the stage endpoints live.
+What is in there is **28 completed runs and 145 stage results**, consolidated
+from the three working databases the experiments were run in - those live in
+throwaway scratchpad directories, so this file is now the only durable copy of
+the story text, emotive spans and stage timings behind them.
+
+| datasets | 8 | measles 9, pertussis 13, and one run each for mumps, diphtheria, the three under-5 series and who-health |
+| tiers | 14 | the full ladder (`g1b`..`g8b`, `q2b`..`q9b`, `m12b`..`m31b-selfjudge`, `x9b`, `x35b`) plus `demo` and `mid` |
+
+Two caveats. The experiment database predates migration `0004`, so its runs
+carry **no Opus judge columns** - only 3 of the 28 have `opus_raw_alarmism`.
+The authoritative blind Opus ratings for the experiment runs live in
+`experiments/runs_table.json` and `experiments/exp_json/`, which are committed
+separately. And the studio still has no cached/live toggle, so the interface
+runs every stage live regardless of what is loaded here.
 
 ## Demo safety
 
