@@ -10,7 +10,7 @@ export const team: TeamMember[] = [
   { name: "Mahmoud Elsamadony", matrikel: "5318606", initials: "ME" },
   { name: "Ahmed Okasha", matrikel: "5331225", initials: "AO" },
   { name: "Ahmed Elsaadani", matrikel: "5337397", initials: "AE" },
-  { name: "Ahmed Ramadan", matrikel: "5305729", initials: "AR" },
+  { name: "Ahmed Saleh", matrikel: "5305729", initials: "AS" },
 ];
 
 export const supervisors = [

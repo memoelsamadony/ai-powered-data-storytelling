@@ -17,7 +17,7 @@ Companion to [`BRIEF.md`](BRIEF.md).
 | Ahmed Elsaadani | `AE` |
 | Mahmoud Elsamadony | `ME` |
 | Ahmed Okasha | `AO` |
-| Ahmed Ramadan | `AR` |
+| Ahmed Saleh | `AS` |
 
 ---
 
@@ -94,7 +94,7 @@ first across the full span.
 ### The allocation rule
 
 Deterministic and fixed before writing, so it cannot be adjusted once anyone has seen a
-story: writers sorted alphabetically by surname (Elsaadani, Elsamadony, Okasha, Ramadan),
+story: writers sorted alphabetically by surname (Elsaadani, Elsamadony, Okasha, Saleh),
 non-measles series sorted alphabetically by slug (`diphtheria-global`, `mumps-global`,
 `pertussis-global`, `under5-measles-deaths`), zipped in order; measles added to everyone.
 The alphabetical series order happens to alternate rising / falling / rising / falling, so

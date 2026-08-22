@@ -87,7 +87,7 @@ this is only needed if the geometry itself changes).
 
 ## Team
 
-Mahmoud Elsamadony · Ahmed Okasha · Ahmed Elsaadani · Ahmed Ramadan
+Mahmoud Elsamadony · Ahmed Okasha · Ahmed Elsaadani · Ahmed Saleh
 Supervisors: Susmita Khadse, Julián Méndez · Chair: Prof. Dr. Raimund Dachselt (IMLD).
 Code & data: https://github.com/memoelsamadony/ai-powered-data-storytelling
 

@@ -154,7 +154,7 @@ def fig1():
             "vs > 2 errors per output.",
             "",
             "Modern open models are already",
-            "fairly faithful — so factual",
+            "fairly faithful - so factual",
             "accuracy is not where the",
             "remaining gap is."]):
         b.append(txt(px, 332 + i * 27, line, size=19, fill=INK_2,
@@ -166,7 +166,7 @@ def fig1():
         "\n".join(b),
         caption="Lower is better ↓   ·   share of outputs containing at least one semantic error",
         footnote="Judge: Claude Opus 4.7 using the paper's own gpt4_metric.yaml prompt.  Hatched bar = figure reported in the paper; "
-        "no metrics CSV in our repository, so it cannot be re-derived here.  Per-domain cells rest on 20 examples each — "
+        "no metrics CSV in our repository, so it cannot be re-derived here.  Per-domain cells rest on 20 examples each - "
         "not readable to better than ±10 points.")
 
 
@@ -231,7 +231,7 @@ def fig2():
     b.append(txt(px, 282, "THE CAPABILITY WALL", size=17, fill=CRITICAL, weight="bold", ls="1.5"))
     for i, line in enumerate([
             "Scale lifts every reading and",
-            "computing operation — trend",
+            "computing operation - trend",
             "40.5% → 87.3%.",
             "",
             "Causal analysis stays at exactly",
@@ -250,8 +250,8 @@ def fig2():
         "Reproduction of DataTales (Yang, Liu & Kan)  ·  per-operation accuracy on the official test split",
         "\n".join(b),
         caption="Share of analytical claims that check out against the source table",
-        footnote="* Small denominators — gemma writes more concise reports and makes only 5 subtraction and 9 rate claims "
-        "(against qwen's 28 and 30), so a single item moves those two bars by 12–20 points. They are drawn faded "
+        footnote="* Small denominators - gemma writes more concise reports and makes only 5 subtraction and 9 rate claims "
+        "(against qwen's 28 and 30), so a single item moves those two bars by 12-20 points. They are drawn faded "
         "for that reason. Counts under each label are qwen · gemma.")
 
 
@@ -266,9 +266,9 @@ def fig3():
     for v in [1, 2, 3, 4, 5]:
         b.append(f'<line x1="{sx(v)}" y1="238" x2="{sx(v)}" y2="600" stroke="{GRID}" stroke-width="1"/>')
         b.append(txt(sx(v), 638, str(v), size=24, fill=MUTED, anchor="middle", weight="bold"))
-    b.append(txt(sx(1), 670, "flat — hides the stakes", size=17, fill=MUTED, anchor="middle"))
+    b.append(txt(sx(1), 670, "flat - hides the stakes", size=17, fill=MUTED, anchor="middle"))
     b.append(txt(sx(5), 670, "manipulative catastrophising", size=17, fill=MUTED, anchor="middle"))
-    b.append(txt(sx(3), 670, "alarmism rating (1–5, half-point scale)", size=17, fill=MUTED, anchor="middle"))
+    b.append(txt(sx(3), 670, "alarmism rating (1-5, half-point scale)", size=17, fill=MUTED, anchor="middle"))
 
     rows = [
         ("pertussis-global", "rising series", 3.5, 3.0, 330, "10 emotive spans · 1 flagged claim"),
@@ -284,7 +284,7 @@ def fig3():
             b.append(f'<circle cx="{sx(before)}" cy="{y}" r="14" fill="{ORANGE}" stroke="{SURFACE}" stroke-width="2"/>')
             b.append(f'<circle cx="{sx(after)}" cy="{y}" r="9" fill="{BLUE}" stroke="{SURFACE}" stroke-width="2"/>')
             b.append(txt(sx(before), y - 46, "2.0", size=23, fill=INK, weight="bold", anchor="middle"))
-            b.append(txt(sx(after) + 50, y + 8, "Δ 0.0  —  no change", size=23, fill=MUTED, weight="bold"))
+            b.append(txt(sx(after) + 50, y + 8, "Δ 0.0 -  no change", size=23, fill=MUTED, weight="bold"))
         else:
             b.append(f'<line x1="{sx(before)}" y1="{y}" x2="{sx(after)+18}" y2="{y}" stroke="{BLUE}" '
                      f'stroke-width="5" marker-end="url(#arrowblue)"/>')
@@ -304,14 +304,14 @@ def fig3():
     b.append(txt(136, 736, "The headroom effect", size=22, fill=BLUE, weight="bold"))
     b.append(txt(136, 768, "The moderator can only remove alarmism the generator actually produced. On the falling series it wrote a calm story",
                  size=20, fill=INK_2))
-    b.append(txt(136, 794, "unprompted — and moderation still rewrote 8 spans while moving the rating by nothing. The rising series gave it work to do.",
+    b.append(txt(136, 794, "unprompted - and moderation still rewrote 8 spans while moving the rating by nothing. The rising series gave it work to do.",
                  size=20, fill=INK_2))
 
     return frame(
         "The novel metric: alarmism before vs after moderation",
         "Two runs, mid tier  ·  llama3.1:8b generator, gemma4:31b moderator  ·  after the 2026-08-10 metric refit",
         "\n".join(b),
-        footnote="n = 2 runs — these verify the instrument on real data; they are not yet a result. Both were rated on the "
+        footnote="n = 2 runs - these verify the instrument on real data; they are not yet a result. Both were rated on the "
         "legacy mid tier, where the judge is the same model as the moderator (gemma4:31b), so these two deltas are "
         "self-assessed. An independent judge (qwen3.5:9b, a different family) has since been wired, with a self-judge "
         "control tier to quantify that bias; those runs are not in these numbers.")
@@ -351,7 +351,7 @@ def fig4():
     b.append(txt(136, 734, "The founding anecdote, reproduced as a measurement", size=22, fill=GOOD, weight="bold"))
     b.append(txt(136, 766, "The moderated measles story states more numbers than the raw one (11 vs 4) and grounds every single one of them.",
                  size=20, fill=INK_2))
-    b.append(txt(136, 792, "The tone agent is quietly doing factual work — and this metric is computed in Python against the evidence pack, no model in the loop.",
+    b.append(txt(136, 792, "The tone agent is quietly doing factual work - and this metric is computed in Python against the evidence pack, no model in the loop.",
                  size=20, fill=INK_2))
 
     return frame(
@@ -367,11 +367,11 @@ def fig4():
 # =========================================================================
 def fig5():
     stages = [
-        ("generate", "llama3.1:8b", 11.5, "11.5–63.1 s", BLUE, "writes the story\nfrom the data pack"),
-        ("judge_raw", "gemma4:31b", 15.1, "15.1–45.0 s", MUTED, "rates alarmism\n1–5"),
-        ("moderate", "gemma4:31b", 119.5, "87.2–131.7 s", ORANGE, "rewrites emotive\nspans, with reasons"),
-        ("judge_mod.", "gemma4:31b", 10.3, "10.3–13.0 s", MUTED, "re-rates the\nmoderated story"),
-        ("factcheck", "gemma4:31b", 71.5, "71.5–109.0 s", AQUA, "verifies claims\nagainst the table"),
+        ("generate", "llama3.1:8b", 11.5, "11.5-63.1 s", BLUE, "writes the story\nfrom the data pack"),
+        ("judge_raw", "gemma4:31b", 15.1, "15.1-45.0 s", MUTED, "rates alarmism\n1-5"),
+        ("moderate", "gemma4:31b", 119.5, "87.2-131.7 s", ORANGE, "rewrites emotive\nspans, with reasons"),
+        ("judge_mod.", "gemma4:31b", 10.3, "10.3-13.0 s", MUTED, "re-rates the\nmoderated story"),
+        ("factcheck", "gemma4:31b", 71.5, "71.5-109.0 s", AQUA, "verifies claims\nagainst the table"),
     ]
     total = sum(s[2] for s in stages)
     b = []
@@ -390,7 +390,7 @@ def fig5():
                      f'stroke-width="2.5" marker-end="url(#arrow)"/>')
 
     tx0, tx1, ty, th = 96, 1504, 486, 74
-    b.append(txt(tx0, ty - 24, "One complete run, measured end to end — 227.9 s", size=22, fill=INK, weight="bold"))
+    b.append(txt(tx0, ty - 24, "One complete run, measured end to end - 227.9 s", size=22, fill=INK, weight="bold"))
     cur = tx0
     for name, model, t, rng, colr, desc in stages:
         w = (t / total) * (tx1 - tx0)
@@ -409,8 +409,8 @@ def fig5():
                  weight="bold", anchor="end"))
 
     facts = [
-        ("227.9 – 361.7 s", "per complete run, same stage sequence — wall clock is not stable, model loads vary"),
-        ("2 of 3 runs", "the moderate stage fell back from grammar-constrained to prompted JSON — probabilistic, not deterministic"),
+        ("227.9-361.7 s", "per complete run, same stage sequence - wall clock is not stable, model loads vary"),
+        ("2 of 3 runs", "the moderate stage fell back from grammar-constrained to prompted JSON - probabilistic, not deterministic"),
         ("~9.5 tok/s", "generation speed of gemma4:31b on the M1 Max, which is what sets every number above"),
     ]
     for i, (big, small) in enumerate(facts):
@@ -425,7 +425,7 @@ def fig5():
         "Five stages, each writing a Run / StageResult row  ·  measured on run 7c2eb23c, mid tier",
         "\n".join(b),
         footnote="Ranges are the min-max across the three mid-tier runs of 2026-08-07. Timings are indicative, not benchmarks "
-        "— a proper latency comparison needs repeats on a quiet machine. The judge and the moderator are the same model here, "
+        " - a proper latency comparison needs repeats on a quiet machine. The judge and the moderator are the same model here, "
         "which is the open protocol defect P0.1.")
 
 
@@ -439,12 +439,12 @@ def fig6():
         ("E1", "Calibration", "ready", "does moderation move\nalarmism to the human band?"),
         ("E2", "Rubric ablation", "ready", "is it the rubric or just\nthe parameter count?"),
         ("E3", "Specificity &\nidempotence", "ready", "re-moderating a moderated\nstory should change nothing"),
-        ("E4", "Silent fact\ncorrection", "ready", "figures fixed without being\nflagged — falls out of E1"),
+        ("E4", "Silent fact\ncorrection", "ready", "figures fixed without being\nflagged - falls out of E1"),
         ("E5", "Generator ×\nmoderator scale", "active", "7 ladder tiers defined,\n1B → 35B; first rung run"),
         ("E6", "Visual tone", "later", "depends on the\nchart-spec work"),
-        ("—", "Independent\njudge", "active", "qwen3.5:9b judge, different\nfamily; + self-judge control"),
-        ("—", "Human baselines", "blocked", "25 LLM drafts written; the\nhuman track is still empty"),
-        ("—", "User study", "later", "trust, engagement,\nreadability, preference"),
+        (" - ", "Independent\njudge", "active", "qwen3.5:9b judge, different\nfamily; + self-judge control"),
+        (" - ", "Human baselines", "blocked", "25 LLM drafts written; the\nhuman track is still empty"),
+        (" - ", "User study", "later", "trust, engagement,\nreadability, preference"),
     ]
     styles = {
         "done":    (GOOD, "✓", "DONE"),
@@ -473,9 +473,9 @@ def fig6():
 
     b.append(f'<rect x="96" y="656" width="1408" height="122" rx="10" fill="{WARNING}" fill-opacity="0.14"/>')
     b.append(txt(122, 694, "What has to happen before any tone number is citable", size=22, fill=INK, weight="bold"))
-    b.append(txt(122, 728, "1.  The alarmism numbers on the previous slide predate the independent judge — they were self-assessed on the "
+    b.append(txt(122, 728, "1.  The alarmism numbers on the previous slide predate the independent judge - they were self-assessed on the "
                  "legacy tier, and will be re-measured.", size=19, fill=INK_2))
-    b.append(txt(122, 758, "2.  Land the genuine human baselines — the 25 drafts are model-authored and labelled as such, so similarity "
+    b.append(txt(122, 758, "2.  Land the genuine human baselines - the 25 drafts are model-authored and labelled as such, so similarity "
                  "against them measures distance to Claude text.", size=19, fill=INK_2))
 
     return frame(
@@ -483,7 +483,7 @@ def fig6():
         "The instruments are built and verified on real data. As of today the ladder runs have started.",
         "\n".join(b),
         footnote="Protocol: EXPERIMENT_PLAN.md plus Addendum A. Model roster and tier table: experiments/MODELS.md. The "
-        "m31b-selfjudge tier differs from g8b in exactly one thing — who judges — so the gap between them measures the "
+        "m31b-selfjudge tier differs from g8b in exactly one thing - who judges - so the gap between them measures the "
         "self-assessment bias in the earlier numbers. Neither is in RESULTS.md yet.")
 
 
@@ -530,7 +530,7 @@ def fig7():
     b.append(txt(122, 736, "Consequence: the two big models can never be co-resident", size=22, fill=INK, weight="bold"))
     b.append(txt(122, 768, "Every multi-model run is load → infer → evict → load. That is why a run takes minutes rather than seconds, why the large tier is batch-only,",
                  size=19, fill=INK_2))
-    b.append(txt(122, 794, "and why a fixed seed does not reproduce across stages — every eviction is a cold load, and a cold load breaks byte-identical output.",
+    b.append(txt(122, 794, "and why a fixed seed does not reproduce across stages - every eviction is a cold load, and a cold load breaks byte-identical output.",
                  size=19, fill=INK_2))
 
     return frame(
@@ -587,15 +587,15 @@ def fig8():
 
     b.append(f'<rect x="814" y="{by}" width="682" height="132" rx="10" fill="{WARNING}" fill-opacity="0.17"/>')
     b.append(txt(838, by + 36, "Then the fact-checker flagged the moderator", size=21, fill=INK, weight="bold"))
-    b.append(txt(838, by + 68, "8 claims checked, 7 verified, 1 flagged — and the flagged item", size=19, fill=INK_2))
+    b.append(txt(838, by + 68, "8 claims checked, 7 verified, 1 flagged - and the flagged item", size=19, fill=INK_2))
     b.append(txt(838, by + 92, "is the moderator's own new phrasing. The two agents", size=19, fill=INK_2))
     b.append(txt(838, by + 116, "disagreeing is why they are kept as separate agents.", size=19, fill=INK_2))
 
     return frame(
-        "What the tone agent actually did — one real run",
+        "What the tone agent actually did - one real run",
         "Run 056795c4  ·  measles  ·  7 spans rebalanced, each returned with a stated reason",
         "\n".join(b),
-        footnote="Alarmism 2.0 → 2.0 on this run: the rating did not move, but seven spans were still rewritten — which is "
+        footnote="Alarmism 2.0 → 2.0 on this run: the rating did not move, but seven spans were still rewritten - which is "
         "exactly why the delta on its own is an insufficient measure of what the agent does.")
 
 

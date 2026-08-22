@@ -1,0 +1,313 @@
+Moderating the Emotional Tone
+	of a Generated Data Story
+	FINAL PRESENTATION  ·  CMS TEAM PROJECT  ·  TU DRESDEN
+	An agent that reads a data story and pulls its tone back to what the evidence supports -
+		measured against 25 stories our own team wrote from the same tables.
+	Mahmoud Elsamadony  ·  Ahmed Okasha  ·  Ahmed Elsaadani  ·  Ahmed Saleh
+		Supervisors: Susmita Khadse, Julián Méndez  ·  Chair: Prof. Dr. Raimund Dachselt (IMLD)
+
+Four parts, then the system running
+	AGENDA
+	01
+	The research, and the problem it found
+	The one claim
+		A second agent can pull a generated data story's tone back to what the evidence supports -
+		without losing the numbers,
+		and at a cost in readability we can put a number on.
+		Everything else in this talk exists to make that measurable.
+	Mahmoud
+	02
+	What we built, and how we measure it
+	Okasha
+	03
+	What the reader sees, and how we chose the pair
+	Elsaadani
+	04
+	The result, the agent, and the system
+	Saleh
+	LIVE DEMO   ·   the pipeline running locally   ·   3:30
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	2
+
+The research, and the problem it found
+	PART 1 OF 4
+	Mahmoud
+	The research
+	What we built
+	What the reader sees
+	The result
+
+Three systems we did not just cite - we re-ran them
+	THE RESEARCH
+	Kasner and Dušek, ACL 2024
+		Are open models faithful?
+		Their reference-free method marks every span of generated text that the source table does not support.
+		What we did: We re-ran it on modern open models. A 12B model left a semantic error in about 18% of outputs, where the paper reported over 80%. A 4B model regressed to 52%.
+		Recency and size both matter - and today's open models are already fairly faithful at stating data.
+	DataTales, 2025
+		Which kinds of claim are hard?
+		A benchmark for data narration that scores a story per operation: lookup, comparison, trend, rate of change, causal.
+		What we did: We reproduced a 30-report slice. Reading operations climb steeply with scale - rate of change went 43% to 89% from a 4B to a 12B model.
+		Stating a number is not the hard part. Explaining it is.
+	DataNarrative, EMNLP 2024
+		What architecture works?
+		One agent writes the story, a second agent verifies it at every step, beating single-LLM baselines.
+		What we did: We rebuilt the two-agent generate-and-verify loop, which is the structural basis of our own pipeline.
+		The second-agent pattern works. Ours swaps its factual verifier for a tone moderator.
+	Put together: open models already state data fairly faithfully, and every critic agent in this literature checks facts. So another fact-checker is not the gap.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	4
+
+Everyone checks the facts. Nobody checks the tone.
+	THE PROBLEM
+	▪  The critic is always a fact-checker.
+		That is what our survey found, without exception. No published system moderates the affective tone of a data narrative.
+		▪  But framing moves the reader on its own.
+		Hullman and Diakopoulos show editorial framing significantly changes how the same chart is read. Tone is not decoration; it is part of the claim.
+		▪  So a story can be fully correct and still mislead.
+		Both sentences on the right are true to the table. A fact-checker passes both. Only one of them is honest about what the data says.
+	EVERY NUMBER BELOW IS CORRECT
+		“The world faces a catastrophic resurgence as a deadly disease roars back.”
+		A fact-checker passes this. It cites nothing false.
+		“Cases rose for a third year while coverage stalled near 84%, below the 95% herd-immunity threshold.”
+		Same table. Same facts. A different reader reaction.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	5
+
+What we built, and how we measure it
+	PART 2 OF 4
+	Okasha
+	The research
+	What we built
+	What the reader sees
+	The result
+
+One generator, one agentic moderator, one independent judge
+	OUR FIX
+	1   GENERATE
+		llama3.1:8b
+		Writes the first-draft story from
+		an evidence pack built out of
+		the table.
+	2   THE AGENTIC ROLE - ONE MODEL, THREE JOBS
+		gemma4:31b
+	3   JUDGE
+		Claude Opus
+		Rates each story blind. Evaluation
+		only - not part of the product
+		loop.
+	Moderates tone
+	rewrites the framing, keeps the numbers   ← the contribution
+	Fact-checks
+	every stated number back against the table
+	Selects the charts
+	ranks figures the table can honestly carry
+	Two datasets, because tone fails both ways.
+		Measles × MCV1 coverage (9,959 rows, 1980-2024) invites alarmism. WHO child mortality invites the opposite failure, false reassurance, where the agent must keep the inequality and the COVID reversal visible.
+	Same model, separate stages
+		The moderator is the agentic role here, so the agentic reading of a table belongs to it too. The stages stay separate, so a tone number is still measuring one change - and one 19-23 GB load is paid per run instead of per stage.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	7
+
+Two axes, and both ends of each are failures
+	THE INSTRUMENT
+	The judge rates every story 1 to 5 on alarmism, and separately 1 to 5 on optimism.
+		A 5 catastrophises. A 1 is flat and hides real stakes. Only the middle is calibrated - so this is not a “lower is better” scale, and an agent that simply drains the feeling out of a story scores badly too.
+		Blinding cost us something.
+		An earlier version showed the judge both stories in one call, labelled before and after, always in that order. That names the treatment to the rater. Each story is now scored alone, which doubles the calls and gives up the direct comparison - the price of a rating that was not told which story is the treatment.
+	ALARMISM
+	3  rubric
+	1  flat
+	human 2.0
+	5  extreme
+	OPTIMISM
+	3  rubric
+	1  flat
+	human 2.5
+	5  extreme
+	The rubric calls 3 calibrated. Our human writers sit at 2.0 and 2.5, so the human band - not the rubric midpoint - is the target we report against.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	8
+
+What we measure about the system
+	METRICS · PART 1
+	Tone - the contribution
+		An LLM judge, blind, one story per call. The only family that needs a model.
+		Alarmism 1-5   flat ↔ catastrophising
+		Optimism 1-5   bleak ↔ false reassurance
+		Emotive spans removed   count, per run
+	Similarity to the human baseline
+		How close the wording lands to the 25 stories we wrote by hand.
+		chrF++   character n-grams; our ranking metric
+		BLEU 1-4, ROUGE-L   n-gram and longest-common-subsequence overlap
+		METEOR, unigram F1   stem and synonym aware
+	Faithfulness - computed, no model, free
+		Did the rewrite keep the facts? Runs on every story automatically.
+		Numeric retention   share of the raw story's figures that survive
+		Added unsupported   figures the moderator introduced
+		Groundedness   stated numbers the table actually supports
+		Rewrite intensity   how much text changed at all
+		Trend selection   does the story's window agree with the whole series
+	Analytical operations - from the DataTales re-run
+		Not every claim is equally hard, so we score accuracy per kind of claim.
+		lookup   reading a single value off the table
+		comparison   ranking two values against each other
+		trend   which way a series moves across a window
+		rate of change   how steeply it moves
+		causal   why it moved - the hardest, and the one we treat with most caution
+	“Trend” appears twice: trend selection (bottom left) is a cherry-picking check on one story; trend (bottom right) is an accuracy category from the benchmark.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	9
+
+What the reader sees, and how we chose the pair
+	PART 3 OF 4
+	Elsaadani
+	The research
+	What we built
+	What the reader sees
+	The result
+
+What the reader is shown, and why
+	METRICS · PART 2
+	In the app, next to the story
+		These exist so a reader can audit the rewrite instead of trusting it.
+		Alarmism rating   where this story sits on the scale
+		Human tone band   ±0.5 around the human author's own rating
+		Numbing / catastrophising   which end it failed toward
+		Emotive span   the exact words the moderator removed
+		Verified / flagged / corrected   what the fact-check did to each number
+	Designed, not yet run
+		The brief allows metrics or a user study. We chose metrics and went deep.
+		Trust   does the reader believe the story
+		Engagement   does it hold attention
+		Readability   is it clear and easy to follow
+		Human-vs-LLM preference   which story readers prefer, and why
+	The split that matters
+		Part 1 answers “is the system any good”. It is aggregated over runs and nobody reading a story ever sees it.
+		Part 2 answers “should I believe this particular story”. It is per-story, visible in the interface, and it is the reason the app shows a diff rather than just a cleaner paragraph.
+		Same underlying numbers in places. Different job.
+	The edit taxonomy
+		Every change the moderator made, classified - so the diff is readable.
+		Intensity   how hard the wording pushes
+		Framing   what the sentence is made to be about
+		Overreach   a claim beyond what the table shows
+		Grounding   a claim tied back to a number
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	11
+
+Four steps from fourteen candidates to one pipeline
+	CHOOSING THE PAIR
+	01
+	02
+	Build the grid
+		Vary the generator against a fixed moderator, then the moderator against a fixed generator. L-shaped, not factorial - so the best × best cell is never assumed, it has to be run.
+	Score every run the same way
+		Blind Opus rating on both tone axes, plus the computed faithfulness metrics. Same dataset throughout, so the comparison is not rewarded for drawing an easy table.
+	03
+	Tone does not decide it
+		Six combinations land on exactly 2.0 alarmism. A tie on the headline metric is a real result: the moderator is doing its job regardless of who wrote the draft.
+	04
+	Break the tie on faithfulness, then repeat it
+		Rank the tied cells on how many of the raw story's figures survive. Then run the top two five times each at distinct seeds, because a single run cannot separate a model from a draft.
+	Step 4 is the one we nearly skipped, and it is the step that changed the answer.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	12
+
+[Slide 13] Figure: image.png
+	SPEAKER 3 - Elsaadani   [0:20]   running total 4:41   ~50 words
+
+[Slide 14] Figure: image.png
+	SPEAKER 3 - Elsaadani   [0:35]   running total 5:16   ~80 words   >>> HAND TO RAMADAN
+
+The result, the agent, and the system
+	PART 4 OF 4
+	Saleh
+	The research
+	What we built
+	What the reader sees
+	The result
+
+[Slide 16] Figure: image.png
+	SPEAKER 4 - Saleh   [0:38]   running total 5:59   ~105 words
+
+Seven tools, not seventeen chart types
+	THE TOOL SURFACE
+	Grouped by the reader's job, with the geometry in an enum - a two-level choice a local model can make reliably.
+	CHART TOOLS (7)  -  each returns a ChartPayload
+	READ TOOLS (3)  -  what makes it an agent, not a classifier
+	plot_trend_over_time
+	line, area  (+ stack, indexed, emphasis)
+	describe_dataset
+		dimensions, measures, span, row count, missingness, and the magnitude ratio between measures
+	plot_magnitude
+	bar, lollipop, heatmap
+	plot_change
+	dumbbell, slope, bump
+	get_series
+		a ChartFrame for one measure, grouped, filtered and aggregated as asked
+	plot_relationship
+	scatter, connectedScatter, parallelCoordinates
+	check_comparability
+		whether a per-capita denominator exists - and whether it is needed
+	plot_geographic
+	choropleth, bivariateChoropleth
+	plot_distribution
+	beeswarm, box, ridgeline
+	show_headline
+	statTile
+	Without the read tools the model picks a form blind from a prompt string. With them it can discover that two measures differ by 100× and derive that it needs an indexed transform.
+	The form enum is documented with the validator's own rule text, so a tool description cannot drift from the rule it promises.
+	Defined in docs/CHART_CONTRACT.md and pinned by the generated docs/chart-schema.json. Today the selector makes one structured call; the tool loop is the next step.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	17
+
+THE WHOLE SYSTEM
+	Table in, audited story out - on one laptop
+	Table
+		9,959 rows
+	›
+	Evidence pack
+		computed
+	›
+	Raw story
+		llama3.1:8b
+	›
+	Moderated
+		gemma4:31b
+	›
+	Fact-check
+		same model
+	›
+	Charts
+		same model
+	›
+	Judged
+		Opus, blind
+	teal = the three stages that run on the moderator model
+	LIVE DEMO  ·  3:30
+		Table → chosen figures → raw story → moderated story → the human story beside it
+		localhost:3000  ·  Django on :8000  ·  llama3.1:8b and gemma4:31b on Ollama. No API call anywhere in the generation path.
+
+What we can defend
+	Human tone level - and what it cost
+	Three numbers: where the tone lands, whether the ruler holds, and what the rewrite gave up.
+	THE RESULT
+	THE INSTRUMENT
+	THE COST
+	3.74 → 2.09
+	0.991
+	12/20
+	alarmism, raw to moderated, over 32 runs. Human median 2.00.
+	ICC over 3 blind passes: the judge agrees with itself, so the move above is real.
+	blind pairs where the unmoderated story read better as writing.
+	Not claimed: a judge panel, a user study, or a controlled writer design. One judge family, 25 stories, five writer slots.
+		Every number here is read from the experiment files at build time, so the slides cannot drift from the data.
+	AI-Powered Data Storytelling  ·  CMS Team Project  ·  TU Dresden  ·  SoSe 2026
+	19
+
+Thank you
+	Questions?
+	Mahmoud Elsamadony  ·  Ahmed Okasha  ·  Ahmed Elsaadani  ·  Ahmed Saleh
+		Supervisors: Susmita Khadse, Julián Méndez  ·  Chair: Prof. Dr. Raimund Dachselt (IMLD)
+		github.com/memoelsamadony/ai-powered-data-storytelling
+

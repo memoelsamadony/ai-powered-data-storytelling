@@ -64,9 +64,10 @@ def fig9():
         raw, mod, hum = (d["machine_raw_alarmism_mean"],
                          d["machine_moderated_alarmism_mean"],
                          d["human_alarmism_median"])
-        b.append(txt(72, y + 6, SERIES_LABEL.get(s, s), size=21, fill=INK, weight="bold"))
-        b.append(txt(72, y + 28, f"n={d['n_runs']} run{'s' if d['n_runs'] > 1 else ''}",
-                     size=15, fill=MUTED))
+        # No per-row run count. Five separate n= labels read as five separate
+        # sample sizes to compare, which is not what they are; the total belongs
+        # in the subtitle and which series carry repeats belongs in the footnote.
+        b.append(txt(72, y + 14, SERIES_LABEL.get(s, s), size=21, fill=INK, weight="bold"))
         # human band, +/- 0.5
         b.append(f'<rect x="{sx(hum-0.5)}" y="{y-26}" width="{sx(hum+0.5)-sx(hum-0.5)}" '
                  f'height="52" fill="{AQUA}" fill-opacity="0.12" rx="4"/>')
@@ -91,15 +92,21 @@ def fig9():
                  size=18, fill=INK_2))
 
     ag = HUMAN["aggregate"]
+    many = [(SERIES_LABEL.get(k, k).lower(), v["n_runs"])
+            for k, v in sorted(ps.items(), key=lambda kv: -kv[1]["n_runs"])
+            if v["n_runs"] > 1]
+    repeats = " and ".join(f"{name} carries {k}" for name, k in many)
     return frame(
         "Moderation moves machine stories onto the human level",
-        f"Alarmism 1-5, Claude Opus judging blind, one story at a time.   "
+        f"Alarmism 1-5, Claude Opus judging blind, one story at a time. "
+        f"{HUMAN['n_runs']} runs against {HUMAN['n_human_stories']} human stories.   "
         f"Overall {ag['alarmism_raw_mean']:.2f} -> {ag['alarmism_moderated_mean']:.2f}, "
         f"human median {ag['human_alarmism_median']:.2f}.",
         "\n".join(b),
-        "n=1 per cell on four of five series, so each arrow is one run, not a mean of repeats. "
-        "The human stories carry no headline and the machine stories do; headlines concentrate "
-        "alarmism, so the human line is if anything flattered and every gap shown is a lower bound.",
+        f"The runs are not spread evenly: {repeats}, and the remaining series are a single run "
+        "each, so those arrows are one story rather than a mean. The human stories carry no "
+        "headline and the machine stories do; headlines concentrate alarmism, so the human line "
+        "is if anything flattered and every gap shown is a lower bound.",
     )
 
 
@@ -107,9 +114,25 @@ def fig9():
 # FIG 10 - the decision matrix: which combination to ship
 # =========================================================================
 def fig10():
-    rank = RANK["ranking"]
+    # One row per configuration, not one per run. The five-seed repeats landed in
+    # the ranking file afterwards and pushed g4b and g8b to six rows each, which
+    # overflowed the table into its own footnote - and, worse, put repeated runs
+    # inside a figure whose entire point is that it is the n=1 grid. Collapse to
+    # the first run of each tier, which is the run this table originally showed.
+    seen: set[str] = set()
+    rank = []
+    for r in RANK["ranking"]:
+        if r["tier"] not in seen:
+            seen.add(r["tier"])
+            rank.append(r)
     b = []
-    cols = [(72, "tier", "start"), (200, "generator  x  moderator", "start"),
+    # No tier column. The internal ids meant nothing to a reader, and dropping
+    # them exposes something better: where a generator x moderator pair appears
+    # more than once, those are separate runs of the same configuration, and the
+    # "figures kept" column disagrees with itself across them. That disagreement
+    # is the whole argument for fig13, so the table should show it rather than
+    # hide it behind an id.
+    cols = [(72, "generator  x  moderator", "start"),
             (700, "alarmism", "middle"), (850, "gap to human", "middle"),
             (1010, "figures kept", "middle"), (1180, "invented", "middle"),
             (1330, "chrF++ to human", "middle"), (1500, "seconds", "middle")]
@@ -118,7 +141,7 @@ def fig10():
         b.append(txt(x, y, label, size=16, fill=MUTED, anchor=anchor))
     b.append(f'<line x1="72" y1="{y+13}" x2="{W-72}" y2="{y+13}" stroke="{GRID}" stroke-width="2"/>')
 
-    row_h = 42
+    row_h = 36
     for i, r in enumerate(rank):
         yy = y + 44 + i * row_h
         tied = r["gap_to_human"] == 0.0
@@ -130,10 +153,7 @@ def fig10():
         if bad:
             b.append(f'<rect x="64" y="{yy-25}" width="{W-128}" height="{row_h-4}" '
                      f'fill="{CRITICAL}" fill-opacity="0.07" rx="4"/>')
-        # The tier id matters: three rows share llama3.1:8b x gemma4:31b and
-        # differ only in who judged them, which is a whole finding of its own.
-        b.append(txt(72, yy, r["tier"], size=17, fill=MUTED))
-        b.append(txt(200, yy, f"{r['generator']}  x  {r['moderator']}", size=19,
+        b.append(txt(72, yy, f"{r['generator']}  x  {r['moderator']}", size=19,
                      fill=INK, weight="bold" if pick else "normal"))
         b.append(txt(700, yy, f"{r['moderated_alarmism']}", size=19, fill=INK_2, anchor="middle"))
         b.append(txt(850, yy, f"{r['gap_to_human']:.1f}", size=19,
@@ -151,13 +171,13 @@ def fig10():
     return frame(
         "Six combinations tie on tone. Faithfulness breaks the tie.",
         "Superseded by fig13: five seeds per cell reverse the retention column. Read this "
-        "as the n=1 table it is, not as a recommendation.",
+        "as the ranking it is, not as a recommendation.",
         "\n".join(b),
-        "Pertussis only, n=1 per cell, so none of these differences is significant: a ranking, "
-        "not a test. g4b and q4b are the same configuration and produced byte-identical text - "
-        "a fixed seed replaying, not a repeat, so there are zero repeats anywhere here. The grid "
-        "is L-shaped, not factorial: generators varied against gemma4:31b and moderators against "
-        "llama3.1:8b, so the best x best cell was never run. Red rows invented a figure.",
+        "Pertussis only, one row per run. Where a pair of models appears twice or more, "
+        "those are separate runs of the same configuration and \"figures kept\" disagrees "
+        "with itself: 50%, 75% and 100% for llama3.1:8b x gemma4:31b. That spread is why one "
+        "run cannot rank anything, and it is what fig13 measures. The grid is L-shaped, so "
+        "the best x best cell was never run. Red rows invented a figure.",
     )
 
 

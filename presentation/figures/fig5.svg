@@ -26,7 +26,7 @@
 <text x="418" y="226" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">judge_raw</text>
 <text x="418" y="252" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#898781" font-weight="bold" text-anchor="start" letter-spacing="0">gemma4:31b</text>
 <text x="418" y="282" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">rates alarmism</text>
-<text x="418" y="305" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">1–5</text>
+<text x="418" y="305" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">1-5</text>
 <path d="M 668 265.0 L 694 265.0" stroke="#898781" stroke-width="2.5" marker-end="url(#arrow)"/>
 <rect x="704" y="190" width="262" height="150" rx="10" fill="#eb6834" fill-opacity="0.10" stroke="#eb6834" stroke-width="2.5"/>
 <text x="722" y="226" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">moderate</text>
@@ -45,43 +45,43 @@
 <text x="1330" y="252" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="18" fill="#1baf7a" font-weight="bold" text-anchor="start" letter-spacing="0">gemma4:31b</text>
 <text x="1330" y="282" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">verifies claims</text>
 <text x="1330" y="305" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">against the table</text>
-<text x="96" y="462" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="22" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">One complete run, measured end to end — 227.9 s</text>
+<text x="96" y="462" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="22" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">One complete run, measured end to end - 227.9 s</text>
 <rect x="96" y="486" width="69.04870557261957" height="74" rx="4" fill="#2a78d6" fill-opacity="0.95"/>
 <text x="130.52435278630978" y="586" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">generate</text>
-<text x="130.52435278630978" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">11.5–63.1 s</text>
+<text x="130.52435278630978" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">11.5-63.1 s</text>
 <rect x="167.04870557261955" y="486" width="91.29003949100482" height="74" rx="4" fill="#898781" fill-opacity="0.45"/>
 <text x="212.69372531812195" y="520" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="22" fill="#ffffff" font-weight="bold" text-anchor="middle" letter-spacing="0">15.1 s</text>
 <text x="212.69372531812195" y="544" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">7% of the run</text>
 <text x="212.69372531812195" y="586" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">judge_raw</text>
-<text x="212.69372531812195" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">15.1–45.0 s</text>
+<text x="212.69372531812195" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">15.1-45.0 s</text>
 <rect x="260.3387450636244" y="486" width="736.2887231241773" height="74" rx="4" fill="#eb6834" fill-opacity="0.95"/>
 <text x="628.483106625713" y="520" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="22" fill="#ffffff" font-weight="bold" text-anchor="middle" letter-spacing="0">119.5 s</text>
 <text x="628.483106625713" y="544" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">52% of the run</text>
 <text x="628.483106625713" y="586" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">moderate</text>
-<text x="628.483106625713" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">87.2–131.7 s</text>
+<text x="628.483106625713" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">87.2-131.7 s</text>
 <rect x="998.6274681878017" y="486" width="61.63492759982449" height="74" rx="4" fill="#898781" fill-opacity="0.45"/>
 <text x="1029.444931987714" y="586" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">judge_mod.</text>
-<text x="1029.444931987714" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">10.3–13.0 s</text>
+<text x="1029.444931987714" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">10.3-13.0 s</text>
 <rect x="1062.2623957876262" y="486" width="439.7376042123738" height="74" rx="4" fill="#1baf7a" fill-opacity="0.95"/>
 <text x="1282.1311978938131" y="520" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="22" fill="#ffffff" font-weight="bold" text-anchor="middle" letter-spacing="0">71.5 s</text>
 <text x="1282.1311978938131" y="544" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#ffffff" font-weight="normal" text-anchor="middle" letter-spacing="0">31% of the run</text>
 <text x="1282.1311978938131" y="586" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="middle" letter-spacing="0">factcheck</text>
-<text x="1282.1311978938131" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">71.5–109.0 s</text>
+<text x="1282.1311978938131" y="607" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="15" fill="#898781" font-weight="normal" text-anchor="middle" letter-spacing="0">71.5-109.0 s</text>
 <text x="1504" y="462" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="20" fill="#eb6834" font-weight="bold" text-anchor="end" letter-spacing="0">the tone agent is the bottleneck</text>
 <rect x="96" y="664" width="452" height="134" rx="10" fill="#e1e0d9" fill-opacity="0.40"/>
-<text x="120" y="708" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="30" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">227.9 – 361.7 s</text>
-<text x="120" y="738" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">per complete run, same stage sequence — wall</text>
+<text x="120" y="708" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="30" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">227.9-361.7 s</text>
+<text x="120" y="738" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">per complete run, same stage sequence - wall</text>
 <text x="120" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">clock is not stable, model loads vary</text>
 <rect x="572" y="664" width="452" height="134" rx="10" fill="#e1e0d9" fill-opacity="0.40"/>
 <text x="596" y="708" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="30" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">2 of 3 runs</text>
 <text x="596" y="738" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">the moderate stage fell back from</text>
-<text x="596" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">grammar-constrained to prompted JSON —</text>
+<text x="596" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">grammar-constrained to prompted JSON -</text>
 <text x="596" y="782" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">probabilistic, not deterministic</text>
 <rect x="1048" y="664" width="452" height="134" rx="10" fill="#e1e0d9" fill-opacity="0.40"/>
 <text x="1072" y="708" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="30" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">~9.5 tok/s</text>
 <text x="1072" y="738" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">generation speed of gemma4:31b on the M1 Max,</text>
 <text x="1072" y="760" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">which is what sets every number above</text>
 
-<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Ranges are the min-max across the three mid-tier runs of 2026-08-07. Timings are indicative, not benchmarks — a proper latency comparison needs repeats on a quiet</text>
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Ranges are the min-max across the three mid-tier runs of 2026-08-07. Timings are indicative, not benchmarks - a proper latency comparison needs repeats on a quiet</text>
 <text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">machine. The judge and the moderator are the same model here, which is the open protocol defect P0.1.</text>
 </svg>

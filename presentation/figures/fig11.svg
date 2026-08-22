@@ -14,7 +14,7 @@
 </defs>
 <rect width="1600" height="900" fill="#ffffff"/>
 <text x="72" y="76" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="40" fill="#0b0b0b" font-weight="bold" text-anchor="start" letter-spacing="0">Two axes, because a falling series fails in the other direction</text>
-<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Every run: 24 raw-to-moderated moves, all eight datasets.</text>
+<text x="72" y="116" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="23" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">Every run: 35 raw-to-moderated moves, all eight datasets.</text>
 <line x1="72" y1="140" x2="1528" y2="140" stroke="#e1e0d9" stroke-width="2"/>
 <line x1="340.0" y1="220" x2="340.0" y2="720" stroke="#e1e0d9" stroke-width="1.5"/>
 <line x1="340" y1="720.0" x2="1180" y2="720.0" stroke="#e1e0d9" stroke-width="1.5"/>
@@ -112,6 +112,39 @@
 <line x1="844.0" y1="545.0" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
 <circle cx="844.0" cy="545.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
 <circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="1012.0" y1="545.0" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="1012.0" cy="545.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="1033.0" y1="645.0" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="1033.0" cy="645.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="1033.0" y1="645.0" x2="655.0" y2="595.0" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="1033.0" cy="645.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="655.0" cy="595.0" r="6" fill="#2a78d6"/>
+<line x1="1012.0" y1="670.0" x2="655.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="1012.0" cy="670.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="655.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="865.0" y1="532.5" x2="445.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="865.0" cy="532.5" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="445.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="907.0" y1="620.0" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="907.0" cy="620.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="970.0" y1="595.0" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="970.0" cy="595.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="886.0" y1="495.0" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="886.0" cy="495.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="1033.0" y1="595.0" x2="655.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="1033.0" cy="595.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="655.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="1033.0" y1="670.0" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="1033.0" cy="670.0" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
+<line x1="1033.0" y1="632.5" x2="550.0" y2="532.5" stroke="#898781" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+<circle cx="1033.0" cy="632.5" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
+<circle cx="550.0" cy="532.5" r="6" fill="#2a78d6"/>
 <path d="M 537.0 532.5 L 550.0 519.5 L 563.0 532.5 L 550.0 545.5 Z" fill="#1baf7a"/>
 <text x="572.0" y="538.5" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#1baf7a" font-weight="bold" text-anchor="start" letter-spacing="0">human median</text>
 <circle cx="1250" cy="260" r="6" fill="none" stroke="#d03b3b" stroke-width="2.2"/>
@@ -126,6 +159,6 @@
 <text x="1250" y="506" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">miraculous'. One axis sees nothing</text>
 <text x="1250" y="532" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="17" fill="#52514e" font-weight="normal" text-anchor="start" letter-spacing="0">there; moderation moved it to 2.5.</text>
 
-<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Alarmism falls 3.59 -&gt; 2.09 and optimism rises 2.25 -&gt; 2.67, both toward the middle. Note the moderated cloud settles below alarmism 3: the moderator aims at quiet</text>
+<text x="72" y="830" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">Alarmism falls 3.74 -&gt; 2.09 and optimism rises 2.15 -&gt; 2.60, both toward the middle. Note the moderated cloud settles below alarmism 3: the moderator aims at quiet</text>
 <text x="72" y="852" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif" font-size="16" fill="#898781" font-weight="normal" text-anchor="start" letter-spacing="0">rather than at calibrated, and lands near where these human writers also sit (diamond).</text>
 </svg>
